@@ -1,0 +1,8 @@
+name: RacciLib
+version: '${project.version}'
+main: me.racci.raccilib.RacciLib
+api-version: 1.17
+load: STARTUP
+loadbefore: [ Sylphia ]
+authors: [ Racci ]
+description: Core lib for my plugins

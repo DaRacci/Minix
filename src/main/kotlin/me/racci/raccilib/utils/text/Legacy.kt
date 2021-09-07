@@ -1,5 +1,6 @@
 package me.racci.raccilib.utils.text
 
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 
 
@@ -11,8 +12,9 @@ class Legacy private constructor() {
             .useUnusualXRepeatedCharacterHexFormat()
             .build()
     }
-
-    init {
-        throw UnsupportedOperationException("Class should not be instantiated!")
+}
+object LegacyUtils {
+    fun parseLegacy(string: String?): Component? {
+        return LegacyComponentSerializer.legacySection().deserialize(string!!)
     }
 }

@@ -1,10 +1,9 @@
 <img src="https://cdn.discordapp.com/attachments/431545763928211457/853353180271214662/mfthread.png">
 <h1 align="center">Racci Lib<h1>
 <p>
+  <a href="https://jitpack.io/#DaRacci/RacciLib"><img src="https://jitpack.io/v/DaRacci/RacciLib.svg?style=flat-square" alt="language"/></a>
   <img src="https://img.shields.io/github/license/DaRacci/RacciLib?color=blue&style=flat-square"  alt="license"/>
 <a href="https://discord.gg/9D986MAfZk"><img src="https://img.shields.io/discord/812625173315584030?label=discord&style=flat-square"  alt="language"/></a>
-
-[comment]: <> (  <img src="https://img.shields.io/github/v/release/DaRacci/RacciLib?color=green&style=flat-square" alt="release">)
 </p>
 
 > mmm kotlin good
@@ -16,8 +15,8 @@
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/DaRacci/RacciLib/issues).
 
-## Javadocs
-* Comming soon
+## Docs
+* You can check out the docs [here](https://raccilib.sylphmc.com)
 
 ## Depencency Info
 * Coming soon

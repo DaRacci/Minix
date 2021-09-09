@@ -3,7 +3,7 @@
 package me.racci.raccilib.utils.items.builders
 
 import me.racci.raccilib.utils.items.ItemNBT
-import me.racci.raccilib.utils.text.Legacy
+import me.racci.raccilib.utils.strings.Legacy
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.enchantments.Enchantment

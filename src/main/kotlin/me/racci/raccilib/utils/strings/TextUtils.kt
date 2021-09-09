@@ -1,5 +1,6 @@
+@file:Suppress("unused")
 @file:JvmName("TextUtils")
-package me.racci.raccilib.utils.text
+package me.racci.raccilib.utils.strings
 
 import java.util.regex.Pattern
 

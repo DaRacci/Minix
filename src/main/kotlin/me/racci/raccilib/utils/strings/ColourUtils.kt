@@ -1,15 +1,11 @@
 @file:Suppress("unused")
 @file:JvmName("ColourUtils")
-package me.racci.raccilib.utils.text
+package me.racci.raccilib.utils.strings
 
 import net.md_5.bungee.api.ChatColor
-import org.bukkit.Bukkit
 import java.util.regex.Matcher
 import java.util.regex.Pattern
-//
-//class ColourUtil {
 
-private val purpurColour: Boolean = Bukkit.getServer().version.contains("Purpur")
 
 private val hexPattern: Pattern = Pattern.compile("(#[A-Fa-f0-9]{6})")
 
@@ -37,5 +33,3 @@ private fun replaceHex(string: String?): String? {
 private fun internalColour(str: String?, parseHex: Boolean): String? {
     return ChatColor.translateAlternateColorCodes('&', if(parseHex) replaceHex(str) else str)
 }
-
-//}

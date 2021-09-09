@@ -10,10 +10,8 @@ import org.bukkit.event.HandlerList
 
 class PlayerMoveXYZEvent(
     val player: Player, val from: Location, var to: Location
-) : Event(), Cancellable {
-    override fun getHandlers(): HandlerList {
-        return handlerList
-    }
+) : KotlinEvent() {
+
     private var isCancelled = false
     override fun isCancelled(): Boolean {
         return isCancelled
@@ -21,25 +19,19 @@ class PlayerMoveXYZEvent(
     override fun setCancelled(isCancelled: Boolean) {
         this.isCancelled = isCancelled
     }
-    companion object {
-        val handlerList = HandlerList()
-    }
+
 }
 
 class PlayerMoveFullXYZEvent(
     val player: Player, val from: Location, var to: Location
-) : Event(), Cancellable {
-    override fun getHandlers(): HandlerList {
-        return handlerList
-    }
+) : KotlinEvent() {
+
     private var isCancelled = false
+
     override fun isCancelled(): Boolean {
         return isCancelled
     }
     override fun setCancelled(isCancelled: Boolean) {
         this.isCancelled = isCancelled
-    }
-    companion object {
-        val handlerList = HandlerList()
     }
 }

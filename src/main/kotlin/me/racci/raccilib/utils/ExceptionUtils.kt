@@ -1,4 +1,5 @@
-@file:JvmName("ExceptionUtil")
+@file:Suppress("unused")
+@file:JvmName("ExceptionUtils")
 package me.racci.raccilib.utils
 
 class LangLoadException(message: String) : Exception(message)

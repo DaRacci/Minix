@@ -1,4 +1,6 @@
-package me.racci.raccilib.utils.text
+@file:Suppress("unused")
+@file:JvmName("LegacyUtils")
+package me.racci.raccilib.utils.strings
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer

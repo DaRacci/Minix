@@ -1,3 +1,4 @@
+@file:Suppress("unused")
 @file:JvmName("BlockTypeUtils")
 package me.racci.raccilib.utils.blocks
 

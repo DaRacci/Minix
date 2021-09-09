@@ -16,8 +16,8 @@
 
 Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/DaRacci/RacciLib/issues).
 
-## Javadocs
-* Comming soon
+## Docs
+* You can check out the docs [here](https://raccilib.sylphmc.com)
 
 ## Depencency Info
 * Coming soon

@@ -10,7 +10,6 @@
 
 ## Author
 * Github: [@Racci](https://github.com/DaRacci)
-  [![Release](https://jitpack.io/v/DaRacci/RacciLib.svg?color=blue&style=flat-square)](https://jitpack.io/DaRacci/RacciLib)
 
 ## 🤝 Contributing
 

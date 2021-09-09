@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+@file:JvmName("RacciPlugin")
 package me.racci.raccilib
 
 import org.bukkit.plugin.java.JavaPlugin

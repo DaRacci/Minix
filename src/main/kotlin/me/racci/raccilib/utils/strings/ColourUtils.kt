@@ -26,10 +26,10 @@ private fun replaceHex(string: String?): String? {
             val group = matcher.group(1)
             str = str?.replace(group, ChatColor.of(group).toString())
         }
-    }
+    } else { return "" }
     return str
 }
 
-private fun internalColour(str: String?, parseHex: Boolean): String? {
+private fun internalColour(str: String? = "", parseHex: Boolean): String? {
     return ChatColor.translateAlternateColorCodes('&', if(parseHex) replaceHex(str) else str)
 }

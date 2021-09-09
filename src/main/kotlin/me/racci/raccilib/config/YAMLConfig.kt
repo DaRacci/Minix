@@ -1,13 +1,18 @@
+@file:Suppress("unused")
+@file:JvmName("YAMLConfig")
 package me.racci.raccilib.config
 
+import com.okkero.skedule.SynchronizationContext
+import com.okkero.skedule.schedule
 import me.racci.raccilib.Level
 import me.racci.raccilib.log
+import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
+import org.bukkit.entity.Entity
 import org.bukkit.plugin.Plugin
 import java.io.File
 import java.io.IOException
-import java.util.logging.Level.SEVERE
 import kotlin.reflect.KClass
 
 class YAMLConfig(private val plugin: Plugin, private val fileName: String) {
@@ -115,7 +120,7 @@ class YAMLConfig(private val plugin: Plugin, private val fileName: String) {
         try {
             config.save(configFile)
         } catch (ex: IOException) {
-            log(Level.ERROR, "Could not save config to $configFile", ex)
+            log(Level.ERROR, "Could not save config to $configFile")
         }
     }
 

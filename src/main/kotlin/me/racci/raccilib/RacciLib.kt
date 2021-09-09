@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+@file:JvmName("RacciLib")
 package me.racci.raccilib
 
 import me.racci.raccilib.events.PlayerMoveXYZEvent

@@ -243,7 +243,7 @@
         <dependency>
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
-            <version>1.5.1-native-mt</version>
+            <version>1.5.2-native-mt</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>

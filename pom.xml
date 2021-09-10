@@ -5,10 +5,48 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.racci</groupId>
-    <artifactId>raccilib</artifactId>
-    <version>ALPHA</version>
+    <artifactId>RacciLib</artifactId>
+    <version>0.0.1-ALPHA</version>
+
     <name>RacciLib</name>
+    <url>https://github.com/DaRacci/RacciLib/</url>
     <description>Core lib written in Kotlin and using ASYNC where applicable</description>
+
+    <properties>
+        <!--               Java     -->
+        <java.version>16</java.version>
+        <!--               Kotlin        -->
+        <dokka.version>1.5.0</dokka.version>
+        <kotlin.version>1.5.30</kotlin.version>
+        <kotlinapi.version>1.5</kotlinapi.version>
+        <kotlincoroutines.version>1.5.2-native-mt</kotlincoroutines.version>
+        <!--               Spigot                         -->
+        <Spigot.version>1.17.1-R0.1-SNAPSHOT</Spigot.version>
+        <!--          Libraries and stuff         -->
+        <jetbrains.version>21.0.1</jetbrains.version>
+        <SmartInvs.version>v1.2.8</SmartInvs.version>
+        <TriumphGUI.version>3.0.3</TriumphGUI.version>
+        <CommandAPI.version>6.3.0</CommandAPI.version>
+        <AikarCommands.version>0.5.0-SNAPSHOT</AikarCommands.version>
+        <!--           Apache Commons stuff        -->
+        <CommonsText.version>1.9</CommonsText.version>
+        <CommonsLang.version>3.12.0</CommonsLang.version>
+        <CommonsCollections.version>4.4</CommonsCollections.version>
+        <!--            Build properties         -->
+        <kotlin.compiler.apiVersion>1.5</kotlin.compiler.apiVersion>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kotlin.compiler.languageVersion>1.5</kotlin.compiler.languageVersion>
+        <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
+        <project.finalNameBase>${project.name}</project.finalNameBase>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/DaRacci/RacciLib</url>
+        </repository>
+    </distributionManagement>
+
 
     <pluginRepositories>
         <pluginRepository>
@@ -25,98 +63,6 @@
             <url>https://dl.bintray.com/kotlin/kotlin-dev/</url>
         </pluginRepository>
     </pluginRepositories>
-
-    <build>
-        <sourceDirectory>src/main/kotlin</sourceDirectory>
-
-        <plugins>
-            <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${kotlin.version}</version>
-                <configuration>
-                    <nowarn>true</nowarn>
-                    <args>
-                        <arg>-Xcoroutines=enable</arg>
-                    </args>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.jetbrains.dokka</groupId>
-                <artifactId>dokka-maven-plugin</artifactId>
-                <version>${dokka.version}</version>
-                <executions>
-                    <execution>
-                        <phase>pre-site</phase>
-                        <goals>
-                            <goal>javadocJar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <displayName>Racci Lib</displayName>
-                    <outputDir>docs</outputDir>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.3.1-SNAPSHOT</version>
-                <configuration>
-                    <minimizeJar>true</minimizeJar>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-install-plugin</artifactId>
-                <version>3.0.0-M1</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>install</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-    </build>
 
     <repositories>
         <repository>
@@ -144,9 +90,7 @@
     </repositories>
 
     <dependencies>
-
-    <!--        Purpur/Spigot      -->
-
+        <!--        Purpur/Spigot      -->
         <dependency>
             <groupId>net.pl3x.purpur</groupId>
             <artifactId>purpur-api</artifactId>
@@ -154,12 +98,12 @@
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
-                    <artifactId>adventure-api</artifactId>
-                    <groupId>net.kyori</groupId>
-                </exclusion>
-                <exclusion>
                     <artifactId>annotations</artifactId>
                     <groupId>org.jetbrains</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>adventure-api</artifactId>
+                    <groupId>net.kyori</groupId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -169,12 +113,6 @@
             <version>${Spigot.version}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-           <groupId>io.papermc</groupId>
-           <artifactId>paperlib</artifactId>
-           <version>1.0.4</version>
-           <scope>compile</scope>
-       </dependency>
         <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>authlib</artifactId>
@@ -200,13 +138,13 @@
             </exclusions>
         </dependency>
 
-<!--            Kotlin Stuff        -->
+        <!--            Kotlin Stuff        -->
 
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
             <version>${kotlin.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <artifactId>annotations</artifactId>
@@ -218,34 +156,28 @@
             <groupId>org.jetbrains.kotlinx</groupId>
             <artifactId>kotlinx-coroutines-core</artifactId>
             <version>${kotlincoroutines.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>me.racci</groupId>
-            <artifactId>skedule</artifactId>
-            <version>1.3.3</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-reflect</artifactId>
-            <version>${kotlin.version}</version>
-            <scope>compile</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.jetbrains.kotlin</groupId>-->
+<!--            <artifactId>kotlin-reflect</artifactId>-->
+<!--            <version>${kotlin.version}</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
 
-    <!--        Apache Commons      -->
+        <!--        Apache Commons      -->
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${CommonsLang.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>${CommonsText.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <artifactId>commons-lang3</artifactId>
@@ -257,10 +189,10 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
             <version>${CommonsCollections.version}</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
 
-    <!--        Other stuff and libs        -->
+        <!--        Other stuff and libs        -->
 
         <dependency>
             <groupId>co.aikar</groupId>
@@ -294,39 +226,166 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
+        <plugins>
+            <!--Create compiled classes-->
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
 
-    <properties>
-        <java.version>16</java.version>
-        <jetbrains.version>21.0.1</jetbrains.version>
-        <!--               Kotlin           -->
-        <dokka.version>1.5.0</dokka.version>
-        <kotlin.version>1.5.30</kotlin.version>
-        <kotlinapi.version>1.5</kotlinapi.version>
-        <kotlincoroutines.version>1.5.2-native-mt</kotlincoroutines.version>
-        <!--                Spigot                 -->
-        <Spigot.version>1.17.1-R0.1-SNAPSHOT</Spigot.version>
-        <!--        Libraries and stuff          -->
-        <SmartInvs.version>v1.2.8</SmartInvs.version>
-        <TriumphGUI.version>3.0.3</TriumphGUI.version>
-        <CommandAPI.version>6.3.0</CommandAPI.version>
-        <AikarCommands.version>0.5.0-SNAPSHOT</AikarCommands.version>
-        <!--           Apache Commons stuff          -->
-        <CommonsText.version>1.9</CommonsText.version>
-        <CommonsLang.version>3.12.0</CommonsLang.version>
-        <CommonsCollections.version>4.4</CommonsCollections.version>
-        <!--            Build properties         -->
-        <sourceDirectory.location>src/main/java</sourceDirectory.location>
-        <outputDirectory.location>target/Server/plugins</outputDirectory.location>
+                <configuration>
+                    <javaParameters>true</javaParameters>
+                    <nowarn>true</nowarn>
+                    <args>
+                        <arg>-Xcoroutines=enable</arg>
+                    </args>
+                </configuration>
 
-        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <project.compileSourceRoots>src/main/kotlin</project.compileSourceRoots>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-        <kotlin.compiler.languageVersion>1.5</kotlin.compiler.languageVersion>
-        <kotlin.compiler.apiVersion>1.5</kotlin.compiler.apiVersion>
-        <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
+            <!--Create Sources Jar-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
 
-    </properties>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--Create Javadoc Jar-->
+            <plugin>
+                <groupId>org.jetbrains.dokka</groupId>
+                <artifactId>dokka-maven-plugin</artifactId>
+                <version>${dokka.version}</version>
+                <executions>
+                    <execution>
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>javadocJar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <displayName>Racci Lib</displayName>
+                    <outputDir>docs</outputDir>
+                </configuration>
+            </plugin>
+
+            <!--Create Final Shaded Jar-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.3.1-SNAPSHOT</version>
+                <configuration>
+                    <minimizeJar>false</minimizeJar>
+                    <relocations>
+                        <relocation>
+                            <pattern>co.aikar.commands</pattern>
+                            <shadedPattern>libraries.aikar.commands</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>co.aikar.locales</pattern>
+                            <shadedPattern>libraries.aikar.locales</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>dev.jorel.commandapi</pattern>
+                            <shadedPattern>libraries.jorel.commandapi</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>dev.triumphteam.gui</pattern>
+                            <shadedPattern>libraries.triumphteam.gui</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>fr.minuskube.inv</pattern>
+                            <shadedPattern>libraries.minuskube.inv</shadedPattern>
+                        </relocation>
+                    </relocations>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.txt</exclude>
+                                <exclude>META-INF/services/*</exclude>
+                                <exclude>META-INF/versions/*</exclude>
+                                <exclude>META-INF/proguard/*</exclude>
+                                <exclude>META-INF/com.android.tools/*</exclude>
+                            </excludes>
+                        </filter>
+                        <filter>
+                            <artifact>*:acf-paper</artifact>
+                            <excludes>
+                                <exclude>META-INF/*.MF</exclude>
+                                <exclude>*tr.properties</exclude>
+                                <exclude>*sv.properties</exclude>
+                                <exclude>*ru.properties</exclude>
+                                <exclude>*pt.properties</exclude>
+                                <exclude>*pl.properties</exclude>
+                                <exclude>*nn.properties</exclude>
+                                <exclude>*nl.properties</exclude>
+                                <exclude>*nb.properties</exclude>
+                                <exclude>*ja.properties</exclude>
+                                <exclude>*hu.properties</exclude>
+                                <exclude>*fr.properties</exclude>
+                                <exclude>*es.properties</exclude>
+                                <exclude>*de.properties</exclude>
+                                <exclude>*cs.properties</exclude>
+                                <exclude>*bg.properties</exclude>
+                                <exclude>*CN.properties</exclude>
+                                <exclude>*TW.properties</exclude>
+                                <exclude>*zh.properties</exclude>
+                            </excludes>
+                        </filter>
+                    </filters>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--Install to local repo-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>install</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
 
 </project>

@@ -201,12 +201,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>dev.jorel.CommandAPI</groupId>
-            <artifactId>commandapi-shade</artifactId>
-            <version>${CommandAPI.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.Archy-X</groupId>
             <artifactId>SmartInvs</artifactId>
             <version>${SmartInvs.version}</version>
@@ -304,10 +298,6 @@
                         <relocation>
                             <pattern>co.aikar.locales</pattern>
                             <shadedPattern>libraries.aikar.locales</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>dev.jorel.commandapi</pattern>
-                            <shadedPattern>libraries.jorel.commandapi</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>dev.triumphteam.gui</pattern>

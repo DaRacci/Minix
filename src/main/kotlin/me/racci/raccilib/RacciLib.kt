@@ -2,7 +2,6 @@
 @file:JvmName("RacciLib")
 package me.racci.raccilib
 
-import me.racci.raccilib.events.PlayerMoveXYZEvent
 import me.racci.raccilib.listeners.PlayerMoveFullXYZListener
 import me.racci.raccilib.listeners.PlayerMoveListener
 import me.racci.raccilib.listeners.PlayerTeleportListener

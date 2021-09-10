@@ -3,7 +3,6 @@
 package me.racci.raccilib.utils.items.builders
 
 import me.racci.raccilib.utils.items.ItemNBT
-import me.racci.raccilib.utils.strings.Legacy
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.enchantments.Enchantment
@@ -13,8 +12,6 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataContainer
 import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.Nullable
-
-import java.util.ArrayList
 import java.util.function.Consumer
 import java.util.stream.Collectors
 
@@ -47,7 +44,8 @@ abstract class BaseItemBuilder<B : BaseItemBuilder<B>> protected constructor(ite
 
     @Contract("_ -> this")
     open fun lore(lore: List<Component>): B {
-        meta.lore(lore.stream().map<Any>(Legacy.SERIALIZER::serialize).collect(Collectors.toList()) as MutableList<Component>?)
+        // meta.lore(lore.stream().map(Legacy.SERIALIZER::serialize).collect(Collectors.toList()))
+        meta.lore(lore.stream().collect(Collectors.toList()))
         return this as B
     }
 

@@ -2,11 +2,11 @@
 @file:JvmName("PlayerMoveListener")
 package me.racci.raccilib.listeners
 
-import com.okkero.skedule.SynchronizationContext
-import com.okkero.skedule.schedule
 import me.racci.raccilib.RacciLib
 import me.racci.raccilib.events.PlayerMoveFullXYZEvent
 import me.racci.raccilib.events.PlayerMoveXYZEvent
+import me.racci.raccilib.skedule.SynchronizationContext
+import me.racci.raccilib.skedule.schedule
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority

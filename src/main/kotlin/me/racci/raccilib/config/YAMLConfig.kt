@@ -2,14 +2,10 @@
 @file:JvmName("YAMLConfig")
 package me.racci.raccilib.config
 
-import com.okkero.skedule.SynchronizationContext
-import com.okkero.skedule.schedule
 import me.racci.raccilib.Level
 import me.racci.raccilib.log
-import org.bukkit.Bukkit
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.configuration.file.YamlConfiguration
-import org.bukkit.entity.Entity
 import org.bukkit.plugin.Plugin
 import java.io.File
 import java.io.IOException

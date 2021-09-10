@@ -2,12 +2,12 @@
 @file:JvmName("PlayerMoveFullXYZListener")
 package me.racci.raccilib.listeners
 
-import com.okkero.skedule.SynchronizationContext
-import com.okkero.skedule.schedule
 import me.racci.raccilib.RacciLib
 import me.racci.raccilib.events.PlayerEnterLiquidEvent
 import me.racci.raccilib.events.PlayerExitLiquidEvent
 import me.racci.raccilib.events.PlayerMoveFullXYZEvent
+import me.racci.raccilib.skedule.SynchronizationContext
+import me.racci.raccilib.skedule.schedule
 import me.racci.raccilib.utils.blocks.isLiquid
 import org.bukkit.Bukkit
 import org.bukkit.block.Block

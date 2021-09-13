@@ -7,6 +7,7 @@ import me.racci.raccilib.events.PlayerMoveFullXYZEvent
 import me.racci.raccilib.events.PlayerMoveXYZEvent
 import me.racci.raccilib.skedule.SynchronizationContext
 import me.racci.raccilib.skedule.schedule
+import me.racci.raccilib.skedule.skeduleAsync
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -24,9 +25,7 @@ class PlayerMoveListener(
     fun onPlayerMove(event: PlayerMoveEvent) {
         if (event.isCancelled) return
 
-
-
-        scheduler.schedule(plugin, SynchronizationContext.ASYNC) {
+        skeduleAsync(plugin) {
 
             // PlayerMoveFullXYZEvent
             var playerMoveFullXYZEvent: PlayerMoveFullXYZEvent? = null
@@ -43,14 +42,12 @@ class PlayerMoveListener(
                 playerMoveXYZEvent.isCancelled = event.isCancelled
             }
             // Call the new events
-            switchContext(SynchronizationContext.SYNC)
             for (newEvent in listOf(playerMoveXYZEvent, playerMoveFullXYZEvent)) {
                 if (newEvent != null) {
                     Bukkit.getPluginManager().callEvent(newEvent)
                 }
             }
             // Check for cancelling events
-            switchContext(SynchronizationContext.ASYNC)
             var isCancelled = event.isCancelled
             if (playerMoveFullXYZEvent != null && playerMoveFullXYZEvent.isCancelled) {
                 isCancelled = true

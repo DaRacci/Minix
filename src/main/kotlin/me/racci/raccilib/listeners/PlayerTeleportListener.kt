@@ -41,7 +41,6 @@ class PlayerTeleportListener(
                 playerMoveXYZEvent.isCancelled = event.isCancelled
             }
             // Call the new events
-            switchContext(SynchronizationContext.SYNC)
             for (newEvent in listOf(playerMoveXYZEvent, playerMoveFullXYZEvent)) {
                 if (newEvent != null) {
                     Bukkit.getPluginManager().callEvent(newEvent)

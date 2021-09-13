@@ -6,7 +6,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-abstract class KotlinEvent: Event(), Cancellable {
+abstract class KotlinEvent(async: Boolean): Event(async), Cancellable {
 
     override fun getHandlers(): HandlerList {
         return handlerList

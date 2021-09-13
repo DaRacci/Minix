@@ -17,6 +17,10 @@ private val hexPattern: Pattern = Pattern.compile("(#[A-Fa-f0-9]{6})")
 fun colour(string: String?, parseHex: Boolean = true): String? {
     return internalColour(string, parseHex)
 }
+fun colour(list: List<String>?, parseHex: Boolean = true): List<String>? {
+    list?.forEach {string -> internalColour(string, parseHex)}
+    return list
+}
 
 private fun replaceHex(string: String?): String? {
     var str = string

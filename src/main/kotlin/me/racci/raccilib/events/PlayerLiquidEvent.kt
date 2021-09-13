@@ -10,7 +10,7 @@ import org.bukkit.event.HandlerList
 
 class PlayerEnterLiquidEvent(
     val player: Player, val liquidType: Int, val from: Block, val to: Block
-) : KotlinEvent() {
+) : KotlinEvent(true) {
 
     private var isCancelled = false
 
@@ -24,7 +24,7 @@ class PlayerEnterLiquidEvent(
 
 class PlayerExitLiquidEvent(
     val player: Player, val liquidType: Int, val from: Block, val to: Block
-) : KotlinEvent() {
+) : KotlinEvent(true) {
 
     private var isCancelled = false
 

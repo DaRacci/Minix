@@ -10,7 +10,7 @@ import org.bukkit.event.HandlerList
 
 class PlayerMoveXYZEvent(
     val player: Player, val from: Location, var to: Location
-) : KotlinEvent() {
+) : KotlinEvent(true) {
 
     private var isCancelled = false
     override fun isCancelled(): Boolean {
@@ -24,7 +24,7 @@ class PlayerMoveXYZEvent(
 
 class PlayerMoveFullXYZEvent(
     val player: Player, val from: Location, var to: Location
-) : KotlinEvent() {
+) : KotlinEvent(true) {
 
     private var isCancelled = false
 

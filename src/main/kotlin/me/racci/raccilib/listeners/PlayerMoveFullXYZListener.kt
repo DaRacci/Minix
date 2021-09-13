@@ -42,7 +42,6 @@ class PlayerMoveFullXYZListener(
                     else -> null
                 }
             }
-            switchContext(SynchronizationContext.SYNC)
             if (newEvent != null) {
                 Bukkit.getPluginManager().callEvent(newEvent)
             }

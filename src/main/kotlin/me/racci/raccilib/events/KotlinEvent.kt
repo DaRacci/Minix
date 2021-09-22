@@ -1,25 +1,29 @@
-@file:Suppress("unused")
 @file:JvmName("KotlinEvent")
 package me.racci.raccilib.events
 
-import org.bukkit.event.Cancellable
-import org.bukkit.event.Event
-import org.bukkit.event.HandlerList
+abstract class KotlinEvent(async: Boolean = false): org.bukkit.event.Event(async), org.bukkit.event.Cancellable {
 
-abstract class KotlinEvent(async: Boolean): Event(async), Cancellable {
+    private var cancelled = false
 
-    override fun getHandlers(): HandlerList {
+    override fun setCancelled(cancel: Boolean) {
+        this.cancelled = true
+    }
+
+    override fun isCancelled(): Boolean {
+        return cancelled
+    }
+
+    override fun getHandlers(): org.bukkit.event.HandlerList {
         return handlerList
     }
 
     companion object {
-        private val handlerList = HandlerList()
+        private val handlerList = org.bukkit.event.HandlerList()
 
         @JvmStatic
-        fun getHandlerList(): HandlerList {
+        fun getHandlerList(): org.bukkit.event.HandlerList {
             return handlerList
         }
     }
-
 
 }

@@ -1,4 +1,3 @@
-@file:Suppress("unused")
 @file:JvmName("RacciLib")
 package me.racci.raccilib
 
@@ -6,14 +5,23 @@ import me.racci.raccilib.listeners.PlayerMoveFullXYZListener
 import me.racci.raccilib.listeners.PlayerMoveListener
 import me.racci.raccilib.listeners.PlayerTeleportListener
 import org.bukkit.plugin.PluginManager
-import org.bukkit.plugin.java.JavaPlugin
 
-class RacciLib : JavaPlugin() {
+class RacciLib : RacciPlugin(
+    "&8",
+    "RacciLib",
+    null,
+    null
+) {
+
+    companion object {
+        var instance: RacciLib? = null
+            private set
+    }
 
     override fun onEnable() {
+        instance = this
         registerListeners()
         registerCommands()
-
     }
 
     override fun onDisable() {

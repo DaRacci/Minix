@@ -8,6 +8,7 @@ import me.racci.raccilib.events.PlayerExitLiquidEvent
 import me.racci.raccilib.events.PlayerMoveFullXYZEvent
 import me.racci.raccilib.skedule.SynchronizationContext
 import me.racci.raccilib.skedule.schedule
+import me.racci.raccilib.skedule.skeduleAsync
 import me.racci.raccilib.utils.blocks.isLiquid
 import org.bukkit.Bukkit
 import org.bukkit.block.Block
@@ -21,11 +22,9 @@ class PlayerMoveFullXYZListener(
     private val plugin: RacciLib,
 ): Listener {
 
-    private val scheduler: BukkitScheduler = Bukkit.getScheduler()
-
     @EventHandler(priority = EventPriority.NORMAL)
     fun onPlayerMoveFullXYZEvent(event: PlayerMoveFullXYZEvent) {
-        scheduler.schedule(plugin, SynchronizationContext.ASYNC) {
+        skeduleAsync(plugin) {
             val from: Block = event.from.block
             val to: Block = event.to.block
             val var1: Int = isLiquid(from)

@@ -1,10 +1,11 @@
-@file:JvmName("RacciLib")
 package me.racci.raccilib
 
-import me.racci.raccilib.listeners.PlayerMoveFullXYZListener
-import me.racci.raccilib.listeners.PlayerMoveListener
-import me.racci.raccilib.listeners.PlayerTeleportListener
+import me.racci.raccilib.data.PlayerManager
+import me.racci.raccilib.listeners.*
 import org.bukkit.plugin.PluginManager
+
+lateinit var racciCore : RacciLib ; private set
+lateinit var playerManager : PlayerManager ; private set
 
 class RacciLib : RacciPlugin(
     "&8",
@@ -19,7 +20,9 @@ class RacciLib : RacciPlugin(
     }
 
     override fun onEnable() {
+        racciCore = this
         instance = this
+        playerManager = PlayerManager()
         registerListeners()
         registerCommands()
     }
@@ -45,6 +48,8 @@ class RacciLib : RacciPlugin(
         pm.registerEvents(PlayerMoveListener(this), this)
         pm.registerEvents(PlayerTeleportListener(this), this)
         pm.registerEvents(PlayerMoveFullXYZListener(this), this)
+        pm.registerEvents(PlayerComboListeners(), this)
+        pm.registerEvents(PlayerJoinLeaveListener(), this)
     }
 
 }

@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("ColourUtils")
 package me.racci.raccilib.utils.strings
 
 import net.md_5.bungee.api.ChatColor
@@ -17,6 +15,14 @@ private val hexPattern: Pattern = Pattern.compile("(#[A-Fa-f0-9]{6})")
 fun colour(string: String?, parseHex: Boolean = true): String? {
     return internalColour(string, parseHex)
 }
+
+/**
+ * Colour
+ *
+ * @param list
+ * @param parseHex
+ * @return
+ */
 fun colour(list: List<String>?, parseHex: Boolean = true): List<String>? {
     list?.forEach {string -> internalColour(string, parseHex)}
     return list

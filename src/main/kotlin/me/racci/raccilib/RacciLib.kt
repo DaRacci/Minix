@@ -4,9 +4,21 @@ import me.racci.raccilib.data.PlayerManager
 import me.racci.raccilib.listeners.*
 import org.bukkit.plugin.PluginManager
 
+/**
+ * Racci core
+ */
 lateinit var racciCore : RacciLib ; private set
+
+/**
+ * Player manager
+ */
 lateinit var playerManager : PlayerManager ; private set
 
+/**
+ * Racci lib
+ *
+ * @constructor Create empty Racci lib
+ */
 class RacciLib : RacciPlugin(
     "&8",
     "RacciLib",
@@ -19,6 +31,10 @@ class RacciLib : RacciPlugin(
             private set
     }
 
+    /**
+     * On enable
+     *
+     */
     override fun onEnable() {
         racciCore = this
         instance = this
@@ -27,14 +43,26 @@ class RacciLib : RacciPlugin(
         registerCommands()
     }
 
+    /**
+     * On disable
+     *
+     */
     override fun onDisable() {
         // Plugin shutdown logic
     }
 
+    /**
+     * Handle reload
+     *
+     */
     fun handleReload() {
         // Plugin reload logic
     }
 
+    /**
+     * Handler after load
+     *
+     */
     fun handlerAfterLoad() {
         // Plugin after load logic
     }

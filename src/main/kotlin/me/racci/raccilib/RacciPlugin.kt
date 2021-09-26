@@ -1,4 +1,3 @@
-@file:JvmName("RacciPlugin")
 package me.racci.raccilib
 
 import me.racci.raccilib.utils.strings.colour

@@ -9,8 +9,10 @@ $dokka.location:me.racci.raccilib.utils.items.builders/MapBuilder.Companion///Po
 $dokka.location:me.racci.raccilib.utils.items.builders/SkullBuilder.Companion///PointingToDeclaration/me/racci/raccilib/utils/items/builders/SkullBuilder.Companion.html
 $dokka.location:me.racci.raccilib.utils.items/Pdc.Companion///PointingToDeclaration/me/racci/raccilib/utils/items/Pdc.Companion.html
 $dokka.location:me.racci.raccilib.utils.strings/Legacy.Companion///PointingToDeclaration/me/racci/raccilib/utils/strings/Legacy.Companion.html
+$dokka.location:me.racci.raccilib/RacciLib.Companion///PointingToDeclaration/me/racci/raccilib/RacciLib.Companion.html
 me.racci.raccilib
 me.racci.raccilib.config
+me.racci.raccilib.data
 me.racci.raccilib.events
 me.racci.raccilib.listeners
 me.racci.raccilib.skedule

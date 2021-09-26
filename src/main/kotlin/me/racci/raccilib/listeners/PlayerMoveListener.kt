@@ -1,9 +1,6 @@
-@file:Suppress("unused")
-@file:JvmName("PlayerMoveListener")
 package me.racci.raccilib.listeners
 
 import me.racci.raccilib.RacciLib
-import me.racci.raccilib.RacciPlugin
 import me.racci.raccilib.events.PlayerMoveFullXYZEvent
 import me.racci.raccilib.events.PlayerMoveXYZEvent
 import me.racci.raccilib.skedule.skeduleAsync
@@ -14,6 +11,12 @@ import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 
+/**
+ * Player move listener
+ *
+ * @property plugin
+ * @constructor Create empty Player move listener
+ */
 class PlayerMoveListener(private val plugin: RacciLib): Listener {
 
     private infix fun Location.equalsBlock(other: Location) =
@@ -21,6 +24,11 @@ class PlayerMoveListener(private val plugin: RacciLib): Listener {
     private infix fun Location.equalsExact(other: Location) =
         this.x == other.x && this.y == other.y && this.z == other.z
 
+    /**
+     * On player move
+     *
+     * @param event
+     */
     @EventHandler(priority = EventPriority.HIGH)
     fun onPlayerMove(event: PlayerMoveEvent) {
         if (event.isCancelled) return

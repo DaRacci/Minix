@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("ItemBuilder")
 package me.racci.raccilib.utils.items.builders
 
 import org.bukkit.Material

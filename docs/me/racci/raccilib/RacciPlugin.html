@@ -132,10 +132,10 @@ var pathtoroot = "../../../";
                     <hr>
                     <pre class="wrap-overflow">
 
-public abstract class <span class="typeNameLabel"><a href=RacciPlugin.html>RacciPlugin</a></span>
+public class <span class="typeNameLabel"><a href=RacciPlugin.html>RacciPlugin</a></span>
 extends JavaPlugin
                     </pre>
-                    <div class="block"></div>
+                    <div class="block"><p>Create the new plugin. All values of the constructor are nullable</p></div>
                 </li>
             </ul>
         </div>
@@ -143,6 +143,27 @@ extends JavaPlugin
             <ul class="blockList">
                 <li class="blockList">
                 <!-- ======== NESTED CLASS SUMMARY ======== -->
+                    
+                    <section role="region">
+                        <ul class="blockList">
+                            <li class="blockList"><a id="nested.class.summary">
+                                <!--   -->
+                            </a>
+                                <h3>Nested Class Summary</h3>
+                                <div class="memberSummary">
+                                    <table>
+                                        <caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
+                                        <tr>
+                                            <th class="colFirst" scope="col">Modifier and Type</th>
+                                            <th class="colSecond" scope="col">Class</th>
+                                            <th class="colLast" scope="col">Description</th>
+                                        </tr>
+                                        
+                                    </table>
+                                </div>
+                            </li>
+                        </ul>
+                    </section>
                     
                     <!-- =========== FIELD SUMMARY =========== -->
                     
@@ -162,7 +183,61 @@ extends JavaPlugin
                                         </tr>
                                         
                                         <tr class="altColor">
-                                            <td class="colFirst"><code>private final <a href=https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html>Logger</a></code></td>
+                                            <td class="colFirst"><code>private  String</code></td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#colour>colour</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="rowColor">
+                                            <td class="colFirst"><code>private  String</code></td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#prefix>prefix</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="altColor">
+                                            <td class="colFirst"><code>private  Integer</code></td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#spigotId>spigotId</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="rowColor">
+                                            <td class="colFirst"><code>private  Integer</code></td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#bStatsId>bStatsId</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="altColor">
+                                            <td class="colFirst"><code>private  HashSet&lt;String&gt;</code></td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#loadedHooks>loadedHooks</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="rowColor">
+                                            <td class="colFirst"><code>private  Lang</code></td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#lang>lang</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="altColor">
+                                            <td class="colFirst"><code>private  ObjectInputFilter.Config</code></td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#config>config</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="rowColor">
+                                            <td class="colFirst"><code>private  Void</code></td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#Logger>Logger</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="altColor">
+                                            <td class="colFirst"><code>private  Boolean</code></td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#outDated>outDated</a></code></th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr class="rowColor">
+                                            <td class="colFirst"><code>private final Logger</code></td>
                                             <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#logger>logger</a></code></th>
                                             <td class="colLast"></td>
                                         </tr>
@@ -193,7 +268,7 @@ extends JavaPlugin
                                         
                                             <tr class="altColor">
                                                 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a
-                                                        href="#RacciPlugin()">RacciPlugin</a></span>()</code></th>
+                                                        href="#RacciPlugin(String,String,Integer,Integer)">RacciPlugin</a></span>(String colour, String prefix, Integer spigotId, Integer bStatsId)</code></th>
                                                 <td class="colLast"></td>
                                             </tr>
                                         
@@ -206,6 +281,24 @@ extends JavaPlugin
                     </section>
                     
                     <!-- =========== ENUM CONSTANT SUMMARY =========== -->
+                    
+                    <section role="region">
+                        <ul class="blockList">
+                            <li class="blockList"><a id="enum.constant.summary">
+                                <!--   -->
+                            </a>
+                                <h3>Enum Constant Summary</h3>
+                                <table class="memberSummary">
+                                    <caption><span>Enum Constants</span><span class="tabEnd">&nbsp;</span></caption>
+                                    <tr>
+                                        <th class="colFirst" scope="col">Enum Constant</th>
+                                        <th class="colLast" scope="col">Description</th>
+                                    </tr>
+                                    
+                                </table>
+                            </li>
+                        </ul>
+                    </section>
                     
                     <!-- ========== METHOD SUMMARY =========== -->
                     
@@ -226,6 +319,150 @@ extends JavaPlugin
                                             <th class="colFirst" scope="col">Modifier and Type</th>
                                             <th class="colSecond" scope="col">Method</th>
                                             <th class="colLast" scope="col">Description</th>
+                                        </tr>
+                                        
+                                        <tr id="i0" class="altColor">
+                                            <td class="colFirst"><code>final String</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#getColour()>getColour</a>() </code>
+                                            </th>
+                                            <td class="colLast">The colour for console messages</td>
+                                        </tr>
+                                        
+                                        <tr id="i1" class="rowColor">
+                                            <td class="colFirst"><code>final Unit</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#setColour(String)>setColour</a>(String colour) </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i2" class="altColor">
+                                            <td class="colFirst"><code>final String</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#getPrefix()>getPrefix</a>() </code>
+                                            </th>
+                                            <td class="colLast">The prefix for console messages</td>
+                                        </tr>
+                                        
+                                        <tr id="i3" class="rowColor">
+                                            <td class="colFirst"><code>final Unit</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#setPrefix(String)>setPrefix</a>(String prefix) </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i4" class="altColor">
+                                            <td class="colFirst"><code>final Integer</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#getSpigotId()>getSpigotId</a>() </code>
+                                            </th>
+                                            <td class="colLast">The spigot resource ID</td>
+                                        </tr>
+                                        
+                                        <tr id="i5" class="rowColor">
+                                            <td class="colFirst"><code>final Unit</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#setSpigotId(Integer)>setSpigotId</a>(Integer spigotId) </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i6" class="altColor">
+                                            <td class="colFirst"><code>final Integer</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#getBStatsId()>getBStatsId</a>() </code>
+                                            </th>
+                                            <td class="colLast">The bStats resource ID</td>
+                                        </tr>
+                                        
+                                        <tr id="i7" class="rowColor">
+                                            <td class="colFirst"><code>final Unit</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#setBStatsId(Integer)>setBStatsId</a>(Integer bStatsId) </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i8" class="altColor">
+                                            <td class="colFirst"><code>final HashSet&lt;String&gt;</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#getLoadedHooks()>getLoadedHooks</a>() </code>
+                                            </th>
+                                            <td class="colLast">Loaded external hooks</td>
+                                        </tr>
+                                        
+                                        <tr id="i9" class="rowColor">
+                                            <td class="colFirst"><code>final Unit</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#setLoadedHooks(HashSet)>setLoadedHooks</a>(HashSet&lt;String&gt; loadedHooks) </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i10" class="altColor">
+                                            <td class="colFirst"><code>final Lang</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#getLang()>getLang</a>() </code>
+                                            </th>
+                                            <td class="colLast">The Lang resource</td>
+                                        </tr>
+                                        
+                                        <tr id="i11" class="rowColor">
+                                            <td class="colFirst"><code>final Unit</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#setLang(Lang)>setLang</a>(Lang lang) </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i12" class="altColor">
+                                            <td class="colFirst"><code>final ObjectInputFilter.Config</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#getConfig()>getConfig</a>() </code>
+                                            </th>
+                                            <td class="colLast">The Config resource</td>
+                                        </tr>
+                                        
+                                        <tr id="i13" class="rowColor">
+                                            <td class="colFirst"><code>final Unit</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#setConfig(ObjectInputFilter.Config)>setConfig</a>(ObjectInputFilter.Config config) </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i14" class="altColor">
+                                            <td class="colFirst"><code>final Void</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#getLogger()>getLogger</a>() </code>
+                                            </th>
+                                            <td class="colLast">The console Logger</td>
+                                        </tr>
+                                        
+                                        <tr id="i15" class="rowColor">
+                                            <td class="colFirst"><code>final Unit</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#setLogger(Void)>setLogger</a>(Void Logger) </code>
+                                            </th>
+                                            <td class="colLast"></td>
+                                        </tr>
+                                        
+                                        <tr id="i16" class="altColor">
+                                            <td class="colFirst"><code>final Boolean</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#getOutDated()>getOutDated</a>() </code>
+                                            </th>
+                                            <td class="colLast">If the plugin has an update available</td>
+                                        </tr>
+                                        
+                                        <tr id="i17" class="rowColor">
+                                            <td class="colFirst"><code>final Unit</code>
+                                            </td>
+                                            <th class="colSecond" scope="row"><code><a href=RacciPlugin.html#setOutDated(Boolean)>setOutDated</a>(Boolean outDated) </code>
+                                            </th>
+                                            <td class="colLast"></td>
                                         </tr>
                                         
                                         </tbody>
@@ -277,12 +514,33 @@ extends JavaPlugin
                             </a>
                                 <h3>Constructor Detail</h3>
                                 
-                                <a name="RacciPlugin()"></a>
+                                <a name="RacciPlugin(String,String,Integer,Integer)"></a>
                                 <ul class="blockList">
                                     <li class="blockList">
                                         <h4>RacciPlugin</h4>
-                                        <pre>RacciPlugin()</pre>
+                                        <pre>RacciPlugin(String colour, String prefix, Integer spigotId, Integer bStatsId)</pre>
                                         <div class="block"></div>
+                                        
+                                        <dl>
+                                            <dt><span class="paramLabel">Parameters:</span></dt>
+                                            
+                                            
+                                            <dd><code>colour</code> - The colour for console messages</dd>
+                                            
+                                            
+                                            
+                                            <dd><code>prefix</code> - The prefix for console messages</dd>
+                                            
+                                            
+                                            
+                                            <dd><code>spigotId</code> - The spigot ID for the plugin</dd>
+                                            
+                                            
+                                            
+                                            <dd><code>bStatsId</code> - The bStats ID for the plugin</dd>
+                                            
+                                            
+                                        </dl>
                                         
                                     </li>
                                 </ul>
@@ -292,6 +550,287 @@ extends JavaPlugin
                     </section>
                     
                     <!-- ============ METHOD DETAIL ========== -->
+                    
+                    <section role="region">
+                        <ul class="blockList">
+                            <li class="blockList"><a id="method.detail">
+                                <!--   -->
+                            </a>
+                                <h3>Method Detail</h3>
+                                
+                                <a id="getColour()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getColour</h4>
+                                        <pre class="methodSignature"> final String <a href=RacciPlugin.html#getColour()>getColour</a>()</pre>
+                                        <div class="block"><p>The colour for console messages</p></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="setColour(String)">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>setColour</h4>
+                                        <pre class="methodSignature"> final Unit <a href=RacciPlugin.html#setColour(String)>setColour</a>(String colour)</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getPrefix()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getPrefix</h4>
+                                        <pre class="methodSignature"> final String <a href=RacciPlugin.html#getPrefix()>getPrefix</a>()</pre>
+                                        <div class="block"><p>The prefix for console messages</p></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="setPrefix(String)">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>setPrefix</h4>
+                                        <pre class="methodSignature"> final Unit <a href=RacciPlugin.html#setPrefix(String)>setPrefix</a>(String prefix)</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getSpigotId()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getSpigotId</h4>
+                                        <pre class="methodSignature"> final Integer <a href=RacciPlugin.html#getSpigotId()>getSpigotId</a>()</pre>
+                                        <div class="block"><p>The spigot resource ID</p></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="setSpigotId(Integer)">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>setSpigotId</h4>
+                                        <pre class="methodSignature"> final Unit <a href=RacciPlugin.html#setSpigotId(Integer)>setSpigotId</a>(Integer spigotId)</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getBStatsId()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getBStatsId</h4>
+                                        <pre class="methodSignature"> final Integer <a href=RacciPlugin.html#getBStatsId()>getBStatsId</a>()</pre>
+                                        <div class="block"><p>The bStats resource ID</p></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="setBStatsId(Integer)">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>setBStatsId</h4>
+                                        <pre class="methodSignature"> final Unit <a href=RacciPlugin.html#setBStatsId(Integer)>setBStatsId</a>(Integer bStatsId)</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getLoadedHooks()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getLoadedHooks</h4>
+                                        <pre class="methodSignature"> final HashSet&lt;String&gt; <a href=RacciPlugin.html#getLoadedHooks()>getLoadedHooks</a>()</pre>
+                                        <div class="block"><p>Loaded external hooks</p></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="setLoadedHooks(HashSet)">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>setLoadedHooks</h4>
+                                        <pre class="methodSignature"> final Unit <a href=RacciPlugin.html#setLoadedHooks(HashSet)>setLoadedHooks</a>(HashSet&lt;String&gt; loadedHooks)</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getLang()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getLang</h4>
+                                        <pre class="methodSignature"> final Lang <a href=RacciPlugin.html#getLang()>getLang</a>()</pre>
+                                        <div class="block"><p>The Lang resource</p></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="setLang(Lang)">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>setLang</h4>
+                                        <pre class="methodSignature"> final Unit <a href=RacciPlugin.html#setLang(Lang)>setLang</a>(Lang lang)</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getConfig()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getConfig</h4>
+                                        <pre class="methodSignature"> final ObjectInputFilter.Config <a href=RacciPlugin.html#getConfig()>getConfig</a>()</pre>
+                                        <div class="block"><p>The Config resource</p></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="setConfig(ObjectInputFilter.Config)">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>setConfig</h4>
+                                        <pre class="methodSignature"> final Unit <a href=RacciPlugin.html#setConfig(ObjectInputFilter.Config)>setConfig</a>(ObjectInputFilter.Config config)</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getLogger()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getLogger</h4>
+                                        <pre class="methodSignature"> final Void <a href=RacciPlugin.html#getLogger()>getLogger</a>()</pre>
+                                        <div class="block"><p>The console Logger</p></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="setLogger(Void)">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>setLogger</h4>
+                                        <pre class="methodSignature"> final Unit <a href=RacciPlugin.html#setLogger(Void)>setLogger</a>(Void Logger)</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="getOutDated()">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockList"
+                                          >
+                                    <li class="blockList">
+                                        <h4>getOutDated</h4>
+                                        <pre class="methodSignature"> final Boolean <a href=RacciPlugin.html#getOutDated()>getOutDated</a>()</pre>
+                                        <div class="block"><p>If the plugin has an update available</p></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                                <a id="setOutDated(Boolean)">
+                                    <!--   -->
+                                </a>
+                                <ul class=
+                                              "blockListLast"
+                                          >
+                                    <li class="blockList">
+                                        <h4>setOutDated</h4>
+                                        <pre class="methodSignature"> final Unit <a href=RacciPlugin.html#setOutDated(Boolean)>setOutDated</a>(Boolean outDated)</pre>
+                                        <div class="block"></div>
+                                        
+                                        <!-- TODO missing return annotation -->
+                                    </li>
+                                </ul>
+                                
+                            </li>
+                        </ul>
+                    </section>
                     
                 </li>
             </ul>

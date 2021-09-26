@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("BannerBuilder")
 package me.racci.raccilib.utils.items.builders
 
 import org.bukkit.DyeColor

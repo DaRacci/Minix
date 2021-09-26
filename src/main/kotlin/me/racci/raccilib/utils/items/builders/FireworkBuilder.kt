@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("FireworkBuilder")
 package me.racci.raccilib.utils.items.builders
 
 

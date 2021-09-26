@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("PlayerTeleportListener")
 package me.racci.raccilib.listeners
 
 import me.racci.raccilib.RacciLib
@@ -14,12 +12,23 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.scheduler.BukkitScheduler
 
+/**
+ * Player teleport listener
+ *
+ * @property plugin
+ * @constructor Create empty Player teleport listener
+ */
 class PlayerTeleportListener(
     private val plugin: RacciLib
 ) : Listener {
 
     private val scheduler: BukkitScheduler = Bukkit.getScheduler()
 
+    /**
+     * On player teleport
+     *
+     * @param event
+     */
     @EventHandler(priority = EventPriority.HIGH)
     fun onPlayerTeleport(event: PlayerTeleportEvent) {
         if(event.isCancelled) return

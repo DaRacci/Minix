@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("SkullBuilder")
 package me.racci.raccilib.utils.items.builders
 
 import com.mojang.authlib.GameProfile
@@ -9,7 +7,7 @@ import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
 import java.lang.reflect.Field
-import java.util.UUID
+import java.util.*
 
 /**
  * New builder for skull only, created to separate the specific features for skulls

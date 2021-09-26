@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("TextUtils")
 package me.racci.raccilib.utils.strings
 
 import java.util.regex.Pattern
@@ -7,6 +5,14 @@ import java.util.regex.Pattern
 private const val regex = "\\{(\\S+)}"
 private val pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
 
+/**
+ * Replace
+ *
+ * @param var1
+ * @param os
+ * @param ns
+ * @return
+ */
 fun replace(var1: String, os: String, ns: String): String {
     var source = var1
     var i = 0
@@ -31,6 +37,24 @@ fun replace(var1: String, os: String, ns: String): String {
     return source
 }
 
+/**
+ * Replace
+ *
+ * @param source
+ * @param os1
+ * @param ns1
+ * @param os2
+ * @param ns2
+ * @param os3
+ * @param ns3
+ * @param os4
+ * @param ns4
+ * @param os5
+ * @param ns5
+ * @param os6
+ * @param ns6
+ * @return
+ */
 fun replace(
     source: String,
     os1: String,

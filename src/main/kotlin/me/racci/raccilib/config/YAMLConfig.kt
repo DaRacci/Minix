@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("YAMLConfig")
 package me.racci.raccilib.config
 
 import me.racci.raccilib.Level

@@ -1,13 +1,9 @@
-@file:Suppress("unused")
-@file:JvmName("PlayerMoveFullXYZListener")
 package me.racci.raccilib.listeners
 
 import me.racci.raccilib.RacciLib
 import me.racci.raccilib.events.PlayerEnterLiquidEvent
 import me.racci.raccilib.events.PlayerExitLiquidEvent
 import me.racci.raccilib.events.PlayerMoveFullXYZEvent
-import me.racci.raccilib.skedule.SynchronizationContext
-import me.racci.raccilib.skedule.schedule
 import me.racci.raccilib.skedule.skeduleAsync
 import me.racci.raccilib.utils.blocks.isLiquid
 import org.bukkit.Bukkit
@@ -16,12 +12,22 @@ import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.scheduler.BukkitScheduler
 
+/**
+ * Player move full x y z listener
+ *
+ * @property plugin
+ * @constructor Create empty Player move full x y z listener
+ */
 class PlayerMoveFullXYZListener(
     private val plugin: RacciLib,
 ): Listener {
 
+    /**
+     * On player move full x y z event
+     *
+     * @param event
+     */
     @EventHandler(priority = EventPriority.NORMAL)
     fun onPlayerMoveFullXYZEvent(event: PlayerMoveFullXYZEvent) {
         skeduleAsync(plugin) {

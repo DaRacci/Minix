@@ -1,12 +1,14 @@
-@file:Suppress("unused")
-@file:JvmName("Logger")
 package me.racci.raccilib
 
 import me.racci.raccilib.utils.strings.colour
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import java.io.IOException
 
+/**
+ * Log
+ *
+ * @param level
+ * @param message
+ */
 fun log(level: Level, message: String) {
     when(level) {
         Level.ERROR -> Bukkit.getConsoleSender().sendMessage(colour("&4[&c&lERROR&4] &f$message", true)!!)
@@ -18,4 +20,50 @@ fun log(level: Level, message: String) {
     }
 }
 
-enum class Level { ERROR, WARNING, INFO, DEBUG, SUCCESS, OUTLINE }
+/**
+ * Level
+ *
+ * @constructor Create empty Level
+ */
+enum class Level {
+    /**
+     * E r r o r
+     *
+     * @constructor Create empty E r r o r
+     */
+    ERROR,
+
+    /**
+     * W a r n i n g
+     *
+     * @constructor Create empty W a r n i n g
+     */
+    WARNING,
+
+    /**
+     * I n f o
+     *
+     * @constructor Create empty I n f o
+     */
+    INFO,
+
+    /**
+     * D e b u g
+     *
+     * @constructor Create empty D e b u g
+     */
+    DEBUG,
+
+    /**
+     * S u c c e s s
+     *
+     * @constructor Create empty S u c c e s s
+     */
+    SUCCESS,
+
+    /**
+     * O u t l i n e
+     *
+     * @constructor Create empty O u t l i n e
+     */
+    OUTLINE }

@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("BukkitSchedulerController")
 package me.racci.raccilib.skedule
 
 import org.bukkit.plugin.Plugin

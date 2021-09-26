@@ -1,11 +1,14 @@
-@file:Suppress("unused")
-@file:JvmName("LegacyUtils")
 package me.racci.raccilib.utils.strings
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 
 
+/**
+ * Legacy
+ *
+ * @constructor Create empty Legacy
+ */
 class Legacy private constructor() {
     companion object {
 

@@ -1,8 +1,6 @@
-@file:Suppress("unused")
-@file:JvmName("NumberUtils")
 package me.racci.raccilib.utils
 
-import java.util.TreeMap
+import java.util.*
 
 object NumberUtils {
 

@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("Extensions")
 package me.racci.raccilib.skedule
 
 suspend inline fun <T> BukkitSchedulerController.runWithContext(context: SynchronizationContext, block: BukkitSchedulerController.() -> T): T {

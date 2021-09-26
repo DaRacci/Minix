@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("NBT")
 package me.racci.raccilib.utils.items
 
 import org.bukkit.NamespacedKey

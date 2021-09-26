@@ -11,9 +11,19 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
+ /**
+  * Player combo listeners
+  *
+  * @constructor Create empty Player combo listeners
+  */
  class PlayerComboListeners : Listener {
 
-    @EventHandler
+     /**
+      * On interact
+      *
+      * @param event
+      */
+     @EventHandler
     fun onInteract(event: PlayerInteractEvent) {
         if (event.action == Action.PHYSICAL) return
 
@@ -44,7 +54,12 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
         }
     }
 
-    @EventHandler
+     /**
+      * On offhand
+      *
+      * @param event
+      */
+     @EventHandler
     fun onOffhand(event: PlayerSwapHandItemsEvent) {
         val playerData = playerManager.getPlayerData(event.player.uniqueId)
         val last = playerData.lastOffhand

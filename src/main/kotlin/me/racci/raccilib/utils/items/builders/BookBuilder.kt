@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("BookBuilder")
 package me.racci.raccilib.utils.items.builders
 
 import net.kyori.adventure.text.Component

@@ -7,12 +7,12 @@
     <parent>
         <artifactId>Racci-Parent</artifactId>
         <groupId>me.racci</groupId>
-        <version>0.0.1</version>
+        <version>0.0.2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>RacciCore</artifactId>
-    <version>0.0.1</version>
+    <version>${project.parent.version}</version>
     <name>RacciCore</name>
 
     <dependencies>
@@ -68,5 +68,12 @@
         </resources>
         <sourceDirectory>src/main/kotlin</sourceDirectory>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/DaRacci/RacciLib</url>
+        </repository>
+    </distributionManagement>
 
 </project>

@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-@file:JvmName("WorldUtils")
 package me.racci.raccilib.utils.worlds
 
 import org.bukkit.Location

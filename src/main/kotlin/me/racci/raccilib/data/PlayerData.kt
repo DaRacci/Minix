@@ -1,4 +1,3 @@
-@file:JvmName("PlayerData")
 package me.racci.raccilib.data
 
 data class PlayerData(

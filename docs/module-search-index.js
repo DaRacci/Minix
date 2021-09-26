@@ -1,1 +1,1 @@
-var moduleSearchIndex = [{"l":"RacciLib","url":"index.html"}]
+var moduleSearchIndex = [{"l":"RacciCore","url":"index.html"}]

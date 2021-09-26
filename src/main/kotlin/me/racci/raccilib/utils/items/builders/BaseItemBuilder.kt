@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST", "unused")
-@file:JvmName("BaseItemBuilder")
 package me.racci.raccilib.utils.items.builders
 
 import me.racci.raccilib.utils.items.ItemNBT

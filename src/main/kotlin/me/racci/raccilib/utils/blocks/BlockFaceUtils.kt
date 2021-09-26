@@ -1,11 +1,9 @@
-@file:Suppress("unused")
-@file:JvmName("BlockFaceUtils")
 package me.racci.raccilib.utils.blocks
 
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
-import org.bukkit.block.data.Directional
 import org.bukkit.block.BlockFace.*
+import org.bukkit.block.data.Directional
 
 /**
  * Returns the opposite BlockFace for a given BlockFace. E.g. EAST_NORTH_EAST will return WEST_SOUTH_WEST. SELF will return SELF.

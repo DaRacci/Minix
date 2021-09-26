@@ -1,5 +1,5 @@
 name: RacciLib
-version: '${project.version}'
+version: '${version}'
 main: me.racci.raccilib.RacciLib
 api-version: 1.17
 load: STARTUP

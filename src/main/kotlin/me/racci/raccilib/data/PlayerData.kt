@@ -1,12 +1,14 @@
 @file:JvmName("PlayerData")
 package me.racci.raccilib.data
 
-import net.kyori.adventure.text.Component
-import java.util.*
+data class PlayerData(
+    val player: org.bukkit.entity.Player
+    ) {
 
-abstract class PlayerData(
-    val uuid: UUID,
-    val userName: String,
-    val displayName: Component,
+    var lastOffhand: Long = 0
+    var lastShift: Long = 0
+    var lastLeftClick: Long = 0
+    var lastRightClick: Long = 0
+    var lastJump: Long = 0
 
-    )
+}

@@ -1,1 +1,1 @@
-sourceset_dependencies='{"raccilib/JVM":[]}'
+sourceset_dependencies='{":RacciCore:dokkaHtml/main":[]}'

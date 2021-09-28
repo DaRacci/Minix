@@ -3,6 +3,8 @@ package me.racci.raccicore
 import me.racci.raccicore.utils.strings.colour
 import java.io.ObjectInputFilter
 
+
+
 /**
  * Create the new plugin.
  * All values of the constructor are nullable
@@ -12,10 +14,10 @@ import java.io.ObjectInputFilter
  * @param spigotId      The spigot ID for the plugin
  * @param bStatsId      The bStats ID for the plugin
  */
-open class RacciPlugin(colour: String? = "",
+abstract class RacciPlugin(colour: String? = "",
                        prefix: String? = "",
                        spigotId: Int?,
-                       bStatsId: Int?): org.bukkit.plugin.java.JavaPlugin() {
+                       bStatsId: Int?) : org.bukkit.plugin.java.JavaPlugin() {
 
     /**
      * The colour for console messages

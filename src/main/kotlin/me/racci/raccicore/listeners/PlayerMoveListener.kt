@@ -1,6 +1,6 @@
 package me.racci.raccicore.listeners
 
-import me.racci.raccicore.RacciLib
+import me.racci.raccicore.RacciCore
 import me.racci.raccicore.events.PlayerMoveFullXYZEvent
 import me.racci.raccicore.events.PlayerMoveXYZEvent
 import me.racci.raccicore.skedule.skeduleAsync
@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerMoveEvent
  * @property plugin
  * @constructor Create empty Player move listener
  */
-class PlayerMoveListener(private val plugin: RacciLib): Listener {
+class PlayerMoveListener(private val plugin: RacciCore): Listener {
 
     private infix fun Location.equalsBlock(other: Location) =
         this.blockX == other.blockX && this.blockY == other.blockY && this.blockZ == other.blockZ

@@ -1,6 +1,6 @@
 package me.racci.raccicore.listeners
 
-import me.racci.raccicore.RacciLib
+import me.racci.raccicore.RacciCore
 import me.racci.raccicore.events.PlayerMoveFullXYZEvent
 import me.racci.raccicore.events.PlayerMoveXYZEvent
 import me.racci.raccicore.skedule.SynchronizationContext
@@ -19,7 +19,7 @@ import org.bukkit.scheduler.BukkitScheduler
  * @constructor Create empty Player teleport listener
  */
 class PlayerTeleportListener(
-    private val plugin: RacciLib
+    private val plugin: RacciCore
 ) : Listener {
 
     private val scheduler: BukkitScheduler = Bukkit.getScheduler()

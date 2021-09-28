@@ -1,6 +1,6 @@
 package me.racci.raccicore.listeners
 
-import me.racci.raccicore.RacciLib
+import me.racci.raccicore.RacciCore
 import me.racci.raccicore.events.PlayerEnterLiquidEvent
 import me.racci.raccicore.events.PlayerExitLiquidEvent
 import me.racci.raccicore.events.PlayerMoveFullXYZEvent
@@ -20,7 +20,7 @@ import org.bukkit.event.Listener
  * @constructor Create empty Player move full x y z listener
  */
 class PlayerMoveFullXYZListener(
-    private val plugin: RacciLib,
+    private val plugin: RacciCore,
 ): Listener {
 
     /**

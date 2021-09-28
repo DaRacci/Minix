@@ -7,7 +7,7 @@ import org.bukkit.plugin.PluginManager
 /**
  * Racci core
  */
-lateinit var racciCore : RacciLib ; private set
+lateinit var racciCore : RacciCore ; private set
 
 /**
  * Player manager
@@ -19,15 +19,15 @@ lateinit var playerManager : PlayerManager ; private set
  *
  * @constructor Create empty Racci lib
  */
-class RacciLib : RacciPlugin(
+class RacciCore : RacciPlugin(
     "&8",
-    "RacciLib",
+    "RacciCore",
     null,
     null
 ) {
 
     companion object {
-        var instance: RacciLib? = null
+        var instance: RacciCore? = null
             private set
     }
 

@@ -1,12 +1,12 @@
-name: RacciLib
+name: RacciCore
 version: '${version}'
-main: me.racci.raccilib.RacciLib
+main: me.racci.raccicore.RacciCore
 api-version: 1.17
 load: STARTUP
 loadbefore: [ Sylphia ]
 authors: [ Racci ]
 description: Core lib for my plugins
-website: https://github.com/DaRacci/RacciLib/
+website: https://github.com/DaRacci/RacciCore/
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30
   - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt

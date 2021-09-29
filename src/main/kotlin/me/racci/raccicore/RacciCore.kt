@@ -2,12 +2,13 @@ package me.racci.raccicore
 
 import me.racci.raccicore.data.PlayerManager
 import me.racci.raccicore.listeners.*
+import me.racci.raccicore.runnables.TimeRunnable
 import org.bukkit.plugin.PluginManager
 
 /**
  * Racci core
  */
-lateinit var racciCore : RacciCore ; private set
+internal lateinit var racciCore : RacciCore ; private set
 
 /**
  * Player manager
@@ -26,18 +27,12 @@ class RacciCore : RacciPlugin(
     null
 ) {
 
-    companion object {
-        var instance: RacciCore? = null
-            private set
-    }
-
     /**
      * On enable
      *
      */
     override fun onEnable() {
         racciCore = this
-        instance = this
         playerManager = PlayerManager()
         registerListeners()
         registerCommands()
@@ -78,6 +73,11 @@ class RacciCore : RacciPlugin(
         pm.registerEvents(PlayerMoveFullXYZListener(this), this)
         pm.registerEvents(PlayerComboListeners(), this)
         pm.registerEvents(PlayerJoinLeaveListener(), this)
+    }
+
+    private fun registerRunnables() {
+        val pm: PluginManager = server.pluginManager
+        TimeRunnable(pm).runTaskTimerAsynchronously(this, 0L, 20)
     }
 
 }

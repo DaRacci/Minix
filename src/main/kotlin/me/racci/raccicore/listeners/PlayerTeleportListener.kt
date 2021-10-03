@@ -3,8 +3,10 @@ package me.racci.raccicore.listeners
 import me.racci.raccicore.RacciCore
 import me.racci.raccicore.events.PlayerMoveFullXYZEvent
 import me.racci.raccicore.events.PlayerMoveXYZEvent
+import me.racci.raccicore.racciCore
 import me.racci.raccicore.skedule.SynchronizationContext
 import me.racci.raccicore.skedule.schedule
+import me.racci.raccicore.skedule.skeduleAsync
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -18,11 +20,7 @@ import org.bukkit.scheduler.BukkitScheduler
  * @property plugin
  * @constructor Create empty Player teleport listener
  */
-class PlayerTeleportListener(
-    private val plugin: RacciCore
-) : Listener {
-
-    private val scheduler: BukkitScheduler = Bukkit.getScheduler()
+class PlayerTeleportListener : KotlinListener {
 
     /**
      * On player teleport
@@ -33,7 +31,7 @@ class PlayerTeleportListener(
     fun onPlayerTeleport(event: PlayerTeleportEvent) {
         if(event.isCancelled) return
 
-        scheduler.schedule(plugin, SynchronizationContext.ASYNC) {
+        skeduleAsync(racciCore) {
 
             // PlayerMoveFullXYZEvent
             var playerMoveFullXYZEvent: PlayerMoveFullXYZEvent? = null
@@ -56,7 +54,6 @@ class PlayerTeleportListener(
                 }
             }
             // Check for cancelling events
-            switchContext(SynchronizationContext.ASYNC)
             var isCancelled = event.isCancelled
             if (playerMoveFullXYZEvent != null && playerMoveFullXYZEvent.isCancelled) {
                 isCancelled = true

@@ -1,9 +1,10 @@
 package me.racci.raccicore
 
+import co.aikar.commands.BaseCommand
 import me.racci.raccicore.data.PlayerManager
 import me.racci.raccicore.listeners.*
 import me.racci.raccicore.runnables.TimeRunnable
-import org.bukkit.plugin.PluginManager
+import org.bukkit.scheduler.BukkitTask
 
 /**
  * Racci core
@@ -13,7 +14,7 @@ internal lateinit var racciCore : RacciCore ; private set
 /**
  * Player manager
  */
-lateinit var playerManager : PlayerManager ; private set
+internal lateinit var playerManager : PlayerManager ; private set
 
 /**
  * Racci lib
@@ -22,62 +23,33 @@ lateinit var playerManager : PlayerManager ; private set
  */
 class RacciCore : RacciPlugin(
     "&8",
-    "RacciCore",
-    null,
-    null
+    "RacciCore"
 ) {
 
-    /**
-     * On enable
-     *
-     */
     override fun onEnable() {
         racciCore = this
         playerManager = PlayerManager()
-        registerListeners()
-        registerCommands()
     }
 
-    /**
-     * On disable
-     *
-     */
     override fun onDisable() {
-        // Plugin shutdown logic
+        playerManager.playerDataMap.clear()
     }
 
-    /**
-     * Handle reload
-     *
-     */
-    fun handleReload() {
-        // Plugin reload logic
+    override fun registerListeners(): List<KotlinListener> {
+        return listOf(
+            PlayerMoveListener(),
+            PlayerTeleportListener(),
+            PlayerMoveFullXYZListener(),
+            PlayerComboListener(),
+            PlayerJoinLeaveListener(),
+            TimeRunnable(),
+        )
     }
 
-    /**
-     * Handler after load
-     *
-     */
-    fun handlerAfterLoad() {
-        // Plugin after load logic
-    }
+    override fun registerRunnables(): List<BukkitTask> {
+        return listOf(
+            TimeRunnable().runTaskTimerAsynchronously(this, 0L, 20)
+        )
 
-    private fun registerCommands() {
-        // Plugin command logic
     }
-
-    private fun registerListeners() {
-        val pm: PluginManager = server.pluginManager
-        pm.registerEvents(PlayerMoveListener(this), this)
-        pm.registerEvents(PlayerTeleportListener(this), this)
-        pm.registerEvents(PlayerMoveFullXYZListener(this), this)
-        pm.registerEvents(PlayerComboListeners(), this)
-        pm.registerEvents(PlayerJoinLeaveListener(), this)
-    }
-
-    private fun registerRunnables() {
-        val pm: PluginManager = server.pluginManager
-        TimeRunnable(pm).runTaskTimerAsynchronously(this, 0L, 20)
-    }
-
 }

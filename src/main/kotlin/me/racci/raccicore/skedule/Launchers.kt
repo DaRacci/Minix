@@ -1,11 +1,11 @@
 package me.racci.raccicore.skedule
 
-import org.bukkit.plugin.Plugin
+import me.racci.raccicore.RacciPlugin
 import org.bukkit.scheduler.BukkitScheduler
 import kotlin.coroutines.createCoroutine
 import kotlin.coroutines.resume
 
-fun Plugin.schedule(
+fun RacciPlugin.schedule(
     initialContext: SynchronizationContext = SynchronizationContext.SYNC,
     co: suspend BukkitSchedulerController.() -> Unit
 ): CoroutineTask {
@@ -23,7 +23,7 @@ fun Plugin.schedule(
  * @see SynchronizationContext
  */
 fun BukkitScheduler.schedule(
-    plugin: Plugin,
+    plugin: RacciPlugin,
     initialContext: SynchronizationContext = SynchronizationContext.SYNC,
     co: suspend BukkitSchedulerController.() -> Unit
 ): CoroutineTask {
@@ -58,7 +58,7 @@ fun BukkitScheduler.schedule(
  * }
  * ```
  */
-fun skeduleSync(plugin: Plugin, block: suspend BukkitSchedulerController.() -> Unit): CoroutineTask {
+fun skeduleSync(plugin: RacciPlugin, block: suspend BukkitSchedulerController.() -> Unit): CoroutineTask {
     return bukkitScheduler.schedule(plugin, SynchronizationContext.SYNC, block)
 }
 
@@ -78,6 +78,6 @@ fun skeduleSync(plugin: Plugin, block: suspend BukkitSchedulerController.() -> U
  * }
  * ```
  */
-fun skeduleAsync(plugin: Plugin, block: suspend BukkitSchedulerController.() -> Unit): CoroutineTask {
+fun skeduleAsync(plugin: RacciPlugin, block: suspend BukkitSchedulerController.() -> Unit): CoroutineTask {
     return bukkitScheduler.schedule(plugin, SynchronizationContext.ASYNC, block)
 }

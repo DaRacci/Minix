@@ -6,7 +6,6 @@ import me.racci.raccicore.racciCore
 import me.racci.raccicore.skedule.skeduleAsync
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
@@ -16,7 +15,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
   *
   * @constructor Create empty Player combo listeners
   */
- class PlayerComboListeners : Listener {
+ class PlayerComboListener : KotlinListener {
 
      /**
       * On interact

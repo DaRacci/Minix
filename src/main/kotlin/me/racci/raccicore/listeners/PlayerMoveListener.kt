@@ -1,14 +1,13 @@
 package me.racci.raccicore.listeners
 
-import me.racci.raccicore.RacciCore
 import me.racci.raccicore.events.PlayerMoveFullXYZEvent
 import me.racci.raccicore.events.PlayerMoveXYZEvent
+import me.racci.raccicore.racciCore
 import me.racci.raccicore.skedule.skeduleAsync
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
-import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 
 /**
@@ -17,7 +16,7 @@ import org.bukkit.event.player.PlayerMoveEvent
  * @property plugin
  * @constructor Create empty Player move listener
  */
-class PlayerMoveListener(private val plugin: RacciCore): Listener {
+class PlayerMoveListener : KotlinListener {
 
     private infix fun Location.equalsBlock(other: Location) =
         this.blockX == other.blockX && this.blockY == other.blockY && this.blockZ == other.blockZ
@@ -33,7 +32,7 @@ class PlayerMoveListener(private val plugin: RacciCore): Listener {
     fun onPlayerMove(event: PlayerMoveEvent) {
         if (event.isCancelled) return
 
-        skeduleAsync(plugin) {
+        skeduleAsync(racciCore) {
             var playerMoveFullXYZEvent: PlayerMoveFullXYZEvent? = null
             var playerMoveXYZEvent: PlayerMoveXYZEvent? = null
             var isCancelled = event.isCancelled

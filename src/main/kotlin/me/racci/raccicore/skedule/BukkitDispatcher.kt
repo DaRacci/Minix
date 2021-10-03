@@ -1,8 +1,8 @@
 package me.racci.raccicore.skedule
 
 import kotlinx.coroutines.*
+import me.racci.raccicore.RacciPlugin
 import org.bukkit.Bukkit
-import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitTask
 import kotlin.coroutines.CoroutineContext
 
@@ -11,16 +11,16 @@ internal val bukkitScheduler
 
 
 @OptIn(InternalCoroutinesApi::class)
-class BukkitDispatcher(val plugin: Plugin, val async: Boolean = false) : CoroutineDispatcher(), Delay {
+class BukkitDispatcher(val plugin: RacciPlugin, val async: Boolean = false) : CoroutineDispatcher(), Delay {
 
-    private val runTaskLater: (Plugin, Runnable, Long) -> BukkitTask
+    private val runTaskLater: (RacciPlugin, Runnable, Long) -> BukkitTask
         get() = if (async) {
             bukkitScheduler::runTaskLaterAsynchronously
         } else {
             bukkitScheduler::runTaskLater
         }
 
-    private val runTask: (Plugin, Runnable) -> BukkitTask
+    private val runTask: (RacciPlugin, Runnable) -> BukkitTask
         get() = if (async) {
             bukkitScheduler::runTaskAsynchronously
         } else {
@@ -53,4 +53,4 @@ class BukkitDispatcher(val plugin: Plugin, val async: Boolean = false) : Corouti
 
 }
 
-fun Plugin.dispatcher(async: Boolean = false) = BukkitDispatcher(this, async)
+fun RacciPlugin.dispatcher(async: Boolean = false) = BukkitDispatcher(this, async)

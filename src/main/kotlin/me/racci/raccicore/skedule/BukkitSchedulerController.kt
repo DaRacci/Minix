@@ -1,6 +1,6 @@
 package me.racci.raccicore.skedule
 
-import org.bukkit.plugin.Plugin
+import me.racci.raccicore.RacciPlugin
 import org.bukkit.scheduler.BukkitScheduler
 import org.bukkit.scheduler.BukkitTask
 import kotlin.coroutines.*
@@ -14,7 +14,7 @@ import kotlin.coroutines.*
  * @property currentTask the task that is currently executing within the context of this coroutine
  * @property isRepeating whether this coroutine is currently backed by a repeating task
  */
-class BukkitSchedulerController(val plugin: Plugin, val scheduler: BukkitScheduler) : Continuation<Unit> {
+class BukkitSchedulerController(val plugin: RacciPlugin, val scheduler: BukkitScheduler) : Continuation<Unit> {
     override val context: CoroutineContext
         get() = EmptyCoroutineContext
 

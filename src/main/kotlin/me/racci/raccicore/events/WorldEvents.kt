@@ -1,7 +1,7 @@
 package me.racci.raccicore.events
 
-import org.bukkit.entity.Player
+import org.bukkit.World
 
-class NightEvent : KotlinEvent(true) { }
+class NightEvent(val world: World) : KotlinEvent(true) { }
 
-class DayEvent : KotlinEvent(true) { }
+class DayEvent(val world: World) : KotlinEvent(true) { }

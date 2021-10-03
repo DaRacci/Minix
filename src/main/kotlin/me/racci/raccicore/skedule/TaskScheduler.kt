@@ -1,7 +1,7 @@
 package me.racci.raccicore.skedule
 
+import me.racci.raccicore.RacciPlugin
 import org.bukkit.Bukkit
-import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitScheduler
 import org.bukkit.scheduler.BukkitTask
 
@@ -19,7 +19,7 @@ interface TaskScheduler {
 
 }
 
-internal class NonRepeatingTaskScheduler(val plugin: Plugin, val scheduler: BukkitScheduler) : TaskScheduler {
+internal class NonRepeatingTaskScheduler(val plugin: RacciPlugin, val scheduler: BukkitScheduler) : TaskScheduler {
 
     override var currentTask: BukkitTask? = null
 
@@ -79,7 +79,7 @@ private class RepetitionContinuation(val resume: (Long) -> Unit, val delay: Long
 
 internal class RepeatingTaskScheduler(
     val interval: Long,
-    val plugin: Plugin,
+    val plugin: RacciPlugin,
     val scheduler: BukkitScheduler
 ) : TaskScheduler {
 

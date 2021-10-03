@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerQuitEvent
  *
  * @constructor Create empty Player join leave listener
  */
-class PlayerJoinLeaveListener : Listener {
+class PlayerJoinLeaveListener : KotlinListener {
 
     /**
      * On join

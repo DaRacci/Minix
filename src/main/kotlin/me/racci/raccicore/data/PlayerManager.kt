@@ -4,7 +4,7 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentMap
 
-class PlayerManager {
+internal class PlayerManager {
 
     private val playerData: ConcurrentHashMap<UUID, PlayerData> = ConcurrentHashMap()
 

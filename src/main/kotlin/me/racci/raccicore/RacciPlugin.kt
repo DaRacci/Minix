@@ -37,7 +37,6 @@ abstract class RacciPlugin(colour: String = "",
     protected var loadedHooks = HashSet<String>() ; private set
 //    protected var lang: Lang? = null ; private set
 //    protected lateinit var config: Config ; private set
-//    protected var logger: Log; private set
     protected var outDated = false ; private set
 
     init {
@@ -76,8 +75,8 @@ abstract class RacciPlugin(colour: String = "",
 
         this.commandManager = PaperCommandManager(this)
 
-        this.logger.info("")
-        this.logger.info("Loading ${this.colour} ${this.name}")
+        info("")
+        info("Loading ${this.colour} ${this.name}")
 
         if(this.spigotId != 0) {UpdateChecker(this, this.spigotId)}
         if(this.bStatsId != 0) {}//Register

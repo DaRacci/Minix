@@ -3,7 +3,7 @@ version: '${version}'
 main: me.racci.raccicore.RacciCore
 api-version: 1.17
 load: STARTUP
-loadbefore: [ Sylphia ]
+loadbefore: [ Sylphia, Sylph, BloodNight, HollowsEve ]
 authors: [ Racci ]
 description: Core lib for my plugins
 website: https://github.com/DaRacci/RacciCore/

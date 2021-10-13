@@ -38,7 +38,7 @@ class UpdateChecker(plugin: RacciPlugin, id: Int) : PluginDependent<RacciPlugin>
         }
     }
 
-    private fun KPlugin.update(
+    private fun RacciPlugin.update(
         id: Int,
         color: ChatColor = ChatColor.LIGHT_PURPLE,
         permission: String = "raccicore.update"

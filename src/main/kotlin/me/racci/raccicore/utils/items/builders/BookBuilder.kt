@@ -13,6 +13,9 @@ import java.util.*
  * @since 3.0.1
  */
 class BookBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<BookBuilder>(itemStack) {
+
+    private val bMeta get() = meta as BookMeta
+
     /**
      * Sets the author of the book. Removes author when given null.
      *
@@ -21,13 +24,7 @@ class BookBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<B
      * @since 3.0.1
      */
     fun author(author: Component?): BookBuilder {
-        val bookMeta = getMeta() as BookMeta
-        if (author == null) {
-            bookMeta.author = null
-            setMeta(bookMeta)
-            return this
-        }
-        setMeta(bookMeta.author(author))
+        bMeta.author(author)
         return this
     }
 
@@ -39,9 +36,7 @@ class BookBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<B
      * @since 3.0.1
      */
     fun generation(generation: BookMeta.Generation?): BookBuilder {
-        val bookMeta = getMeta() as BookMeta
-        bookMeta.generation = generation
-        setMeta(bookMeta)
+        bMeta.generation = generation
         return this
     }
 
@@ -66,9 +61,7 @@ class BookBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<B
      * @since 3.0.1
      */
     private fun page(pages: List<Component>): BookBuilder {
-        val bookMeta = getMeta() as BookMeta
-        bookMeta.addPages(*pages.toTypedArray())
-        setMeta(bookMeta)
+        bMeta.addPages(*pages.toTypedArray())
         return this
     }
 
@@ -89,9 +82,7 @@ class BookBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<B
      * @since 3.0.1
      */
     fun page(page: Int, data: Component): BookBuilder {
-        val bookMeta = getMeta() as BookMeta
-        bookMeta.page(page, data)
-        setMeta(bookMeta)
+        bMeta.page(page, data)
         return this
     }
 
@@ -106,13 +97,7 @@ class BookBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<B
      * @since 3.0.1
      */
     fun title(title: Component?): BookBuilder {
-        val bookMeta = getMeta() as BookMeta
-        if (title == null) {
-            bookMeta.title = null
-            setMeta(bookMeta)
-            return this
-        }
-        setMeta(bookMeta.title(title))
+        bMeta.title(title)
         return this
     }
 

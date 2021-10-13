@@ -3,6 +3,7 @@ package me.racci.raccicore.utils.items.builders
 import me.racci.raccicore.utils.items.ItemNBT
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -16,8 +17,8 @@ import java.util.stream.Collectors
 
 abstract class BaseItemBuilder<B : BaseItemBuilder<B>> protected constructor(itemStack: ItemStack) {
 
-    private var itemStack: ItemStack
-    private var meta: ItemMeta
+    var itemStack: ItemStack
+    var meta: ItemMeta
 
     init {
         this.itemStack = itemStack
@@ -58,19 +59,9 @@ abstract class BaseItemBuilder<B : BaseItemBuilder<B>> protected constructor(ite
     }
 
     @Contract("_, _, _ -> this")
-    open fun enchant(enchantment: Enchantment, level: Int, ignoreLevelRestriction: Boolean): B {
-        meta.addEnchant(enchantment, level, ignoreLevelRestriction)
+    open fun enchant(enchantment: Enchantment, level: Int = 1): B {
+        meta.addEnchant(enchantment, level, true)
         return this as B
-    }
-
-    @Contract("_, _ -> this")
-    open fun enchant(enchantment: Enchantment, level: Int): B {
-        return enchant(enchantment, level, true)
-    }
-
-    @Contract("_ -> this")
-    open fun enchant(enchantment: Enchantment): B {
-        return enchant(enchantment, 1, true)
     }
 
     @Contract("_ -> this")
@@ -96,39 +87,33 @@ abstract class BaseItemBuilder<B : BaseItemBuilder<B>> protected constructor(ite
         return this as B
     }
 
-    @Contract(" -> this")
-    open fun glow(): B {
-        return glow(true)
-    }
-
     @Contract("_ -> this")
-    open fun glow(glow: Boolean): B {
+    open fun glow(glow: Boolean = true): B {
         if (glow) {
             meta.addEnchant(Enchantment.LURE, 1, false)
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
             return this as B
         }
-        for (enchantment in meta.enchants.keys) {
-            meta.removeEnchant(enchantment!!)
-        }
+        meta.enchants.keys.forEach(meta::removeEnchant)
         return this as B
     }
 
     @Contract("_ -> this")
-    open fun pdc(consumer: Consumer<PersistentDataContainer?>): B {
+    open fun pdc(consumer: Consumer<PersistentDataContainer>): B {
         consumer.accept(meta.persistentDataContainer)
         return this as B
     }
 
     @Contract("_ -> this")
     open fun model(modelData: Int): B {
+        meta.setCustomModelData(modelData)
         return this as B
     }
 
     @Contract("_, _ -> this")
-    open fun setNbt(key: String, @Nullable value: String?): B {
+    open fun setNbt(key: String, value: String): B {
         itemStack.itemMeta = meta
-        itemStack = ItemNBT.setString(itemStack, key, value!!)!!
+        itemStack = ItemNBT.setString(itemStack, key, value)!!
         meta = itemStack.itemMeta
         return this as B
     }
@@ -149,24 +134,8 @@ abstract class BaseItemBuilder<B : BaseItemBuilder<B>> protected constructor(ite
         return this as B
     }
 
-    open fun build(): ItemStack? {
+    open fun build(): ItemStack {
         itemStack.itemMeta = meta
         return itemStack
-    }
-
-    protected open fun getItemStack(): ItemStack {
-        return itemStack
-    }
-
-    protected open fun setItemStack(itemStack: ItemStack) {
-        this.itemStack = itemStack
-    }
-
-    protected open fun getMeta(): ItemMeta {
-        return meta
-    }
-
-    protected open fun setMeta(meta: ItemMeta) {
-        this.meta = meta
     }
 }

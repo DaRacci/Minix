@@ -14,6 +14,10 @@ import org.bukkit.inventory.meta.FireworkMeta
  * @since 3.0.1
  */
 class FireworkBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<FireworkBuilder>(itemStack) {
+
+    private val feMeta get() = meta as FireworkEffectMeta
+    private val fMeta get() = meta as FireworkMeta
+
     /**
      * Add several firework effects to this firework.
      *
@@ -23,7 +27,7 @@ class FireworkBuilder internal constructor(itemStack: ItemStack) : BaseItemBuild
      * @throws IllegalArgumentException If any effect is null (maybe thrown after changes have occurred)
      * @since 3.0.1
      */
-    fun effect(vararg effects: FireworkEffect?): FireworkBuilder {
+    fun effect(vararg effects: FireworkEffect): FireworkBuilder {
         return effect(listOf(*effects))
     }
 
@@ -36,19 +40,15 @@ class FireworkBuilder internal constructor(itemStack: ItemStack) : BaseItemBuild
      * @throws IllegalArgumentException If any effect is null (maybe thrown after changes have occurred)
      * @since 3.0.1
      */
-    private fun effect(effects: List<FireworkEffect?>): FireworkBuilder {
+    private fun effect(effects: List<FireworkEffect>): FireworkBuilder {
         if (effects.isEmpty()) {
             return this
         }
-        if (getItemStack().type == STAR) {
-            val effectMeta = getMeta() as FireworkEffectMeta
-            effectMeta.effect = effects[0]
-            setMeta(effectMeta)
+        if (itemStack.type == STAR) {
+            feMeta.effect = effects[0]
             return this
         }
-        val fireworkMeta = getMeta() as FireworkMeta
-        fireworkMeta.addEffects(effects)
-        setMeta(fireworkMeta)
+        fMeta.addEffects(effects)
         return this
     }
 
@@ -62,10 +62,8 @@ class FireworkBuilder internal constructor(itemStack: ItemStack) : BaseItemBuild
      * @since 3.0.1
      */
     fun power(power: Int): FireworkBuilder {
-        if (getItemStack().type == ROCKET) {
-            val fireworkMeta = getMeta() as FireworkMeta
-            fireworkMeta.power = power
-            setMeta(fireworkMeta)
+        if (itemStack.type == ROCKET) {
+            fMeta.power = power
         }
         return this
     }

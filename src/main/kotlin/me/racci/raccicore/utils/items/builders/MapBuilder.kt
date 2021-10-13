@@ -13,12 +13,15 @@ import org.bukkit.map.MapView
  * @since 3.0.1
  */
 class MapBuilder : BaseItemBuilder<MapBuilder> {
+
     internal constructor() : super(ItemStack(MAP))
     internal constructor(itemStack: ItemStack) : super(itemStack) {
         if (itemStack.type != MAP) {
             throw UnsupportedOperationException("BookBuilder requires the material to be a MAP!")
         }
     }
+
+    private val mMeta get() = meta as MapMeta
 
     /**
      * Sets the map color. A custom map color will alter the display of the map
@@ -29,9 +32,7 @@ class MapBuilder : BaseItemBuilder<MapBuilder> {
      * @since 3.0.1
      */
     fun color(color: Color?): MapBuilder {
-        val mapMeta = getMeta() as MapMeta
-        mapMeta.color = color
-        setMeta(mapMeta)
+        mMeta.color = color
         return this
     }
 
@@ -44,9 +45,7 @@ class MapBuilder : BaseItemBuilder<MapBuilder> {
      * @since 3.0.1
      */
     fun locationName(name: String?): MapBuilder {
-        val mapMeta = getMeta() as MapMeta
-        mapMeta.locationName = name
-        setMeta(mapMeta)
+        mMeta.locationName = name
         return this
     }
 
@@ -58,9 +57,7 @@ class MapBuilder : BaseItemBuilder<MapBuilder> {
      * @since 3.0.1
      */
     fun scaling(scaling: Boolean): MapBuilder {
-        val mapMeta = getMeta() as MapMeta
-        mapMeta.isScaling = scaling
-        setMeta(mapMeta)
+        mMeta.isScaling = scaling
         return this
     }
 
@@ -78,9 +75,7 @@ class MapBuilder : BaseItemBuilder<MapBuilder> {
      * @since 3.0.1
      */
     fun view(view: MapView): MapBuilder {
-        val mapMeta = getMeta() as MapMeta
-        mapMeta.setMapView(view)
-        setMeta(mapMeta)
+        mMeta.mapView = view
         return this
     }
 

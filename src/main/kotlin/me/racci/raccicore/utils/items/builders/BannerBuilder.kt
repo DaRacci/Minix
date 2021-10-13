@@ -32,9 +32,9 @@ class BannerBuilder : BaseItemBuilder<BannerBuilder> {
      * @since 3.0.1
      */
     fun baseColor(color: DyeColor): BannerBuilder {
-        val bannerData = getMeta() as BannerMeta
+        val bannerData = meta as BannerMeta
         bannerData.baseColor = color
-        setMeta(bannerData)
+        meta = bannerData
         return this
     }
 
@@ -47,9 +47,9 @@ class BannerBuilder : BaseItemBuilder<BannerBuilder> {
      * @since 3.0.1
      */
     fun pattern(color: DyeColor, pattern: PatternType): BannerBuilder {
-        val bannerMeta = getMeta() as BannerMeta
+        val bannerMeta = meta as BannerMeta
         bannerMeta.addPattern(Pattern(color, pattern))
-        setMeta(bannerMeta)
+        meta = bannerMeta
         return this
     }
 
@@ -72,11 +72,11 @@ class BannerBuilder : BaseItemBuilder<BannerBuilder> {
      * @since 3.0.1
      */
     private fun pattern(patterns: List<Pattern?>): BannerBuilder {
-        val bannerMeta = getMeta() as BannerMeta
+        val bannerMeta = meta as BannerMeta
         for (it in patterns) {
             bannerMeta.addPattern(it!!)
         }
-        setMeta(bannerMeta)
+        meta = bannerMeta
         return this
     }
 
@@ -104,9 +104,9 @@ class BannerBuilder : BaseItemBuilder<BannerBuilder> {
      * @since 3.0.1
      */
     private fun pattern(index: Int, pattern: Pattern): BannerBuilder {
-        val bannerMeta = getMeta() as BannerMeta
+        val bannerMeta = meta as BannerMeta
         bannerMeta.setPattern(index, pattern)
-        setMeta(bannerMeta)
+        meta = bannerMeta
         return this
     }
 
@@ -118,9 +118,9 @@ class BannerBuilder : BaseItemBuilder<BannerBuilder> {
      * @since 3.0.1
      */
     fun setPatterns(patterns: List<Pattern?>): BannerBuilder {
-        val bannerMeta = getMeta() as BannerMeta
+        val bannerMeta = meta as BannerMeta
         bannerMeta.patterns = patterns
-        setMeta(bannerMeta)
+        meta = bannerMeta
         return this
     } // TODO add shield()
 }

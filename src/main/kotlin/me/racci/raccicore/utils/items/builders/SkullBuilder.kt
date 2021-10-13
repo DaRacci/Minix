@@ -38,6 +38,8 @@ class SkullBuilder : BaseItemBuilder<SkullBuilder> {
         }
     }
 
+    private val sMeta get() = meta as SkullMeta
+
     /**
      * Sets the skull texture using a BASE64 string
      *
@@ -45,21 +47,21 @@ class SkullBuilder : BaseItemBuilder<SkullBuilder> {
      * @return [SkullBuilder]
      */
     fun texture(texture: String): SkullBuilder {
-        if (getItemStack().type != Material.PLAYER_HEAD) return this
+        if (itemStack.type != Material.PLAYER_HEAD) return this
         if (PROFILE_FIELD == null) {
             return this
         }
-        val skullMeta = getMeta() as SkullMeta
+        val skullMeta = sMeta
         val profile = GameProfile(UUID.randomUUID(), null)
         profile.properties.put("textures", Property("textures", texture))
         try {
-            PROFILE_FIELD!![skullMeta] = profile
+            PROFILE_FIELD!![sMeta] = profile
         } catch (ex: IllegalArgumentException) {
             ex.printStackTrace()
         } catch (ex: IllegalAccessException) {
             ex.printStackTrace()
         }
-        setMeta(skullMeta)
+        meta = skullMeta
         return this
     }
 
@@ -70,10 +72,8 @@ class SkullBuilder : BaseItemBuilder<SkullBuilder> {
      * @return [SkullBuilder]
      */
     fun owner(player: OfflinePlayer): SkullBuilder {
-        if (getItemStack().type != Material.PLAYER_HEAD) return this
-        val skullMeta = getMeta() as SkullMeta
-        skullMeta.owningPlayer = player
-        setMeta(skullMeta)
+        if (itemStack.type != Material.PLAYER_HEAD) return this
+        sMeta.owningPlayer = player
         return this
     }
 }

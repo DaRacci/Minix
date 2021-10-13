@@ -2,12 +2,10 @@ package me.racci.raccicore
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.PaperCommandManager
-import me.racci.raccicore.listeners.KotlinListener
-import me.racci.raccicore.runnables.KotlinRunnable
 import me.racci.raccicore.utils.UpdateChecker
+import me.racci.raccicore.utils.extensions.KotlinListener
 import me.racci.raccicore.utils.pm
 import me.racci.raccicore.utils.strings.colour
-import org.bukkit.Bukkit
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
@@ -33,7 +31,7 @@ abstract class RacciPlugin(colour: String = "",
     protected var prefix: String ; private set
     protected var spigotId: Int ; private set
     protected var bStatsId: Int ; private set
-    protected lateinit var commandManager: PaperCommandManager ; private set
+    lateinit var commandManager: PaperCommandManager ; private set
     protected var loadedHooks = HashSet<String>() ; private set
 //    protected var lang: Lang? = null ; private set
 //    protected lateinit var config: Config ; private set

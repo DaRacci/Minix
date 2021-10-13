@@ -2,8 +2,8 @@ package me.racci.raccicore.listeners
 
 import me.racci.raccicore.data.PlayerData
 import me.racci.raccicore.playerManager
+import me.racci.raccicore.utils.extensions.KotlinListener
 import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 

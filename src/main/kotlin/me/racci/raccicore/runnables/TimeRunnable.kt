@@ -2,7 +2,7 @@ package me.racci.raccicore.runnables
 
 import me.racci.raccicore.events.DayEvent
 import me.racci.raccicore.events.NightEvent
-import me.racci.raccicore.listeners.KotlinListener
+import me.racci.raccicore.utils.extensions.KotlinListener
 import me.racci.raccicore.utils.pm
 import me.racci.raccicore.utils.worlds.WorldTime.isDay
 import org.bukkit.Bukkit

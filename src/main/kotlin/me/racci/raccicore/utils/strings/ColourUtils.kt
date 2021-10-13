@@ -1,5 +1,11 @@
 package me.racci.raccicore.utils.strings
 
+import me.racci.raccicore.utils.console
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
+import net.kyori.adventure.util.HSVLike
 import net.md_5.bungee.api.ChatColor
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -42,4 +48,23 @@ private fun replaceHex(string: String?): String? {
 
 private fun internalColour(str: String? = "", parseHex: Boolean): String {
     return ChatColor.translateAlternateColorCodes('&', if(parseHex) replaceHex(str) else str)
+}
+
+fun gradient(h1: Float, s1: Float, v1: Float, h2: Float, s2: Float, v2: Float, string: String): Component {
+    val c: TextComponent.Builder = Component.text("").toBuilder()
+    val chars = string.toCharArray()
+    var h = h1
+    var s = s1
+    var v = v1
+    val hStep = (h2 - h1) / chars.size
+    val sStep = (s2 - s1) / chars.size
+    val vStep = (v2 - v1) / chars.size
+    for (a in chars) {
+        c.append(Component.text(a.toString()).color(TextColor.color(HSVLike.of(h / 360, s / 360, v / 360))))
+        console.sendMessage(c)
+        h += hStep
+        s += sStep
+        v += vStep
+    }
+    return c.decoration(TextDecoration.ITALIC, false).decoration(TextDecoration.BOLD, true).build()
 }

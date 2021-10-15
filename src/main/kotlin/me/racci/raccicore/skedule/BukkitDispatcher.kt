@@ -27,8 +27,8 @@ class BukkitDispatcher(val plugin: RacciPlugin, val async: Boolean = false) : Co
             bukkitScheduler::runTask
         }
 
-    @ExperimentalCoroutinesApi
-    @InternalCoroutinesApi
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun scheduleResumeAfterDelay(timeMillis: Long, continuation: CancellableContinuation<Unit>) {
         val task = runTaskLater(
             plugin,

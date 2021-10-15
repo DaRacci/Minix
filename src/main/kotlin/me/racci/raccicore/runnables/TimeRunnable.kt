@@ -2,6 +2,8 @@ package me.racci.raccicore.runnables
 
 import me.racci.raccicore.events.DayEvent
 import me.racci.raccicore.events.NightEvent
+import me.racci.raccicore.racciCore
+import me.racci.raccicore.skedule.skeduleAsync
 import me.racci.raccicore.utils.extensions.KotlinListener
 import me.racci.raccicore.utils.pm
 import me.racci.raccicore.utils.worlds.WorldTime.isDay
@@ -17,7 +19,7 @@ class TimeRunnable : BukkitRunnable(), KotlinListener {
 
     @EventHandler
     fun onWorldLoad(event: WorldLoadEvent) {
-        timeChecker(event.world)
+        skeduleAsync(racciCore) {timeChecker(event.world)}
     }
 
     private fun timeChecker(world: World) {

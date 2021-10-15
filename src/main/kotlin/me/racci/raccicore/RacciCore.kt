@@ -1,6 +1,5 @@
 package me.racci.raccicore
 
-import co.aikar.commands.BaseCommand
 import me.racci.raccicore.data.PlayerManager
 import me.racci.raccicore.listeners.*
 import me.racci.raccicore.runnables.TimeRunnable
@@ -30,9 +29,10 @@ class RacciCore : RacciPlugin(
     override fun onEnable() {
         racciCore = this
         playerManager = PlayerManager()
+        super.onEnable()
     }
 
-    override fun onDisable() {
+    override fun handleDisable() {
         playerManager.playerDataMap.clear()
     }
 
@@ -44,6 +44,8 @@ class RacciCore : RacciPlugin(
             PlayerComboListener(),
             PlayerJoinLeaveListener(),
             TimeRunnable(),
+            ArmourListener(),
+            ArmorChangeEventListeners(),
         )
     }
 
@@ -51,6 +53,5 @@ class RacciCore : RacciPlugin(
         return listOf(
             TimeRunnable().runTaskTimerAsynchronously(this, 0L, 20)
         )
-
     }
 }

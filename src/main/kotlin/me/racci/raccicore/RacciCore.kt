@@ -44,8 +44,6 @@ class RacciCore : RacciPlugin(
             PlayerComboListener(),
             PlayerJoinLeaveListener(),
             TimeRunnable(),
-            ArmourListener(),
-            ArmorChangeEventListeners(),
         )
     }
 

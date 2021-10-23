@@ -1,7 +1,7 @@
 package me.racci.raccicore.listeners
 
 import me.racci.raccicore.data.PlayerData
-import me.racci.raccicore.playerManager
+import me.racci.raccicore.data.PlayerManager
 import me.racci.raccicore.utils.extensions.KotlinListener
 import org.bukkit.event.EventHandler
 import org.bukkit.event.player.PlayerJoinEvent
@@ -21,7 +21,7 @@ class PlayerJoinLeaveListener : KotlinListener {
      */
     @EventHandler
     fun onJoin(event: PlayerJoinEvent) {
-        playerManager.addPlayerData(PlayerData(event.player))
+        PlayerData(event.player)
     }
 
     /**
@@ -31,7 +31,7 @@ class PlayerJoinLeaveListener : KotlinListener {
      */
     @EventHandler
     fun onLeave(event: PlayerQuitEvent) {
-        playerManager.removePlayerData(event.player.uniqueId)
+        PlayerManager.removePlayerData(event.player.uniqueId)
     }
 
 }

@@ -9,13 +9,8 @@ import org.bukkit.scheduler.BukkitTask
 /**
  * Racci core
  */
-internal lateinit var racciCore : RacciCore ; private set
-
-/**
- * Player manager
- */
-internal lateinit var playerManager : PlayerManager ; private set
-
+internal val plugin : RacciCore
+    get() = RacciCore.plugin
 /**
  * Racci lib
  *
@@ -26,17 +21,24 @@ class RacciCore : RacciPlugin(
     "RacciCore"
 ) {
 
-    override fun onEnable() {
-        racciCore = this
-        playerManager = PlayerManager()
-        super.onEnable()
+    companion object {
+        lateinit var plugin : RacciCore
     }
 
-    override fun handleDisable() {
-        playerManager.playerDataMap.clear()
+    override suspend fun onEnableAsync() {
+        plugin = this
+        super.onEnableAsync()
     }
 
-    override fun registerListeners(): List<KotlinListener> {
+    override suspend fun handleAfterLoad() {
+        PlayerManager.init()
+    }
+
+    override suspend fun handleDisable() {
+        PlayerManager.shutdown()
+    }
+
+    override suspend fun registerListeners(): List<KotlinListener> {
         return listOf(
             PlayerMoveListener(),
             PlayerTeleportListener(),
@@ -47,7 +49,7 @@ class RacciCore : RacciPlugin(
         )
     }
 
-    override fun registerRunnables(): List<BukkitTask> {
+    override suspend fun registerRunnables(): List<BukkitTask> {
         return listOf(
             TimeRunnable().runTaskTimerAsynchronously(this, 0L, 20)
         )

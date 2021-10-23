@@ -1,12 +1,15 @@
+@file:Suppress("unused", "UNUSED_EXPRESSION")
 package me.racci.raccicore
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.PaperCommandManager
+import com.github.shynixn.mccoroutine.SuspendingJavaPlugin
+import com.github.shynixn.mccoroutine.registerSuspendingEvents
+import me.racci.raccicore.runnables.Scheduler
+import me.racci.raccicore.skedule.bukkitScheduler
 import me.racci.raccicore.utils.UpdateChecker
 import me.racci.raccicore.utils.extensions.KotlinListener
 import me.racci.raccicore.utils.pm
-import me.racci.raccicore.utils.strings.colour
-import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
@@ -22,30 +25,63 @@ import java.util.stream.Collectors
  * @param spigotId      The spigot ID for the plugin
  * @param bStatsId      The bStats ID for the plugin
  */
-abstract class RacciPlugin(colour: String = "",
-                       prefix: String = "",
-                       spigotId: Int = 0,
-                       bStatsId: Int = 0) : org.bukkit.plugin.java.JavaPlugin() {
+abstract class RacciPlugin(
+    val colour  : String    = "",
+    val prefix  : String    = "",
+    val spigotId: Int       = 0,
+    val bStatsId: Int       = 0
+) : SuspendingJavaPlugin() {
 
-    protected var colour: String ; private set
-    protected var prefix: String ; private set
-    protected var spigotId: Int ; private set
-    protected var bStatsId: Int ; private set
-    lateinit var commandManager: PaperCommandManager ; private set
-    protected var loadedHooks = HashSet<String>() ; private set
-//    protected var lang: Lang? = null ; private set
-//    protected lateinit var config: Config ; private set
-    protected var outDated = false ; private set
+    lateinit var commandManager  : PaperCommandManager      ; private set
+    lateinit var scheduler       : Scheduler                ; private set
+    var loadedHooks     : ArrayList<String>     = ArrayList()   ; private set
+    var outDated        : Boolean               = false         ; private set
 
-    init {
-        this.colour = colour(colour)
-        this.prefix = colour(prefix)
-        this.spigotId = spigotId
-        this.bStatsId = bStatsId
+
+
+    override suspend fun onEnableAsync() {
+        this.commandManager = PaperCommandManager(this)
+
+        info("")
+        info("Loading ${this.colour} ${this.name}")
+
+        if(this.spigotId != 0) ::UpdateChecker
+        if(this.bStatsId != 0) {}//Register
+
+        this.registerListeners().forEach {pm.registerSuspendingEvents(it, this)}
+        this.registerRunnables().forEach {}
+        this.registerCommands().forEach(commandManager::registerCommand)
+
+
+        val enabledPlugins: Set<String> = Arrays.stream(pm.plugins)
+            .map(Plugin::getName)
+            .map(String::lowercase)
+            .collect(Collectors.toSet())
+
+        if(enabledPlugins.contains("PlaceholderAPI".lowercase())) {
+            this.loadedHooks.add("PlaceHolderAPI")
+        }
+
+        this.handleEnable()
+
+        this.logger.info("")
+
     }
 
-    protected fun registerListeners(vararg listeners: Listener) {
-        listeners.onEach{pm.registerEvents(it, this)}
+    override suspend fun onDisableAsync() {
+        this.commandManager.unregisterCommands()
+        this.loadedHooks.clear()
+        bukkitScheduler.cancelTasks(this)
+        this.handleDisable()
+    }
+
+    override suspend fun onLoadAsync() {
+        this.handleLoad()
+        this.handleAfterLoad()
+    }
+
+    suspend fun reload() {
+        this.handleReload()
     }
 
     protected fun registerRunnables(
@@ -68,72 +104,23 @@ abstract class RacciPlugin(colour: String = "",
         }
     }
 
-    override fun onEnable() {
-        super.onEnable()
+    protected open suspend fun handleEnable() {}
 
-        this.commandManager = PaperCommandManager(this)
+    protected open suspend fun handleDisable() {}
 
-        info("")
-        info("Loading ${this.colour} ${this.name}")
+    protected open suspend fun handleLoad() {}
 
-        if(this.spigotId != 0) {UpdateChecker(this, this.spigotId)}
-        if(this.bStatsId != 0) {}//Register
+    protected open suspend fun handleReload() {}
 
-        this.registerListeners().forEach {pm.registerEvents(it, this)}
-        this.registerCommands().forEach(commandManager::registerCommand)
+    protected open suspend fun handleAfterLoad() {}
 
+    protected open suspend fun registerHookLoaders() {}
 
-        val enabledPlugins: Set<String> = Arrays.stream(pm.plugins)
-            .map(Plugin::getName)
-            .map(String::lowercase)
-            .collect(Collectors.toSet())
+    protected open suspend fun registerListeners() : List<KotlinListener> {return emptyList()}
 
-        if(enabledPlugins.contains("PlaceholderAPI".lowercase())) {
-            this.loadedHooks.add("PlaceHolderAPI")
-        }
+    protected open suspend fun registerRunnables() : List<BukkitTask> {return emptyList()}
 
-        this.handleEnable()
-
-        this.logger.info("")
-
-    }
-
-    override fun onDisable() {
-        super.onDisable()
-        this.handleDisable()
-    }
-
-    override fun onLoad() {
-        super.onLoad()
-        this.handleLoad()
-    }
-
-    fun afterLoad() {
-        this.handleAfterLoad()
-        this.reload()
-    }
-
-    fun reload() {
-        this.handleReload()
-    }
-
-    protected open fun handleEnable() {}
-
-    protected open fun handleDisable() {}
-
-    protected open fun handleLoad() {}
-
-    protected open fun handleReload() {}
-
-    protected open fun handleAfterLoad() {}
-
-    protected open fun registerHookLoaders() {}
-
-    protected open fun registerListeners() : List<KotlinListener> {return emptyList()}
-
-    protected open fun registerRunnables() : List<BukkitTask> {return emptyList()}
-
-    protected open fun registerCommands() : List<BaseCommand> {return emptyList()}
+    protected open suspend fun registerCommands() : List<BaseCommand> {return emptyList()}
 
 
 //    protected class LogBuilder {

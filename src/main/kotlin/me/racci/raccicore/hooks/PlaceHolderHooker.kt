@@ -1,8 +1,5 @@
 package me.racci.raccicore.hooks
 
-import me.clip.placeholderapi.PlaceholderHook
-import org.bukkit.entity.Player
-
 //class PlaceHolderHooker {
 //
 //    private val REGISTERED_PLACEHOLDERS = HashMap<String, Placeholder>()

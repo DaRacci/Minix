@@ -1,7 +1,7 @@
 package me.racci.raccicore
 
+import me.racci.raccicore.utils.console
 import me.racci.raccicore.utils.strings.colour
-import org.bukkit.Bukkit
 
 /**
  * Log
@@ -11,12 +11,13 @@ import org.bukkit.Bukkit
  */
 fun log(level: Level, message: String) {
     when(level) {
-        Level.ERROR -> Bukkit.getConsoleSender().sendMessage(colour("&4[&c&lERROR&4] &f$message", true))
-        Level.WARNING -> Bukkit.getConsoleSender().sendMessage(colour("&e[&6&lWARNING&e] &f$message", true))
-        Level.INFO -> Bukkit.getConsoleSender().sendMessage(colour("&8[&e&lINFO&8] &f$message", true))
-        Level.DEBUG -> Bukkit.getConsoleSender().sendMessage(colour("&7[&f&lDEBUG&7] &f$message", true))
-        Level.SUCCESS -> Bukkit.getConsoleSender().sendMessage(colour("&2[&a&lSUCCESS&2] &f$message", true))
-        Level.OUTLINE -> Bukkit.getConsoleSender().sendMessage(colour("&7$message", true))
+
+        Level.ERROR -> console.sendMessage(colour("&4[&c&lERROR&4] &f$message", true))
+        Level.WARNING -> console.sendMessage(colour("&e[&6&lWARNING&e] &f$message", true))
+        Level.INFO -> console.sendMessage(colour("&8[&e&lINFO&8] &f$message", true))
+        Level.DEBUG -> console.sendMessage(colour("&7[&f&lDEBUG&7] &f$message", true))
+        Level.SUCCESS -> console.sendMessage(colour("&2[&a&lSUCCESS&2] &f$message", true))
+        Level.OUTLINE -> console.sendMessage(colour("&7$message", true))
     }
 }
 

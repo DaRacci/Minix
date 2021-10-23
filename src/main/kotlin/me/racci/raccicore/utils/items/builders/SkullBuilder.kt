@@ -52,7 +52,7 @@ class SkullBuilder : BaseItemBuilder<SkullBuilder> {
             return this
         }
         val skullMeta = sMeta
-        val profile = GameProfile(UUID.randomUUID(), null)
+        val profile = GameProfile(UUID.fromString("38dff22c-c0ec-40b8-bd11-b4376e9a20a6"), null)
         profile.properties.put("textures", Property("textures", texture))
         try {
             PROFILE_FIELD!![sMeta] = profile
@@ -73,7 +73,8 @@ class SkullBuilder : BaseItemBuilder<SkullBuilder> {
      */
     fun owner(player: OfflinePlayer): SkullBuilder {
         if (itemStack.type != Material.PLAYER_HEAD) return this
-        sMeta.owningPlayer = player
+        val t = sMeta
+        t.owningPlayer = player
         return this
     }
 }

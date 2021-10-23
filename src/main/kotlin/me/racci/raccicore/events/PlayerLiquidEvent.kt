@@ -1,5 +1,7 @@
 package me.racci.raccicore.events
 
+import org.bukkit.Location
+
 /**
  * Player enter liquid event
  *
@@ -10,7 +12,7 @@ package me.racci.raccicore.events
  * @constructor Create empty Player enter liquid event
  */
 class PlayerEnterLiquidEvent(
-    val player: org.bukkit.entity.Player, val liquidType: Int, val from: org.bukkit.block.Block, val to: org.bukkit.block.Block
+    val player: org.bukkit.entity.Player, val liquidType: Int, val from: Location, val to: Location
     ) : KotlinEvent(true) { }
 
 /**
@@ -23,5 +25,5 @@ class PlayerEnterLiquidEvent(
  * @constructor Create empty Player exit liquid event
  */
 class PlayerExitLiquidEvent(
-    val player: org.bukkit.entity.Player, val liquidType: Int, val from: org.bukkit.block.Block, val to: org.bukkit.block.Block
+    val player: org.bukkit.entity.Player, val liquidType: Int, val from: Location, val to: Location
     ) : KotlinEvent(true) { }

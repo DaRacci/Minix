@@ -1,15 +1,14 @@
 package me.racci.raccicore.listeners
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.racci.raccicore.events.PlayerEnterLiquidEvent
 import me.racci.raccicore.events.PlayerExitLiquidEvent
 import me.racci.raccicore.events.PlayerMoveFullXYZEvent
-import me.racci.raccicore.racciCore
-import me.racci.raccicore.skedule.skeduleAsync
-import me.racci.raccicore.utils.blocks.isLiquid
 import me.racci.raccicore.utils.extensions.KotlinListener
-import org.bukkit.Bukkit
-import org.bukkit.block.Block
-import org.bukkit.event.Event
+import me.racci.raccicore.utils.pm
+import org.bukkit.Material
+import org.bukkit.block.data.Waterlogged
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 
@@ -27,27 +26,20 @@ class PlayerMoveFullXYZListener : KotlinListener {
      * @param event
      */
     @EventHandler(priority = EventPriority.NORMAL)
-    fun onPlayerMoveFullXYZEvent(event: PlayerMoveFullXYZEvent) {
-        skeduleAsync(racciCore) {
-            val from: Block = event.from.block
-            val to: Block = event.to.block
-            val var1: Int = isLiquid(from)
-            val var2: Int = isLiquid(to)
-            var newEvent: Event? = null
-            if (var1 == 0) {
-                newEvent = when (var2) {
-                    1, 2 -> PlayerEnterLiquidEvent(event.player, var2, from, to)
-                    else -> null
-                }
-            } else if (var2 == 0) {
-                newEvent = when (var1) {
-                    1, 2 -> PlayerExitLiquidEvent(event.player, var1, from, to)
-                    else -> null
-                }
+    suspend fun onPlayerMoveFullXYZEvent(event: PlayerMoveFullXYZEvent) = withContext(Dispatchers.IO) {
+        val array = object : ArrayList<Int>() {init {
+            for(block in listOf(event.from.block, event.to.block)) {
+                add(when(block.type) {
+                    Material.WATER -> 1
+                    Material.LAVA -> 2
+                    else -> if((block.blockData is Waterlogged) && (block.blockData as Waterlogged).isWaterlogged) 1 else 0
+                })
             }
-            if (newEvent != null) {
-                Bukkit.getPluginManager().callEvent(newEvent)
-            }
-        }
+        }}
+        pm.callEvent(if(array[0] == 0) {
+            PlayerEnterLiquidEvent(event.player, array[1], event.from, event.to)
+        } else if(array[1] == 0) {
+            PlayerExitLiquidEvent(event.player, array[0], event.from, event.to)
+        } else null ?: return@withContext)
     }
 }

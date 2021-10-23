@@ -1,26 +1,33 @@
 package me.racci.raccicore.data
 
+import me.racci.raccicore.utils.extensions.onlinePlayers
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ConcurrentMap
 
-internal class PlayerManager {
+internal object PlayerManager {
+    private val playerData = ConcurrentHashMap<UUID, PlayerData>()
 
-    private val playerData: ConcurrentHashMap<UUID, PlayerData> = ConcurrentHashMap()
+    operator fun get(uuid: UUID) =
+        playerData[uuid]!!
 
-    fun getPlayerData(id: UUID): PlayerData {
-        return playerData[id]!!
+    fun init() {
+
+        onlinePlayers.forEach(::PlayerData)
+
     }
 
-    fun addPlayerData(playerData: PlayerData) {
-        this.playerData[playerData.player.uniqueId] = playerData
+    fun shutdown() {
+        playerData.clear()
     }
+
+    @Deprecated("Use operator method instead")
+    fun getPlayerData(id: UUID) = playerData[id]!!
+
+    fun addPlayerData(playerData: PlayerData) =
+        this.playerData.putIfAbsent(playerData.player.uniqueId, playerData)
 
     fun removePlayerData(id: UUID) {
         playerData.remove(id)
     }
-
-    val playerDataMap: ConcurrentMap<UUID, PlayerData>
-        get() = playerData
 
 }

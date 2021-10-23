@@ -12,10 +12,10 @@ import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
 
-class UpdateChecker(plugin: RacciPlugin, id: Int) : PluginDependent<RacciPlugin>(plugin) {
+class UpdateChecker(plugin: RacciPlugin) : PluginDependent<RacciPlugin>(plugin) {
 
     init {
-        plugin.update(id)
+        plugin.update(plugin.spigotId)
     }
 
     private fun spiget(id: Int): String? = try {

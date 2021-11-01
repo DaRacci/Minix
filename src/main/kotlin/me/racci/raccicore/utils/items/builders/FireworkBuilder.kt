@@ -6,13 +6,10 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.FireworkEffectMeta
 import org.bukkit.inventory.meta.FireworkMeta
+import org.jetbrains.annotations.ApiStatus
 
-/**
- * Item builder for [Material.FIREWORK_ROCKET] and [Material.FIREWORK_ROCKET] only
- *
- * @author GabyTM [https://github.com/iGabyTM](https://github.com/iGabyTM)
- * @since 3.0.1
- */
+@Deprecated("Moved and improved.", ReplaceWith("me.racci.raccicore.builders.FireworkBuilder"))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 class FireworkBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<FireworkBuilder>(itemStack) {
 
     private val feMeta get() = meta as FireworkEffectMeta

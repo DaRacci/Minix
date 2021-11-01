@@ -5,13 +5,10 @@ import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.MapMeta
 import org.bukkit.map.MapView
+import org.jetbrains.annotations.ApiStatus
 
-/**
- * Item builder for [Material.MAP] only
- *
- * @author GabyTM [https://github.com/iGabyTM](https://github.com/iGabyTM)
- * @since 3.0.1
- */
+@Deprecated("Moved and improved.", ReplaceWith("me.racci.raccicore.builders.MapBuilder"))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 class MapBuilder : BaseItemBuilder<MapBuilder> {
 
     internal constructor() : super(ItemStack(MAP))

@@ -1,4 +1,4 @@
-package me.racci.raccicore.utils.items.builders
+package me.racci.raccicore.builders
 
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
@@ -6,13 +6,11 @@ import org.bukkit.Material
 import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
-import org.jetbrains.annotations.ApiStatus
 import java.lang.reflect.Field
 import java.util.*
 
-@Deprecated("Moved and improved.", ReplaceWith("me.racci.raccicore.builders.HeadBuilder"))
-@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
-class SkullBuilder : BaseItemBuilder<SkullBuilder> {
+class HeadBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<HeadBuilder>(itemStack) {
+
     companion object {
         private var PROFILE_FIELD: Field? = null
 
@@ -30,22 +28,12 @@ class SkullBuilder : BaseItemBuilder<SkullBuilder> {
         }
     }
 
-    internal constructor() : super(ItemStack(Material.PLAYER_HEAD))
-    internal constructor(itemStack: ItemStack) : super(itemStack) {
-        if (itemStack.type != Material.PLAYER_HEAD) {
-            throw UnsupportedClassVersionError("SkullBuilder requires the material to be a PLAYER_HEAD!")
-        }
-    }
+    override var itemStack = itemStack.clone()
+        get() {field.itemMeta = sMeta;return field}
 
     private val sMeta get() = meta as SkullMeta
 
-    /**
-     * Sets the skull texture using a BASE64 string
-     *
-     * @param texture The base64 texture
-     * @return [SkullBuilder]
-     */
-    fun texture(texture: String): SkullBuilder {
+    fun texture(texture: String): HeadBuilder {
         if (itemStack.type != Material.PLAYER_HEAD) return this
         if (PROFILE_FIELD == null) {
             return this
@@ -64,16 +52,16 @@ class SkullBuilder : BaseItemBuilder<SkullBuilder> {
         return this
     }
 
-    /**
-     * Sets skull owner via bukkit methods
-     *
-     * @param player [OfflinePlayer] to set skull of
-     * @return [SkullBuilder]
-     */
-    fun owner(player: OfflinePlayer): SkullBuilder {
+    fun owner(player: OfflinePlayer): HeadBuilder {
         if (itemStack.type != Material.PLAYER_HEAD) return this
         val t = sMeta
         t.owningPlayer = player
         return this
+    }
+
+    init {
+        if (itemStack.type != Material.PLAYER_HEAD) {
+            throw UnsupportedClassVersionError("SkullBuilder requires the material to be a PLAYER_HEAD!")
+        }
     }
 }

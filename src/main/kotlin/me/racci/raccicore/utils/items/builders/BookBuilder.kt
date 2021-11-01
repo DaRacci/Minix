@@ -4,14 +4,11 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BookMeta
+import org.jetbrains.annotations.ApiStatus
 import java.util.*
 
-/**
- * Item builder for [Material.WRITTEN_BOOK] and [Material.WRITTEN_BOOK] only
- *
- * @author GabyTM [https://github.com/iGabyTM](https://github.com/iGabyTM)
- * @since 3.0.1
- */
+@Deprecated("Moved and improved.", ReplaceWith("me.racci.raccicore.builders.BookBuilder"))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 class BookBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<BookBuilder>(itemStack) {
 
     private val bMeta get() = meta as BookMeta

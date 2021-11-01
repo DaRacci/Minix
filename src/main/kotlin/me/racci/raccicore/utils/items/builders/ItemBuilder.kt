@@ -2,17 +2,11 @@ package me.racci.raccicore.utils.items.builders
 
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 
-/**
- * Main ItemBuilder
- */
-class ItemBuilder
-/**
- * Constructor of the item builder
- *
- * @param itemStack The [ItemStack] of the item
- */
-internal constructor(itemStack: ItemStack) : BaseItemBuilder<ItemBuilder>(itemStack) {
+@Deprecated("Moved and improved.", ReplaceWith("me.racci.raccicore.builders.ItemBuilder"))
+@ScheduledForRemoval(inVersion = "0.2.0")
+class ItemBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<ItemBuilder>(itemStack) {
 
     companion object {
         /**

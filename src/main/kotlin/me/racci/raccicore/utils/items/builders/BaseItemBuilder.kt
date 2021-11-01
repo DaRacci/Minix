@@ -9,12 +9,14 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataContainer
+import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.Contract
 import org.jetbrains.annotations.Nullable
 import java.util.function.Consumer
 import java.util.stream.Collectors
 
-
+@Deprecated("Moved and improved.", ReplaceWith("me.racci.raccicore.builders.BaseItemBuilder"))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 abstract class BaseItemBuilder<B : BaseItemBuilder<B>> protected constructor(itemStack: ItemStack) {
 
     var itemStack: ItemStack

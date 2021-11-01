@@ -7,14 +7,11 @@ import org.bukkit.block.banner.Pattern
 import org.bukkit.block.banner.PatternType
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BannerMeta
+import org.jetbrains.annotations.ApiStatus
 import java.util.*
 
-/**
- * Item builder for banners only
- *
- * @author GabyTM [https://github.com/iGabyTM](https://github.com/iGabyTM)
- * @since 3.0.1
- */
+@Deprecated("Moved and improved.", ReplaceWith("me.racci.raccicore.builders.BannerBuilder"))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 class BannerBuilder : BaseItemBuilder<BannerBuilder> {
     companion object {
         private val DEFAULT_BANNER: Material = Material.WHITE_BANNER

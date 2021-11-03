@@ -4,12 +4,14 @@ import kotlinx.coroutines.*
 import me.racci.raccicore.RacciPlugin
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitTask
+import org.jetbrains.annotations.ApiStatus
 import kotlin.coroutines.CoroutineContext
 
 internal val bukkitScheduler
     get() = Bukkit.getScheduler()
 
-
+@Deprecated("Deprecated in favour of MCCoroutine", ReplaceWith(""))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 @OptIn(InternalCoroutinesApi::class)
 class BukkitDispatcher(val plugin: RacciPlugin, val async: Boolean = false) : CoroutineDispatcher(), Delay {
 
@@ -52,5 +54,6 @@ class BukkitDispatcher(val plugin: RacciPlugin, val async: Boolean = false) : Co
     }
 
 }
-
+@Deprecated("Deprecated in favour of MCCoroutine", ReplaceWith(""))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 fun RacciPlugin.dispatcher(async: Boolean = false) = BukkitDispatcher(this, async)

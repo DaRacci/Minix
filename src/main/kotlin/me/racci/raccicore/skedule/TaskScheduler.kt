@@ -4,7 +4,10 @@ import me.racci.raccicore.RacciPlugin
 import org.bukkit.Bukkit
 import org.bukkit.scheduler.BukkitScheduler
 import org.bukkit.scheduler.BukkitTask
+import org.jetbrains.annotations.ApiStatus
 
+@Deprecated("Deprecated in favour of MCCoroutine", ReplaceWith(""))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 interface TaskScheduler {
 
     val currentTask: BukkitTask?
@@ -119,5 +122,6 @@ internal class RepeatingTaskScheduler(
     }
 
 }
-
+@Deprecated("Deprecated in favour of MCCoroutine", ReplaceWith(""))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 fun currentContext() = if (Bukkit.isPrimaryThread()) SynchronizationContext.SYNC else SynchronizationContext.ASYNC

@@ -3,6 +3,7 @@ package me.racci.raccicore.skedule
 import me.racci.raccicore.RacciPlugin
 import org.bukkit.scheduler.BukkitScheduler
 import org.bukkit.scheduler.BukkitTask
+import org.jetbrains.annotations.ApiStatus
 import kotlin.coroutines.*
 
 
@@ -14,6 +15,8 @@ import kotlin.coroutines.*
  * @property currentTask the task that is currently executing within the context of this coroutine
  * @property isRepeating whether this coroutine is currently backed by a repeating task
  */
+@Deprecated("Deprecated in favour of MCCoroutine", ReplaceWith(""))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 class BukkitSchedulerController(val plugin: RacciPlugin, val scheduler: BukkitScheduler) : Continuation<Unit> {
     override val context: CoroutineContext
         get() = EmptyCoroutineContext

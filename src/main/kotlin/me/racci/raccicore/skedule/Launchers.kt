@@ -2,9 +2,12 @@ package me.racci.raccicore.skedule
 
 import me.racci.raccicore.RacciPlugin
 import org.bukkit.scheduler.BukkitScheduler
+import org.jetbrains.annotations.ApiStatus
 import kotlin.coroutines.createCoroutine
 import kotlin.coroutines.resume
 
+@Deprecated("Deprecated in favour of MCCoroutine", ReplaceWith(""))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 fun RacciPlugin.schedule(
     initialContext: SynchronizationContext = SynchronizationContext.SYNC,
     co: suspend BukkitSchedulerController.() -> Unit
@@ -22,6 +25,8 @@ fun RacciPlugin.schedule(
  *
  * @see SynchronizationContext
  */
+@Deprecated("Deprecated in favour of MCCoroutine", ReplaceWith(""))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 fun BukkitScheduler.schedule(
     plugin: RacciPlugin,
     initialContext: SynchronizationContext = SynchronizationContext.SYNC,
@@ -58,6 +63,8 @@ fun BukkitScheduler.schedule(
  * }
  * ```
  */
+@Deprecated("Deprecated in favour of MCCoroutine", ReplaceWith(""))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 fun skeduleSync(plugin: RacciPlugin, block: suspend BukkitSchedulerController.() -> Unit): CoroutineTask {
     return bukkitScheduler.schedule(plugin, SynchronizationContext.SYNC, block)
 }
@@ -78,6 +85,8 @@ fun skeduleSync(plugin: RacciPlugin, block: suspend BukkitSchedulerController.()
  * }
  * ```
  */
+@Deprecated("Deprecated in favour of MCCoroutine", ReplaceWith(""))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 fun skeduleAsync(plugin: RacciPlugin, block: suspend BukkitSchedulerController.() -> Unit): CoroutineTask {
     return bukkitScheduler.schedule(plugin, SynchronizationContext.ASYNC, block)
 }

@@ -1,8 +1,12 @@
 package me.racci.raccicore.skedule
 
+import org.jetbrains.annotations.ApiStatus
+
 /**
  * Represents a synchronization context that a BukkitScheduler coroutine is currently in.
  */
+@Deprecated("Deprecated in favour of MCCoroutine", ReplaceWith(""))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 enum class SynchronizationContext {
 
     /**

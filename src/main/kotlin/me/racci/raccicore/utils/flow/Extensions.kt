@@ -17,7 +17,7 @@ inline fun <reified T : PlayerEvent> WithPlugin<*>.playerEventFlow(
         player: Player,
         priority: EventPriority = EventPriority.NORMAL,
         ignoreCancelled: Boolean = false,
-        channel: Channel<T> = Channel<T>(Channel.CONFLATED),
+        channel: Channel<T> = Channel(Channel.CONFLATED),
         listener: Listener = SimpleKListener(plugin),
 ) = plugin.playerEventFlow(player, priority, ignoreCancelled, channel, listener)
 
@@ -25,7 +25,7 @@ inline fun <reified T : PlayerEvent> Plugin.playerEventFlow(
         player: Player,
         priority: EventPriority = EventPriority.NORMAL,
         ignoreCancelled: Boolean = false,
-        channel: Channel<T> = Channel<T>(Channel.CONFLATED),
+        channel: Channel<T> = Channel(Channel.CONFLATED),
         listener: Listener = SimpleKListener(this),
 ) = playerEventFlow(player, this, priority, ignoreCancelled, channel, listener)
 
@@ -34,7 +34,7 @@ inline fun <reified T : PlayerEvent> playerEventFlow(
         plugin: Plugin,
         priority: EventPriority = EventPriority.NORMAL,
         ignoreCancelled: Boolean = false,
-        channel: Channel<T> = Channel<T>(Channel.CONFLATED),
+        channel: Channel<T> = Channel(Channel.CONFLATED),
         listener: Listener = SimpleKListener(plugin),
-) = eventFlow<T>(T::class, plugin, player, priority, ignoreCancelled, channel, listener)
+) = eventFlow(T::class, plugin, player, priority, ignoreCancelled, channel, listener)
         .filter { it.player.name == player.name }

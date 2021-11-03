@@ -146,7 +146,7 @@ package me.racci.raccicore.utils.files
 //    }
 //
 //    open inner class item(val path: String, val def: ItemStack? = null) {
-//        operator fun getValue(ref: Any?, prop: KProperty<*>): ItemStack? = config.getItemStack(path, def)
+//        operator fun getValue(ref: Any?, prop: KProperty<*>): ItemStack? = config.getHItemStack(path, def)
 //        operator fun setValue(ref: Any?, prop: KProperty<*>, value: ItemStack?) = set(path, value)
 //    }
 //

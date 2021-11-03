@@ -1,4 +1,4 @@
-package me.racci.raccicore.controllers
+//package me.racci.raccicore.controllers
 
 
 //internal class CommandController(

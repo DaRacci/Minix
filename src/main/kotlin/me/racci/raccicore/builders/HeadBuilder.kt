@@ -28,21 +28,24 @@ class HeadBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<H
         }
     }
 
-    override var itemStack = itemStack.clone()
-        get() {field.itemMeta = sMeta;return field}
+    private var hItemStack = itemStack.clone()
+        get() {field.itemMeta = hMeta;return field}
 
-    private val sMeta get() = meta as SkullMeta
+    private val hMeta get() = meta as SkullMeta
 
+    var texture: String
+        get() = throw UnsupportedOperationException("Please don't make me implement this")
+        set(texture) {texture(texture)}
     fun texture(texture: String): HeadBuilder {
-        if (itemStack.type != Material.PLAYER_HEAD) return this
+        if (hItemStack.type != Material.PLAYER_HEAD) return this
         if (PROFILE_FIELD == null) {
             return this
         }
-        val skullMeta = sMeta
+        val skullMeta = hMeta
         val profile = GameProfile(UUID.fromString("38dff22c-c0ec-40b8-bd11-b4376e9a20a6"), null)
         profile.properties.put("textures", Property("textures", texture))
         try {
-            PROFILE_FIELD!![sMeta] = profile
+            PROFILE_FIELD!![hMeta] = profile
         } catch (ex: IllegalArgumentException) {
             ex.printStackTrace()
         } catch (ex: IllegalAccessException) {
@@ -53,10 +56,15 @@ class HeadBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<H
     }
 
     fun owner(player: OfflinePlayer): HeadBuilder {
-        if (itemStack.type != Material.PLAYER_HEAD) return this
-        val t = sMeta
+        if (hItemStack.type != Material.PLAYER_HEAD) return this
+        val t = hMeta
         t.owningPlayer = player
         return this
+    }
+
+    override fun build(): ItemStack {
+        hItemStack.itemMeta = hMeta
+        return hItemStack
     }
 
     init {

@@ -1,9 +1,10 @@
 package me.racci.raccicore.runnables
 
+import com.github.shynixn.mccoroutine.asyncDispatcher
+import kotlinx.coroutines.withContext
+import me.racci.raccicore.RacciPlugin
 import me.racci.raccicore.events.DayEvent
 import me.racci.raccicore.events.NightEvent
-import me.racci.raccicore.plugin
-import me.racci.raccicore.skedule.skeduleAsync
 import me.racci.raccicore.utils.extensions.KotlinListener
 import me.racci.raccicore.utils.pm
 import me.racci.raccicore.utils.worlds.WorldTime.isDay
@@ -11,15 +12,14 @@ import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.event.EventHandler
 import org.bukkit.event.world.WorldLoadEvent
-import org.bukkit.scheduler.BukkitRunnable
 
-class TimeRunnable : BukkitRunnable(), KotlinListener {
+class TimeRunnable(plugin: RacciPlugin) : KotlinRunnable(plugin, true, true, 20, 100), KotlinListener {
 
     private val timeState = HashMap<String, Boolean>()
 
     @EventHandler
-    fun onWorldLoad(event: WorldLoadEvent) {
-        skeduleAsync(plugin) {timeChecker(event.world)}
+    suspend fun onWorldLoad(event: WorldLoadEvent) = withContext(plugin.asyncDispatcher) {
+        timeChecker(event.world)
     }
 
     private fun timeChecker(world: World) {

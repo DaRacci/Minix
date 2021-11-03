@@ -1,48 +1,19 @@
-package me.racci.raccicore.hooks
-
-//class PlaceHolderHooker {
+//package me.racci.raccicore.hooks
 //
-//    private val REGISTERED_PLACEHOLDERS = HashMap<String, Placeholder>()
-//    private val REGISTERED_HOOKS = HashSet<PlaceholderHook>()
+//import me.clip.placeholderapi.expansion.PlaceholderExpansion
+//import me.racci.raccicore.RacciPlugin
+//import org.bukkit.OfflinePlayer
+//import java.util.function.BiFunction
 //
-//    fun addHook(hook: PlaceholderHook) {
-//        hook.registerIntegration();
-//        REGISTERED_HOOKS.add(hook);
-//    }
+//class PlaceholderAPIHook(private val hooker: RacciPlugin) : PlaceholderExpansion() {
+//    override fun getIdentifier(): String    = hooker.description.name
+//    override fun getAuthor()    : String    = hooker.description.authors.joinToString(", ")
+//    override fun getVersion()   : String    = hooker.description.version
+//    override fun persist()      : Boolean   = true
 //
-//    fun registerPlaceholder(placeholder: PlaceholderEntry) {
-//        REGISTERED_PLACEHOLDERS.remove(placeholder.getIdentifier());
-//        REGISTERED_PLACEHOLDERS.put(placeholder.getIdentifier(), placeholder);
-//    }
+//    val placeholders = HashMap<String, BiFunction<String, OfflinePlayer, String>>()
 //
-//    fun getResult(identifier: String, player: Player? = null) : String {
-//        val placeholder = REGISTERED_PLACEHOLDERS[identifier.lowercase()] ?: return ""
-//        if(player == null && placeholder.requiresPlayer()) return ""
-//        return placeholder.getResult(player)
-//    }
-//
-//    fun translatePlaceholders(text: String, player: Player? = null): String {
-//        var processed = text
-//        for (integration in REGISTERED_HOOKS) {
-//            processed = integration.translate(processed, player)
-//        }
-//        return processed
-//    }
-//
-//}
-//
-//interface PlaceholderHook : Hook {
-//
-//    fun registerIntegration()
-//
-//    fun translate(text: String, player: Player? = null)
-//}
-//
-//class PlaceholderEntry {
-//
-//    private val identifier: String
-//    private val function: Function<Player, String>
-//    private val requiresPlayer: Boolean
-//
+//    override fun onRequest(player: OfflinePlayer, params: String): String? =
+//        placeholders[params.lowercase()]?.apply(params, player)
 //
 //}

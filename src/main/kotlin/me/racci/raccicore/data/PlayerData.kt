@@ -4,12 +4,8 @@ internal data class PlayerData(
     val player: org.bukkit.entity.Player
     ) {
 
-    init {
+    fun init() {
         PlayerManager.addPlayerData(this)
-    }
-
-    fun delete() {
-        PlayerManager.removePlayerData(this.player.uniqueId)
     }
 
     var lastOffhand: Long = 0

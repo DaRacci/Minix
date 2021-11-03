@@ -7,9 +7,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BannerMeta
 
 // TODO add shield()
+@Suppress("DEPRECATION")
 class BannerBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<BannerBuilder>(itemStack) {
 
-    override var itemStack = itemStack.clone()
+    private var bItemStack = itemStack.clone()
         get() {field.itemMeta = bMeta;return field}
 
     private val bMeta = meta.clone() as BannerMeta
@@ -50,7 +51,7 @@ class BannerBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder
         set(patterns) {bMeta.patterns = patterns}
 
     override fun build(): ItemStack {
-        itemStack.itemMeta = bMeta
-        return itemStack
+        bItemStack.itemMeta = bMeta
+        return bItemStack
     }
 }

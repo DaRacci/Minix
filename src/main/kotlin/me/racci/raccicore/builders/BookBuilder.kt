@@ -8,7 +8,7 @@ import java.util.*
 
 class BookBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<BookBuilder>(itemStack) {
 
-    override var itemStack = itemStack.clone()
+    var bItemStack = itemStack.clone()
         get() {field.itemMeta = bMeta;return field}
 
     private val bMeta get() = meta as BookMeta
@@ -36,6 +36,11 @@ class BookBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<B
     fun title(title: Component): BookBuilder {
         bMeta.title(title)
         return this
+    }
+
+    override fun build(): ItemStack {
+        bItemStack.itemMeta = bMeta
+        return bItemStack
     }
 
     companion object {

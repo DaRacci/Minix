@@ -10,21 +10,32 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataContainer
 import java.util.function.Function
 
-@Suppress("UNCHECKED_CAST", "LeakingThis")
-abstract class BaseItemBuilder<T : BaseItemBuilder<T>> protected constructor(open var itemStack: ItemStack) {
+@Suppress("UNCHECKED_CAST")
+abstract class BaseItemBuilder<T : BaseItemBuilder<T>> protected constructor(var itemStack: ItemStack) {
 
     var meta : ItemMeta = if (itemStack.hasItemMeta()) itemStack.itemMeta else Bukkit.getItemFactory().getItemMeta(itemStack.type)
 
+    var name
+        get() = meta.displayName()
+        set(component) {meta.displayName(component)}
     open fun name(component: Component) : T {
         meta.displayName(component)
         return this as T
     }
 
+    var lore: Component
+        get() = throw UnsupportedOperationException()
+        set(component) {meta.lore(listOf(component))}
     open fun lore(vararg component: Component) : T {
         meta.lore(component.asList())
         return this as T
     }
 
+    open fun lore(unit: List<Component>.() -> List<Component>) {
+        meta.lore(unit.invoke(meta.lore() ?: emptyList()))
+    }
+
+    @Deprecated("I mean tbh just use the lambada", ReplaceWith("lore(unit: List<Component>.() -> List<Component>))"))
     open fun lore(component: Function<List<Component>, List<Component>>) : T {
         meta.lore(component.apply(meta.lore() ?: emptyList()))
         return this as T

@@ -13,7 +13,7 @@ import org.bukkit.Location
  */
 class PlayerEnterLiquidEvent(
     val player: org.bukkit.entity.Player, val liquidType: Int, val from: Location, val to: Location
-    ) : KotlinEvent(true) { }
+    ) : KotlinEvent(true)
 
 /**
  * Player exit liquid event
@@ -26,4 +26,4 @@ class PlayerEnterLiquidEvent(
  */
 class PlayerExitLiquidEvent(
     val player: org.bukkit.entity.Player, val liquidType: Int, val from: Location, val to: Location
-    ) : KotlinEvent(true) { }
+    ) : KotlinEvent(true)

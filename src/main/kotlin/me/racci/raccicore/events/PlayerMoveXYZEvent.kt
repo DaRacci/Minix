@@ -10,7 +10,7 @@ package me.racci.raccicore.events
  */
 class PlayerMoveXYZEvent(
     val player: org.bukkit.entity.Player, val from: org.bukkit.Location, var to: org.bukkit.Location
-    ) : KotlinEvent(true) { }
+    ) : KotlinEvent(true)
 
 /**
  * Player move full x y z event
@@ -22,4 +22,4 @@ class PlayerMoveXYZEvent(
  */
 class PlayerMoveFullXYZEvent(
     val player: org.bukkit.entity.Player, val from: org.bukkit.Location, var to: org.bukkit.Location
-    ) : KotlinEvent(true) { }
+    ) : KotlinEvent(true)

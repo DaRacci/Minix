@@ -1,8 +1,6 @@
 package me.racci.raccicore.utils.strings
 
-import me.racci.raccicore.utils.text
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.ComponentBuilder
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextDecoration
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer

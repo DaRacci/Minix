@@ -2,19 +2,18 @@ package me.racci.raccicore.utils
 
 import com.google.gson.JsonParser
 import me.racci.raccicore.RacciPlugin
-import me.racci.raccicore.skedule.schedule
-import me.racci.raccicore.skedule.skeduleAsync
-import me.racci.raccicore.utils.strings.textOf
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
 import org.bukkit.event.player.PlayerJoinEvent
 import java.io.IOException
 import java.io.InputStreamReader
 import java.net.URL
 
-class UpdateChecker(plugin: RacciPlugin) : PluginDependent<RacciPlugin>(plugin) {
+class UpdateChecker(private val plugin: RacciPlugin) {
 
-    init {
+    fun init() {
         plugin.update(plugin.spigotId)
     }
 
@@ -40,28 +39,25 @@ class UpdateChecker(plugin: RacciPlugin) : PluginDependent<RacciPlugin>(plugin) 
 
     private fun RacciPlugin.update(
         id: Int,
-        color: ChatColor = ChatColor.LIGHT_PURPLE,
+        colour: TextColor = NamedTextColor.LIGHT_PURPLE,
         permission: String = "raccicore.update"
-    ) = catch<Exception> {
-        skeduleAsync(plugin) {
-            val new = spiget(id)
-                ?: throw Exception("Could not retrieve latest version")
-
-            val old = description.version
-            if (!(new isNewerThan old)) return@skeduleAsync
+    ) {
+        catch<Exception> {
+            val new = spiget(id) ?: throw Exception("Could not retrieve latest version")
+            val old = plugin.description.version
+            if (!(new isNewerThan old)) return
 
             val url = "https://www.spigotmc.org/resources/$id"
-            val msg = "${color}An update is available for ${description.name} ($old -> $new): $url"
+            val msg = Component.text("An update is available for ${description.name} ($old -> $new): $url")
+                .colorIfAbsent(colour)
+                .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, url))
 
-            schedule { console.sendMessage(msg) }
+            console.sendMessage(msg)
+
             listen<PlayerJoinEvent> {
-                if (it.player.hasPermission(permission))
-                    try {
-                        val text = textOf(msg) { ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, url) }
-                        it.player.sendMessage(text)
-                    } catch (ex: Error) {
-                        it.player.sendMessage(msg)
-                    }
+                if(it.player.hasPermission(permission)) {
+                    it.player.sendMessage(msg)
+                }
             }
         }
     }

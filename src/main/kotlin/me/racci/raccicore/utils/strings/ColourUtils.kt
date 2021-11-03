@@ -18,9 +18,11 @@ private val hexPattern: Pattern = Pattern.compile("(#[A-Fa-f0-9]{6})")
  * @param [parseHex] Weather to translate hex or not, Defaults to true
  * @return Returns the translated [String] with [parseHex] for translating hex
  */
-fun colour(string: String?, parseHex: Boolean = true): String {
-    return internalColour(string, parseHex)
-}
+fun colour(string: String?, parseHex: Boolean = true) =
+    internalColour(string, parseHex)
+
+fun colour(string: Any?, parseHex: Boolean = true) =
+    internalColour(string.toString(), parseHex)
 
 /**
  * Colour

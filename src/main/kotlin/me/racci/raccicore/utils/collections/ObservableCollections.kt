@@ -63,7 +63,7 @@ class ObservableList<T>(
     }
 
     override fun removeAll(elements: Collection<T>): Boolean {
-        return list.removeAll(elements).ifTrue {
+        return list.removeAll(elements.toSet()).ifTrue {
             runListeners(ObservableAction.REMOVE)
         }
     }
@@ -75,7 +75,7 @@ class ObservableList<T>(
     }
 
     override fun retainAll(elements: Collection<T>): Boolean {
-        return list.retainAll(elements).ifTrue {
+        return list.retainAll(elements.toSet()).ifTrue {
             runListeners(ObservableAction.REMOVE)
         }
     }
@@ -144,13 +144,13 @@ class ObservableSet<T>(
     }
 
     override fun removeAll(elements: Collection<T>): Boolean {
-        return set.removeAll(elements).ifTrue {
+        return set.removeAll(elements.toSet()).ifTrue {
             runListeners(ObservableAction.REMOVE)
         }
     }
 
     override fun retainAll(elements: Collection<T>): Boolean {
-        return set.retainAll(elements).ifTrue {
+        return set.retainAll(elements.toSet()).ifTrue {
             runListeners(ObservableAction.REMOVE)
         }
     }

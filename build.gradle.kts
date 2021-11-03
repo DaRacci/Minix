@@ -6,6 +6,7 @@ plugins {
     id("com.github.johnrengelman.shadow")
 }
 
+group = rootProject.group
 version = "0.1.6"
 
 dependencies {
@@ -75,6 +76,17 @@ tasks.processResources {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/DaRacci/RacciLib")
+            credentials {
+                username = rootProject.properties["name"].toString()
+                password = rootProject.properties["token"].toString()
+            }
+        }
+    }
+
     publications {
         create<MavenPublication>("maven") {
             from(components["java"])

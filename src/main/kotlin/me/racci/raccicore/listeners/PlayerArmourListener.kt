@@ -183,12 +183,12 @@
 //    HELMET(5), CHESTPLATE(6), LEGGINGS(7), BOOTS(8);
 //
 //    companion object {
-//        fun matchType(itemStack: ItemStack?): ArmourType? {
-//            if (ArmourListener.isAirOrNull(itemStack)) {
+//        fun matchType(hItemStack: ItemStack?): ArmourType? {
+//            if (ArmourListener.isAirOrNull(hItemStack)) {
 //                return null
 //            }
-//            itemStack ?: return null
-//            val type = itemStack.type.name
+//            hItemStack ?: return null
+//            val type = hItemStack.type.name
 //            return if (type.endsWith("_HELMET") || type.endsWith("_SKULL") || type.endsWith("PLAYER_HEAD")) {
 //                HELMET
 //            } else if (type.endsWith("_CHESTPLATE") || type.endsWith("ELYTRA")) {

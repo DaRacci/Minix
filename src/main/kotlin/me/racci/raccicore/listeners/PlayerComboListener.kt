@@ -2,9 +2,9 @@
 
 import com.github.shynixn.mccoroutine.asyncDispatcher
 import kotlinx.coroutines.withContext
+import me.racci.raccicore.RacciCore
 import me.racci.raccicore.data.PlayerManager
 import me.racci.raccicore.events.*
-import me.racci.raccicore.plugin
 import me.racci.raccicore.utils.extensions.KotlinListener
 import me.racci.raccicore.utils.pm
 import org.bukkit.Bukkit
@@ -14,20 +14,10 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 
 
- /**
-  * Player combo listeners
-  *
-  * @constructor Create empty Player combo listeners
-  */
  class PlayerComboListener : KotlinListener {
 
-     /**
-      * On interact
-      *
-      * @param event
-      */
      @EventHandler
-     suspend fun onInteract(event: PlayerInteractEvent) = withContext(plugin.asyncDispatcher) {
+     suspend fun onInteract(event: PlayerInteractEvent) = withContext(RacciCore.instance.asyncDispatcher) {
          if (event.action == Action.PHYSICAL) return@withContext
          val player = event.player
 
@@ -54,13 +44,8 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
          })
      }
 
-     /**
-      * On offhand
-      *
-      * @param event
-      */
      @EventHandler
-    suspend fun onOffhand(event: PlayerSwapHandItemsEvent) = withContext(plugin.asyncDispatcher) {
+    suspend fun onOffhand(event: PlayerSwapHandItemsEvent) = withContext(RacciCore.instance.asyncDispatcher) {
         val playerData = PlayerManager[event.player.uniqueId]
         val last = playerData.lastOffhand
         val now = System.currentTimeMillis()

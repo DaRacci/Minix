@@ -6,17 +6,17 @@ load: STARTUP
 loadbefore: [ Sylphia, Sylph, BloodNight, HollowsEve ]
 authors: [ Racci ]
 description: Core lib for my plugins
-website: https://github.com/DaRacci/RacciCore/
+website: https://github.com/DaRacci/RacciLib/
 
 libraries:
-  - ${kotlin-stdlib}
-  - ${kotlin-reflect}
-  - ${kotlinX-coroutinesCore}
-  - ${kotlinX-coroutinesJvm}
-  - ${kotlinX-serializationJson}
-  - ${kotlinX-dateTime}
-  - ${commons-lang3}
-  - ${commons-collections4}
-  - ${commons-tex}
-  - ${mcCoroutine-core}
-  - ${mcCoroutine-API}
+  - ${kotlinstdlib}
+  - ${kotlinreflect}
+  - ${kotlinXcoroutinesCore}
+  - ${kotlinXcoroutinesJvm}
+  - ${kotlinXserializationJson}
+  - ${kotlinXdateTime}
+  - ${commonslang3}
+  - ${commonscollections4}
+  - ${commonstext}
+  - ${mcCoroutineCore}
+  - ${mcCoroutineAPI}

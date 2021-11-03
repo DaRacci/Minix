@@ -1,41 +1,31 @@
 package me.racci.raccicore
 
 import me.racci.raccicore.data.PlayerManager
-import me.racci.raccicore.listeners.*
+import me.racci.raccicore.listeners.PlayerComboListener
+import me.racci.raccicore.listeners.PlayerMoveFullXYZListener
+import me.racci.raccicore.listeners.PlayerMoveListener
+import me.racci.raccicore.listeners.PlayerTeleportListener
+import me.racci.raccicore.runnables.KotlinRunnable
 import me.racci.raccicore.runnables.TimeRunnable
 import me.racci.raccicore.utils.extensions.KotlinListener
-import org.bukkit.scheduler.BukkitTask
 
-/**
- * Racci core
- */
-internal val plugin : RacciCore
-    get() = RacciCore.plugin
-/**
- * Racci lib
- *
- * @constructor Create empty Racci lib
- */
 class RacciCore : RacciPlugin(
     "&8",
     "RacciCore"
 ) {
 
-    companion object {
-        lateinit var plugin : RacciCore
+    internal companion object {
+        lateinit var instance        : RacciCore
     }
 
-    override suspend fun onEnableAsync() {
-        plugin = this
-        super.onEnableAsync()
-    }
-
-    override suspend fun handleAfterLoad() {
-        PlayerManager.init()
+    override suspend fun handleEnable() {
+        instance = this
+        PlayerManager.init(this)
     }
 
     override suspend fun handleDisable() {
-        PlayerManager.shutdown()
+        RacciPluginHandler.close()
+        PlayerManager.close()
     }
 
     override suspend fun registerListeners(): List<KotlinListener> {
@@ -44,14 +34,13 @@ class RacciCore : RacciPlugin(
             PlayerTeleportListener(),
             PlayerMoveFullXYZListener(),
             PlayerComboListener(),
-            PlayerJoinLeaveListener(),
-            TimeRunnable(),
+            TimeRunnable(this),
         )
     }
 
-    override suspend fun registerRunnables(): List<BukkitTask> {
+    override suspend fun registerRunnables(): List<KotlinRunnable> {
         return listOf(
-            TimeRunnable().runTaskTimerAsynchronously(this, 0L, 20)
+            TimeRunnable(this)
         )
     }
 }

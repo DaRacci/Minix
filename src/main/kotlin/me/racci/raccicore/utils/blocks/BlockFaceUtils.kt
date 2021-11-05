@@ -2,8 +2,27 @@ package me.racci.raccicore.utils.blocks
 
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
-import org.bukkit.block.BlockFace.*
+import org.bukkit.block.BlockFace.DOWN
+import org.bukkit.block.BlockFace.EAST
+import org.bukkit.block.BlockFace.EAST_NORTH_EAST
+import org.bukkit.block.BlockFace.EAST_SOUTH_EAST
+import org.bukkit.block.BlockFace.NORTH
+import org.bukkit.block.BlockFace.NORTH_EAST
+import org.bukkit.block.BlockFace.NORTH_NORTH_EAST
+import org.bukkit.block.BlockFace.NORTH_NORTH_WEST
+import org.bukkit.block.BlockFace.NORTH_WEST
+import org.bukkit.block.BlockFace.SELF
+import org.bukkit.block.BlockFace.SOUTH
+import org.bukkit.block.BlockFace.SOUTH_EAST
+import org.bukkit.block.BlockFace.SOUTH_SOUTH_EAST
+import org.bukkit.block.BlockFace.SOUTH_SOUTH_WEST
+import org.bukkit.block.BlockFace.SOUTH_WEST
+import org.bukkit.block.BlockFace.UP
+import org.bukkit.block.BlockFace.WEST
+import org.bukkit.block.BlockFace.WEST_NORTH_WEST
+import org.bukkit.block.BlockFace.WEST_SOUTH_WEST
 import org.bukkit.block.data.Directional
+import org.jetbrains.annotations.ApiStatus
 
 /**
  * Returns the opposite BlockFace for a given BlockFace. E.g. EAST_NORTH_EAST will return WEST_SOUTH_WEST. SELF will return SELF.
@@ -11,6 +30,8 @@ import org.bukkit.block.data.Directional
  * @param face Original BlockFace
  * @return Opposite BlockFace
  */
+@Deprecated("Moved", ReplaceWith("BlockUtils.getOpposite"))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 fun getOpposite(face: BlockFace?): BlockFace {
     when (face) {
         UP -> return DOWN
@@ -42,6 +63,8 @@ fun getOpposite(face: BlockFace?): BlockFace {
  * @param directional Block to check
  * @return Block that supports the block to check
  */
+@Deprecated("Moved", ReplaceWith("BlockUtils.getSupportingBlock"))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 fun getSupportingBlock(directional: Block): Block {
     if (directional.blockData is Directional) {
         return directional.getRelative(getOpposite((directional.blockData as Directional).facing))
@@ -56,6 +79,8 @@ fun getSupportingBlock(directional: Block): Block {
  * @param newBlock New block
  * @return Existing block's BlockFace that must have been right-clicked to place the new block
  */
+@Deprecated("Moved", ReplaceWith("BlockUtils.getPlacedAgainstFace"))
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
 fun getPlacedAgainstFace(existing: Block, newBlock: Block?): BlockFace {
     for (blockFace in BlockFace.values()) {
         if (existing.getRelative(blockFace) == newBlock) return blockFace

@@ -1,38 +1,65 @@
 plugins {
+    java
     `java-library`
     `maven-publish`
-    kotlin("jvm") version "1.6.0-RC"
-    id("org.jetbrains.dokka") version "1.5.31"
-    id("com.github.johnrengelman.shadow") version "7.0.0"
+    kotlin("jvm")                       version "1.6.0-RC"
+    id("org.jetbrains.dokka")               version "1.5.31"
+    kotlin("plugin.serialization")      version "1.5.31"
+    id("com.github.johnrengelman.shadow")   version "7.0.0"
 }
 
-group = rootProject.group
-version = "0.1.7"
+group = findProperty("group")!!
+version = findProperty("version")!!
 
 dependencies {
 
-    api(libs.bundles.kyoriAdventure)
+    api(libs.adventure.api)
+    api(libs.adventure.miniMessage)
     api(libs.itemNBTAPI)
     api(libs.acfPaper)
     api(libs.inventoryFramework)
-    api(libs.bundles.apacheCommons)
     api(libs.bundles.mcCoroutine)
-    compileOnly(libs.placeholderAPI)
+
     compileOnly(libs.authLib)
+    compileOnly(libs.purpurAPI)
+    compileOnly(libs.placeholderAPI)
+    compileOnly(libs.bundles.kotlinLibs)
+    compileOnly(libs.bundles.kotlinXLibs)
 
 }
 
 repositories {
     mavenCentral()
+    mavenLocal()
+    maven("https://jitpack.io")
+    // Minecraft AuthLib
+    maven("https://libraries.minecraft.net/")
+    // Kotlin
     maven("https://dl.bintray.com/kotlin/kotlin-dev/")
+    // Aikar Commands API
+    maven("https://repo.aikar.co/content/groups/aikar/")
+    // NBT API
+    maven("https://repo.codemc.org/repository/maven-public/")
+    // ProtocolLib
+    maven("https://repo.dmulloy2.net/repository/public/")
+    // Adventure
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
+    // PlaceholderAPI
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+}
+
+java {
+    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
+    withJavadocJar()
 }
 
 tasks.shadowJar {
 
+    // Hacky way of adding dependencies that are downloaded
+    // On launch of the server.
     dependencies {
-        exclude(dependency(rootProject.libs.commonsLang3.get()))
-        exclude(dependency(rootProject.libs.commonsCollections4.get()))
-        exclude(dependency(rootProject.libs.commonsText.get()))
         exclude(dependency(rootProject.libs.mcCoroutineAPI.get()))
         exclude(dependency(rootProject.libs.mcCoroutineCore.get()))
     }
@@ -57,11 +84,8 @@ tasks.processResources {
             val var4    : String ; rootProject.libs.kotlinX.coroutinesJvm.get().apply       {var4   = "$module:$versionConstraint"}
             val var5    : String ; rootProject.libs.kotlinX.serializationJson.get().apply   {var5   = "$module:$versionConstraint"}
             val var6    : String ; rootProject.libs.kotlinX.dateTime.get().apply            {var6   = "$module:$versionConstraint"}
-            val var7    : String ; rootProject.libs.commonsLang3.get().apply                {var7   = "$module:$versionConstraint"}
-            val var8    : String ; rootProject.libs.commonsCollections4.get().apply         {var8   = "$module:$versionConstraint"}
-            val var9    : String ; rootProject.libs.commonsText.get().apply                 {var9   = "$module:$versionConstraint"}
-            val var10   : String ; rootProject.libs.mcCoroutineCore.get().apply             {var10  = "$module:$versionConstraint"}
-            val var11   : String ; rootProject.libs.mcCoroutineAPI.get().apply              {var11  = "$module:$versionConstraint"}
+            val var7    : String ; rootProject.libs.mcCoroutineCore.get().apply             {var7   = "$module:$versionConstraint"}
+            val var8    : String ; rootProject.libs.mcCoroutineAPI.get().apply              {var8   = "$module:$versionConstraint"}
             expand(
                 "version" to project.version,
                 "kotlinstdlib" to var1,
@@ -70,11 +94,8 @@ tasks.processResources {
                 "kotlinXcoroutinesJvm" to var4,
                 "kotlinXserializationJson" to var5,
                 "kotlinXdateTime" to var6,
-                "commonslang3" to var7,
-                "commonscollections4" to var8,
-                "commonstext" to var9,
-                "mcCoroutineCore" to var10,
-                "mcCoroutineAPI" to var11,
+                "mcCoroutineCore" to var7,
+                "mcCoroutineAPI" to var8,
             )}
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }

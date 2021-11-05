@@ -10,6 +10,7 @@
 | [me.racci.raccicore.builders](-racci-core/me.racci.raccicore.builders/index.md) |
 | [me.racci.raccicore.events](-racci-core/me.racci.raccicore.events/index.md) |
 | [me.racci.raccicore.gui](-racci-core/me.racci.raccicore.gui/index.md) |
+| [me.racci.raccicore.interfaces](-racci-core/me.racci.raccicore.interfaces/index.md) |
 | [me.racci.raccicore.listeners](-racci-core/me.racci.raccicore.listeners/index.md) |
 | [me.racci.raccicore.runnables](-racci-core/me.racci.raccicore.runnables/index.md) |
 | [me.racci.raccicore.skedule](-racci-core/me.racci.raccicore.skedule/index.md) |

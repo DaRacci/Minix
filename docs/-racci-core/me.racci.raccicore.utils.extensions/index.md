@@ -7,6 +7,7 @@
 | Name | Summary |
 |---|---|
 | [Console](-console/index.md) | [jvm]<br>object [Console](-console/index.md) : ConsoleCommandSender |
+| [ExAdventureKyori](-ex-adventure-kyori/index.md) | [jvm]<br>object [ExAdventureKyori](-ex-adventure-kyori/index.md) |
 | [KListener](-k-listener/index.md) | [jvm]<br>interface [KListener](-k-listener/index.md)&lt;[T](-k-listener/index.md) : Plugin&gt; : Listener, [WithPlugin](-with-plugin/index.md)&lt;[T](-k-listener/index.md)&gt; |
 | [KotlinListener](-kotlin-listener/index.md) | [jvm]<br>interface [KotlinListener](-kotlin-listener/index.md) : Listener |
 | [PluginDispatcher](-plugin-dispatcher/index.md) | [jvm]<br>@[JvmInline](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-inline/index.html)<br>value class [PluginDispatcher](-plugin-dispatcher/index.md)(plugin: [RacciPlugin](../me.racci.raccicore/-racci-plugin/index.md)) |

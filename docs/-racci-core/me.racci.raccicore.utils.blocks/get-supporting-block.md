@@ -3,7 +3,10 @@
 # getSupportingBlock
 
 [jvm]\
-fun [getSupportingBlock](get-supporting-block.md)(directional: Block): Block
+
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
+
+~~fun~~ [~~getSupportingBlock~~](get-supporting-block.md)~~(~~~~directional~~~~:~~ Block~~)~~~~:~~ Block
 
 Gets the block another block (e.g. a ladder) is attached to
 

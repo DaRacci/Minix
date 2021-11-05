@@ -15,8 +15,5 @@ libraries:
   - ${kotlinXcoroutinesJvm}
   - ${kotlinXserializationJson}
   - ${kotlinXdateTime}
-  - ${commonslang3}
-  - ${commonscollections4}
-  - ${commonstext}
   - ${mcCoroutineCore}
   - ${mcCoroutineAPI}

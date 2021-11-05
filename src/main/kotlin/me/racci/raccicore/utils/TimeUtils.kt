@@ -6,22 +6,51 @@ import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
-fun now(): Long = Instant.now().epochSecond//Clock.System.now().epochSeconds
+fun now(): Long = Instant.now().epochSecond
 fun nowMilli(): Long = Instant.now().toEpochMilli()
-fun nowNano(): Int = Clock.System.now().nanosecondsOfSecond
+fun nowNano(): Long = Clock.System.now().nanosecondsOfSecond.toLong()
 
 @OptIn(ExperimentalTime::class)
-val Long.ticks: Duration get() = toDouble().ticks
-@OptIn(ExperimentalTime::class)
-val Int.ticks: Duration get() = toDouble().ticks
-@OptIn(ExperimentalTime::class)
-val Double.ticks: Duration get() = Duration.milliseconds(tickToMilliseconds(this))
+object TimeConversionUtils {
 
-@OptIn(ExperimentalTime::class)
-val Duration.inTicks: Double get() = millisecondsToTick(toDouble(DurationUnit.MILLISECONDS))
+    val Long.millisecondToTick      : Duration  get() = toDouble().millisecondToTick
+    val Int.millisecondToTick       : Duration  get() = toDouble().millisecondToTick
+    val Double.millisecondToTick    : Duration  get() = Duration.milliseconds(this / 50)
+    val Duration.millisecondToTick  : Double    get() = toDouble(DurationUnit.MILLISECONDS) * 50
 
-@OptIn(ExperimentalTime::class)
-fun Duration.toLongTicks(): Long = inTicks.toLong()
+    val Long.tickToMillisecond      : Duration  get() = toDouble().tickToMillisecond
+    val Int.tickToMillisecond       : Duration  get() = toDouble().tickToMillisecond
+    val Double.tickToMillisecond    : Duration  get() = Duration.milliseconds(this * 50)
+    val Duration.tickToMillisecond  : Double    get() = toDouble(DurationUnit.MILLISECONDS) / 50
 
-private fun tickToMilliseconds(value: Double): Double = value * 50.0
-private fun millisecondsToTick(value: Double): Double = value / 50.0
+    val Long.millisecondToSecond    : Duration  get() = toDouble().millisecondToSecond
+    val Int.millisecondToSecond     : Duration  get() = toDouble().millisecondToSecond
+    val Double.millisecondToSecond  : Duration  get() = Duration.seconds(this * 1000)
+    val Duration.millisecondToSecond: Double    get() = toDouble(DurationUnit.SECONDS) / 1000
+
+    val Long.secondToMillisecond    : Duration  get() = toDouble().secondToMillisecond
+    val Int.secondToMillisecond     : Duration  get() = toDouble().secondToMillisecond
+    val Double.secondToMillisecond  : Duration  get() = Duration.milliseconds(this / 1000)
+    val Duration.secondToMillisecond: Double    get() = toDouble(DurationUnit.MILLISECONDS) * 1000
+
+    val Long.minuteToSeconds        : Duration  get() = toDouble().minuteToSeconds
+    val Int.minuteToSeconds         : Duration  get() = toDouble().minuteToSeconds
+    val Double.minuteToSeconds      : Duration  get() = Duration.milliseconds(this * 60)
+    val Duration.minuteToSeconds    : Double    get() = toDouble(DurationUnit.SECONDS) / 60
+
+    val Long.secondToMinute         : Duration  get() = toDouble().secondToMinute
+    val Int.secondToMinute          : Duration  get() = toDouble().secondToMinute
+    val Double.secondToMinute       : Duration  get() = Duration.milliseconds(this / 60)
+    val Duration.secondToMinute     : Double    get() = toDouble(DurationUnit.MINUTES) * 60
+
+    val Long.hourToMinute           : Duration  get() = toDouble().hourToMinute
+    val Int.hourToMinute            : Duration  get() = toDouble().hourToMinute
+    val Double.hourToMinute         : Duration  get() = Duration.seconds(this * 60)
+    val Duration.hourToMinute       : Double    get() = toDouble(DurationUnit.MINUTES) / 60
+
+    val Long.minuteToHour           : Duration  get() = toDouble().minuteToHour
+    val Int.minuteToHour            : Duration  get() = toDouble().minuteToHour
+    val Double.minuteToHour         : Duration  get() = Duration.milliseconds(this / 60)
+    val Duration.minuteToHour       : Double    get() = toDouble(DurationUnit.HOURS) * 60
+
+}

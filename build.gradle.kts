@@ -30,10 +30,11 @@ dependencies {
 
 repositories {
     mavenCentral()
-    mavenLocal()
     maven("https://jitpack.io")
     // Minecraft AuthLib
     maven("https://libraries.minecraft.net/")
+    // Purpur
+    maven("https://repo.pl3x.net/")
     // Kotlin
     maven("https://dl.bintray.com/kotlin/kotlin-dev/")
     // Aikar Commands API

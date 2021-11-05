@@ -1,0 +1,83 @@
+[versions]
+kotlinVersion                  = "1.6.0-RC"
+shadowVersion                  = "7.0.0"
+dokkaVersion                   = "1.5.31"
+serializationVersion           = "1.5.31"
+
+authLibVersion                 = "1.5.21"
+minecraftVersion               = "1.17.1-R0.1-SNAPSHOT"
+
+adventureAPIVersion            = "4.10.0-SNAPSHOT"
+adventureBukkitVersion         = "4.0.0"
+adventureMiniMessageVersion    = "4.2.0-SNAPSHOT"
+
+luckPermsAPIVersion            = "5.3"
+placeholderAPIVersion          = "2.10.10"
+landsAPIVersion                = "5.15.2"
+protcolLibVersion              = "4.7.0"
+citizensAPIVersion             = "2.0.28-SNAPSHOT"
+ecoEnchantsVersion             = "8.14.0"
+multiverseCoreVersion          = "4.3.1"
+vaultVersion                   = "1.7"
+
+kotlinStdLibVersion            = "1.6.0-M1"
+kotlinReflectVersion           = "1.6.0-M1"
+kotlinXDateTimeVersion         = "0.3.0"
+kotlinXSerializationJsonVersion= "1.3.0"
+kotlinXCoroutinesVersion       = "1.5.2-native-mt"
+
+commonsLang3Version             = "3.12.0"
+commonsTextVersion              = "1.9"
+commonsCollections4Version      = "4.4"
+
+nbtEditorVersion                = "7.17.0"
+nbtAPIVersion                   = "2.8.0"
+acfPaperVersion                 = "0.5.0-SNAPSHOT"
+inventoryFrameworkVersion       = "0.10.3"
+mcCoroutineVersion              = "1.5.0"
+
+[libraries]
+adventure-API =                 {module = "net.kyori:adventure-api",                                                version.ref = "adventureAPIVersion"}
+adventure-bukkit =              {module = "net.kyori:adventure-platform-bukkit",                                    version.ref = "adventureBukkitVersion"}
+adventure-miniMessage =         {module = "net.kyori:adventure-text-minimessage",                                   version.ref = "adventureMiniMessageVersion"}
+
+authLib =                       {module = "com.mojang:authlib",                                                     version.ref = "authLibVersion"}
+purpurAPI =                     {module = "net.pl3x.purpur:purpur-api",                                             version.ref = "minecraftVersion"}
+
+luckPermsAPI =                  {module = "net.luckperms:api",                                                      version.ref = "luckPermsAPIVersion"}
+placeholderAPI =                {module = "me.clip:placeholderapi",                                                 version.ref = "placeholderAPIVersion"}
+landsAPI =                      {module = "com.github.angeschossen:LandsAPI",                                       version.ref = "landsAPIVersion"}
+protocolLib =                   {module = "com.comphenix.protocol:ProtocolLib",                                     version.ref = "protcolLibVersion"}
+citizensAPI =                   {module = "net.citizensnpcs:citizens-main",                                         version.ref = "citizensAPIVersion"}
+ecoEnchants =                   {module = "com.github.Auxilor:EcoEnchants",                                         version.ref = "ecoEnchantsVersion"}
+multiverseCore =                {module = "com.onarandombox.multiversecore:Multiverse-Core",                        version.ref = "multiverseCoreVersion"}
+vault =                         {module = "com.github.MilkBowl:VaultAPI",                                           version.ref = "vaultVersion"}
+
+kotlin-stdLib =                 {module = "org.jetbrains.kotlin:kotlin-stdlib",                                     version.ref = "kotlinStdLibVersion"}
+kotlin-reflect =                {module = "org.jetbrains.kotlin:kotlin-reflect",                                    version.ref = "kotlinReflectVersion"}
+kotlinX-dateTime =              {module = "org.jetbrains.kotlinx:kotlinx-datetime",                                 version.ref = "kotlinXDateTimeVersion"}
+kotlinX-serializationJson =     {module = "org.jetbrains.kotlinx:kotlinx-serialization-json",                       version.ref = "kotlinXSerializationJsonVersion"}
+kotlinX-coroutinesCore =        {module = "org.jetbrains.kotlinx:kotlinx-coroutines-core",                          version.ref = "kotlinXCoroutinesVersion"}
+kotlinX-coroutinesJvm =         {module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm",                      version.ref = "kotlinXCoroutinesVersion"}
+
+commonsLang3 =                  {module = "org.apache.commons:commons-lang3",                                       version.ref = "commonsLang3Version"}
+commonsText =                   {module = "org.apache.commons:commons-text",                                        version.ref = "commonsTextVersion"}
+commonsCollections4 =           {module = "org.apache.commons:commons-collections4",                                version.ref = "commonsCollections4Version"}
+
+nbtEditor =                     {module = "io.github.bananapuncher714:nbteditor",                                   version.ref = "nbtEditorVersion"}
+nbtInjector =                   {module = "de.tr7zw:nbt-injector",                                                  version.ref = "nbtAPIVersion"}
+dataNBTAPI =                    {module = "de.tr7zw:nbt-data-api",                                                  version.ref = "nbtAPIVersion"}
+itemNBTAPI =                    {module = "de.tr7zw:item-nbt-api",                                                  version.ref = "nbtAPIVersion"}
+acfPaper =                      {module = "co.aikar:acf-paper",                                                     version.ref = "acfPaperVersion"}
+inventoryFramework =            {module = "com.github.stefvanschie.inventoryframework:IF",                          version.ref = "inventoryFrameworkVersion"}
+mcCoroutineAPI =                {module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api",                  version.ref = "mcCoroutineVersion"}
+mcCoroutineCore =               {module = "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core",                 version.ref = "mcCoroutineVersion"}
+
+[bundles]
+kyoriAdventure      = ["adventure-API", "adventure-bukkit", "adventure-miniMessage"]
+pluginHooks         = ["luckPermsAPI", "placeholderAPI", "landsAPI", "protocolLib", "citizensAPI"]
+kotlinLibs          = ["kotlin-stdLib", "kotlin-reflect"]
+kotlinXLibs         = ["kotlinX-dateTime", "kotlinX-serializationJson", "kotlinX-coroutinesCore", "kotlinX-coroutinesJvm"]
+apacheCommons       = ["commonsLang3", "commonsText", "commonsCollections4"]
+mcCoroutine         = ["mcCoroutineAPI", "mcCoroutineCore"]
+nbtLibs             = ["nbtInjector", "dataNBTAPI", "itemNBTAPI"]

@@ -4,3 +4,5 @@
 
 [jvm]\
 open fun [unbreakable](unbreakable.md)(unbreakable: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = true): [T](index.md)
+
+var [unbreakable](unbreakable.md): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)

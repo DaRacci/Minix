@@ -10,4 +10,4 @@ class [PlayerComboListener](index.md) : [KotlinListener](../../me.racci.raccicor
 | Name | Summary |
 |---|---|
 | [onInteract](on-interact.md) | [jvm]<br>suspend fun [onInteract](on-interact.md)(event: PlayerInteractEvent) |
-| [onOffhand](on-offhand.md) | [jvm]<br>suspend fun [onOffhand](on-offhand.md)(event: PlayerSwapHandItemsEvent) |
+| [onOffhand](on-offhand.md) | [jvm]<br>fun [onOffhand](on-offhand.md)(event: PlayerSwapHandItemsEvent) |

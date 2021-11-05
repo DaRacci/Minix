@@ -3,4 +3,4 @@
 # nowNano
 
 [jvm]\
-fun [nowNano](now-nano.md)(): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)
+fun [nowNano](now-nano.md)(): [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)

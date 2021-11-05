@@ -3,4 +3,4 @@
 # onOffhand
 
 [jvm]\
-suspend fun [onOffhand](on-offhand.md)(event: PlayerSwapHandItemsEvent)
+fun [onOffhand](on-offhand.md)(event: PlayerSwapHandItemsEvent)

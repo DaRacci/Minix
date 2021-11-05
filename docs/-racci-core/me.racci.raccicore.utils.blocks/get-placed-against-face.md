@@ -3,7 +3,10 @@
 # getPlacedAgainstFace
 
 [jvm]\
-fun [getPlacedAgainstFace](get-placed-against-face.md)(existing: Block, newBlock: Block?): BlockFace
+
+@ApiStatus.ScheduledForRemoval(inVersion = "0.2.0")
+
+~~fun~~ [~~getPlacedAgainstFace~~](get-placed-against-face.md)~~(~~~~existing~~~~:~~ Block~~,~~ ~~newBlock~~~~:~~ Block?~~)~~~~:~~ BlockFace
 
 Gets the BlockFace of the existing block that must have been right-clicked to place the new Block
 

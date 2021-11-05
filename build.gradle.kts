@@ -1,9 +1,9 @@
 plugins {
     `java-library`
     `maven-publish`
-    kotlin("jvm")
-    id("org.jetbrains.dokka")
-    id("com.github.johnrengelman.shadow")
+    kotlin("jvm") version "1.6.0-RC"
+    id("org.jetbrains.dokka") version "1.5.31"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
 group = rootProject.group
@@ -11,15 +11,20 @@ version = "0.1.7"
 
 dependencies {
 
-    api(rootProject.libs.bundles.kyoriAdventure)
-    api(rootProject.libs.itemNBTAPI)
-    api(rootProject.libs.acfPaper)
-    api(rootProject.libs.inventoryFramework)
-    api(rootProject.libs.bundles.apacheCommons)
-    api(rootProject.libs.bundles.mcCoroutine)
-    compileOnly(rootProject.libs.placeholderAPI)
-    compileOnly(rootProject.libs.authLib)
+    api(libs.bundles.kyoriAdventure)
+    api(libs.itemNBTAPI)
+    api(libs.acfPaper)
+    api(libs.inventoryFramework)
+    api(libs.bundles.apacheCommons)
+    api(libs.bundles.mcCoroutine)
+    compileOnly(libs.placeholderAPI)
+    compileOnly(libs.authLib)
 
+}
+
+repositories {
+    mavenCentral()
+    maven("https://dl.bintray.com/kotlin/kotlin-dev/")
 }
 
 tasks.shadowJar {

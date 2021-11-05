@@ -4,10 +4,17 @@ import com.github.shynixn.mccoroutine.asyncDispatcher
 import kotlinx.coroutines.withContext
 import me.racci.raccicore.RacciCore
 import me.racci.raccicore.data.PlayerManager
-import me.racci.raccicore.events.*
+import me.racci.raccicore.events.PlayerDoubleOffhandEvent
+import me.racci.raccicore.events.PlayerLeftClickEvent
+import me.racci.raccicore.events.PlayerOffhandEvent
+import me.racci.raccicore.events.PlayerRightClickEvent
+import me.racci.raccicore.events.PlayerShiftDoubleOffhandEvent
+import me.racci.raccicore.events.PlayerShiftLeftClickEvent
+import me.racci.raccicore.events.PlayerShiftOffhandEvent
+import me.racci.raccicore.events.PlayerShiftRightClickEvent
 import me.racci.raccicore.utils.extensions.KotlinListener
+import me.racci.raccicore.utils.nowMilli
 import me.racci.raccicore.utils.pm
-import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
@@ -21,7 +28,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
          if (event.action == Action.PHYSICAL) return@withContext
          val player = event.player
 
-         pm.callEvent(when(event.action) {
+         val newEvent = when(event.action) {
              Action.LEFT_CLICK_BLOCK, Action.LEFT_CLICK_AIR -> {
                  if (player.isSneaking) PlayerShiftLeftClickEvent(
                      player, event.item, event.interactionPoint,
@@ -41,24 +48,29 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
                  )
              }
              else -> return@withContext
-         })
+         }
+         pm.callEvent(newEvent)
+
+         if(newEvent.isCancelled) event.isCancelled = true
      }
 
      @EventHandler
-    suspend fun onOffhand(event: PlayerSwapHandItemsEvent) = withContext(RacciCore.instance.asyncDispatcher) {
+    fun onOffhand(event: PlayerSwapHandItemsEvent) {
         val playerData = PlayerManager[event.player.uniqueId]
         val last = playerData.lastOffhand
-        val now = System.currentTimeMillis()
         val player = event.player
-        Bukkit.getPluginManager().callEvent(if((now - last) <= 500L) {
+        val vEvent = (if((nowMilli() - last) <= 500L) {
             if (player.isSneaking) {
                 PlayerShiftDoubleOffhandEvent(player, player.inventory.itemInMainHand, player.inventory.itemInOffHand)
             } else PlayerDoubleOffhandEvent(player, player.inventory.itemInMainHand, player.inventory.itemInOffHand)
         } else {
-            playerData.lastOffhand = System.currentTimeMillis()
+            playerData.lastOffhand = nowMilli()
             if (player.isSneaking) {
                 PlayerShiftOffhandEvent(player, player.inventory.itemInMainHand, player.inventory.itemInOffHand)
             } else PlayerOffhandEvent(player, player.inventory.itemInMainHand, player.inventory.itemInOffHand)
         })
+        pm.callEvent(vEvent)
+
+        if(vEvent.isCancelled) event.isCancelled = true
     }
 }

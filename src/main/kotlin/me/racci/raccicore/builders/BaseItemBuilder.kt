@@ -41,6 +41,9 @@ abstract class BaseItemBuilder<T : BaseItemBuilder<T>> protected constructor(var
         return this as T
     }
 
+    var amount: Int
+        get() = itemStack.amount
+        set(amount) {itemStack.amount = amount}
     open fun amount(amount: Int) : T {
         itemStack.amount = amount
         return this as T
@@ -66,12 +69,18 @@ abstract class BaseItemBuilder<T : BaseItemBuilder<T>> protected constructor(var
         return this as T
     }
 
+    var unbreakable: Boolean
+        get() = meta.isUnbreakable
+        set(boolean) {meta.isUnbreakable = boolean}
     open fun unbreakable(unbreakable: Boolean = true) : T {
         meta.isUnbreakable = unbreakable
         return this as T
     }
 
-    open fun glow() : T {
+    var glow: Boolean
+        get() = throw UnsupportedOperationException()
+        set(boolean) {glow(boolean)}
+    open fun glow(boolean: Boolean = true) : T {
         if(!meta.hasEnchants()) {
             meta.addEnchant(Enchantment.DURABILITY, 1, false)
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
@@ -96,6 +105,9 @@ abstract class BaseItemBuilder<T : BaseItemBuilder<T>> protected constructor(var
         return this as T
     }
 
+    var nbt: Pair<String, Boolean>
+        get() = throw UnsupportedOperationException()
+        set(pair) {booleanNBT(pair)}
     open fun booleanNBT(vararg pair: Pair<String, Boolean>) : T {
         itemStack.itemMeta = meta
         pair.forEach{ItemNBT.setBoolean(itemStack, it.first, it.second)}

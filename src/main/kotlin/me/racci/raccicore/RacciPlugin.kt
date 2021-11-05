@@ -31,12 +31,12 @@ abstract class RacciPlugin(
 ) : SuspendingJavaPlugin() {
 
     lateinit var commandManager : PaperCommandManager ; private set
-    val log = Log(colour("$colour$prefix"))
+    val log = Log(colour("$colour$prefix"), true)
 
     override suspend fun onEnableAsync() {
-        Log().info()
-        Log().info("Loading ${this.colour} ${this.name}")
-        Log().info()
+        log.info()
+        log.info("Loading ${this.colour} ${this.name}")
+        log.info()
 
         commandManager = PaperCommandManager(this)
         RacciPluginHandler::add
@@ -44,23 +44,23 @@ abstract class RacciPlugin(
         if(spigotId != 0) ::UpdateChecker
         if(bStatsId != 0) {}//TODO
 
-        Log().debug("HandleEnable Started")
+        log.debug("HandleEnable Started")
         this.handleEnable()
 
-        Log().debug("Registering Events")
+        log.debug("Registering Events")
         this.registerListeners().forEach {pm.registerSuspendingEvents(it, this)}
-        Log().debug("Registering Runnables")
+        log.debug("Registering Runnables")
         RunnableManager.registeredRunnables[this] = this.registerRunnables()
-        Log().debug("Starting Runnables")
+        log.debug("Starting Runnables")
         RunnableManager.run(this)
-        Log().debug("Registering Commands")
+        log.debug("Registering Commands")
         this.registerCommands().forEach(commandManager::registerCommand)
 
-        Log().info()
-        Log().success("Finished Loading ${this.colour} ${this.name}")
-        Log().info()
+        log.info()
+        log.success("Finished Loading ${this.colour} ${this.name}")
+        log.info()
 
-        Log().debug("HandleAfterLoad Started")
+        log.debug("HandleAfterLoad Started")
         this.handleAfterLoad()
 
     }

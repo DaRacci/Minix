@@ -69,4 +69,4 @@ jobs:
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
-        run: ./gradlew -Pversion=${format} publish
+#        run: ./gradlew -Pversion=${format} publish

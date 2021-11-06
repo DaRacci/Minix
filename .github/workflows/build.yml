@@ -4,14 +4,13 @@ on: [ push, pull_request, workflow_dispatch ]
 
 jobs:
   build:
-  # Only run on PRs if the source branch is on someone else's repo
-    if: !contains(github.event.commits[0].message, '[ci-skip]') || ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
+    if: !contains(github.event.commits[0].message, '[ci-skip]')
     strategy:
       matrix:
         os: ["ubuntu-latest"]
     runs-on: "${{ matrix.os }}"
     steps:
-      - name: Checkout Repository
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Setup JDK-16
@@ -39,16 +38,19 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build
-        run: ./gradlew clean build --stacktrace
+        run: |
+          chmod +x gradlew
+          ./gradlew build -Pversion=${version} --stacktrace
 
       - name: Upload artififacts
         uses: actions/upload-artifact@v2.2.1
         with:
           name: RacciCore
-          path: jars/*.jar
-      #- name: "Publish"
-      #  if: ${{ runner.os == 'Linux' && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
-      #  run: "./gradlew publish"
-      #  env:
-      #    USERNAME: ${{ secrets.USERNAME }}
-      #    PASSWORD: ${{ secrets.PASSWORD }}
+          path: build/libs/*.jar
+
+      - name: Publish
+        if: "contains(github.event.commits[0].message, '[Release]')"
+        env:
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+        run: ./gradlew -Pversion=${version} publish

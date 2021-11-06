@@ -12,7 +12,7 @@
 # Information for development
 
 ## Javadoc
-* The 0.1.7 Javadoc can be found [here](https://javadoc.jitpack.io/com/github/DaRacci/RacciLib/0.1.7/)
+* The 0.1.7 Javadoc can be found [here](https://javadoc.jitpack.io/com/github/DaRacci/RacciLib/0.1.7/javadoc)
 * You can also get the docs from [here](https://raccilib.sylphmc.com) with the Github format 
   
 ## Plugin Information

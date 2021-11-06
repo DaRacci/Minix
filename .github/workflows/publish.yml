@@ -27,7 +27,8 @@ jobs:
 
       - name: Publish artifact
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          USERNAME: ${{ secrets.USERNAME }}
+          PASSWORD: ${{ secrets.PASSWORD }}
         run: |
           NEW_VERSION=$(echo "${GITHUB_REF)" | cut -d "/" -f3)
           echo "New version: ${NEW_VERSION}"

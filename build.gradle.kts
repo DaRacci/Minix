@@ -1,5 +1,6 @@
 plugins {
     java
+    signing
     `java-library`
     `maven-publish`
     kotlin("jvm")                       version "1.6.0-RC"
@@ -52,8 +53,6 @@ repositories {
 java {
     targetCompatibility = JavaVersion.VERSION_17
     sourceCompatibility = JavaVersion.VERSION_17
-    withSourcesJar()
-    withJavadocJar()
 }
 
 tasks.shadowJar {
@@ -64,15 +63,6 @@ tasks.shadowJar {
         exclude(dependency(rootProject.libs.mcCoroutineAPI.get()))
         exclude(dependency(rootProject.libs.mcCoroutineCore.get()))
     }
-
-//    relocate("org.jetbrains", "libraries.jetbrains")
-//    relocate("org.intellij", "libraries.intellij")
-//    relocate("fonts", "libraries.Fonts")
-//    relocate("de.tr7zw.changeme", "libraries.tr7zw.NbtAPI")
-//    relocate("de.tr7zw.annotations", "libraries.tr7zw.Annotations")
-//    relocate("com.github.stefvanschie", "libraries.stefvanschie.InventoryFramework")
-//    relocate("co.aikar.locales", "libraries.aikar.Locales")
-//    relocate("co.aikar.commands", "libraries.aikar.Commands")
 
 }
 
@@ -102,23 +92,82 @@ tasks.processResources {
     }
 }
 
+tasks {
+
+    val sourcesJar by registering(Jar::class) {
+        dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+        archiveClassifier.set("sources")
+        from(sourceSets["main"].allSource)
+    }
+
+    val javadocJar by registering(Jar::class) {
+        dependsOn("dokkaJavadoc")
+        archiveClassifier.set("javadoc")
+        from(dokkaJavadoc.get().outputDirectory)
+    }
+
+    artifacts {
+        archives(sourcesJar)
+        archives(javadocJar)
+        archives(jar)
+    }
+}
+
 publishing {
     repositories {
         maven {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/DaRacci/RacciLib")
             credentials {
-                username = rootProject.properties["name"].toString()
-                password = rootProject.properties["token"].toString()
+                username = System.getenv("USERNAME")
+                password = System.getenv("PASSWORD")
             }
         }
     }
 
     publications {
         create<MavenPublication>("maven") {
+            pom {
+                val projectGitUrl = "http://github.com/DaRacci/RacciLib"
+                name.set(rootProject.name)
+                description.set(
+                    "A Spigot library for use with kotlin." +
+                    "Providing Coroutines and lots of ASYNC to provide the best performance."
+                )
+                url.set(projectGitUrl)
+                inceptionYear.set("2021")
+                developers {
+                    developer {
+                        name.set("Racci")
+                        url.set("https://www.github.com/DaRacci")
+                    }
+                }
+                licenses {
+                    license {
+                        name.set("GPL-3.0")
+                        url.set("https://opensource.org/licenses/GPL-3.0")
+                    }
+                }
+                issueManagement {
+                    system.set("GitHub")
+                    url.set("$projectGitUrl/issues")
+                }
+                scm {
+                    connection.set("scm:git:$projectGitUrl")
+                    developerConnection.set("scm:git:$projectGitUrl")
+                    url.set(projectGitUrl)
+                }
+            }
+
             from(components["java"])
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
             artifactId = project.name.toLowerCase()
         }
+        the<SigningExtension>().sign(this)
     }
 }
 
+signing {
+    useGpgCmd()
+}

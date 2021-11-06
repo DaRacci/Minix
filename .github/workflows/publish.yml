@@ -1,10 +1,9 @@
 name: Publish release
-on:
-  release:
-    type: [published, workflow_dispatch]
+on: [workflow_dispatch]
 jobs:
   publish-release:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.commits[0].message, '[ci-skip]')"
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v2
@@ -13,13 +12,16 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: "adopt"
-          java-version: 16
-
+          java-version: 17
       - name: Setup build cache
         uses: actions/cache@v2.1.6
         with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles(`**/*.gradle.kts`) }}
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/jdks
+            ~/.gradle/native
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 

@@ -1,6 +1,5 @@
 plugins {
     java
-    signing
     `java-library`
     `maven-publish`
     kotlin("jvm")                       version "1.6.0-RC"
@@ -94,6 +93,10 @@ tasks.processResources {
 
 tasks {
 
+    build {
+        dependsOn(shadowJar)
+    }
+
     val sourcesJar by registering(Jar::class) {
         dependsOn(JavaPlugin.CLASSES_TASK_NAME)
         archiveClassifier.set("sources")
@@ -164,10 +167,5 @@ publishing {
             artifact(tasks["javadocJar"])
             artifactId = project.name.toLowerCase()
         }
-        the<SigningExtension>().sign(this)
     }
-}
-
-signing {
-    useGpgCmd()
 }

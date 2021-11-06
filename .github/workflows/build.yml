@@ -4,8 +4,7 @@ on: [ push, pull_request, workflow_dispatch ]
 
 jobs:
   build:
-  # Only run on PRs if the source branch is on someone else's repo
-    if: !contains(github.event.commits[0].message, '[ci-skip]') || ${{ github.event_name != 'pull_request' || github.repository != github.event.pull_request.head.repo.full_name }}
+    if: "!contains(github.event.commits[0].message, '[ci-skip]')"
     strategy:
       matrix:
         os: ["ubuntu-latest"]

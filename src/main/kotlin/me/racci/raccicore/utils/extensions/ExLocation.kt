@@ -4,19 +4,8 @@ import org.bukkit.Effect
 import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.TreeType
-import org.bukkit.block.Block
 import org.bukkit.inventory.ItemStack
 import org.bukkit.util.Vector
-
-operator fun Location.component1() = x
-operator fun Location.component2() = y
-operator fun Location.component3() = z
-operator fun Location.component4() = yaw
-operator fun Location.component5() = pitch
-
-operator fun Block.component1() = x
-operator fun Block.component2() = y
-operator fun Block.component3() = z
 
 fun Location.dropItem(item: ItemStack) = world.dropItem(this, item)
 fun Location.dropItemNaturally(item: ItemStack) = world.dropItemNaturally(this, item)

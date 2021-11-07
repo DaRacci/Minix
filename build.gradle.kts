@@ -19,12 +19,12 @@ dependencies {
     api(libs.acfPaper)
     api(libs.inventoryFramework)
     api(libs.bundles.mcCoroutine)
+    api(libs.bundles.kotlinLibs)
+    api(libs.bundles.kotlinXLibs)
 
     compileOnly(libs.authLib)
     compileOnly(libs.purpurAPI)
     compileOnly(libs.placeholderAPI)
-    compileOnly(libs.bundles.kotlinLibs)
-    compileOnly(libs.bundles.kotlinXLibs)
 
 }
 
@@ -55,12 +55,17 @@ java {
 }
 
 tasks.shadowJar {
-
     // Hacky way of adding dependencies that are downloaded
     // On launch of the server.
     dependencies {
-        exclude(dependency(rootProject.libs.mcCoroutineAPI.get()))
-        exclude(dependency(rootProject.libs.mcCoroutineCore.get()))
+        exclude(dependency(libs.mcCoroutineAPI.get()))
+        exclude(dependency(libs.mcCoroutineCore.get()))
+        exclude(dependency(libs.kotlin.stdLib.get()))
+        exclude(dependency(libs.kotlin.reflect.get()))
+        exclude(dependency(libs.kotlinX.dateTime.get()))
+        exclude(dependency(libs.kotlinX.coroutinesJvm.get()))
+        exclude(dependency(libs.kotlinX.coroutinesCore.get()))
+        exclude(dependency(libs.kotlinX.serializationJson.get()))
     }
 
 }
@@ -97,6 +102,18 @@ tasks {
         dependsOn(shadowJar)
     }
 
+    compileKotlin {
+        kotlinOptions.suppressWarnings = true
+        kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
+    }
+
+    val devServer by registering(Jar::class) {
+        dependsOn(shadowJar)
+        destinationDirectory.set(File("${System.getProperty("user.home")}/Desktop/Minecraft/Sylph/Development/plugins/"))
+        archiveClassifier.set("")
+        from(shadowJar)
+    }
+
     val sourcesJar by registering(Jar::class) {
         dependsOn(JavaPlugin.CLASSES_TASK_NAME)
         archiveClassifier.set("sources")
@@ -107,6 +124,10 @@ tasks {
         dependsOn("dokkaJavadoc")
         archiveClassifier.set("javadoc")
         from(dokkaJavadoc.get().outputDirectory)
+    }
+
+    dokkaGfm {
+        outputDirectory.set(File("$buildDir/../docs"))
     }
 
     artifacts {

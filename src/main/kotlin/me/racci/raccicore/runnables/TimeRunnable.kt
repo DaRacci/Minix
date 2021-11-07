@@ -1,24 +1,24 @@
 package me.racci.raccicore.runnables
 
-import com.github.shynixn.mccoroutine.asyncDispatcher
 import kotlinx.coroutines.withContext
-import me.racci.raccicore.RacciPlugin
+import me.racci.raccicore.RacciCore
 import me.racci.raccicore.events.DayEvent
 import me.racci.raccicore.events.NightEvent
+import me.racci.raccicore.scheduler.CoroutineRunnable
 import me.racci.raccicore.utils.extensions.KotlinListener
-import me.racci.raccicore.utils.pm
+import me.racci.raccicore.utils.extensions.pm
 import me.racci.raccicore.utils.worlds.WorldTime.isDay
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.event.EventHandler
 import org.bukkit.event.world.WorldLoadEvent
 
-class TimeRunnable(plugin: RacciPlugin) : KotlinRunnable(plugin, true, true, 20, 100), KotlinListener {
+class TimeRunnable : CoroutineRunnable(), KotlinListener {
 
     private val timeState = HashMap<String, Boolean>()
 
     @EventHandler
-    suspend fun onWorldLoad(event: WorldLoadEvent) = withContext(plugin.asyncDispatcher) {
+    suspend fun onWorldLoad(event: WorldLoadEvent) = withContext(RacciCore.asyncDispatcher) {
         timeChecker(event.world)
     }
 
@@ -34,10 +34,9 @@ class TimeRunnable(plugin: RacciPlugin) : KotlinRunnable(plugin, true, true, 20,
         }
     }
 
-    override fun run() {
+    override suspend fun run() {
         for(world in Bukkit.getWorlds()) {
             timeChecker(world)
         }
     }
-
 }

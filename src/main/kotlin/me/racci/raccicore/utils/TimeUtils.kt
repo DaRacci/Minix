@@ -1,16 +1,14 @@
+@file:OptIn(ExperimentalTime::class)
 package me.racci.raccicore.utils
 
 import kotlinx.datetime.Clock
-import java.time.Instant
+import kotlinx.datetime.Instant
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 
-fun now(): Long = Instant.now().epochSecond
-fun nowMilli(): Long = Instant.now().toEpochMilli()
-fun nowNano(): Long = Clock.System.now().nanosecondsOfSecond.toLong()
+fun now(): Instant = Clock.System.now()
 
-@OptIn(ExperimentalTime::class)
 object TimeConversionUtils {
 
     val Long.millisecondToTick      : Duration  get() = toDouble().millisecondToTick

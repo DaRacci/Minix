@@ -2,10 +2,17 @@ plugins {
     java
     `java-library`
     `maven-publish`
+    `version-catalog`
     kotlin("jvm")                       version "1.6.0-RC2"
     id("org.jetbrains.dokka")               version "1.5.31"
     kotlin("plugin.serialization")      version "1.5.31"
     id("com.github.johnrengelman.shadow")   version "7.1.0"
+}
+
+catalog {
+    versionCatalog {
+        alias("libs").to("me.racci:LibraryCatalog:1.0")
+    }
 }
 
 group = findProperty("group")!!
@@ -24,7 +31,7 @@ dependencies {
 
     compileOnly(libs.authLib)
     compileOnly(libs.purpurAPI)
-    compileOnly(libs.placeholderAPI)
+    compileOnly(libs.plugin.placeholderAPI)
 
 }
 
@@ -54,22 +61,6 @@ java {
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
-tasks.shadowJar {
-    // Hacky way of adding dependencies that are downloaded
-    // On launch of the server.
-    dependencies {
-        exclude(dependency(libs.mcCoroutineAPI.get()))
-        exclude(dependency(libs.mcCoroutineCore.get()))
-        exclude(dependency(libs.kotlin.stdLib.get()))
-        exclude(dependency(libs.kotlin.reflect.get()))
-        exclude(dependency(libs.kotlinX.dateTime.get()))
-        exclude(dependency(libs.kotlinX.coroutinesJvm.get()))
-        exclude(dependency(libs.kotlinX.coroutinesCore.get()))
-        exclude(dependency(libs.kotlinX.serializationJson.get()))
-    }
-
-}
-
 tasks.processResources {
     from(sourceSets.main.get().resources.srcDirs) {
         filesMatching("plugin.yml") {
@@ -77,8 +68,8 @@ tasks.processResources {
             val var2    : String ; rootProject.libs.kotlin.reflect.get().apply              {var2   = "$module:$versionConstraint"}
             val var3    : String ; rootProject.libs.kotlinX.coroutinesCore.get().apply      {var3   = "$module:$versionConstraint"}
             val var4    : String ; rootProject.libs.kotlinX.coroutinesJvm.get().apply       {var4   = "$module:$versionConstraint"}
-            val var5    : String ; rootProject.libs.kotlinX.serializationJson.get().apply   {var5   = "$module:$versionConstraint"}
-            val var6    : String ; rootProject.libs.kotlinX.dateTime.get().apply            {var6   = "$module:$versionConstraint"}
+            val var5    : String ; rootProject.libs.kotlinX.serialization.get().apply       {var5   = "$module:$versionConstraint"}
+            val var6    : String ; rootProject.libs.kotlinX.datetime.get().apply            {var6   = "$module:$versionConstraint"}
             val var7    : String ; rootProject.libs.mcCoroutineCore.get().apply             {var7   = "$module:$versionConstraint"}
             val var8    : String ; rootProject.libs.mcCoroutineAPI.get().apply              {var8   = "$module:$versionConstraint"}
             expand(
@@ -100,6 +91,24 @@ tasks {
 
     build {
         dependsOn(shadowJar)
+    }
+
+    shadowJar {
+        // Hacky way of adding dependencies that are downloaded
+        // On launch of the server.
+        dependencies {
+            exclude(dependency(rootProject.libs.mcCoroutineAPI.get()))
+            exclude(dependency(rootProject.libs.mcCoroutineCore.get()))
+            exclude(dependency(libs.mcCoroutineAPI.get()))
+            exclude(dependency(libs.mcCoroutineCore.get()))
+            exclude(dependency(libs.kotlin.stdLib.get()))
+            exclude(dependency(libs.kotlin.reflect.get()))
+            exclude(dependency(libs.kotlinX.datetime.get()))
+            exclude(dependency(libs.kotlinX.coroutinesJvm.get()))
+            exclude(dependency(libs.kotlinX.coroutinesCore.get()))
+            exclude(dependency(libs.kotlinX.serialization.get()))
+        }
+        mergeServiceFiles()
     }
 
     compileKotlin {

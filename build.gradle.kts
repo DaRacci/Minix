@@ -150,7 +150,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/DaRacci/RacciLib")
+            url = uri("https://maven.pkg.github.com/DaRacci/RacciCore")
             credentials {
                 username = System.getenv("USERNAME")
                 password = System.getenv("PASSWORD")
@@ -161,7 +161,7 @@ publishing {
     publications {
         create<MavenPublication>("maven") {
             pom {
-                val projectGitUrl = "http://github.com/DaRacci/RacciLib"
+                val projectGitUrl = "http://github.com/DaRacci/RacciCore"
                 name.set(rootProject.name)
                 description.set(
                     "A Spigot library for use with kotlin." +

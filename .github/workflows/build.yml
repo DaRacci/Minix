@@ -4,7 +4,7 @@ on: [ push, pull_request, workflow_dispatch ]
 
 jobs:
   build:
-    if: "!contains(github.event.commits[0].message, '[ci-skip]')"
+    if: "!contains(github.event.commits[0].message, '[SKIP]')"
     strategy:
       matrix:
         os: ["ubuntu-latest"]
@@ -36,20 +36,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Get Version
-        uses: paulhatch/semantic-version@v4.0.3
-        with:
-          tag_prefix: "v"
-          major_pattern: "[MAJOR]"
-          minor_pattern: "[MINOR]"
-          format: "${major}.${minor}.${patch}-prerelease${increment}"
-          short_tags: false
-          bump_each_commit: false
+#      - name: Get Version
+#        uses: paulhatch/semantic-version@v4.0.3
+#        with:
+#          tag_prefix: "v"
+#          major_pattern: "[MAJOR]"
+#          minor_pattern: "[MINOR]"
+#          format: "${major}.${minor}.${patch}-prerelease${increment}"
+#          short_tags: false
+#          bump_each_commit: false
 
       - name: Build
         run: |
           chmod +x gradlew
-          ./gradlew build -Pversion=${version} --stacktrace
+          ./gradlew build
+        #-Pversion=${version} --stacktrace
 
       - name: Upload artififacts
         uses: actions/upload-artifact@v2.2.1
@@ -62,4 +63,4 @@ jobs:
         env:
           USERNAME: ${{ secrets.USERNAME }}
           PASSWORD: ${{ secrets.PASSWORD }}
-        run: ./gradlew -Pversion=${version} publish
+        run: ./gradlew publish

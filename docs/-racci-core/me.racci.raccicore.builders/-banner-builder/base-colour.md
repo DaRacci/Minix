@@ -3,6 +3,4 @@
 # baseColour
 
 [jvm]\
-fun [baseColour](base-colour.md)(colour: DyeColor): [BannerBuilder](index.md)
-
 var [baseColour](base-colour.md): DyeColor?

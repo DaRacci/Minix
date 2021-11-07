@@ -3,4 +3,4 @@
 # server
 
 [jvm]\
-val [server](server.md): Server
+val [server](server.md): @NotNullServer

@@ -3,4 +3,4 @@
 # author
 
 [jvm]\
-fun [author](author.md)(author: Component): [BookBuilder](index.md)
+var [author](author.md): Component

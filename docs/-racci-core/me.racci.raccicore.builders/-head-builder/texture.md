@@ -3,6 +3,4 @@
 # texture
 
 [jvm]\
-fun [texture](texture.md)(texture: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)): [HeadBuilder](index.md)
-
 var [texture](texture.md): [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html)

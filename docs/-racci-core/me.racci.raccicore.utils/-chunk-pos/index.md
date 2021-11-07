@@ -10,9 +10,9 @@ data class [ChunkPos](index.md)(x: [Int](https://kotlinlang.org/api/latest/jvm/s
 | Name | Summary |
 |---|---|
 | [axis](axis.md) | [jvm]<br>open override fun [axis](axis.md)(): [DoubleArray](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double-array/index.html) |
-| [compareTo](index.md#-73541363%2FFunctions%2F-519281799) | [jvm]<br>open operator override fun [compareTo](index.md#-73541363%2FFunctions%2F-519281799)(other: [ChunkPos](index.md)): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [compareTo](index.md#-73541363%2FFunctions%2F-1216412040) | [jvm]<br>open operator override fun [compareTo](index.md#-73541363%2FFunctions%2F-1216412040)(other: [ChunkPos](index.md)): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
 | [factor](factor.md) | [jvm]<br>open override fun [factor](factor.md)(axis: [IntArray](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html)): [ChunkPos](index.md) |
-| [rangeTo](index.md#-1819193307%2FFunctions%2F-519281799) | [jvm]<br>open operator fun [rangeTo](index.md#-1819193307%2FFunctions%2F-519281799)(other: [ChunkPos](index.md)): [PosRange](../-pos-range/index.md)&lt;[ChunkPos](index.md), [ChunkPos](index.md)&gt; |
+| [rangeTo](index.md#-1819193307%2FFunctions%2F-1216412040) | [jvm]<br>open operator fun [rangeTo](index.md#-1819193307%2FFunctions%2F-1216412040)(other: [ChunkPos](index.md)): [PosRange](../-pos-range/index.md)&lt;[ChunkPos](index.md), [ChunkPos](index.md)&gt; |
 
 ## Properties
 

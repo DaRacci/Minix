@@ -3,4 +3,4 @@
 # observe
 
 [jvm]\
-open fun [observe](observe.md)(listener: [ObservableListener](../index.md#1056729540%2FClasslikes%2F-519281799))
+open fun [observe](observe.md)(listener: [ObservableListener](../index.md#1056729540%2FClasslikes%2F-1216412040))

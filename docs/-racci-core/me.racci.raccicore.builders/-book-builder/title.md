@@ -3,4 +3,4 @@
 # title
 
 [jvm]\
-fun [title](title.md)(title: Component): [BookBuilder](index.md)
+var [title](title.md): Component

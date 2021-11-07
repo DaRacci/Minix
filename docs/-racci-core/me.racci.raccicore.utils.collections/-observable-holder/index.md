@@ -9,14 +9,14 @@ interface [ObservableHolder](index.md)
 
 | Name | Summary |
 |---|---|
-| [observe](observe.md) | [jvm]<br>open fun [observe](observe.md)(listener: [ObservableListener](../index.md#1056729540%2FClasslikes%2F-519281799)) |
+| [observe](observe.md) | [jvm]<br>open fun [observe](observe.md)(listener: [ObservableListener](../index.md#1056729540%2FClasslikes%2F-1216412040)) |
 | [runListeners](run-listeners.md) | [jvm]<br>open fun [runListeners](run-listeners.md)(action: [ObservableAction](../-observable-action/index.md)) |
 
 ## Properties
 
 | Name | Summary |
 |---|---|
-| [listeners](listeners.md) | [jvm]<br>abstract val [listeners](listeners.md): [MutableList](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html)&lt;[ObservableListener](../index.md#1056729540%2FClasslikes%2F-519281799)&gt; |
+| [listeners](listeners.md) | [jvm]<br>abstract val [listeners](listeners.md): [MutableList](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-list/index.html)&lt;[ObservableListener](../index.md#1056729540%2FClasslikes%2F-1216412040)&gt; |
 
 ## Inheritors
 

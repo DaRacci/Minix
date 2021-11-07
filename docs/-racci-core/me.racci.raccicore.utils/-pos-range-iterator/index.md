@@ -9,7 +9,7 @@ class [PosRangeIterator](index.md)&lt;[T](index.md) : [VectorComparable](../-vec
 
 | Name | Summary |
 |---|---|
-| [forEachRemaining](index.md#456645106%2FFunctions%2F-519281799) | [jvm]<br>open fun [forEachRemaining](index.md#456645106%2FFunctions%2F-519281799)(p0: [Consumer](https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html)&lt;in [T](index.md)&gt;) |
+| [forEachRemaining](index.md#456645106%2FFunctions%2F-1216412040) | [jvm]<br>open fun [forEachRemaining](index.md#456645106%2FFunctions%2F-1216412040)(p0: [Consumer](https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html)&lt;in [T](index.md)&gt;) |
 | [hasNext](has-next.md) | [jvm]<br>open operator override fun [hasNext](has-next.md)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
 | [next](next.md) | [jvm]<br>open operator override fun [next](next.md)(): [T](index.md) |
 

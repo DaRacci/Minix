@@ -3,4 +3,4 @@
 # TimeRunnable
 
 [jvm]\
-fun [TimeRunnable](-time-runnable.md)(plugin: [RacciPlugin](../../me.racci.raccicore/-racci-plugin/index.md))
+fun [TimeRunnable](-time-runnable.md)()

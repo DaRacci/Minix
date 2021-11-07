@@ -3,4 +3,4 @@
 # commandManager
 
 [jvm]\
-lateinit var [commandManager](command-manager.md): PaperCommandManager
+var [commandManager](command-manager.md): PaperCommandManager

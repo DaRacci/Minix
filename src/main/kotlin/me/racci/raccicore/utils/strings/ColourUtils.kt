@@ -1,6 +1,6 @@
 package me.racci.raccicore.utils.strings
 
-import me.racci.raccicore.utils.console
+import me.racci.raccicore.utils.extensions.console
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor

@@ -64,8 +64,6 @@ fun Listener.registerEvents(plugin: Plugin)
 
 fun Listener.unregisterListener() = HandlerList.unregisterAll(this)
 
-fun Event.callEvent() = Bukkit.getServer().pluginManager.callEvent(this)
-
 interface KListener<T : Plugin> : Listener, WithPlugin<T>
 
 interface KotlinListener : Listener

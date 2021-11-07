@@ -18,10 +18,6 @@ class BannerBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder
     var baseColour: DyeColor?
         get() = bMeta.baseColor
         set(colour) {bMeta.baseColor = colour}
-    fun baseColour(colour: DyeColor): BannerBuilder {
-        bMeta.baseColor = colour
-        return this
-    }
 
     fun pattern(vararg pairs: Pair<DyeColor, PatternType>): BannerBuilder {
         bMeta.patterns.addAll(pairs.map{Pattern(it.first, it.second)})

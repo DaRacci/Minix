@@ -20,12 +20,17 @@ class FireworkBuilder internal constructor(itemStack: ItemStack) : BaseItemBuild
         return this
     }
 
-    fun power(power: Int): FireworkBuilder {
-        if (itemStack.type == Material.FIREWORK_ROCKET) {
-            (meta as FireworkMeta).power = power
+    var power: Int
+        get() {
+            return if(itemStack.type == Material.FIREWORK_ROCKET) {
+                (meta as FireworkMeta).power
+            } else throw UnsupportedOperationException()
         }
-        return this
-    }
+        set(power) {
+            if(itemStack.type == Material.FIREWORK_ROCKET) {
+                (meta as FireworkMeta).power = power
+            } else return
+        }
 
     init {
         if (itemStack.type != Material.FIREWORK_STAR && itemStack.type != Material.FIREWORK_ROCKET) {

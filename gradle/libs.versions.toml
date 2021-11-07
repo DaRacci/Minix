@@ -1,6 +1,6 @@
 [versions]
-kotlinVersion                  = "1.6.0-RC"
-shadowVersion                  = "7.0.0"
+kotlinVersion                  = "1.6.0-RC2"
+shadowVersion                  = "7.1.0"
 dokkaVersion                   = "1.5.31"
 serializationVersion           = "1.5.31"
 
@@ -28,7 +28,7 @@ acfPaperVersion                 = "0.5.0-SNAPSHOT"
 inventoryFrameworkVersion       = "0.10.3"
 mcCoroutineVersion              = "1.5.0"
 
-jupiterVersion               = "5.8.1"
+jupiterVersion                  = "5.8.1"
 
 [libraries]
 adventure-API =                 {module = "net.kyori:adventure-api",                                                version.ref = "adventureAPIVersion"}

@@ -8,6 +8,10 @@ internal data class PlayerData(
         PlayerManager.addPlayerData(this)
     }
 
+    fun close() {
+        PlayerManager.removePlayerData(this.player.uniqueId)
+    }
+
     var lastOffhand: Long = 0
     var lastShift: Long = 0
     var lastLeftClick: Long = 0

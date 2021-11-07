@@ -1,10 +1,10 @@
 package me.racci.raccicore
 
-import me.racci.raccicore.utils.pm
+import me.racci.raccicore.utils.extensions.pm
 import kotlin.reflect.KClass
 
-internal object RacciPluginHandler {
-    private val loadedPlugins = HashMap<KClass<out RacciPlugin>, RacciPlugin>()
+internal object PluginManager {
+    val loadedPlugins = HashMap<KClass<out RacciPlugin>, RacciPlugin>()
 
     fun close() {
         loadedPlugins.values.forEach(pm::disablePlugin)

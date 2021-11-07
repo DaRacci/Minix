@@ -1,4 +1,4 @@
-package me.racci.raccicore.utils.math
+package me.racci.raccicore.utils
 
 object MathUtils {
 

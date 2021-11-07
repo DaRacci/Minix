@@ -5,4 +5,4 @@
 [jvm]\
 open fun [clearQuiting](clear-quiting.md)()
 
-Clear the collection calling all [WhenPlayerQuitCollectionCallback](../index.md#770480590%2FClasslikes%2F-519281799) from the Players.
+Clear the collection calling all [WhenPlayerQuitCollectionCallback](../index.md#770480590%2FClasslikes%2F-1216412040) from the Players.

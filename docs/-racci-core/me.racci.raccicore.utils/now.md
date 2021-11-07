@@ -3,4 +3,4 @@
 # now
 
 [jvm]\
-fun [now](now.md)(): [Long](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html)
+fun [now](now.md)(): Instant

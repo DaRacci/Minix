@@ -3,4 +3,4 @@
 # power
 
 [jvm]\
-fun [power](power.md)(power: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)): [FireworkBuilder](index.md)
+var [power](power.md): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)

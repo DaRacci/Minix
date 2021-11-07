@@ -4,3 +4,5 @@
 
 [jvm]\
 open fun [pdc](pdc.md)(unit: PersistentDataContainer.() -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)): [T](index.md)
+
+val [pdc](pdc.md): @NotNullPersistentDataContainer

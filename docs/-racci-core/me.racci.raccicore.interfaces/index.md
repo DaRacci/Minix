@@ -7,3 +7,4 @@
 | Name | Summary |
 |---|---|
 | [IFactory](-i-factory/index.md) | [jvm]<br>interface [IFactory](-i-factory/index.md)&lt;[T](-i-factory/index.md)&gt; |
+| [IManager](-i-manager/index.md) | [jvm]<br>interface [IManager](-i-manager/index.md)&lt;[T](-i-manager/index.md)&gt; |

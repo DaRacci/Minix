@@ -3,4 +3,4 @@
 # generation
 
 [jvm]\
-fun [generation](generation.md)(generation: BookMeta.Generation): [BookBuilder](index.md)
+var [generation](generation.md): BookMeta.Generation?

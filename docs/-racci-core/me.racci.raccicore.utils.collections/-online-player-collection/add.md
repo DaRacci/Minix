@@ -3,6 +3,6 @@
 # add
 
 [jvm]\
-open fun [add](add.md)(player: Player, whenPlayerQuit: [WhenPlayerQuitCollectionCallback](../index.md#770480590%2FClasslikes%2F-519281799)): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
+open fun [add](add.md)(player: Player, whenPlayerQuit: [WhenPlayerQuitCollectionCallback](../index.md#770480590%2FClasslikes%2F-1216412040)): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
 
 Adds a new Player to the collection with a callback for when the player quits the server.

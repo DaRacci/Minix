@@ -3,6 +3,4 @@
 # amount
 
 [jvm]\
-open fun [amount](amount.md)(amount: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)): [T](index.md)
-
 var [amount](amount.md): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)

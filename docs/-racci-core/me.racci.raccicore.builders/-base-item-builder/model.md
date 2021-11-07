@@ -3,4 +3,4 @@
 # model
 
 [jvm]\
-open fun [model](model.md)(modelData: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)): [T](index.md)
+var [model](model.md): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)

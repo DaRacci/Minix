@@ -10,10 +10,10 @@ class [PosRange](index.md)&lt;[T](index.md), [POS](index.md) : [VectorComparable
 | Name | Summary |
 |---|---|
 | [contains](contains.md) | [jvm]<br>open operator override fun [contains](contains.md)(value: [POS](index.md)): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
-| [forEach](../../me.racci.raccicore.utils.collections/-observable-collection/index.md#1532301601%2FFunctions%2F-519281799) | [jvm]<br>open fun [forEach](../../me.racci.raccicore.utils.collections/-observable-collection/index.md#1532301601%2FFunctions%2F-519281799)(p0: [Consumer](https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html)&lt;in [T](index.md)&gt;) |
-| [isEmpty](index.md#1458256964%2FFunctions%2F-519281799) | [jvm]<br>open fun [isEmpty](index.md#1458256964%2FFunctions%2F-519281799)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
+| [forEach](../../me.racci.raccicore.utils.collections/-observable-collection/index.md#1532301601%2FFunctions%2F-1216412040) | [jvm]<br>open fun [forEach](../../me.racci.raccicore.utils.collections/-observable-collection/index.md#1532301601%2FFunctions%2F-1216412040)(p0: [Consumer](https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html)&lt;in [T](index.md)&gt;) |
+| [isEmpty](index.md#1458256964%2FFunctions%2F-1216412040) | [jvm]<br>open fun [isEmpty](index.md#1458256964%2FFunctions%2F-1216412040)(): [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) |
 | [iterator](iterator.md) | [jvm]<br>open operator override fun [iterator](iterator.md)(): [Iterator](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-iterator/index.html)&lt;[T](index.md)&gt; |
-| [spliterator](../../me.racci.raccicore.utils.collections/-expiration-list-impl/index.md#-1387152138%2FFunctions%2F-519281799) | [jvm]<br>open fun [spliterator](../../me.racci.raccicore.utils.collections/-expiration-list-impl/index.md#-1387152138%2FFunctions%2F-519281799)(): [Spliterator](https://docs.oracle.com/javase/8/docs/api/java/util/Spliterator.html)&lt;[T](index.md)&gt; |
+| [spliterator](../../me.racci.raccicore.utils.collections/-expiration-list-impl/index.md#-1387152138%2FFunctions%2F-1216412040) | [jvm]<br>open fun [spliterator](../../me.racci.raccicore.utils.collections/-expiration-list-impl/index.md#-1387152138%2FFunctions%2F-1216412040)(): [Spliterator](https://docs.oracle.com/javase/8/docs/api/java/util/Spliterator.html)&lt;[T](index.md)&gt; |
 
 ## Properties
 

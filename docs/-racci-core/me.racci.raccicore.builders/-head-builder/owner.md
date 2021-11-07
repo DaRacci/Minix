@@ -3,4 +3,4 @@
 # owner
 
 [jvm]\
-fun [owner](owner.md)(player: OfflinePlayer): [HeadBuilder](index.md)
+var [owner](owner.md): OfflinePlayer?

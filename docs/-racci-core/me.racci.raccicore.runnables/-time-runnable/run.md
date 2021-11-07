@@ -3,4 +3,4 @@
 # run
 
 [jvm]\
-open override fun [run](run.md)()
+open suspend override fun [run](run.md)()

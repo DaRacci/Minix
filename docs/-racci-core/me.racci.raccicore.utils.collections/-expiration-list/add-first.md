@@ -3,7 +3,7 @@
 # addFirst
 
 [jvm]\
-abstract fun [addFirst](add-first.md)(element: [E](index.md), expireTime: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html), onExpire: [OnExpireCallback](../index.md#1412320920%2FClasslikes%2F-519281799)&lt;[E](index.md)&gt;? = null)
+abstract fun [addFirst](add-first.md)(element: [E](index.md), expireTime: [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html), onExpire: [OnExpireCallback](../index.md#1412320920%2FClasslikes%2F-1216412040)&lt;[E](index.md)&gt;? = null)
 
 Add the element in the start of list with an expiration time.
 

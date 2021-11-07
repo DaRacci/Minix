@@ -5,4 +5,4 @@
 [jvm]\
 fun [clearQuiting](clear-quiting.md)()
 
-Clear the map calling all [WhenPlayerQuitMapCallback](../index.md#-678110128%2FClasslikes%2F-519281799) from the Players.
+Clear the map calling all [WhenPlayerQuitMapCallback](../index.md#-678110128%2FClasslikes%2F-1216412040) from the Players.

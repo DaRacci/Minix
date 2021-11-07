@@ -5,4 +5,4 @@
 [jvm]\
 fun [quit](quit.md)(player: Player)
 
-Removes the player from the map, calling the [WhenPlayerQuitMapCallback](../index.md#-678110128%2FClasslikes%2F-519281799) provided.
+Removes the player from the map, calling the [WhenPlayerQuitMapCallback](../index.md#-678110128%2FClasslikes%2F-1216412040) provided.

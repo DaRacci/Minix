@@ -10,9 +10,9 @@ data class [BlockPos](index.md)(x: [Int](https://kotlinlang.org/api/latest/jvm/s
 | Name | Summary |
 |---|---|
 | [axis](axis.md) | [jvm]<br>open override fun [axis](axis.md)(): [DoubleArray](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double-array/index.html) |
-| [compareTo](index.md#-1735584979%2FFunctions%2F-519281799) | [jvm]<br>open operator override fun [compareTo](index.md#-1735584979%2FFunctions%2F-519281799)(other: [BlockPos](index.md)): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
+| [compareTo](index.md#-1735584979%2FFunctions%2F-1216412040) | [jvm]<br>open operator override fun [compareTo](index.md#-1735584979%2FFunctions%2F-1216412040)(other: [BlockPos](index.md)): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
 | [factor](factor.md) | [jvm]<br>open override fun [factor](factor.md)(axis: [IntArray](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int-array/index.html)): [BlockPos](index.md) |
-| [rangeTo](index.md#813730373%2FFunctions%2F-519281799) | [jvm]<br>open operator fun [rangeTo](index.md#813730373%2FFunctions%2F-519281799)(other: [BlockPos](index.md)): [PosRange](../-pos-range/index.md)&lt;[BlockPos](index.md), [BlockPos](index.md)&gt; |
+| [rangeTo](index.md#813730373%2FFunctions%2F-1216412040) | [jvm]<br>open operator fun [rangeTo](index.md#813730373%2FFunctions%2F-1216412040)(other: [BlockPos](index.md)): [PosRange](../-pos-range/index.md)&lt;[BlockPos](index.md), [BlockPos](index.md)&gt; |
 
 ## Properties
 

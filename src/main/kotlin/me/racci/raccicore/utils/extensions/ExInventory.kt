@@ -8,12 +8,12 @@ val Inventory.hasSpace: Boolean
     get() = contents.any { it == null || it.type == Material.AIR }
 
 fun Inventory.hasSpace(
-        item: ItemStack,
-        amount: Int = item.amount
+    item: ItemStack,
+    amount: Int = item.amount
 ) = spaceOf(item) >= amount
 
 fun Inventory.spaceOf(
-        item: ItemStack
+    item: ItemStack
 ): Int {
     return contents.filterNotNull().map {
         if (it.amount < it.maxStackSize && it.isSimilar(item))

@@ -13,8 +13,8 @@ import me.racci.raccicore.events.PlayerShiftLeftClickEvent
 import me.racci.raccicore.events.PlayerShiftOffhandEvent
 import me.racci.raccicore.events.PlayerShiftRightClickEvent
 import me.racci.raccicore.utils.extensions.KotlinListener
-import me.racci.raccicore.utils.nowMilli
-import me.racci.raccicore.utils.pm
+import me.racci.raccicore.utils.extensions.pm
+import me.racci.raccicore.utils.now
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
@@ -59,12 +59,12 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
         val playerData = PlayerManager[event.player.uniqueId]
         val last = playerData.lastOffhand
         val player = event.player
-        val vEvent = (if((nowMilli() - last) <= 500L) {
+        val vEvent = (if((now().toEpochMilliseconds() - last) <= 500L) {
             if (player.isSneaking) {
                 PlayerShiftDoubleOffhandEvent(player, player.inventory.itemInMainHand, player.inventory.itemInOffHand)
             } else PlayerDoubleOffhandEvent(player, player.inventory.itemInMainHand, player.inventory.itemInOffHand)
         } else {
-            playerData.lastOffhand = nowMilli()
+            playerData.lastOffhand = now().toEpochMilliseconds()
             if (player.isSneaking) {
                 PlayerShiftOffhandEvent(player, player.inventory.itemInMainHand, player.inventory.itemInOffHand)
             } else PlayerOffhandEvent(player, player.inventory.itemInMainHand, player.inventory.itemInOffHand)

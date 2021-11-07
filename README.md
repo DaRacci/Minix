@@ -41,7 +41,7 @@ dependencies {
 }
 ```
 
-Replace `VERSION` with a release tag for eco, eg `1.7.0`.
+Replace `VERSION` with a release tag, eg `0.1.7`.
   
 Maven:
 
@@ -61,7 +61,7 @@ Maven:
 </dependency>
 ```
   
-Replace `VERSION` with a release tag for eco, eg `1.7.0`.
+Replace `VERSION` with a release tag, eg `0.1.7`.
 
 ## 🤝 Contributing
 

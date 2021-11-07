@@ -87,12 +87,12 @@ class ExpirationMapImpl<K, V>(
 
     override fun missingTime(key: K): Long? {
         return if (containsKey(key))
-            (expiration[key] ?: return -1) - ((now() - putTime.getOrPut(key) { now() }) / 1000)
+            (expiration[key] ?: return -1) - ((now().toEpochMilliseconds() - putTime.getOrPut(key) { now().toEpochMilliseconds() }) / 1000)
         else null
     }
 
     private fun ex(key: K, time: Long) {
-        putTime[key] = now()
+        putTime[key] = now().toEpochMilliseconds()
         expiration[key] = time
     }
 
@@ -157,7 +157,7 @@ class ExpirationMapImpl<K, V>(
                     emptyCount++
                 else {
                     emptyCount = 0
-                    val current = now()
+                    val current = now().toEpochMilliseconds()
                     for ((key, value) in entries) {
                         if (checkTime(current, key)) {
                             whenExpire.remove(key)?.invoke(key, value)

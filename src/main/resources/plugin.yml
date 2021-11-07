@@ -6,7 +6,7 @@ load: STARTUP
 loadbefore: [ Sylphia, Sylph, BloodNight, HollowsEve ]
 authors: [ Racci ]
 description: Core lib for my plugins
-website: https://github.com/DaRacci/RacciLib/
+website: https://github.com/DaRacci/RacciCore/
 
 libraries:
   - ${kotlinstdlib}

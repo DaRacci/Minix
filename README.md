@@ -1,8 +1,8 @@
 <img src="https://cdn.discordapp.com/attachments/431545763928211457/853353180271214662/mfthread.png">
 <h1 align="center">Racci Lib<h1>
 <p>
-  <a href="https://jitpack.io/#DaRacci/RacciLib"><img src="https://jitpack.io/v/DaRacci/RacciLib.svg?style=flat-square" alt="language"/></a>
-  <img src="https://img.shields.io/github/license/DaRacci/RacciLib?color=blue&style=flat-square"  alt="license"/>
+  <a href="https://jitpack.io/#DaRacci/RacciCore"><img src="https://jitpack.io/v/DaRacci/RacciCore.svg?style=flat-square" alt="language"/></a>
+  <img src="https://img.shields.io/github/license/DaRacci/RacciCore?color=blue&style=flat-square"  alt="license"/>
 <a href="https://discord.gg/9D986MAfZk"><img src="https://img.shields.io/discord/812625173315584030?label=discord&style=flat-square"  alt="language"/></a>
 </p>
  
@@ -12,8 +12,8 @@
 # Information for development
 
 ## Javadoc
-* The 0.1.7 Javadoc can be found [here](https://javadoc.jitpack.io/com/github/DaRacci/RacciLib/0.1.7/javadoc)
-* You can also get the docs from [here](https://raccilib.sylphmc.com) with the Github format 
+* The 0.1.7 Javadoc can be found [here](https://javadoc.jitpack.io/com/github/DaRacci/RacciCore/0.1.7/javadoc)
+* You can also get the docs from [here](https://racciCore.sylphmc.com) with the GitHub format 
   
 ## Plugin Information
   
@@ -37,11 +37,11 @@ repositories {
 
 ```kotlin
 dependencies {
-        compileOnly("me.racci:raccicore:VERSION")
+        compileOnly("com.github.DaRacci:RacciCore:tag")
 }
 ```
 
-Replace `VERSION` with a release tag, eg `0.1.7`.
+Replace `tag` with a release tag, eg `0.2.0`.
   
 Maven:
 
@@ -54,21 +54,21 @@ Maven:
 
 ```xml
 <dependency>
-        <groupId>me.racci</groupId>
-        <artifactId>raccicore</artifactId>
-        <version>VERSION</version>
+        <groupId>com.github.DaRacci</groupId>
+        <artifactId>RacciCore</artifactId>
+        <version>tag</version>
         <scope>provided</scope>
 </dependency>
 ```
   
-Replace `VERSION` with a release tag, eg `0.1.7`.
+Replace `tag` with a release tag, eg `0.2.0`.
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/DaRacci/RacciLib/issues).
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/DaRacci/RacciCore/issues).
 
 ## 📝 License
 
 Copyright © 2021 [Racci](https://github.com/DaRacci)
   
-This project is [licensed](https://github.com/DaRacci/RacciLib/blob/master/LICENSE.md).
+This project is [licensed](https://github.com/DaRacci/RacciCore/blob/master/LICENSE.md).

@@ -7,7 +7,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("libs") {
-            from("me.racci:LibraryCatalog:1.0")
+            from("me.racci:LibraryCatalog:1.1")
         }
     }
 }

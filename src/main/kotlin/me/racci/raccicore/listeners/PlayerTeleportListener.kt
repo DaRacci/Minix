@@ -7,7 +7,7 @@ import me.racci.raccicore.RacciCore
 import me.racci.raccicore.events.PlayerMoveFullXYZEvent
 import me.racci.raccicore.events.PlayerMoveXYZEvent
 import me.racci.raccicore.utils.extensions.KotlinListener
-import me.racci.raccicore.utils.pm
+import me.racci.raccicore.utils.extensions.pm
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.player.PlayerTeleportEvent

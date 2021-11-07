@@ -6,7 +6,42 @@ import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional
 import org.bukkit.block.data.Waterlogged
 
+
 object BlockUtils {
+
+    private fun getNearbyBlocks(
+        start: Block,
+        materials: List<Material>,
+        blocks: ArrayList<Block>,
+        limit: Int,
+    ): ArrayList<Block> {
+        for(face in BlockFace.values()) {
+            val block = start.getRelative(face)
+            if(blocks.contains(block)) continue
+            if(materials.contains(block.type)) {
+                blocks.add(block)
+                if(blocks.size > limit || blocks.size > 2500) return blocks
+                blocks.addAll(getNearbyBlocks(block, materials, blocks, limit))
+            }
+        }
+        return blocks
+    }
+
+    /**
+     * Gets an array list of all blocks in contact with each other.
+     *
+     * @param start The base block
+     * @param materials The blocks to count
+     * @param limit The maximum size
+     * @return An arraylist of the veins blocks
+     */
+    fun getVein(
+        start: Block,
+        materials: List<Material>,
+        limit: Int,
+    ): ArrayList<Block> {
+        return getNearbyBlocks(start, materials, ArrayList(), limit)
+    }
 
     /**
      * Returns the opposite BlockFace for a given BlockFace. E.g. EAST_NORTH_EAST will return WEST_SOUTH_WEST. SELF will return SELF.
@@ -65,6 +100,15 @@ object BlockUtils {
         throw IllegalArgumentException("No BlockFace found")
     }
 
+    /**
+     * Returns the value of if the block is a liquid
+     * 0 = Not a liquid
+     * 1 = Water or waterlogged
+     * 2 = Lava
+     *
+     * @param block The target block
+     * @return The state of the block
+     */
     fun isLiquid(block: Block): Int {
         val blockData = block.blockData
         return when(block.type) {

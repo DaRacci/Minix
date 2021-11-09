@@ -11,6 +11,7 @@ import kotlinx.datetime.Instant
 import me.racci.raccicore.RacciCore
 import me.racci.raccicore.RacciPlugin
 import me.racci.raccicore.utils.TimeConversionUtils.millisecondToTick
+import me.racci.raccicore.utils.TimeConversionUtils.tickToMillisecond
 import me.racci.raccicore.utils.now
 import org.bukkit.plugin.IllegalPluginAccessException
 import org.jetbrains.annotations.ApiStatus
@@ -70,12 +71,12 @@ object CoroutineScheduler: ICoroutineScheduler {
         val job = scope.launch(start = CoroutineStart.LAZY) {
             // Wait before starting if there is a delay
             if(delay > 0) {
-                delay(delay.millisecondToTick)
+                delay(delay.tickToMillisecond)
             }
             // If this is a repeating task
             if(period > 0) {
                 // Only calculate once
-                task.period = period.millisecondToTick
+                task.period = period.tickToMillisecond
                 var last = now().toEpochMilliseconds()
                 while(!task.cancelled) {
                     task.owner.log.debug("${now().toEpochMilliseconds() - last}")

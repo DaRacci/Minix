@@ -74,7 +74,7 @@ abstract class KPlayerEvent(
  * @param world The world which this event happened in.
  * @param async If the event is Asynchronous,
  */
-abstract class KWordEvent(
+abstract class KWorldEvent(
     world: World,
     async: Boolean = false,
 ): WorldEvent(async, world), Cancellable {

@@ -1,9 +1,9 @@
 package me.racci.raccicore.events
 
-import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Entity
 
 interface IComboEntityEvent: IComboEvent {
 
-    val entity: LivingEntity
+    val entity: Entity
 
 }

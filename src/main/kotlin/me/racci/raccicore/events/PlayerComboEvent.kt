@@ -1,6 +1,6 @@
 package me.racci.raccicore.events
 
-import org.bukkit.Location
+/*import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.Entity
@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack
  * @property clickedEntity
  * @constructor Create empty Player shift left click event
  */
+@Deprecated("Moving to more specific systems" ReplaceWith(""))
 class PlayerShiftLeftClickEvent(
     val player: Player,
     val usedItem: ItemStack?,
@@ -237,4 +238,4 @@ class PlayerDoubleOffhandEvent(
      */
     val hasOffhand get() = offhandItem != null
 
-}
+}*/

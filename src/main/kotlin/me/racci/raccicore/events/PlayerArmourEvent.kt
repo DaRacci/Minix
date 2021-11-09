@@ -1,5 +1,5 @@
-//package me.racci.raccicore.events
-//
+package me.racci.raccicore.events
+
 //import org.bukkit.Material
 //import org.bukkit.entity.Player
 //import org.bukkit.inventory.EquipmentSlot

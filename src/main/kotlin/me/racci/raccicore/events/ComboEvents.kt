@@ -8,6 +8,21 @@ class PlayerShiftLeftClickEvent(
     override val item: ItemStack?,
 ): KPlayerEvent(player, true), IComboEvent {
 
+    /**
+     * If true this means the used item in the event is not a players fists.
+     */
+    override val hasItem: Boolean = item != null
+
+}
+
+class PlayerLeftClickEvent(
+    player: Player,
+    override val item: ItemStack?,
+): KPlayerEvent(player, true), IComboEvent {
+
+    /**
+     * If true this means the used item in the event is not a players fists.
+     */
     override val hasItem: Boolean = item != null
 
 }
@@ -17,6 +32,21 @@ class PlayerShiftRightClickEvent(
     override val item: ItemStack?,
 ): KPlayerEvent(player, true), IComboEvent {
 
+    /**
+     * If true this means the used item in the event is not a players fists.
+     */
+    override val hasItem: Boolean = item != null
+
+}
+
+class PlayerRightClickEvent(
+    player: Player,
+    override val item: ItemStack?,
+): KPlayerEvent(player, true), IComboEvent {
+
+    /**
+     * If true this means the used item in the event is not a players fists.
+     */
     override val hasItem: Boolean = item != null
 
 }
@@ -24,8 +54,27 @@ class PlayerShiftRightClickEvent(
 class PlayerShiftOffhandEvent(
     player: Player,
     override val item: ItemStack?,
+    val offHandItem: ItemStack?,
 ): KPlayerEvent(player, true), IComboEvent {
 
+    /**
+     * If true this means that either one hand or both hands have
+     * an item and are not null.
+     */
+    override val hasItem: Boolean = item != null
+
+}
+
+class PlayerOffhandEvent(
+    player: Player,
+    override val item: ItemStack?,
+    val offHandItem: ItemStack?,
+): KPlayerEvent(player, true), IComboEvent {
+
+    /**
+     * If true this means that either one hand or both hands have
+     * an item and are not null.
+     */
     override val hasItem: Boolean = item != null
 
 }
@@ -33,17 +82,28 @@ class PlayerShiftOffhandEvent(
 class PlayerShiftDoubleOffhandEvent(
     player: Player,
     override val item: ItemStack?,
+    val offHandItem: ItemStack?,
 ): KPlayerEvent(player, true), IComboEvent {
 
-    override val hasItem: Boolean = item != null
+    /**
+     * If true this means that either one hand or both hands have
+     * an item and are not null.
+     */
+    override val hasItem: Boolean = item != null || offHandItem != null
 
 }
 
 class PlayerDoubleOffhandEvent(
     player: Player,
-    override val item: ItemStack?
+    override val item: ItemStack?,
+    val offHandItem: ItemStack?,
 ): KPlayerEvent(player, true), IComboEvent {
 
+    /**
+     * If true this means that either one hand or both hands have
+     * an item and are not null.
+     */
     override val hasItem: Boolean = item != null
 
 }
+

@@ -9,12 +9,6 @@ plugins {
     id("com.github.johnrengelman.shadow")   version "7.1.0"
 }
 
-catalog {
-    versionCatalog {
-        alias("libs").to("me.racci:LibraryCatalog:1.0")
-    }
-}
-
 group = findProperty("group")!!
 version = findProperty("version")!!
 
@@ -145,8 +139,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/DaRacci/RacciCore")
             credentials {
-                username = System.getenv("USERNAME")
-                password = System.getenv("PASSWORD")
+                username = System.getenv("USERNAME") ?: findProperty("USERNAME") as String
+                password = System.getenv("TOKEN") ?: findProperty("TOKEN") as String
             }
         }
     }

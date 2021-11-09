@@ -10,22 +10,17 @@ import org.bukkit.inventory.meta.BannerMeta
 @Suppress("DEPRECATION")
 class BannerBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<BannerBuilder>(itemStack) {
 
-    private var bItemStack = itemStack.clone()
-        get() {field.itemMeta = bMeta;return field}
-
-    private val bMeta = meta.clone() as BannerMeta
-
     var baseColour: DyeColor?
-        get() = bMeta.baseColor
-        set(colour) {bMeta.baseColor = colour}
+        get() = (meta as BannerMeta).baseColor
+        set(colour) {(meta as BannerMeta).baseColor = colour}
 
     fun pattern(vararg pairs: Pair<DyeColor, PatternType>): BannerBuilder {
-        bMeta.patterns.addAll(pairs.map{Pattern(it.first, it.second)})
+        (meta as BannerMeta).patterns.addAll(pairs.map{Pattern(it.first, it.second)})
         return this
     }
 
     fun pattern(vararg pattern: Pattern): BannerBuilder {
-        pattern.forEach(bMeta::addPattern)
+        pattern.forEach{(meta as BannerMeta).addPattern(it)}
         return this
     }
 
@@ -34,20 +29,15 @@ class BannerBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder
     }
 
     private fun pattern(index: Int, pattern: Pattern): BannerBuilder {
-        bMeta.setPattern(index, pattern)
+        (meta as BannerMeta).setPattern(index, pattern)
         return this
     }
 
     fun setPatterns(patterns: List<Pattern>): BannerBuilder {
-        bMeta.patterns = patterns
+        (meta as BannerMeta).patterns = patterns
         return this
     }
     var patterns : List<Pattern>
-        get() = bMeta.patterns
-        set(patterns) {bMeta.patterns = patterns}
-
-    override fun build(): ItemStack {
-        bItemStack.itemMeta = bMeta
-        return bItemStack
-    }
+        get() = (meta as BannerMeta).patterns
+        set(patterns) {(meta as BannerMeta).patterns = patterns}
 }

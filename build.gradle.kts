@@ -94,33 +94,26 @@ tasks {
     }
 
     shadowJar {
+        archiveClassifier.set("")
         // Hacky way of adding dependencies that are downloaded
         // On launch of the server.
-        dependencies {
-            exclude(dependency(rootProject.libs.mcCoroutineAPI.get()))
-            exclude(dependency(rootProject.libs.mcCoroutineCore.get()))
-            exclude(dependency(libs.mcCoroutineAPI.get()))
-            exclude(dependency(libs.mcCoroutineCore.get()))
-            exclude(dependency(libs.kotlin.stdLib.get()))
-            exclude(dependency(libs.kotlin.reflect.get()))
-            exclude(dependency(libs.kotlinX.datetime.get()))
-            exclude(dependency(libs.kotlinX.coroutinesJvm.get()))
-            exclude(dependency(libs.kotlinX.coroutinesCore.get()))
-            exclude(dependency(libs.kotlinX.serialization.get()))
-        }
-        mergeServiceFiles()
+//        dependencies {
+//            exclude(dependency(libs.mcCoroutineAPI.get()))
+//            exclude(dependency(libs.mcCoroutineCore.get()))
+//            exclude(dependency(libs.mcCoroutineAPI.get()))
+//            exclude(dependency(libs.mcCoroutineCore.get()))
+//            exclude(dependency(libs.kotlin.stdLib.get()))
+//            exclude(dependency(libs.kotlin.reflect.get()))
+//            exclude(dependency(libs.kotlinX.datetime.get()))
+//            exclude(dependency(libs.kotlinX.coroutinesJvm.get()))
+//            exclude(dependency(libs.kotlinX.coroutinesCore.get()))
+//            exclude(dependency(libs.kotlinX.serialization.get()))
+//        }
     }
 
     compileKotlin {
         kotlinOptions.suppressWarnings = true
         kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
-    }
-
-    val devServer by registering(Jar::class) {
-        dependsOn(shadowJar)
-        destinationDirectory.set(File("${System.getProperty("user.home")}/Desktop/Minecraft/Sylph/Development/plugins/"))
-        archiveClassifier.set("")
-        from(shadowJar)
     }
 
     val sourcesJar by registering(Jar::class) {

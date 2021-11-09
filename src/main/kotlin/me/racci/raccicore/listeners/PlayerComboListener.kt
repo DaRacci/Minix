@@ -55,7 +55,7 @@ import org.bukkit.event.player.PlayerSwapHandItemsEvent
      }
 
      @EventHandler
-    fun onOffhand(event: PlayerSwapHandItemsEvent) {
+    suspend fun onOffhand(event: PlayerSwapHandItemsEvent) = withContext(RacciCore.asyncDispatcher) {
         val playerData = PlayerManager[event.player.uniqueId]
         val last = playerData.lastOffhand
         val player = event.player

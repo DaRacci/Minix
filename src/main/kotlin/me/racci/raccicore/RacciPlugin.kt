@@ -29,7 +29,7 @@ abstract class RacciPlugin(
 ) : SuspendingJavaPlugin() {
 
     var commandManager by Delegates.notNull<PaperCommandManager>() ; private set
-    val log = Log(colour("$colour$prefix"), true)
+    val log = Log(colour("$colour$prefix"))
 
     override suspend fun onEnableAsync() {
         log.info("")

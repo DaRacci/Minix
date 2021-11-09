@@ -16,6 +16,17 @@ class PlayerShiftLeftClickBlockEvent(
 
 }
 
+class PlayerLeftClickBlockEvent(
+    player: Player,
+    override val item: ItemStack?,
+    override val block: Block,
+    override val blockFace: BlockFace,
+): KPlayerEvent(player, true), IComboBlockEvent {
+
+    override val hasItem: Boolean = item != null
+
+}
+
 class PlayerShiftRightClickBlockEvent(
     player: Player,
     override val item: ItemStack?,
@@ -27,18 +38,7 @@ class PlayerShiftRightClickBlockEvent(
 
 }
 
-class PlayerShiftOffhandClickBlockEvent(
-    player: Player,
-    override val item: ItemStack?,
-    override val block: Block,
-    override val blockFace: BlockFace,
-): KPlayerEvent(player, true), IComboBlockEvent {
-
-    override val hasItem: Boolean = item != null
-
-}
-
-class PlayerShiftDoubleOffhandClickBlockEvent(
+class PlayerRightClickBlockEvent(
     player: Player,
     override val item: ItemStack?,
     override val block: Block,

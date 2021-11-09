@@ -8,6 +8,8 @@ import org.bukkit.entity.Player
 /**
  * This event is fires when the player enters water, lava or a waterlogged block.
  *
+ * ## This method is Fired Asynchronously
+ *
  * @property from The previous block where the player was before entering the liquid.
  * @property to The liquid block the player has entered.
  *
@@ -31,6 +33,8 @@ class PlayerEnterLiquidEvent(
 
 /**
  * This event is fires when the player exits water, lava or a waterlogged block.
+ *
+ * ## This method is Fired Asynchronously
  *
  * @property from The liquid block that the player has exited.
  * @property to The new non-liquid block.

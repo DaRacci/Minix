@@ -2,11 +2,9 @@ package me.racci.raccicore.events
 
 import org.bukkit.World
 import org.bukkit.entity.Player
-import org.bukkit.entity.Vehicle
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.player.PlayerEvent
-import org.bukkit.event.vehicle.VehicleEvent
 import org.bukkit.event.world.WorldEvent
 
 @Deprecated("Deprecated for naming consistency", ReplaceWith("KEvent"))

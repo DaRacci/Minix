@@ -9,9 +9,6 @@ plugins {
     id("com.github.johnrengelman.shadow")   version "7.1.0"
 }
 
-setProperty("USERNAME", System.getenv("USERNAME"))
-setProperty("TOKEN", System.getenv("TOKEN"))
-
 group = findProperty("group")!!
 version = findProperty("version")!!
 

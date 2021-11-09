@@ -8,8 +8,8 @@ dependencyResolutionManagement {
         maven {
             url = uri("https://maven.pkg.github.com/DaRacci/LibraryCatalog")
             credentials {
-                username = System.getProperty("USERNAME") ?: USERNAME
-                password = System.getProperty("TOKEN")    ?: TOKEN
+                username = System.getenv("USERNAME") ?: USERNAME
+                password = System.getenv("TOKEN")    ?: TOKEN
             }
         }
     }

@@ -1,25 +1,34 @@
 package me.racci.raccicore.events
 
-/**
- * Player move x y z event
- *
- * @property player
- * @property from
- * @property to
- * @constructor Create empty Player move x y z event
- */
-class PlayerMoveXYZEvent(
-    val player: org.bukkit.entity.Player, val from: org.bukkit.Location, var to: org.bukkit.Location
-    ) : KotlinEvent(true)
+import org.bukkit.Location
+import org.bukkit.entity.Player
 
 /**
- * Player move full x y z event
+ * This event is fired only when the player moves, this means that unlike
+ * the normal PlayerMoveEvent it does not fire when the player looks around.
  *
- * @property player
- * @property from
- * @property to
- * @constructor Create empty Player move full x y z event
+ * ## This method is Fired Asynchronously
+ *
+ * @property from The previous location the player was at.
+ * @property to The players new location.
+ */
+class PlayerMoveXYZEvent(
+    player: Player,
+    val from: Location,
+    var to: Location
+): KPlayerEvent(player, true)
+
+/**
+ * This event is fired when the player moves one full block,
+ * So if the player moves +1 in any direction this will apply.
+ *
+ * ## This method is Fired Asynchronously
+ *
+ * @property from The previous location the player was at.
+ * @property to The players new location.
  */
 class PlayerMoveFullXYZEvent(
-    val player: org.bukkit.entity.Player, val from: org.bukkit.Location, var to: org.bukkit.Location
-    ) : KotlinEvent(true)
+    player: Player,
+    val from: Location,
+    var to: Location
+): KPlayerEvent(player, true)

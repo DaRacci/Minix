@@ -1,6 +1,6 @@
 rootProject.name = "RacciCore"
-val USERNAME: String by settings
-val TOKEN: String by settings
+val USERNAME: String? by settings
+val TOKEN   : String? by settings
 
 enableFeaturePreview("VERSION_CATALOGS")
 dependencyResolutionManagement {
@@ -8,14 +8,14 @@ dependencyResolutionManagement {
         maven {
             url = uri("https://maven.pkg.github.com/DaRacci/LibraryCatalog")
             credentials {
-                username = USERNAME
-                password = TOKEN
+                username = System.getProperty("USERNAME") ?: USERNAME
+                password = System.getProperty("TOKEN")    ?: TOKEN
             }
         }
     }
     versionCatalogs {
         create("libs") {
-            from("me.racci:librarycatalog:1.4")
+            from("me.racci:librarycatalog:1.3")
         }
     }
 }

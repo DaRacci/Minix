@@ -26,31 +26,22 @@ class HeadBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<H
         }
     }
 
-    private var hMeta = meta.clone() as SkullMeta
-    private var hItemStack = itemStack.clone()
-        get() {field.itemMeta = hMeta;return field}
-
     var texture: String
         get() = throw UnsupportedOperationException("Please don't make me implement this")
         set(texture) {
             if (PROFILE_FIELD == null) return
-            val skullMeta = hMeta
+            val skullMeta = meta as SkullMeta
             val profile = GameProfile(UUID.fromString("38dff22c-c0ec-40b8-bd11-b4376e9a20a6"), null)
             profile.properties.put("textures", Property("textures", texture))
             catch<Exception> {
-                PROFILE_FIELD!![hMeta] = profile
+                PROFILE_FIELD!![meta as SkullMeta] = profile
             }
             meta = skullMeta
         }
 
     var owner: OfflinePlayer?
-        get() = hMeta.owningPlayer
-        set(player) {hMeta.owningPlayer = player}
-
-    override fun build(): ItemStack {
-        hItemStack.itemMeta = hMeta
-        return hItemStack
-    }
+        get() = (meta as SkullMeta).owningPlayer
+        set(player) {(meta as SkullMeta).owningPlayer = player}
 
     init {
         if (itemStack.type != Material.PLAYER_HEAD) {

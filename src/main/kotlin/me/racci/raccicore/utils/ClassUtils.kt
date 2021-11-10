@@ -1,5 +1,7 @@
 package me.racci.raccicore.utils
 
+import java.lang.reflect.Constructor
+
 object ClassUtils {
 
     /**
@@ -14,6 +16,10 @@ object ClassUtils {
             return true
         }
         return false
+    }
+
+    fun <T> classConstructor(constructor: Constructor<T>, vararg args: Any?): T {
+        return constructor.newInstance(*args)
     }
 
 

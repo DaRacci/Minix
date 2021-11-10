@@ -36,15 +36,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-#      - name: Get Version
-#        uses: paulhatch/semantic-version@v4.0.3
-#        with:
-#          tag_prefix: "v"
-#          major_pattern: "[MAJOR]"
-#          minor_pattern: "[MINOR]"
-#          format: "${major}.${minor}.${patch}-prerelease${increment}"
-#          short_tags: false
-#          bump_each_commit: false
+      #      - name: Get Version
+      #        uses: paulhatch/semantic-version@v4.0.3
+      #        with:
+      #          tag_prefix: "v"
+      #          major_pattern: "[MAJOR]"
+      #          minor_pattern: "[MINOR]"
+      #          format: "${major}.${minor}.${patch}-prerelease${increment}"
+      #          short_tags: false
+      #          bump_each_commit: false
 
       - name: Build
         run: |

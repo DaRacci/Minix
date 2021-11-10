@@ -1,9 +1,8 @@
-rootProject.name = "RacciCore"
-//val USERNAME: String by settings
-//val TOKEN   : String by settings
+rootProject.name = "RacciCore" // val USERNAME: String by settings
+// val TOKEN   : String by settings
 
-//enableFeaturePreview("VERSION_CATALOGS")
-//dependencyResolutionManagement {
+// enableFeaturePreview("VERSION_CATALOGS")
+// dependencyResolutionManagement {
 //    repositories {
 //        mavenLocal()
 //        maven {
@@ -19,4 +18,4 @@ rootProject.name = "RacciCore"
 //            from("me.racci:LibraryCatalog:1.5")
 //        }
 //    }
-//}
+// }

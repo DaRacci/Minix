@@ -2,10 +2,10 @@ plugins {
     java
     `java-library`
     `maven-publish`
-    kotlin("jvm")                       version "1.6.0-RC2"
-    id("org.jetbrains.dokka")               version "1.5.31"
-    kotlin("plugin.serialization")      version "1.5.31"
-    id("com.github.johnrengelman.shadow")   version "7.1.0"
+    kotlin("jvm") version "1.6.0-RC2"
+    id("org.jetbrains.dokka") version "1.5.31"
+    kotlin("plugin.serialization") version "1.5.31"
+    id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
 group = findProperty("group")!!
@@ -31,7 +31,6 @@ dependencies {
     compileOnly("com.mojang:authlib:1.5.21")
     compileOnly("me.clip:placeholderapi:2.10.10")
     compileOnly("net.pl3x.purpur:purpur-api:1.17.1-R0.1-SNAPSHOT")
-
 }
 
 repositories {
@@ -63,26 +62,24 @@ java {
 
 tasks.processResources {
     from(sourceSets.main.get().resources.srcDirs) {
-        filesMatching("plugin.yml") {
-//            val var1    : String ; rootProject.libs.kotlin.stdLib.get().apply               {var1   = "$module:$versionConstraint"}
-//            val var2    : String ; rootProject.libs.kotlin.reflect.get().apply              {var2   = "$module:$versionConstraint"}
-//            val var3    : String ; rootProject.libs.kotlinX.coroutinesCore.get().apply      {var3   = "$module:$versionConstraint"}
-//            val var4    : String ; rootProject.libs.kotlinX.coroutinesJvm.get().apply       {var4   = "$module:$versionConstraint"}
-//            val var5    : String ; rootProject.libs.kotlinX.serialization.get().apply       {var5   = "$module:$versionConstraint"}
-//            val var6    : String ; rootProject.libs.kotlinX.datetime.get().apply            {var6   = "$module:$versionConstraint"}
-//            val var7    : String ; rootProject.libs.mcCoroutineCore.get().apply             {var7   = "$module:$versionConstraint"}
-//            val var8    : String ; rootProject.libs.mcCoroutineAPI.get().apply              {var8   = "$module:$versionConstraint"}
+        filesMatching("plugin.yml") { //            val var1    : String ; rootProject.libs.kotlin.stdLib.get().apply               {var1   = "$module:$versionConstraint"}
+            //            val var2    : String ; rootProject.libs.kotlin.reflect.get().apply              {var2   = "$module:$versionConstraint"}
+            //            val var3    : String ; rootProject.libs.kotlinX.coroutinesCore.get().apply      {var3   = "$module:$versionConstraint"}
+            //            val var4    : String ; rootProject.libs.kotlinX.coroutinesJvm.get().apply       {var4   = "$module:$versionConstraint"}
+            //            val var5    : String ; rootProject.libs.kotlinX.serialization.get().apply       {var5   = "$module:$versionConstraint"}
+            //            val var6    : String ; rootProject.libs.kotlinX.datetime.get().apply            {var6   = "$module:$versionConstraint"}
+            //            val var7    : String ; rootProject.libs.mcCoroutineCore.get().apply             {var7   = "$module:$versionConstraint"}
+            //            val var8    : String ; rootProject.libs.mcCoroutineAPI.get().apply              {var8   = "$module:$versionConstraint"}
             expand(
                 "version" to project.version,
                 "kotlinstdlib" to "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0-RC2",
-                "kotlinreflect" to "org.jetbrains.kotlin:kotlin-reflect:1.6.0-RC2",
-                /*"kotlinXcoroutinesCore" to "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt",
+                "kotlinreflect" to "org.jetbrains.kotlin:kotlin-reflect:1.6.0-RC2", /*"kotlinXcoroutinesCore" to "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt",
                 "kotlinXcoroutinesJvm" to "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt",*/
-                "kotlinXserializationJson" to "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0",
-                /*"kotlinXdateTime" to "org.jetbrains.kotlinx:kotlinx-datetime:0.3.1",
+                "kotlinXserializationJson" to "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0", /*"kotlinXdateTime" to "org.jetbrains.kotlinx:kotlinx-datetime:0.3.1",
                 "mcCoroutineCore" to "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0",
                 "mcCoroutineAPI" to "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0",*/
-            )}
+            )
+        }
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
 }
@@ -153,7 +150,7 @@ publishing {
                 name.set(rootProject.name)
                 description.set(
                     "A Spigot library for use with kotlin." +
-                    "Providing Coroutines and lots of ASYNC to provide the best performance."
+                        "Providing Coroutines and lots of ASYNC to provide the best performance."
                 )
                 url.set(projectGitUrl)
                 inceptionYear.set("2021")
@@ -182,8 +179,7 @@ publishing {
 
             from(components["java"])
             artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
-            //artifactId = project.name.toLowerCase()
+            artifact(tasks["javadocJar"]) // artifactId = project.name.toLowerCase()
         }
     }
 }

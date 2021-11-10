@@ -1,109 +1,108 @@
 package me.racci.raccicore.events
 
+import org.bukkit.block.Block
+import org.bukkit.block.BlockFace
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
+data class BlockData(
+    val block: Block,
+    val blockFace: BlockFace
+)
+
 class PlayerShiftLeftClickEvent(
     player: Player,
-    override val item: ItemStack?,
-): KPlayerEvent(player, true), IComboEvent {
-
-    /**
-     * If true this means the used item in the event is not a players fists.
-     */
-    override val hasItem: Boolean = item != null
-
-}
+    item: ItemStack?,
+    blockData: BlockData? = null,
+    entity: Entity? = null,
+): AbstractComboEvent(player, item, blockData, entity)
 
 class PlayerLeftClickEvent(
     player: Player,
-    override val item: ItemStack?,
-): KPlayerEvent(player, true), IComboEvent {
-
-    /**
-     * If true this means the used item in the event is not a players fists.
-     */
-    override val hasItem: Boolean = item != null
-
-}
+    item: ItemStack?,
+    blockData: BlockData? = null,
+    entity: Entity? = null,
+): AbstractComboEvent(player, item, blockData, entity)
 
 class PlayerShiftRightClickEvent(
     player: Player,
-    override val item: ItemStack?,
-): KPlayerEvent(player, true), IComboEvent {
-
-    /**
-     * If true this means the used item in the event is not a players fists.
-     */
-    override val hasItem: Boolean = item != null
-
-}
+    item: ItemStack?,
+    blockData: BlockData? = null,
+    entity: Entity? = null,
+): AbstractComboEvent(player, item, blockData, entity)
 
 class PlayerRightClickEvent(
     player: Player,
-    override val item: ItemStack?,
-): KPlayerEvent(player, true), IComboEvent {
-
-    /**
-     * If true this means the used item in the event is not a players fists.
-     */
-    override val hasItem: Boolean = item != null
-
-}
+    item: ItemStack?,
+    blockData: BlockData? = null,
+    entity: Entity? = null,
+): AbstractComboEvent(player, item, blockData, entity)
 
 class PlayerShiftOffhandEvent(
     player: Player,
-    override val item: ItemStack?,
+    item: ItemStack?,
     val offHandItem: ItemStack?,
-): KPlayerEvent(player, true), IComboEvent {
+    blockData: BlockData? = null,
+    entity: Entity? = null,
+): AbstractComboEvent(player, item, blockData, entity) {
 
     /**
      * If true this means that either one hand or both hands have
      * an item and are not null.
      */
-    override val hasItem: Boolean = item != null
+    override val hasItem
+        get() = item != null || offHandItem != null
 
 }
 
 class PlayerOffhandEvent(
     player: Player,
-    override val item: ItemStack?,
+    item: ItemStack?,
     val offHandItem: ItemStack?,
-): KPlayerEvent(player, true), IComboEvent {
+    blockData: BlockData? = null,
+    entity: Entity? = null,
+): AbstractComboEvent(player, item, blockData, entity) {
 
     /**
      * If true this means that either one hand or both hands have
      * an item and are not null.
      */
-    override val hasItem: Boolean = item != null
+    override val hasItem
+        get() = item != null || offHandItem != null
 
 }
 
 class PlayerShiftDoubleOffhandEvent(
     player: Player,
-    override val item: ItemStack?,
+    item: ItemStack?,
     val offHandItem: ItemStack?,
-): KPlayerEvent(player, true), IComboEvent {
+    blockData: BlockData? = null,
+    entity: Entity? = null,
+): AbstractComboEvent(player, item, blockData, entity) {
 
     /**
      * If true this means that either one hand or both hands have
      * an item and are not null.
      */
-    override val hasItem: Boolean = item != null || offHandItem != null
+    override val hasItem
+        get() = item != null || offHandItem != null
 
 }
 
 class PlayerDoubleOffhandEvent(
     player: Player,
-    override val item: ItemStack?,
+    item: ItemStack?,
     val offHandItem: ItemStack?,
-): KPlayerEvent(player, true), IComboEvent {
+    blockData: BlockData? = null,
+    entity: Entity? = null,
+): AbstractComboEvent(player, item, blockData, entity) {
 
     /**
      * If true this means that either one hand or both hands have
      * an item and are not null.
      */
-    override val hasItem: Boolean = item != null
+    override val hasItem
+        get() = item != null || offHandItem != null
 
 }
-

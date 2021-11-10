@@ -7,13 +7,3 @@ loadbefore: [ Sylphia, Sylph, BloodNight, HollowsEve, SylphEvents ]
 authors: [ Racci ]
 description: Core lib for my plugins
 website: https://github.com/DaRacci/RacciCore/
-
-#libraries:
-#  - ${kotlinstdlib}
-#  - ${kotlinreflect}
-#  - ${kotlinXcoroutinesCore}
-#  - ${kotlinXcoroutinesJvm}
-#  - ${kotlinXserializationJson}
-#  - ${kotlinXdateTime}
-#  - ${mcCoroutineCore}
-#  - ${mcCoroutineAPI}

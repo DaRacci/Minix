@@ -2,7 +2,6 @@ plugins {
     java
     `java-library`
     `maven-publish`
-    `version-catalog`
     kotlin("jvm")                       version "1.6.0-RC2"
     id("org.jetbrains.dokka")               version "1.5.31"
     kotlin("plugin.serialization")      version "1.5.31"
@@ -14,23 +13,30 @@ version = findProperty("version")!!
 
 dependencies {
 
-    api(libs.adventure.api)
-    api(libs.adventure.miniMessage)
-    api(libs.itemNBTAPI)
-    api(libs.acfPaper)
-    api(libs.inventoryFramework)
-    api(libs.bundles.mcCoroutine)
-    api(libs.bundles.kotlinLibs)
-    api(libs.bundles.kotlinXLibs)
+    api("net.kyori:adventure-api:4.10.0-SNAPSHOT")
+    api("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT")
+    api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
+    api("com.github.stefvanschie.inventoryframework:IF:0.10.3")
+    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0")
+    api("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0")
 
-    compileOnly(libs.authLib)
-    compileOnly(libs.purpurAPI)
-    compileOnly(libs.plugin.placeholderAPI)
+    api("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0-RC2")
+    api("org.jetbrains.kotlin:kotlin-reflect:1.6.0-RC2")
+
+    api("org.jetbrains.kotlinx:kotlinx-datetime:0.3.1")
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
+    api("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt")
+
+    compileOnly("com.mojang:authlib:1.5.21")
+    compileOnly("me.clip:placeholderapi:2.10.10")
+    compileOnly("net.pl3x.purpur:purpur-api:1.17.1-R0.1-SNAPSHOT")
 
 }
 
 repositories {
     mavenCentral()
+    mavenLocal()
     maven("https://jitpack.io")
     // Minecraft AuthLib
     maven("https://libraries.minecraft.net/")
@@ -58,24 +64,24 @@ java {
 tasks.processResources {
     from(sourceSets.main.get().resources.srcDirs) {
         filesMatching("plugin.yml") {
-            val var1    : String ; rootProject.libs.kotlin.stdLib.get().apply               {var1   = "$module:$versionConstraint"}
-            val var2    : String ; rootProject.libs.kotlin.reflect.get().apply              {var2   = "$module:$versionConstraint"}
-            val var3    : String ; rootProject.libs.kotlinX.coroutinesCore.get().apply      {var3   = "$module:$versionConstraint"}
-            val var4    : String ; rootProject.libs.kotlinX.coroutinesJvm.get().apply       {var4   = "$module:$versionConstraint"}
-            val var5    : String ; rootProject.libs.kotlinX.serialization.get().apply       {var5   = "$module:$versionConstraint"}
-            val var6    : String ; rootProject.libs.kotlinX.datetime.get().apply            {var6   = "$module:$versionConstraint"}
-            val var7    : String ; rootProject.libs.mcCoroutineCore.get().apply             {var7   = "$module:$versionConstraint"}
-            val var8    : String ; rootProject.libs.mcCoroutineAPI.get().apply              {var8   = "$module:$versionConstraint"}
+//            val var1    : String ; rootProject.libs.kotlin.stdLib.get().apply               {var1   = "$module:$versionConstraint"}
+//            val var2    : String ; rootProject.libs.kotlin.reflect.get().apply              {var2   = "$module:$versionConstraint"}
+//            val var3    : String ; rootProject.libs.kotlinX.coroutinesCore.get().apply      {var3   = "$module:$versionConstraint"}
+//            val var4    : String ; rootProject.libs.kotlinX.coroutinesJvm.get().apply       {var4   = "$module:$versionConstraint"}
+//            val var5    : String ; rootProject.libs.kotlinX.serialization.get().apply       {var5   = "$module:$versionConstraint"}
+//            val var6    : String ; rootProject.libs.kotlinX.datetime.get().apply            {var6   = "$module:$versionConstraint"}
+//            val var7    : String ; rootProject.libs.mcCoroutineCore.get().apply             {var7   = "$module:$versionConstraint"}
+//            val var8    : String ; rootProject.libs.mcCoroutineAPI.get().apply              {var8   = "$module:$versionConstraint"}
             expand(
                 "version" to project.version,
-                "kotlinstdlib" to var1,
-                "kotlinreflect" to var2,
-                "kotlinXcoroutinesCore" to var3,
-                "kotlinXcoroutinesJvm" to var4,
-                "kotlinXserializationJson" to var5,
-                "kotlinXdateTime" to var6,
-                "mcCoroutineCore" to var7,
-                "mcCoroutineAPI" to var8,
+                "kotlinstdlib" to "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0-RC2",
+                "kotlinreflect" to "org.jetbrains.kotlin:kotlin-reflect:1.6.0-RC2",
+                /*"kotlinXcoroutinesCore" to "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt",
+                "kotlinXcoroutinesJvm" to "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt",*/
+                "kotlinXserializationJson" to "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.0",
+                /*"kotlinXdateTime" to "org.jetbrains.kotlinx:kotlinx-datetime:0.3.1",
+                "mcCoroutineCore" to "com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0",
+                "mcCoroutineAPI" to "com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0",*/
             )}
         duplicatesStrategy = DuplicatesStrategy.INCLUDE
     }
@@ -83,12 +89,8 @@ tasks.processResources {
 
 tasks {
 
-    build {
-        dependsOn(shadowJar)
-    }
-
     shadowJar {
-        archiveClassifier.set("")
+        archiveClassifier.set("full")
         // Hacky way of adding dependencies that are downloaded
         // On launch of the server.
 //        dependencies {
@@ -129,7 +131,6 @@ tasks {
     artifacts {
         archives(sourcesJar)
         archives(javadocJar)
-        archives(jar)
     }
 }
 
@@ -182,7 +183,7 @@ publishing {
             from(components["java"])
             artifact(tasks["sourcesJar"])
             artifact(tasks["javadocJar"])
-            artifactId = project.name.toLowerCase()
+            //artifactId = project.name.toLowerCase()
         }
     }
 }

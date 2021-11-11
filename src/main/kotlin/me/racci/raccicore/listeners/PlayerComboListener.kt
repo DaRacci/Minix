@@ -13,6 +13,7 @@ import me.racci.raccicore.utils.ClassUtils
 import me.racci.raccicore.utils.extensions.KotlinListener
 import me.racci.raccicore.utils.extensions.pm
 import me.racci.raccicore.utils.now
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -21,11 +22,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.inventory.ItemStack
 
 
 class PlayerComboListener : KotlinListener {
 
-    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
     suspend fun onInteract(
         event: PlayerInteractEvent,
     ) = withContext(RacciCore.asyncDispatcher) {
@@ -36,8 +38,13 @@ class PlayerComboListener : KotlinListener {
         val c = if(event.action.isLeftClick) "Left" else "Right"
 
         val clazz = Class.forName("me.racci.raccicore.events.Player${s}${c}ClickEvent") as Class<AbstractComboEvent>
-        val vEvent = ClassUtils.classConstructor(clazz.getConstructor(), event.player, event.item, bd, null)
-
+        val vEvent = ClassUtils.classConstructor(
+            clazz.getConstructor(
+                Player::class.java,
+                ItemStack::class.java,
+                BlockData::class.java,
+                Entity::class.java
+            ), event.player, event.item, bd, null)
         pm.callEvent(vEvent)
 
         if(vEvent.isCancelled) event.isCancelled = true
@@ -55,7 +62,7 @@ class PlayerComboListener : KotlinListener {
         if(vEvent.isCancelled) event.isCancelled = true
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     suspend fun onAttackEntity(
         event: EntityDamageByEntityEvent
     ) = withContext(RacciCore.asyncDispatcher) {
@@ -84,7 +91,14 @@ class PlayerComboListener : KotlinListener {
         } else ""
 
         val clazz = Class.forName("me.racci.raccicore.events.Player${s}${db}OffhandEvent") as Class<AbstractComboEvent>
-        val vEvent = ClassUtils.classConstructor(clazz.getConstructor(), event.player, event.mainHandItem, event.offHandItem)
+        val vEvent = ClassUtils.classConstructor(
+            clazz.getConstructor(
+                Player::class.java,
+                ItemStack::class.java,
+                ItemStack::class.java,
+                BlockData::class.java,
+                Entity::class.java
+            ), event.player, event.mainHandItem, event.offHandItem, null, null)
         pm.callEvent(vEvent)
 
         if(vEvent.isCancelled) event.isCancelled = true

@@ -7,3 +7,4 @@ loadbefore: [ Sylphia, Sylph, BloodNight, HollowsEve, SylphEvents ]
 authors: [ Racci ]
 description: Core lib for my plugins
 website: https://github.com/DaRacci/RacciCore/
+${libraries}

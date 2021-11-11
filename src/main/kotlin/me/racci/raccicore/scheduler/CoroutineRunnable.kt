@@ -2,9 +2,7 @@ package me.racci.raccicore.scheduler
 
 import kotlinx.coroutines.launch
 import me.racci.raccicore.RacciPlugin
-import org.jetbrains.annotations.ApiStatus
 
-@ApiStatus.Experimental
 abstract class CoroutineRunnable : ICoroutineRunnable {
     private var task: ITask? = null
 

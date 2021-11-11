@@ -6,12 +6,10 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import me.racci.raccicore.RacciPlugin
 import me.racci.raccicore.utils.now
-import org.jetbrains.annotations.ApiStatus
 import kotlin.properties.Delegates
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
-@ApiStatus.Experimental
 @OptIn(ExperimentalTime::class)
 class CoroutineTask : ITask {
 

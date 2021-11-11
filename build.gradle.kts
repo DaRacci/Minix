@@ -39,7 +39,7 @@ dependencies {
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt")
 
-    compileOnly("com.mojang:authlib:1.5.26")
+    compileOnly("com.mojang:authlib:2.3.31")
     compileOnly("me.clip:placeholderapi:2.10.10")
     compileOnly("net.pl3x.purpur:purpur-api:1.17.1-R0.1-SNAPSHOT")
 }

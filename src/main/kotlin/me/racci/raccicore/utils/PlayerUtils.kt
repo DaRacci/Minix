@@ -1,7 +1,7 @@
 package me.racci.raccicore.utils
 
 import me.racci.raccicore.RacciPlugin
-import me.racci.raccicore.managers.PlayerManager
+import me.racci.raccicore.core.Provider
 import net.kyori.adventure.text.ComponentLike
 import org.bukkit.entity.Player
 import kotlin.coroutines.resume
@@ -20,7 +20,7 @@ object PlayerUtils {
         whenQuitWithoutInput: PlayerQuitFunction = {},
         callback: ChatInputCallBack
     ) {
-        PlayerManager.inputCallbacks.put(
+        Provider.playerManager.inputCallbacks.put(
             player!!,
             ChatInput(plugin, callback, whenQuitWithoutInput)
         ) { it.playerQuit(this) }
@@ -37,7 +37,7 @@ object PlayerUtils {
         plugin: RacciPlugin,
         callback: PlayerQuitFunction
     ) {
-        PlayerManager.functionsQuit.put(this, PlayerCallback(plugin, callback)) {
+        Provider.playerManager.functionsQuit.put(this, PlayerCallback(plugin, callback)) {
             it.callback.invoke(player!!)
         }
     }
@@ -46,7 +46,7 @@ object PlayerUtils {
         plugin: RacciPlugin,
         callback: PlayerMoveFunction
     ) {
-        PlayerManager.functionsMove[this] = PlayerCallback(plugin, callback)
+        Provider.playerManager.functionsMove[this] = PlayerCallback(plugin, callback)
     }
 
     class ChatInput(

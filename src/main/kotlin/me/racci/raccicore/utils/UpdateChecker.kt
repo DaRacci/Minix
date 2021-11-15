@@ -2,7 +2,7 @@ package me.racci.raccicore.utils
 
 import com.google.gson.JsonParser
 import me.racci.raccicore.RacciPlugin
-import me.racci.raccicore.utils.extensions.console
+import me.racci.raccicore.extensions.console
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
 import net.kyori.adventure.text.format.NamedTextColor

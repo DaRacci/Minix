@@ -1,6 +1,6 @@
 name: RacciCore
 version: '${version}'
-main: me.racci.raccicore.RacciCore
+main: me.racci.raccicore.core.RacciCore
 api-version: 1.17
 load: STARTUP
 loadbefore: [ Sylphia, Sylph, BloodNight, HollowsEve, SylphEvents ]

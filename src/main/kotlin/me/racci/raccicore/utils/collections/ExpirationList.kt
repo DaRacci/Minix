@@ -1,29 +1,29 @@
 package me.racci.raccicore.utils.collections
 
-import me.racci.raccicore.utils.extensions.WithPlugin
-import me.racci.raccicore.utils.extensions.scheduler
-import org.bukkit.plugin.Plugin
-import org.bukkit.scheduler.BukkitTask
+import me.racci.raccicore.RacciPlugin
+import me.racci.raccicore.extensions.WithPlugin
+import me.racci.raccicore.extensions.scheduler
+import me.racci.raccicore.scheduler.ITask
 
 typealias OnExpireCallback<T> = (T) -> Unit
 
-fun <E> Plugin.expirationListOf(): ExpirationList<E> = ExpirationListImpl(this)
+fun <E> RacciPlugin.expirationListOf(): ExpirationList<E> = ExpirationListImpl(this)
 
 fun <E> WithPlugin<*>.expirationListOf() = plugin.expirationListOf<E>()
 
-fun <E> expirationListOf(expireTime: Int, plugin: Plugin, vararg elements: E)
+fun <E> expirationListOf(expireTime: Int, plugin: RacciPlugin, vararg elements: E)
         = plugin.expirationListOf<E>().apply { elements.forEach { add(it, expireTime) } }
 
-fun <E> Plugin.expirationListOf(expireTime: Int, vararg elements: E)
+fun <E> RacciPlugin.expirationListOf(expireTime: Int, vararg elements: E)
         = expirationListOf(expireTime, this, elements = elements)
 
 fun <E> WithPlugin<*>.expirationListOf(expireTime: Int, vararg elements: E)
         = plugin.expirationListOf(expireTime, *elements)
 
-fun <E> expirationListOf(expireTime: Int, plugin: Plugin, vararg elements: Pair<E, OnExpireCallback<E>>)
+fun <E> expirationListOf(expireTime: Int, plugin: RacciPlugin, vararg elements: Pair<E, OnExpireCallback<E>>)
         = plugin.expirationListOf<E>().apply { elements.forEach { (element, onExpire) -> add(element, expireTime, onExpire) } }
 
-fun <E> Plugin.expirationListOf(expireTime: Int, vararg elements: Pair<E, OnExpireCallback<E>>)
+fun <E> RacciPlugin.expirationListOf(expireTime: Int, vararg elements: Pair<E, OnExpireCallback<E>>)
         = expirationListOf(expireTime, this, elements = elements)
 
 fun <E> WithPlugin<*>.expirationListOf(expireTime: Int, vararg elements: Pair<E, OnExpireCallback<E>>)
@@ -133,12 +133,12 @@ private class ExpirationNode<E>(var element: E, val expireTime: Int) {
     val startTime: Long = System.currentTimeMillis()
 }
 
-class ExpirationListImpl<E>(private val plugin: Plugin) : ExpirationList<E> {
+class ExpirationListImpl<E>(private val plugin: RacciPlugin) : ExpirationList<E> {
 
     private var head: ExpirationNode<E>? = null
     private var tail: ExpirationNode<E>? = null
 
-    private var task: BukkitTask? = null
+    private var task: ITask? = null
     private var emptyCount: Byte = 0
 
     override val size get() = _size
@@ -353,4 +353,3 @@ class ExpirationListImpl<E>(private val plugin: Plugin) : ExpirationList<E> {
         _size--
     }
 }
-

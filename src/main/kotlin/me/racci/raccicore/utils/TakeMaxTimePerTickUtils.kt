@@ -1,8 +1,8 @@
 package me.racci.raccicore.utils
 
-import me.racci.raccicore.utils.extensions.WithPlugin
-import me.racci.raccicore.utils.extensions.task
-import org.bukkit.plugin.Plugin
+import me.racci.raccicore.RacciPlugin
+import me.racci.raccicore.extensions.WithPlugin
+import me.racci.raccicore.extensions.task
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
@@ -22,7 +22,7 @@ suspend fun WithPlugin<*>.takeMaxPerTick(
 ) = plugin.takeMaxPerTick(time)
 
 @OptIn(ExperimentalTime::class)
-suspend fun Plugin.takeMaxPerTick(time: Duration) {
+suspend fun RacciPlugin.takeMaxPerTick(time: Duration) {
     val takeValues = getTakeValuesOrNull(coroutineContext)
 
     if(takeValues == null) {

@@ -1,10 +1,10 @@
 package me.racci.raccicore.utils.collections
 
-import me.racci.raccicore.utils.extensions.*
+import me.racci.raccicore.RacciPlugin
+import me.racci.raccicore.extensions.*
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerKickEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.plugin.Plugin
 import java.util.*
 
 typealias WhenPlayerQuitCollectionCallback = Player.() -> Unit
@@ -12,23 +12,23 @@ typealias WhenPlayerQuitMapCallback<V> = Player.(V) -> Unit
 
 // List
 
-fun Plugin.onlinePlayerListOf() = OnlinePlayerList(this)
+fun RacciPlugin.onlinePlayerListOf() = OnlinePlayerList(this)
 
 fun WithPlugin<*>.onlinePlayerListOf() = plugin.onlinePlayerListOf()
 
-fun onlinePlayerListOf(vararg players: Player, plugin: Plugin)
+fun onlinePlayerListOf(vararg players: Player, plugin: RacciPlugin)
         = OnlinePlayerList(plugin).apply { addAll(players) }
 
-fun Plugin.onlinePlayerListOf(vararg players: Player)
+fun RacciPlugin.onlinePlayerListOf(vararg players: Player)
         = onlinePlayerListOf(*players, plugin = this)
 
 fun WithPlugin<*>.onlinePlayerListOf(vararg players: Player)
         = plugin.onlinePlayerListOf(*players)
 
-fun onlinePlayerListOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>, plugin: Plugin)
+fun onlinePlayerListOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>, plugin: RacciPlugin)
         = OnlinePlayerList(plugin).apply { pair.forEach { (player, whenPlayerQuit) -> add(player, whenPlayerQuit) } }
 
-fun Plugin.onlinePlayerListOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>)
+fun RacciPlugin.onlinePlayerListOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>)
         = onlinePlayerListOf(*pair, plugin = this)
 
 fun WithPlugin<*>.onlinePlayerListOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>)
@@ -36,23 +36,23 @@ fun WithPlugin<*>.onlinePlayerListOf(vararg pair: Pair<Player, WhenPlayerQuitCol
 
 // Set
 
-fun Plugin.onlinePlayerSetOf() = OnlinePlayerSet(this)
+fun RacciPlugin.onlinePlayerSetOf() = OnlinePlayerSet(this)
 
 fun WithPlugin<*>.onlinePlayerSetOf() = plugin.onlinePlayerSetOf()
 
-fun onlinePlayerSetOf(vararg players: Player, plugin: Plugin)
+fun onlinePlayerSetOf(vararg players: Player, plugin: RacciPlugin)
         = OnlinePlayerSet(plugin).apply { addAll(players) }
 
-fun Plugin.onlinePlayerSetOf(vararg players: Player)
+fun RacciPlugin.onlinePlayerSetOf(vararg players: Player)
         = onlinePlayerSetOf(*players, plugin = this)
 
 fun WithPlugin<*>.onlinePlayerSetOf(vararg players: Player)
         = plugin.onlinePlayerSetOf(*players)
 
-fun onlinePlayerSetOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>, plugin: Plugin)
+fun onlinePlayerSetOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>, plugin: RacciPlugin)
         = OnlinePlayerSet(plugin).apply { pair.forEach { (player, whenPlayerQuit) -> add(player, whenPlayerQuit) } }
 
-fun Plugin.onlinePlayerSetOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>)
+fun RacciPlugin.onlinePlayerSetOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>)
         = onlinePlayerSetOf(*pair, plugin = this)
 
 fun WithPlugin<*>.onlinePlayerSetOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>)
@@ -60,29 +60,29 @@ fun WithPlugin<*>.onlinePlayerSetOf(vararg pair: Pair<Player, WhenPlayerQuitColl
 
 // Map
 
-fun <V> Plugin.onlinePlayerMapOf() = OnlinePlayerMap<V>(this)
+fun <V> RacciPlugin.onlinePlayerMapOf() = OnlinePlayerMap<V>(this)
 
 fun <V> WithPlugin<*>.onlinePlayerMapOf() = plugin.onlinePlayerMapOf<V>()
 
-fun <V> onlinePlayerMapOf(vararg pair: Pair<Player, V>, plugin: Plugin)
+fun <V> onlinePlayerMapOf(vararg pair: Pair<Player, V>, plugin: RacciPlugin)
         = OnlinePlayerMap<V>(plugin).apply { putAll(pair) }
 
-fun <V> Plugin.onlinePlayerMapOf(vararg pair: Pair<Player, V>)
+fun <V> RacciPlugin.onlinePlayerMapOf(vararg pair: Pair<Player, V>)
         = onlinePlayerMapOf(*pair, plugin = this)
 
 fun <V> WithPlugin<*>.onlinePlayerMapOf(vararg pair: Pair<Player, V>)
         = plugin.onlinePlayerMapOf(*pair)
 
-fun <V> onlinePlayerMapOf(vararg triple: Triple<Player, V, WhenPlayerQuitMapCallback<V>>, plugin: Plugin)
+fun <V> onlinePlayerMapOf(vararg triple: Triple<Player, V, WhenPlayerQuitMapCallback<V>>, plugin: RacciPlugin)
         = OnlinePlayerMap<V>(plugin).apply { triple.forEach { (player, value, whenPlayerQuit) -> put(player, value, whenPlayerQuit) } }
 
-fun <V> Plugin.onlinePlayerMapOf(vararg triple: Triple<Player, V, WhenPlayerQuitMapCallback<V>>)
+fun <V> RacciPlugin.onlinePlayerMapOf(vararg triple: Triple<Player, V, WhenPlayerQuitMapCallback<V>>)
         = onlinePlayerMapOf(*triple, plugin = this)
 
 fun <V> WithPlugin<*>.onlinePlayerMapOf(vararg triple: Triple<Player, V, WhenPlayerQuitMapCallback<V>>)
         = plugin.onlinePlayerMapOf(*triple)
 
-class OnlinePlayerList(override val plugin: Plugin) : LinkedList<Player>(), OnlinePlayerCollection {
+class OnlinePlayerList(override val plugin: RacciPlugin) : LinkedList<Player>(), OnlinePlayerCollection {
     private val whenQuit: MutableList<Pair<Player, WhenPlayerQuitCollectionCallback>> = LinkedList()
 
     override fun add(player: Player, whenPlayerQuitCallback: Player.() -> Unit): Boolean {
@@ -142,7 +142,7 @@ class OnlinePlayerList(override val plugin: Plugin) : LinkedList<Player>(), Onli
     }
 }
 
-class OnlinePlayerSet(override val plugin: Plugin) : HashSet<Player>(), OnlinePlayerCollection {
+class OnlinePlayerSet(override val plugin: RacciPlugin) : HashSet<Player>(), OnlinePlayerCollection {
     private val whenQuit: MutableMap<Player, WhenPlayerQuitCollectionCallback> = mutableMapOf()
 
     override fun add(player: Player, whenPlayerQuitCallback: WhenPlayerQuitCollectionCallback): Boolean {
@@ -176,7 +176,7 @@ class OnlinePlayerSet(override val plugin: Plugin) : HashSet<Player>(), OnlinePl
     }
 }
 
-interface OnlinePlayerCollection : MutableCollection<Player>, KListener<Plugin> {
+interface OnlinePlayerCollection : MutableCollection<Player>, KListener<RacciPlugin> {
 
     fun checkRegistration() {
         if(size == 1) {
@@ -215,7 +215,7 @@ interface OnlinePlayerCollection : MutableCollection<Player>, KListener<Plugin> 
     }
 }
 
-class OnlinePlayerMap<V>(override val plugin: Plugin) : HashMap<Player, V>(), KListener<Plugin> {
+class OnlinePlayerMap<V>(override val plugin: RacciPlugin) : HashMap<Player, V>(), KListener<RacciPlugin> {
     private val whenQuit: HashMap<Player, WhenPlayerQuitMapCallback<V>> = hashMapOf()
 
     /**

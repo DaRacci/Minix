@@ -20,8 +20,8 @@ class Legacy private constructor() {
 }
 
 object LegacyUtils {
-    fun parseLegacy(string: String?): Component {
-        return LegacyComponentSerializer.legacySection().deserialize(string!!)
+    fun parseLegacy(string: String): Component {
+        return LegacyComponentSerializer.legacySection().deserialize(string)
     }
 
     fun parseLegacy(list: List<String>?): List<Component> {

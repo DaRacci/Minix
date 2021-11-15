@@ -18,7 +18,7 @@ interface ICoroutineRunnable {
 
     fun runTaskTimer(plugin: RacciPlugin, delay: Long, period: Long): ITask
 
-    fun runTaskAsync(plugin: RacciPlugin): ITask
+    fun runAsyncTask(plugin: RacciPlugin): ITask
 
     fun runAsyncTaskLater(plugin: RacciPlugin, delay: Long): ITask
 

@@ -1,37 +1,37 @@
 package me.racci.raccicore.utils.collections
 
-import me.racci.raccicore.utils.extensions.WithPlugin
-import me.racci.raccicore.utils.extensions.scheduler
+import me.racci.raccicore.RacciPlugin
+import me.racci.raccicore.extensions.WithPlugin
+import me.racci.raccicore.extensions.scheduler
+import me.racci.raccicore.scheduler.ITask
 import me.racci.raccicore.utils.now
-import org.bukkit.plugin.Plugin
-import org.bukkit.scheduler.BukkitTask
 import java.util.*
 
 typealias OnExpireMapCallback<K, V> = (K, V) -> Unit
 
-fun <K, V> Plugin.expirationMapOf(): ExpirationMap<K, V> = ExpirationMapImpl(this)
+fun <K, V> RacciPlugin.expirationMapOf(): ExpirationMap<K, V> = ExpirationMapImpl(this)
 
 fun <K, V> WithPlugin<*>.expirationMapOf() = plugin.expirationMapOf<K, V>()
 
-fun <K, V> expirationMapOf(expireTime: Long, plugin: Plugin, vararg elements: Pair<K, V>)
+fun <K, V> expirationMapOf(expireTime: Long, plugin: RacciPlugin, vararg elements: Pair<K, V>)
         = plugin.expirationMapOf<K, V>().apply { elements.forEach { (key, value) -> put(key, value, expireTime) } }
 
-fun <K, V> Plugin.expirationMapOf(expireTime: Long, vararg elements: Pair<K, V>)
+fun <K, V> RacciPlugin.expirationMapOf(expireTime: Long, vararg elements: Pair<K, V>)
         = expirationMapOf(expireTime, this, elements = elements)
 
 fun <K, V> WithPlugin<*>.expirationMapOf(expireTime: Long, vararg elements: Pair<K, V>)
         = plugin.expirationMapOf(expireTime, *elements)
 
-fun <K, V> expirationMapOf(expireTime: Long, plugin: Plugin, vararg elements: Triple<K, V, OnExpireMapCallback<K, V>>)
+fun <K, V> expirationMapOf(expireTime: Long, plugin: RacciPlugin, vararg elements: Triple<K, V, OnExpireMapCallback<K, V>>)
         = plugin.expirationMapOf<K, V>().apply { elements.forEach { (key, value, onExpire) -> put(key, value, expireTime, onExpire) } }
 
-fun <K, V> Plugin.expirationMapOf(expireTime: Long, vararg elements: Triple<K, V, OnExpireMapCallback<K, V>>)
+fun <K, V> RacciPlugin.expirationMapOf(expireTime: Long, vararg elements: Triple<K, V, OnExpireMapCallback<K, V>>)
         = expirationMapOf(expireTime, this, elements = elements)
 
 fun <K, V> WithPlugin<*>.expirationMapOf(expireTime: Long, vararg elements: Triple<K, V, OnExpireMapCallback<K, V>>)
         = plugin.expirationMapOf(expireTime, *elements)
 
-interface ExpirationMap<K, V> : MutableMap<K, V>, WithPlugin<Plugin> {
+interface ExpirationMap<K, V> : MutableMap<K, V>, WithPlugin<RacciPlugin> {
 
     /**
      * Returns the missing time on seconds to expire the key,
@@ -77,7 +77,7 @@ interface ExpirationMap<K, V> : MutableMap<K, V>, WithPlugin<Plugin> {
 }
 
 class ExpirationMapImpl<K, V>(
-        override val plugin: Plugin,
+        override val plugin: RacciPlugin,
         val initialMap: MutableMap<K ,V> = WeakHashMap()
 ) : ExpirationMap<K, V>, MutableMap<K, V> by initialMap {
 
@@ -148,7 +148,7 @@ class ExpirationMapImpl<K, V>(
     private fun checkTime(current: Long, key: K)
             = ((current - (putTime.getOrPut(key) { current })) / 1000) - (expiration[key] ?: 0) >= 0
 
-    private var task: BukkitTask? = null
+    private var task: ITask? = null
     private var emptyCount: Byte = 0
     private fun generateTask() {
         if (task == null) {

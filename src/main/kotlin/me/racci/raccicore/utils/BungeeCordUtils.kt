@@ -3,8 +3,8 @@
 package me.racci.raccicore.utils
 
 import com.google.common.io.ByteStreams
+import me.racci.raccicore.core.Provider
 import me.racci.raccicore.extensions.sendBungeeCord
-import me.racci.raccicore.managers.BungeeCordManager
 import org.bukkit.entity.Player
 
 typealias ResponseCallback = (message: ByteArray) -> Unit
@@ -22,7 +22,7 @@ object BungeeCordUtils {
             out.writeUTF(subChannel)
             if(request != null) out.write(request)
             player.sendBungeeCord(out.toByteArray())
-            if(responseCallback != null) BungeeCordManager.addToQueue(this)
+            if(responseCallback != null) Provider.bungeeCordManager.addToQueue(this)
         }
     }
 

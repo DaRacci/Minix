@@ -32,7 +32,7 @@ dependencies {
     compileOnlyApi("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0")
     compileOnlyApi("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0")
 
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0-RC2")
+    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.255-SNAPSHOT")
     compileOnly("org.jetbrains.kotlin:kotlin-reflect:1.6.0-RC2")
 
     compileOnly("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1")

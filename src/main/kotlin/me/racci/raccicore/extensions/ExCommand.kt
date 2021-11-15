@@ -1,7 +1,7 @@
 package me.racci.raccicore.extensions
 
 import me.racci.raccicore.RacciPlugin
-import me.racci.raccicore.managers.CommandManager
+import me.racci.raccicore.core.managers.CommandManager
 import me.racci.raccicore.utils.catch
 import org.bukkit.command.Command
 import org.bukkit.command.SimpleCommandMap

@@ -37,7 +37,7 @@ abstract class CoroutineRunnable : ICoroutineRunnable {
         return setupTask(CoroutineScheduler.runTaskTimer(plugin, this, delay, period))
     }
 
-    override fun runTaskAsync(
+    override fun runAsyncTask(
         plugin: RacciPlugin
     ): ITask {
         checkNotYetScheduled()

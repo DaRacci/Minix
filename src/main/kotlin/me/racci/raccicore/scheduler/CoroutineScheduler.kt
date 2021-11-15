@@ -2,13 +2,9 @@ package me.racci.raccicore.scheduler
 
 import com.github.shynixn.mccoroutine.asyncDispatcher
 import com.github.shynixn.mccoroutine.minecraftDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import me.racci.raccicore.RacciCore
+import kotlinx.coroutines.*
 import me.racci.raccicore.RacciPlugin
+import me.racci.raccicore.core.RacciCore
 import me.racci.raccicore.utils.TimeConversionUtils.tickToMillisecond
 import me.racci.raccicore.utils.now
 import org.bukkit.plugin.IllegalPluginAccessException
@@ -16,8 +12,10 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.IntUnaryOperator
 import kotlin.time.ExperimentalTime
 
+
+// TODO MOVE TO CORE PACKAGE
 @OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
-object CoroutineScheduler: ICoroutineScheduler {
+internal object CoroutineScheduler: ICoroutineScheduler {
 
     /**
      * The [CoroutineScope] in which all [CoroutineScheduler] are handled.

@@ -13,11 +13,11 @@
 
 ## Javadoc
 * The 0.1.7 Javadoc can be found [here](https://javadoc.jitpack.io/com/github/DaRacci/RacciCore/0.1.7/javadoc)
-* You can also get the docs from [here](https://racciCore.sylphmc.com) with the GitHub format 
+* You can also get the docs from [here](https://racciCore.sylphmc.com) with the GitHub format. 
   
 ## Plugin Information
   
-RacciCore is a standalone plugin so it can provide all of its features, this means you will have to install it
+RacciCore is a standalone plugin, so it can provide all of its features, this means you will have to install it
 on the server with your plugin, to depend on RacciCore add it as a dependency in your plugin.yml:
 
 ```yaml

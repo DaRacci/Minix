@@ -24,7 +24,7 @@ configurations.api {
 
 dependencies {
 
-    implementation("org.junit.jupiter:junit-jupiter:5.7.0")
+    implementation("org.junit.jupiter:junit-jupiter:5.8.1")
     apiAndDocs("net.kyori:adventure-api:4.10.0-SNAPSHOT")
     apiAndDocs("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT")
     apiAndDocs("co.aikar:acf-paper:0.5.0-SNAPSHOT")

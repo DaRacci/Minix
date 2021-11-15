@@ -9,6 +9,9 @@ import me.racci.raccicore.core.PluginManager
 import me.racci.raccicore.extensions.KotlinListener
 import me.racci.raccicore.extensions.coloured
 import me.racci.raccicore.extensions.pm
+import me.racci.raccicore.lifecycle.Lifecycle
+import me.racci.raccicore.lifecycle.LifecycleEvent
+import me.racci.raccicore.lifecycle.LifecycleListener
 import me.racci.raccicore.scheduler.CoroutineScheduler
 import me.racci.raccicore.utils.UpdateChecker
 import org.bukkit.plugin.java.JavaPlugin
@@ -23,20 +26,32 @@ import kotlin.properties.Delegates
  * @property spigotId The ID of your plugin on Spigot.
  * @property bStatsId The ID of your plugin on bStats.
  */
-open class RacciPlugin(
+abstract class RacciPlugin(
     val prefix  : String = "",
     val spigotId: Int    = 0,
     val bStatsId: Int    = 0,
 ) : SuspendingJavaPlugin() {
 
+    val lifecycleListeners = HashSet<Lifecycle>()
+    private val lifecycleLoadOrder
+        get() = lifecycleListeners.sortedByDescending{it.priority}
+    private val lifecycleDisableOrder
+        get() = lifecycleListeners.sortedBy{it.priority}
+
+
     val log = Log(prefix.coloured())
     var commandManager by Delegates.notNull<PaperCommandManager>() ; private set
 
     /**
-     * This will handle the automation of enabling your plugin,
-     * Please do not override this.
-     *
-     * If you **MUST** override it please call super on it afterwards.
+     * **DO NOT OVERRIDE**
+     */
+    override suspend fun onLoadAsync() {
+        handleLoad()
+        lifecycleLoadOrder.forEach{it.listener(LifecycleEvent.LOAD)}
+    }
+
+    /**
+     * **DO NOT OVERRIDE**
      */
     override suspend fun onEnableAsync() {
         log.info("")
@@ -49,36 +64,38 @@ open class RacciPlugin(
         if(spigotId != 0) ::UpdateChecker
         //if(bStatsId != 0) {}//TODO
 
-        log.debug("HandleEnable Started")
-        this.handleEnable()
+        // Allow the plugin to do its thing before we register events etc.
+        handleEnable()
 
-        log.debug("Registering Events")
-        this.registerListeners().forEach {pm.registerSuspendingEvents(it, this)}
-        log.debug("Registering Commands")
-        this.registerCommands().forEach(commandManager::registerCommand)
+        registerLifecycles().map{Lifecycle(it.second, it.first)}.forEach(lifecycleListeners::add)
+        lifecycleLoadOrder.forEach{it.listener(LifecycleEvent.ENABLE)}
+        registerListeners().forEach{pm.registerSuspendingEvents(it, this)}
+        registerCommands().forEach(commandManager::registerCommand)
 
         log.info("")
         log.success("Finished Loading ${this.name}")
         log.info("")
 
         log.debug("HandleAfterLoad Started")
-        this.handleAfterLoad()
+        handleAfterLoad()
 
-    }
-
-    override suspend fun onDisableAsync() {
-        this.commandManager.unregisterCommands()
-        PluginManager::remove
-        CoroutineScheduler::cancelAllTasks
-        this.handleDisable()
-    }
-
-    override suspend fun onLoadAsync() {
-        this.handleLoad()
     }
 
     suspend fun reload() {
-        this.handleReload()
+        handleReload()
+        lifecycleLoadOrder.forEach{it.listener(LifecycleEvent.RELOAD)}
+    }
+
+
+    /**
+     * **DO NOT OVERRIDE**
+     */
+    override suspend fun onDisableAsync() {
+        handleDisable()
+        lifecycleDisableOrder.forEach{it.listener(LifecycleEvent.DISABLE)}
+        commandManager.unregisterCommands()
+        PluginManager::remove
+        CoroutineScheduler::cancelAllTasks
     }
 
     /**
@@ -120,9 +137,13 @@ open class RacciPlugin(
     /**
      * The returned list of [BaseCommand]'s will be registered,
      * and enabled during the enable process.
-     *
-     * @return
      */
     protected open suspend fun registerCommands() : List<BaseCommand> {return emptyList()}
+
+    /**
+     * The returned life of [LifecycleListener]'s will be registered,
+     * and enabled during the enable process.
+     */
+    protected open suspend fun registerLifecycles() : List<Pair<LifecycleListener<*>, Int>> {return emptyList()}
 
 }

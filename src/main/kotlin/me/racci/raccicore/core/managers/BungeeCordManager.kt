@@ -1,20 +1,31 @@
-package me.racci.raccicore.managers
+package me.racci.raccicore.core.managers
 
+import me.racci.raccicore.core.Provider
 import me.racci.raccicore.core.RacciCore
 import me.racci.raccicore.extensions.server
+import me.racci.raccicore.lifecycle.LifecycleListener
 import me.racci.raccicore.utils.BungeeCordUtils
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.PluginMessageListener
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 
-internal object BungeeCordManager: PluginMessageListener {
+class BungeeCordManager constructor(
+    override val plugin: RacciCore,
+): PluginMessageListener, LifecycleListener<RacciCore> {
 
     private val queue = mutableListOf<BungeeCordUtils.BungeeCordRequest>()
 
-    fun init() {
-        server.messenger.registerOutgoingPluginChannel(RacciCore.instance, "BungeeCord")
-        server.messenger.registerIncomingPluginChannel(RacciCore.instance, "BungeeCord", this)
+    override suspend fun onEnable() {
+        Provider.bungeeCordManager = this
+        server.messenger.registerOutgoingPluginChannel(plugin, "BungeeCord")
+        server.messenger.registerIncomingPluginChannel(plugin, "BungeeCord", this)
+    }
+
+    override suspend fun onDisable() {
+        queue.clear()
+        server.messenger.unregisterOutgoingPluginChannel(plugin, "BungeeCord")
+        server.messenger.unregisterIncomingPluginChannel(plugin, "BungeeCord", this)
     }
 
     override fun onPluginMessageReceived(
@@ -45,5 +56,6 @@ internal object BungeeCordManager: PluginMessageListener {
         request: BungeeCordUtils.BungeeCordRequest
     ) = queue.add(request)
 
-    private fun ByteBuffer.readUTF() = String(ByteArray(short.toInt()).apply { get(this) }, Charset.forName("UTF-8"))
+    private fun ByteBuffer.readUTF() =
+        String(ByteArray(short.toInt()).apply { get(this) }, Charset.forName("UTF-8"))
 }

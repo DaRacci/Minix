@@ -1,6 +1,9 @@
-package me.racci.raccicore.utils.extensions
+package me.racci.raccicore.extensions
 
-import org.bukkit.*
+import org.bukkit.GameMode
+import org.bukkit.OfflinePlayer
+import org.bukkit.World
+import org.bukkit.WorldCreator
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe

@@ -1,44 +1,41 @@
-package me.racci.raccicore.utils.extensions
+package me.racci.raccicore.extensions
 
+import me.racci.raccicore.RacciPlugin
 import org.bukkit.Bukkit
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
-import org.bukkit.plugin.Plugin
+import org.bukkit.event.player.PlayerMoveEvent
 import kotlin.reflect.KClass
 
 inline fun <reified T : Event> KListener<*>.event(
-        priority: EventPriority = EventPriority.NORMAL,
-        ignoreCancelled: Boolean = false,
-        async: Boolean = false,
-        noinline block: T.() -> Unit
-) = event(plugin, priority, ignoreCancelled, async, block)
+    priority: EventPriority = EventPriority.NORMAL,
+    ignoreCancelled: Boolean = false,
+    noinline block: T.() -> Unit
+) = event(plugin, priority, ignoreCancelled, block)
 
 fun <T : Event> KListener<*>.event(
     type: KClass<T>,
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
-    async: Boolean = false,
     block: T.() -> Unit
-) = event(plugin, type, priority, ignoreCancelled, async, block)
+) = event(plugin, type, priority, ignoreCancelled, block)
 
 inline fun <reified T : Event> Listener.event(
-        plugin: Plugin,
-        priority: EventPriority = EventPriority.NORMAL,
-        ignoreCancelled: Boolean = false,
-        async: Boolean = false,
-        noinline block: T.() -> Unit
+    plugin: RacciPlugin,
+    priority: EventPriority = EventPriority.NORMAL,
+    ignoreCancelled: Boolean = false,
+    noinline block: T.() -> Unit
 ) {
-    event(plugin, T::class, priority, ignoreCancelled, async, block)
+    event(plugin, T::class, priority, ignoreCancelled, block)
 }
 
 fun <T : Event> Listener.event(
-    plugin: Plugin,
+    plugin: RacciPlugin,
     type: KClass<T>,
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
-    async: Boolean = false,
     block: T.() -> Unit
 ) {
     Bukkit.getServer().pluginManager.registerEvent(
@@ -57,15 +54,18 @@ fun <T : Event> Listener.event(
 }
 
 inline fun WithPlugin<*>.events(block: KListener<*>.() -> Unit) = plugin.events(block)
-inline fun Plugin.events(block: KListener<*>.() -> Unit) = SimpleKListener(this).apply(block)
+inline fun RacciPlugin.events(block: KListener<*>.() -> Unit) = SimpleKListener(this).apply(block)
 
-fun Listener.registerEvents(plugin: Plugin)
+fun Listener.registerEvents(plugin: RacciPlugin)
         = plugin.server.pluginManager.registerEvents(this, plugin)
 
 fun Listener.unregisterListener() = HandlerList.unregisterAll(this)
 
-interface KListener<T : Plugin> : Listener, WithPlugin<T>
+interface KListener<T : RacciPlugin> : Listener, WithPlugin<T>
+
+val PlayerMoveEvent.displaced: Boolean
+    get() = this.from.x != this.to.x || this.from.y != this.to.y || this.from.z != this.to.z
 
 interface KotlinListener : Listener
 
-class SimpleKListener(override val plugin: Plugin) : KListener<Plugin>
+class SimpleKListener(override val plugin: RacciPlugin) : KListener<RacciPlugin>

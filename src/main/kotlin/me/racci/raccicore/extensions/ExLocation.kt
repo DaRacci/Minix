@@ -1,4 +1,4 @@
-package me.racci.raccicore.utils.extensions
+package me.racci.raccicore.extensions
 
 import org.bukkit.Effect
 import org.bukkit.Location

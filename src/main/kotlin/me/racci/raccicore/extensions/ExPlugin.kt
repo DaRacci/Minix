@@ -1,5 +1,6 @@
-package me.racci.raccicore.utils.extensions
+package me.racci.raccicore.extensions
 
+import me.racci.raccicore.RacciPlugin
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
 
@@ -11,4 +12,4 @@ fun WithPlugin<*>.registerEvents(
         vararg listeners: Listener
 ) = plugin.registerEvents(*listeners)
 
-interface WithPlugin<T : Plugin> { val plugin: T }
+interface WithPlugin<T : RacciPlugin> { val plugin: T }

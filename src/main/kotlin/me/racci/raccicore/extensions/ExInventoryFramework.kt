@@ -1,4 +1,4 @@
-package me.racci.raccicore.gui
+package me.racci.raccicore.extensions
 
 import com.github.stefvanschie.inventoryframework.gui.type.ChestGui
 import com.github.stefvanschie.inventoryframework.pane.Pane

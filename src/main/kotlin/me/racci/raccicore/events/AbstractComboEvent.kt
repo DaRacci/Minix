@@ -4,7 +4,7 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-abstract class AbstractComboEvent(
+sealed class AbstractComboEvent(
     player: Player,
     val item: ItemStack?,
     val blockData: BlockData? = null,

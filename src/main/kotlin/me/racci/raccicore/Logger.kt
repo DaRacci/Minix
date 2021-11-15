@@ -2,7 +2,11 @@ package me.racci.raccicore
 
 import me.racci.raccicore.utils.strings.colour
 
-class Log(prefix: String = "", var debugMode: Boolean = false) {
+class Log(
+    prefix: String,
+    var debugMode: Boolean = false,
+) {
+
     private val p = if(prefix == "") prefix else prefix.plus(" ")
 
     fun info(message: String, thrown: Throwable? = null) {

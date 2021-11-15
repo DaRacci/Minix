@@ -8,6 +8,7 @@ import me.racci.raccicore.RacciPlugin
 import me.racci.raccicore.utils.now
 import kotlin.properties.Delegates
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -64,11 +65,8 @@ class CoroutineTask : ITask {
     }
 
     companion object {
-        val ERROR                 = Duration.milliseconds(0)
-        val NO_REPEATING          = Duration.microseconds(-1L)
-        val CANCEL                = Duration.microseconds(-2L)
-        val PROCESS_FOR_FUTURE    = Duration.microseconds(-3L)
-        val DONE_FOR_FUTURE       = Duration.microseconds(-4L)
+        val NO_REPEATING          = (-1L).microseconds
+        val CANCEL                = (-2L).microseconds
     }
 
 }

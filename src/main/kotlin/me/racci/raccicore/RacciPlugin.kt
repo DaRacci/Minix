@@ -5,35 +5,42 @@ import co.aikar.commands.BaseCommand
 import co.aikar.commands.PaperCommandManager
 import com.github.shynixn.mccoroutine.SuspendingJavaPlugin
 import com.github.shynixn.mccoroutine.registerSuspendingEvents
+import me.racci.raccicore.core.PluginManager
+import me.racci.raccicore.extensions.KotlinListener
+import me.racci.raccicore.extensions.coloured
+import me.racci.raccicore.extensions.pm
 import me.racci.raccicore.scheduler.CoroutineScheduler
 import me.racci.raccicore.utils.UpdateChecker
-import me.racci.raccicore.utils.extensions.KotlinListener
-import me.racci.raccicore.utils.extensions.pm
-import me.racci.raccicore.utils.strings.colour
+import org.bukkit.plugin.java.JavaPlugin
 import kotlin.properties.Delegates
 
 /**
- * Create the new plugin.
- * All values of the constructor have defaults and are not required.
+ * The superclass replacing [JavaPlugin],
+ * This class provides many more features and allows implementation into the
+ * systems of RacciCore.
  *
- * @param colour        The colour for console messages
- * @param prefix        The prefix for console messages
- * @param spigotId      The spigot ID for the plugin
- * @param bStatsId      The bStats ID for the plugin
+ * @property prefix The prefix for logging in console, this supports colours.
+ * @property spigotId The ID of your plugin on Spigot.
+ * @property bStatsId The ID of your plugin on bStats.
  */
-abstract class RacciPlugin(
-    val colour  : String    = "",
-    val prefix  : String    = "",
-    val spigotId: Int       = 0,
-    val bStatsId: Int       = 0
+open class RacciPlugin(
+    val prefix  : String = "",
+    val spigotId: Int    = 0,
+    val bStatsId: Int    = 0,
 ) : SuspendingJavaPlugin() {
 
+    val log = Log(prefix.coloured())
     var commandManager by Delegates.notNull<PaperCommandManager>() ; private set
-    val log = Log(colour("$colour$prefix"))
 
+    /**
+     * This will handle the automation of enabling your plugin,
+     * Please do not override this.
+     *
+     * If you **MUST** override it please call super on it afterwards.
+     */
     override suspend fun onEnableAsync() {
         log.info("")
-        log.info("Loading ${this.colour} ${this.name}")
+        log.info("Loading ${this.name}")
         log.info("")
 
         commandManager = PaperCommandManager(this)
@@ -51,7 +58,7 @@ abstract class RacciPlugin(
         this.registerCommands().forEach(commandManager::registerCommand)
 
         log.info("")
-        log.success("Finished Loading ${this.colour} ${this.name}")
+        log.success("Finished Loading ${this.name}")
         log.info("")
 
         log.debug("HandleAfterLoad Started")
@@ -74,22 +81,48 @@ abstract class RacciPlugin(
         this.handleReload()
     }
 
-    protected open suspend fun handleEnable() {}
-
-    protected open suspend fun handleDisable() {}
-
+    /**
+     * This is called when the server picks up your Plugin and has begun loading it.
+     */
     protected open suspend fun handleLoad() {}
 
-    protected open suspend fun handleUnload() {}
+    /**
+     * This is called Once the Plugin is ready to accept and register
+     * events, commands etc.
+     */
+    protected open suspend fun handleEnable() {}
 
-    protected open suspend fun handleReload() {}
-
+    /**
+     * This will be called after your Plugin is done loading
+     * and RacciCore has finished its loading process for your Plugin.
+     *
+     */
     protected open suspend fun handleAfterLoad() {}
 
-    //protected open suspend fun registerHookLoaders() : List<AbstractHookService<*>> {return emptyList()}
+    /**
+     * This will be called whenever [RacciPlugin.reload] is called.
+     *
+     */
+    protected open suspend fun handleReload() {}
 
+    /**
+     * This is triggered when your Plugin is being disabled by the Server,
+     * Please use this to clean up your Plugin to not leak resources.
+     */
+    protected open suspend fun handleDisable() {}
+
+    /**
+     * The returned list of [KotlinListener]'s will be registered,
+     * and enabled during the enable process.
+     */
     protected open suspend fun registerListeners() : List<KotlinListener> {return emptyList()}
 
+    /**
+     * The returned list of [BaseCommand]'s will be registered,
+     * and enabled during the enable process.
+     *
+     * @return
+     */
     protected open suspend fun registerCommands() : List<BaseCommand> {return emptyList()}
 
 }

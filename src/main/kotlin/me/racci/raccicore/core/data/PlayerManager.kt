@@ -1,12 +1,12 @@
-package me.racci.raccicore.data
+package me.racci.raccicore.core.data
 
-import me.racci.raccicore.RacciCore
+import me.racci.raccicore.core.RacciCore
+import me.racci.raccicore.extensions.onlinePlayers
 import me.racci.raccicore.interfaces.IManager
-import me.racci.raccicore.utils.extensions.onlinePlayers
 import me.racci.raccicore.utils.listen
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import java.util.UUID
+import java.util.*
 
 internal object PlayerManager: IManager<PlayerManager> {
     private val playerData = HashMap<UUID, PlayerData>()

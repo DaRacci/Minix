@@ -1,10 +1,10 @@
-package me.racci.raccicore.listeners
+package me.racci.raccicore.core.listeners
 
 import me.racci.raccicore.events.PlayerEnterLiquidEvent
 import me.racci.raccicore.events.PlayerExitLiquidEvent
 import me.racci.raccicore.events.PlayerMoveFullXYZEvent
-import me.racci.raccicore.utils.extensions.KotlinListener
-import me.racci.raccicore.utils.extensions.pm
+import me.racci.raccicore.extensions.KotlinListener
+import me.racci.raccicore.extensions.pm
 import org.bukkit.Material
 import org.bukkit.block.data.Waterlogged
 import org.bukkit.event.EventHandler

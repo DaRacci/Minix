@@ -1,21 +1,21 @@
-package me.racci.raccicore.listeners
+package me.racci.raccicore.core.listeners
 
 import com.github.shynixn.mccoroutine.asyncDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.racci.raccicore.RacciCore
+import me.racci.raccicore.core.RacciCore
 import me.racci.raccicore.events.PlayerMoveFullXYZEvent
 import me.racci.raccicore.events.PlayerMoveXYZEvent
-import me.racci.raccicore.utils.extensions.KotlinListener
-import me.racci.raccicore.utils.extensions.pm
+import me.racci.raccicore.extensions.KotlinListener
+import me.racci.raccicore.extensions.pm
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
-import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.event.player.PlayerTeleportEvent
 
-class PlayerMoveListener : KotlinListener {
+class PlayerTeleportListener : KotlinListener {
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    suspend fun onPlayerMove(event: PlayerMoveEvent) = withContext(RacciCore.instance.asyncDispatcher) {
+    @EventHandler(priority = EventPriority.HIGH)
+    suspend fun onPlayerTeleport(event: PlayerTeleportEvent) = withContext(RacciCore.instance.asyncDispatcher) {
         launch {if(event.from.blockX != event.to.blockX
             || event.from.blockY != event.to.blockY
             || event.from.blockZ != event.to.blockZ) {

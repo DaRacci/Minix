@@ -1,17 +1,12 @@
-package me.racci.raccicore.listeners
+package me.racci.raccicore.core.listeners
 
 import kotlinx.coroutines.withContext
-import me.racci.raccicore.RacciCore
-import me.racci.raccicore.data.PlayerManager
-import me.racci.raccicore.events.AbstractComboEvent
-import me.racci.raccicore.events.BlockData
-import me.racci.raccicore.events.PlayerLeftClickEvent
-import me.racci.raccicore.events.PlayerRightClickEvent
-import me.racci.raccicore.events.PlayerShiftLeftClickEvent
-import me.racci.raccicore.events.PlayerShiftRightClickEvent
+import me.racci.raccicore.core.RacciCore
+import me.racci.raccicore.core.data.PlayerManager
+import me.racci.raccicore.events.*
+import me.racci.raccicore.extensions.KotlinListener
+import me.racci.raccicore.extensions.pm
 import me.racci.raccicore.utils.ClassUtils
-import me.racci.raccicore.utils.extensions.KotlinListener
-import me.racci.raccicore.utils.extensions.pm
 import me.racci.raccicore.utils.now
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player

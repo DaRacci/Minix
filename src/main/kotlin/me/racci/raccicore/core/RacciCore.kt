@@ -1,23 +1,26 @@
-package me.racci.raccicore
+package me.racci.raccicore.core
 
 import com.github.shynixn.mccoroutine.asyncDispatcher
 import com.github.shynixn.mccoroutine.launch
 import com.github.shynixn.mccoroutine.launchAsync
 import com.github.shynixn.mccoroutine.minecraftDispatcher
 import kotlinx.coroutines.CoroutineScope
-import me.racci.raccicore.data.PlayerManager
-import me.racci.raccicore.listeners.PlayerComboListener
-import me.racci.raccicore.listeners.PlayerMoveFullXYZListener
-import me.racci.raccicore.listeners.PlayerMoveListener
-import me.racci.raccicore.listeners.PlayerTeleportListener
-import me.racci.raccicore.runnables.TimeRunnable
-import me.racci.raccicore.utils.extensions.KotlinListener
+import me.racci.raccicore.RacciPlugin
+import me.racci.raccicore.core.data.PlayerManager
+import me.racci.raccicore.core.listeners.PlayerComboListener
+import me.racci.raccicore.core.listeners.PlayerMoveFullXYZListener
+import me.racci.raccicore.core.listeners.PlayerMoveListener
+import me.racci.raccicore.core.listeners.PlayerTeleportListener
+import me.racci.raccicore.core.runnables.TimeRunnable
+import me.racci.raccicore.extensions.KotlinListener
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.NamespacedKey
 import kotlin.properties.Delegates
 
 class RacciCore : RacciPlugin(
-    "&2",
-    "RacciCore"
+    NamedTextColor.AQUA,
+    Component.text("RacciCore").color(NamedTextColor.GREEN)
 ) {
 
     companion object {

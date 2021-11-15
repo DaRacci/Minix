@@ -1,4 +1,4 @@
-package me.racci.raccicore.data
+package me.racci.raccicore.core.data
 
 internal data class PlayerData(
     val player: org.bukkit.entity.Player

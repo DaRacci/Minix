@@ -5,7 +5,7 @@
 //import me.racci.raccicore.events.PlayerArmourEquipEvent
 //import me.racci.raccicore.racciCore
 //import me.racci.raccicore.skedule.skeduleAsync
-//import me.racci.raccicore.utils.extensions.KotlinListener
+//import me.racci.raccicore.extensions.KotlinListener
 //import me.racci.raccicore.utils.pm
 //import org.bukkit.Bukkit
 //import org.bukkit.Material

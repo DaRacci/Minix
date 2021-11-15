@@ -1,7 +1,7 @@
 package me.racci.raccicore.extensions
 
 import com.google.common.io.ByteStreams
-import me.racci.raccicore.managers.BungeeCordManager
+import me.racci.raccicore.core.Provider
 import me.racci.raccicore.utils.BungeeCordUtils
 import org.bukkit.entity.Player
 import kotlin.coroutines.resume
@@ -9,7 +9,7 @@ import kotlin.coroutines.suspendCoroutine
 
 val Player.bungeecord get() = BungeeCord(this)
 
-fun Player.sendBungeeCord(message: ByteArray) = BungeeCordManager.sendBungeeCord(this, message)
+fun Player.sendBungeeCord(message: ByteArray) = Provider.bungeeCordManager.sendBungeeCord(this, message)
 
 @JvmInline
 value class BungeeCord(

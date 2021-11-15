@@ -24,6 +24,7 @@ configurations.api {
 
 dependencies {
 
+    implementation("org.junit.jupiter:junit-jupiter:5.7.0")
     apiAndDocs("net.kyori:adventure-api:4.10.0-SNAPSHOT")
     apiAndDocs("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT")
     apiAndDocs("co.aikar:acf-paper:0.5.0-SNAPSHOT")
@@ -43,6 +44,10 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.10.10")
     compileOnly("net.pl3x.purpur:purpur-api:1.17.1-R0.1-SNAPSHOT")
 
+    testAnnotationProcessor("org.junit.jupiter:junit-jupiter-api:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    testImplementation(kotlin("test"))
+
 }
 
 idea.module {
@@ -52,34 +57,8 @@ idea.module {
 
 tasks {
 
-    shadowJar {
-
-        /*dependencies {
-            exclude {
-//                it.moduleGroup == "com.github.shynixn.mccoroutine"
-//                || it.moduleGroup == "com.github.stefvanschie.inventoryframework"
-//                || (it.moduleGroup == "org.jetbrains.kotlinx" && it.moduleName != "datetime")
-//                || it.moduleName == "kotlin-stdlib"
-//                || it.moduleName == "kotlin-stdlib-common"
-//                || it.moduleName == "kotlin-stdlib-jdk7"
-//                || it.moduleName == "kotlin-stdlib-jdk8"
-//                || it.moduleName == "kotlin-reflect"
-//                || it.moduleName == "annotations"
-            }
-        }*/
-
-//        relocate("com.github.shynixn.mccoroutine", "me.racci.libs.mccoroutine")
-//        relocate("com.github.stefvanschie.inventoryframework", "me.racci.libs.inventoryframework")
-//        relocate("org.jetbrains.annotations", "me.racci.libs.jannotations")
-//        relocate("org.intellij.lang.annotations", "me.racci.libs.iannotations")
-//        relocate("kotlinx.coroutines", "me.racci.libs.coroutines")
-//        relocate("kotlinx.datetime", "me.racci.libs.datetime")
-//        relocate("kotlinx.serialization", "me.racci.libs.serialization")
-//        relocate("kotlin", "me.racci.libs.kotlin")
-//        relocate("net.kyori", "me.racci.libs.kyori")
-//        relocate("co.aikar.commands", "me.racci.libs.commands")
-//        relocate("co.aikar.locales", "me.racci.libs.locales")
-
+    test {
+        useJUnitPlatform()
     }
 
     processResources {
@@ -90,7 +69,6 @@ tasks {
                     "libraries" to "libraries:\n"
                                 + "  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0\n"
                                 + "  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0\n"
-                                //+ "  - com.github.stefvanschie.inventoryframework:IF:0.10.3\n"
                                 + "  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0-RC2\n"
                                 + "  - org.jetbrains.kotlin:kotlin-reflect:1.6.0-RC2\n"
                                 + "  - org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1\n"
@@ -113,6 +91,13 @@ tasks {
         options.release.set(17)
     }
 
+    val devServer by registering(Jar::class) {
+        dependsOn(shadowJar)
+        destinationDirectory.set(File("${System.getProperty("user.home")}/Desktop/Minecraft/Sylph/Development/plugins/"))
+        archiveClassifier.set("all")
+        from(zipTree(shadowJar.get().outputs.files.singleFile))
+    }
+
     val sourcesJar by registering(Jar::class) {
         dependsOn(JavaPlugin.CLASSES_TASK_NAME)
         archiveClassifier.set("sources")
@@ -133,6 +118,12 @@ tasks {
         archives(sourcesJar)
         archives(javadocJar)
     }
+
+    build {
+        dependsOn(publishToMavenLocal)
+        dependsOn(devServer)
+    }
+
 }
 
 configure<PublishingExtension> {

@@ -1,8 +1,8 @@
 package me.racci.raccicore.utils
 
 import me.racci.raccicore.RacciPlugin
-import me.racci.raccicore.utils.extensions.KotlinListener
-import me.racci.raccicore.utils.extensions.pm
+import me.racci.raccicore.extensions.KotlinListener
+import me.racci.raccicore.extensions.pm
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 
@@ -24,6 +24,16 @@ inline fun <reified T : Throwable, reified U : Any> catch(
     default: U,
     run: () -> U
 ): U = catch<T, U>({ default }, run)
+
+inline fun <reified T : Throwable, R> catchAndReturn(
+    err: (T) -> Unit = {it.printStackTrace()},
+    run: () -> R
+): R? = try {
+    run()
+} catch (ex: Exception) {
+    if(ex is T) err(ex) else throw ex
+    null
+}
 
 inline fun <reified T : Event> RacciPlugin.listen(
     priority: EventPriority = EventPriority.NORMAL,

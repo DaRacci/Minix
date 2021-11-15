@@ -16,9 +16,9 @@ class PlayerManager(
     override val plugin: RacciCore,
 ): KListener<RacciCore>, LifecycleListener<RacciCore> {
 
-    private val inputCallbacks by lazy {onlinePlayerMapOf<PlayerUtils.ChatInput>()}
-    private val functionsQuit  by lazy {onlinePlayerMapOf<PlayerUtils.PlayerCallback<Unit>>()}
-    private val functionsMove  by lazy {onlinePlayerMapOf<PlayerUtils.PlayerCallback<Boolean>>()}
+    val inputCallbacks by lazy {onlinePlayerMapOf<PlayerUtils.ChatInput>()}
+    val functionsQuit  by lazy {onlinePlayerMapOf<PlayerUtils.PlayerCallback<Unit>>()}
+    val functionsMove  by lazy {onlinePlayerMapOf<PlayerUtils.PlayerCallback<Boolean>>()}
 
     override suspend fun onEnable() {
         PlayerManager.init()

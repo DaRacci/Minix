@@ -1,25 +1,27 @@
-package me.racci.raccicore.managers
+package me.racci.raccicore.core.managers
 
 import io.papermc.paper.event.player.AsyncChatEvent
 import me.racci.raccicore.core.RacciCore
+import me.racci.raccicore.core.data.PlayerManager
 import me.racci.raccicore.extensions.KListener
 import me.racci.raccicore.extensions.displaced
 import me.racci.raccicore.extensions.event
+import me.racci.raccicore.lifecycle.LifecycleListener
 import me.racci.raccicore.utils.PlayerUtils
 import me.racci.raccicore.utils.collections.onlinePlayerMapOf
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.server.PluginDisableEvent
-import kotlin.properties.Delegates
 
-internal object PlayerManager: KListener<RacciCore> {
-    override var plugin: RacciCore by Delegates.notNull()
+class PlayerManager(
+    override val plugin: RacciCore,
+): KListener<RacciCore>, LifecycleListener<RacciCore> {
 
-    val inputCallbacks by lazy {plugin.onlinePlayerMapOf<PlayerUtils.ChatInput>()}
-    val functionsQuit  by lazy {plugin.onlinePlayerMapOf<PlayerUtils.PlayerCallback<Unit>>()}
-    val functionsMove  by lazy {plugin.onlinePlayerMapOf<PlayerUtils.PlayerCallback<Boolean>>()}
+    private val inputCallbacks by lazy {onlinePlayerMapOf<PlayerUtils.ChatInput>()}
+    private val functionsQuit  by lazy {onlinePlayerMapOf<PlayerUtils.PlayerCallback<Unit>>()}
+    private val functionsMove  by lazy {onlinePlayerMapOf<PlayerUtils.PlayerCallback<Boolean>>()}
 
-    fun init(plugin: RacciCore) {
-        this.plugin = plugin
+    override suspend fun onEnable() {
+        PlayerManager.init()
         event<AsyncChatEvent>(ignoreCancelled = true) {
             val input = inputCallbacks.remove(player)
             input?.callback?.invoke(player, message())
@@ -41,10 +43,10 @@ internal object PlayerManager: KListener<RacciCore> {
                 functionsQuit.remove(it.key)
             }
         }
-
-
-
     }
 
+    override suspend fun onDisable() {
+        PlayerManager.close()
+    }
 
 }

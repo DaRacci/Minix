@@ -1,5 +1,6 @@
 package me.racci.raccicore.interfaces
 
+@Deprecated("Moving to lifecycles")
 interface IManager<T> {
 
     /**

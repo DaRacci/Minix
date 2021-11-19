@@ -24,7 +24,6 @@ configurations.api {
 
 dependencies {
 
-    implementation("org.junit.jupiter:junit-jupiter:5.7.0")
     apiAndDocs("net.kyori:adventure-api:4.10.0-SNAPSHOT")
     apiAndDocs("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT")
     apiAndDocs("co.aikar:acf-paper:0.5.0-SNAPSHOT")
@@ -32,11 +31,11 @@ dependencies {
     compileOnlyApi("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0")
     compileOnlyApi("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0")
 
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0-RC2")
-    compileOnly("org.jetbrains.kotlin:kotlin-reflect:1.6.0-RC2")
+    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0")
+    compileOnly("org.jetbrains.kotlin:kotlin-reflect:1.6.0")
 
     compileOnly("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1")
-    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.0")
+    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.1")
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
     compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt")
 
@@ -44,9 +43,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.10.10")
     compileOnly("net.pl3x.purpur:purpur-api:1.17.1-R0.1-SNAPSHOT")
 
-    testAnnotationProcessor("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.8.1")
-    testImplementation(kotlin("test"))
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.0")
 
 }
 
@@ -69,10 +66,10 @@ tasks {
                     "libraries" to "libraries:\n"
                                 + "  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0\n"
                                 + "  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0\n"
-                                + "  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0-RC2\n"
-                                + "  - org.jetbrains.kotlin:kotlin-reflect:1.6.0-RC2\n"
+                                + "  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0\n"
+                                + "  - org.jetbrains.kotlin:kotlin-reflect:1.6.0\n"
                                 + "  - org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1\n"
-                                + "  - org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.0\n"
+                                + "  - org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.1\n"
                                 + "  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt\n"
                                 + "  - org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt"
                 )}
@@ -140,6 +137,7 @@ configure<PublishingExtension> {
         from(components["java"])
         artifact(tasks["sourcesJar"])
         artifact(tasks["javadocJar"])
+        artifactId = if(System.getenv("GITHUB_ACTIONS") == "true") rootProject.name.toLowerCase() else rootProject.name
         pom {
             val projectGitUrl = "http://github.com/DaRacci/RacciCore"
             name.set(rootProject.name)

@@ -3,7 +3,6 @@ package me.racci.raccicore.flow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.filter
 import me.racci.raccicore.RacciPlugin
-import me.racci.raccicore.command.Executor
 import me.racci.raccicore.extensions.SimpleKListener
 import me.racci.raccicore.extensions.WithPlugin
 import me.racci.raccicore.flow.EventFlow.eventFlow
@@ -29,14 +28,14 @@ import org.bukkit.event.player.PlayerEvent
  *   sender.msg("You set the faction description to: $description")
  * }
  * ```
- */
+
 inline fun <reified T : PlayerEvent> Executor<Player>.commandPlayerEventFlow(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
     channel: Channel<T> = Channel(Channel.CONFLATED),
     listener: Listener = SimpleKListener(command.plugin),
 ) = playerEventFlow(sender, command.plugin, priority, ignoreCancelled, channel, listener)
-
+*/
 /**
  * Creates an event flow for [PlayerEvent] that auto filter for only events from [player].
  */

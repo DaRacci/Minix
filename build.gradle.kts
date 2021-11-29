@@ -75,6 +75,12 @@ tasks {
         }
     }
 
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+        withSourcesJar()
+    }
+
     compileKotlin {
         kotlinOptions.suppressWarnings = true
         kotlinOptions.jvmTarget = "17"
@@ -84,6 +90,10 @@ tasks {
     withType<JavaCompile>().configureEach {
         options.encoding = "UTF-8"
         options.release.set(17)
+    }
+
+    withType<Jar>().configureEach {
+        destinationDirectory.set(file("$rootDir/bin/"))
     }
 
     val devServer by registering(Jar::class) {
@@ -116,7 +126,10 @@ tasks {
 
     build {
         dependsOn(publishToMavenLocal)
-        dependsOn(devServer)
+        if(System.getenv("CI") == "true") {
+            jar.get().outputs.files.files.forEach{it.copyTo(File(System.getenv("DEPLOY_DIR")))}
+        } else dependsOn(devServer)
+
     }
 
 }

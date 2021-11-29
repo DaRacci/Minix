@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[getIgnoreCase](get-ignore-case.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[getIgnoreCase](get-ignore-case.md)
 
 # getIgnoreCase
 

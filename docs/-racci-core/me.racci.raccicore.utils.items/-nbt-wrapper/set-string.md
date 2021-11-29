@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.items](../index.md)/[NbtWrapper](index.md)/[setString](set-string.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.items](../index.md)/[NbtWrapper](index.md)/[setString](set-string.md)
 
 # setString
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[ExpirationList](index.md)/[removeFirst](remove-first.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[ExpirationList](index.md)/[removeFirst](remove-first.md)
 
 # removeFirst
 

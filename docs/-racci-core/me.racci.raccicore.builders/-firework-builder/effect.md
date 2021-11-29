@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.builders](../index.md)/[FireworkBuilder](index.md)/[effect](effect.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.builders](../index.md)/[FireworkBuilder](index.md)/[effect](effect.md)
 
 # effect
 

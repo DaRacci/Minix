@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.scheduler](../index.md)/[ICoroutineScheduler](index.md)/[isCurrentlyRunning](is-currently-running.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.core.scheduler](../index.md)/[ICoroutineScheduler](index.md)/[isCurrentlyRunning](is-currently-running.md)
 
 # isCurrentlyRunning
 

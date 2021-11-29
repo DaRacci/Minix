@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[MathUtils](index.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[MathUtils](index.md)
 
 # MathUtils
 

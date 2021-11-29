@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[FileValidationException](index.md)/[FileValidationException](-file-validation-exception.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[FileValidationException](index.md)/[FileValidationException](-file-validation-exception.md)
 
 # FileValidationException
 

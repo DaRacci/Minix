@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.builders](../index.md)/[BookBuilder](index.md)/[generation](generation.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.builders](../index.md)/[BookBuilder](index.md)/[generation](generation.md)
 
 # generation
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[ExpirationListImpl](index.md)/[isEmpty](is-empty.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[ExpirationListImpl](index.md)/[isEmpty](is-empty.md)
 
 # isEmpty
 

@@ -88,4 +88,4 @@ jvm
 
 | Name | Summary |
 |---|---|
-| [listen](../../me.racci.raccicore.utils/listen.md) | [jvm]<br>inline fun &lt;[T](../../me.racci.raccicore.utils/listen.md) : Event&gt; [RacciPlugin](index.md).[listen](../../me.racci.raccicore.utils/listen.md)(priority: EventPriority = EventPriority.NORMAL, ignoreCancelled: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = false, crossinline callback: ([T](../../me.racci.raccicore.utils/listen.md)) -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)) |
+| [listen](../../me.racci.raccicore.api.utils/listen.md) | [jvm]<br>inline fun &lt;[T](../../me.racci.raccicore.api.utils/listen.md) : Event&gt; [RacciPlugin](index.md).[listen](../../me.racci.raccicore.api.utils/listen.md)(priority: EventPriority = EventPriority.NORMAL, ignoreCancelled: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = false, crossinline callback: ([T](../../me.racci.raccicore.api.utils/listen.md)) -&gt; [Unit](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)) |

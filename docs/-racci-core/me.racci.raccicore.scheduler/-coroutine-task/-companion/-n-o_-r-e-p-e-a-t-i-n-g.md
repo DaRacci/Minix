@@ -1,4 +1,4 @@
-//[RacciCore](../../../../index.md)/[me.racci.raccicore.scheduler](../../index.md)/[CoroutineTask](../index.md)/[Companion](index.md)/[NO_REPEATING](-n-o_-r-e-p-e-a-t-i-n-g.md)
+//[RacciCore](../../../../index.md)/[me.racci.raccicore.core.scheduler](../../index.md)/[CoroutineTask](../index.md)/[Companion](index.md)/[NO_REPEATING](-n-o_-r-e-p-e-a-t-i-n-g.md)
 
 # NO_REPEATING
 

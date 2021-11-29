@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[toLongTicks](to-long-ticks.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[toLongTicks](to-long-ticks.md)
 
 # toLongTicks
 

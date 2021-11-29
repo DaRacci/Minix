@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[ObservableMap](index.md)/[putIfAbsent](put-if-absent.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[ObservableMap](index.md)/[putIfAbsent](put-if-absent.md)
 
 # putIfAbsent
 

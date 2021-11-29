@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[PluginComparator](index.md)/[compare](compare.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[PluginComparator](index.md)/[compare](compare.md)
 
 # compare
 

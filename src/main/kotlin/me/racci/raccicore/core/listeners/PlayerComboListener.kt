@@ -1,13 +1,14 @@
+@file:Suppress("UNCHECKED_CAST")
 package me.racci.raccicore.core.listeners
 
 import kotlinx.coroutines.withContext
+import me.racci.raccicore.api.events.*
+import me.racci.raccicore.api.extensions.KotlinListener
+import me.racci.raccicore.api.extensions.pm
+import me.racci.raccicore.api.utils.classConstructor
+import me.racci.raccicore.api.utils.now
 import me.racci.raccicore.core.RacciCore
-import me.racci.raccicore.core.data.PlayerManager
-import me.racci.raccicore.events.*
-import me.racci.raccicore.extensions.KotlinListener
-import me.racci.raccicore.extensions.pm
-import me.racci.raccicore.utils.ClassUtils
-import me.racci.raccicore.utils.now
+import me.racci.raccicore.core.managers.PlayerManager
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -18,7 +19,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
-
 
 class PlayerComboListener : KotlinListener {
 
@@ -32,8 +32,8 @@ class PlayerComboListener : KotlinListener {
         val s = if(event.player.isSneaking) "Shift" else ""
         val c = if(event.action.isLeftClick) "Left" else "Right"
 
-        val clazz = Class.forName("me.racci.raccicore.events.Player${s}${c}ClickEvent") as Class<AbstractComboEvent>
-        val vEvent = ClassUtils.classConstructor(
+        val clazz = Class.forName("me.racci.raccicore.api.events.Player${s}${c}ClickEvent") as Class<AbstractComboEvent>
+        val vEvent = classConstructor(
             clazz.getConstructor(
                 Player::class.java,
                 ItemStack::class.java,
@@ -85,8 +85,8 @@ class PlayerComboListener : KotlinListener {
             "Double"
         } else ""
 
-        val clazz = Class.forName("me.racci.raccicore.events.Player${s}${db}OffhandEvent") as Class<AbstractComboEvent>
-        val vEvent = ClassUtils.classConstructor(
+        val clazz = Class.forName("me.racci.raccicore.api.events.Player${s}${db}OffhandEvent") as Class<AbstractComboEvent>
+        val vEvent = classConstructor(
             clazz.getConstructor(
                 Player::class.java,
                 ItemStack::class.java,

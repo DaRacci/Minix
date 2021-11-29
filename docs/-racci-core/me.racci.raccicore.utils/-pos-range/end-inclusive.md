@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[PosRange](index.md)/[endInclusive](end-inclusive.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[PosRange](index.md)/[endInclusive](end-inclusive.md)
 
 # endInclusive
 

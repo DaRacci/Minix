@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.builders](../index.md)/[FireworkBuilder](index.md)/[power](power.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.builders](../index.md)/[FireworkBuilder](index.md)/[power](power.md)
 
 # power
 

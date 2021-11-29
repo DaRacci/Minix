@@ -1,21 +1,22 @@
+@file:Suppress("UNUSED")
 package me.racci.raccicore.core
 
+import co.aikar.commands.BaseCommand
 import com.github.shynixn.mccoroutine.asyncDispatcher
 import com.github.shynixn.mccoroutine.launch
 import com.github.shynixn.mccoroutine.launchAsync
 import com.github.shynixn.mccoroutine.minecraftDispatcher
 import kotlinx.coroutines.CoroutineScope
-import me.racci.raccicore.RacciPlugin
-import me.racci.raccicore.core.listeners.PlayerComboListener
-import me.racci.raccicore.core.listeners.PlayerMoveFullXYZListener
-import me.racci.raccicore.core.listeners.PlayerMoveListener
-import me.racci.raccicore.core.listeners.PlayerTeleportListener
+import me.racci.raccicore.api.extensions.KotlinListener
+import me.racci.raccicore.api.lifecycle.LifecycleListener
+import me.racci.raccicore.api.plugin.RacciPlugin
+import me.racci.raccicore.core.commands.CoreCommand
+import me.racci.raccicore.core.listeners.*
 import me.racci.raccicore.core.managers.BungeeCordManager
 import me.racci.raccicore.core.managers.CommandManager
+import me.racci.raccicore.core.managers.HookManager
 import me.racci.raccicore.core.managers.PlayerManager
 import me.racci.raccicore.core.runnables.TimeRunnable
-import me.racci.raccicore.extensions.KotlinListener
-import me.racci.raccicore.lifecycle.LifecycleListener
 import org.bukkit.NamespacedKey
 import kotlin.properties.Delegates
 
@@ -23,16 +24,16 @@ class RacciCore : RacciPlugin(
     "&2RacciCore"
 ) {
 
-    companion object {
+    internal companion object {
 
-        internal var instance               by Delegates.notNull<RacciCore>()
-        internal val asyncDispatcher        get() = instance.asyncDispatcher
-        internal val minecraftDispatcher    get() = instance.minecraftDispatcher
-        internal val log                    get() = instance.log
+        val log             get() = instance.log
+        var instance        by Delegates.notNull<RacciCore>()
+        val asyncDispatcher get() = instance.asyncDispatcher
+        val syncDispatcher  get() = instance.minecraftDispatcher
 
-        internal fun namespacedKey(value: String) = NamespacedKey(instance, value)
-        internal fun launch(f: suspend CoroutineScope.() -> Unit) = instance.launch(f)
-        internal fun launchAsync(f: suspend CoroutineScope.() -> Unit) = instance.launchAsync(f)
+        fun namespacedKey(value: String) = NamespacedKey(instance, value)
+        fun launch(f: suspend CoroutineScope.() -> Unit) = instance.launch(f)
+        fun launchAsync(f: suspend CoroutineScope.() -> Unit) = instance.launchAsync(f)
 
     }
 
@@ -45,13 +46,16 @@ class RacciCore : RacciPlugin(
             .runAsyncTaskTimer(this, 5L, 20L)
     }
 
-    override suspend fun handleDisable() {
-        PluginManager.close()
+    override suspend fun registerCommands(): List<BaseCommand> {
+        return listOf(
+            CoreCommand()
+        )
     }
 
     override suspend fun registerListeners(): List<KotlinListener> {
         return listOf(
             PlayerMoveListener(),
+            PlayerMoveXYZListener(),
             PlayerTeleportListener(),
             PlayerMoveFullXYZListener(),
             PlayerComboListener(),
@@ -61,9 +65,11 @@ class RacciCore : RacciPlugin(
 
     override suspend fun registerLifecycles(): List<Pair<LifecycleListener<*>, Int>> {
         return listOf(
-            BungeeCordManager(this) to 1,
-            CommandManager(this) to 1,
-            PlayerManager(this) to 1,
+            PluginManager(this) to 1,
+            HookManager(this) to 2,
+            BungeeCordManager(this) to 3,
+            CommandManager(this) to 4,
+            PlayerManager(this) to 5,
         )
     }
 }

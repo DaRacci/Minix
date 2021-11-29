@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[ExpirationListImpl](index.md)/[ExpirationListImpl](-expiration-list-impl.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[ExpirationListImpl](index.md)/[ExpirationListImpl](-expiration-list-impl.md)
 
 # ExpirationListImpl
 

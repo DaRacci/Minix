@@ -3,7 +3,7 @@
 # PlayerTeleportListener
 
 [jvm]\
-class [PlayerTeleportListener](index.md) : [KotlinListener](../../me.racci.raccicore.utils.extensions/-kotlin-listener/index.md)
+class [PlayerTeleportListener](index.md) : [KotlinListener](../../me.racci.raccicore.api.utils.extensions/-kotlin-listener/index.md)
 
 ## Functions
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../../../index.md)/[me.racci.raccicore.events](../../index.md)/[KPlayerEvent](../index.md)/[Companion](index.md)/[getHandlerList](get-handler-list.md)
+//[RacciCore](../../../../index.md)/[me.racci.raccicore.api.events](../../index.md)/[KPlayerEvent](../index.md)/[Companion](index.md)/[getHandlerList](get-handler-list.md)
 
 # getHandlerList
 

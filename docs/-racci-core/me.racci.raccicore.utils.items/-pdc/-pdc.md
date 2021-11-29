@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.items](../index.md)/[Pdc](index.md)/[Pdc](-pdc.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.items](../index.md)/[Pdc](index.md)/[Pdc](-pdc.md)
 
 # Pdc
 

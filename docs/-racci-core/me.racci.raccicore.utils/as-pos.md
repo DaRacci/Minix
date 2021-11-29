@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[asPos](as-pos.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[asPos](as-pos.md)
 
 # asPos
 

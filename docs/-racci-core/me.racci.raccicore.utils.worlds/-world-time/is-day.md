@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.worlds](../index.md)/[WorldTime](index.md)/[isDay](is-day.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.worlds](../index.md)/[WorldTime](index.md)/[isDay](is-day.md)
 
 # isDay
 

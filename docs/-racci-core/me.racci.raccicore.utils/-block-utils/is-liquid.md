@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[BlockUtils](index.md)/[isLiquid](is-liquid.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[BlockUtils](index.md)/[isLiquid](is-liquid.md)
 
 # isLiquid
 

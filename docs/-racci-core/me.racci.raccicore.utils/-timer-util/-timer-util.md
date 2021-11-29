@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[TimerUtil](index.md)/[TimerUtil](-timer-util.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[TimerUtil](index.md)/[TimerUtil](-timer-util.md)
 
 # TimerUtil
 

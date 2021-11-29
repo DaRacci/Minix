@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[clear](clear.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[clear](clear.md)
 
 # clear
 

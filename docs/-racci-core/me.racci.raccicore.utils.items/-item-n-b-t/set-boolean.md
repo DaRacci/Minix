@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.items](../index.md)/[ItemNBT](index.md)/[setBoolean](set-boolean.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.items](../index.md)/[ItemNBT](index.md)/[setBoolean](set-boolean.md)
 
 # setBoolean
 

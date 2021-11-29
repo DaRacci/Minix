@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[ObservableSet](index.md)/[ObservableSet](-observable-set.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[ObservableSet](index.md)/[ObservableSet](-observable-set.md)
 
 # ObservableSet
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[containsKeyIgnoreCase](contains-key-ignore-case.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[containsKeyIgnoreCase](contains-key-ignore-case.md)
 
 # containsKeyIgnoreCase
 

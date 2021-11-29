@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[PlayerLeftClickEvent](index.md)/[hasItem](has-item.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[PlayerLeftClickEvent](index.md)/[hasItem](has-item.md)
 
 # hasItem
 

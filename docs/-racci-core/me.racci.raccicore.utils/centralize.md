@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[centralize](centralize.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[centralize](centralize.md)
 
 # centralize
 

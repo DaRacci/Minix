@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.builders](../index.md)/[MapBuilder](index.md)/[locName](loc-name.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.builders](../index.md)/[MapBuilder](index.md)/[locName](loc-name.md)
 
 # locName
 

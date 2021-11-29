@@ -1,9 +1,9 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[ExpirationMap](index.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[ExpirationMap](index.md)
 
 # ExpirationMap
 
 [jvm]\
-interface [ExpirationMap](index.md)&lt;[K](index.md), [V](index.md)&gt; : [MutableMap](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html)&lt;[K](index.md), [V](index.md)&gt; , [WithPlugin](../../me.racci.raccicore.utils.extensions/-with-plugin/index.md)&lt;Plugin&gt;
+interface [ExpirationMap](index.md)&lt;[K](index.md), [V](index.md)&gt; : [MutableMap](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/index.html)&lt;[K](index.md), [V](index.md)&gt; , [WithPlugin](../../me.racci.raccicore.api.utils.extensions/-with-plugin/index.md)&lt;Plugin&gt;
 
 ## Functions
 
@@ -35,7 +35,7 @@ interface [ExpirationMap](index.md)&lt;[K](index.md), [V](index.md)&gt; : [Mutab
 |---|---|
 | [entries](../-observable-map/index.md#313986111%2FProperties%2F-1216412040) | [jvm]<br>abstract override val [entries](../-observable-map/index.md#313986111%2FProperties%2F-1216412040): [MutableSet](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html)&lt;[MutableMap.MutableEntry](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-map/-mutable-entry/index.html)&lt;[K](index.md), [V](index.md)&gt;&gt; |
 | [keys](../-observable-map/index.md#-1153773961%2FProperties%2F-1216412040) | [jvm]<br>abstract override val [keys](../-observable-map/index.md#-1153773961%2FProperties%2F-1216412040): [MutableSet](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html)&lt;[K](index.md)&gt; |
-| [plugin](../../me.racci.raccicore.utils.extensions/-with-plugin/plugin.md) | [jvm]<br>abstract val [plugin](../../me.racci.raccicore.utils.extensions/-with-plugin/plugin.md): Plugin |
+| [plugin](../../me.racci.raccicore.api.utils.extensions/-with-plugin/plugin.md) | [jvm]<br>abstract val [plugin](../../me.racci.raccicore.api.utils.extensions/-with-plugin/plugin.md): Plugin |
 | [size](../-observable-map/index.md#-157521630%2FProperties%2F-1216412040) | [jvm]<br>abstract val [size](../-observable-map/index.md#-157521630%2FProperties%2F-1216412040): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
 | [values](../-observable-map/index.md#211311497%2FProperties%2F-1216412040) | [jvm]<br>abstract override val [values](../-observable-map/index.md#211311497%2FProperties%2F-1216412040): [MutableCollection](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-collection/index.html)&lt;[V](index.md)&gt; |
 

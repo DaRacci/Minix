@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[PlayerExitLiquidEvent](index.md)/[PlayerExitLiquidEvent](-player-exit-liquid-event.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[PlayerExitLiquidEvent](index.md)/[PlayerExitLiquidEvent](-player-exit-liquid-event.md)
 
 # PlayerExitLiquidEvent
 

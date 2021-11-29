@@ -1,6 +1,6 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils.math](index.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils.math](index.md)
 
-# Package me.racci.raccicore.utils.math
+# Package me.racci.raccicore.api.utils.math
 
 ## Types
 

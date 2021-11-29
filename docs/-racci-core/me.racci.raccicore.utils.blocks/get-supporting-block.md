@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils.blocks](index.md)/[getSupportingBlock](get-supporting-block.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils.blocks](index.md)/[getSupportingBlock](get-supporting-block.md)
 
 # getSupportingBlock
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[PlayerShiftRightClickEvent](index.md)/[clickedEntity](clicked-entity.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[PlayerShiftRightClickEvent](index.md)/[clickedEntity](clicked-entity.md)
 
 # clickedEntity
 

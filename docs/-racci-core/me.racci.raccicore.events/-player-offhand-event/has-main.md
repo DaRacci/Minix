@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[PlayerOffhandEvent](index.md)/[hasMain](has-main.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[PlayerOffhandEvent](index.md)/[hasMain](has-main.md)
 
 # hasMain
 

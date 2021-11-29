@@ -1,9 +1,9 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[OnlinePlayerMap](index.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[OnlinePlayerMap](index.md)
 
 # OnlinePlayerMap
 
 [jvm]\
-class [OnlinePlayerMap](index.md)&lt;[V](index.md)&gt;(plugin: Plugin) : [HashMap](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html)&lt;Player, [V](index.md)&gt; , [KListener](../../me.racci.raccicore.utils.extensions/-k-listener/index.md)&lt;Plugin&gt;
+class [OnlinePlayerMap](index.md)&lt;[V](index.md)&gt;(plugin: Plugin) : [HashMap](https://docs.oracle.com/javase/8/docs/api/java/util/HashMap.html)&lt;Player, [V](index.md)&gt; , [KListener](../../me.racci.raccicore.api.utils.extensions/-k-listener/index.md)&lt;Plugin&gt;
 
 ## Functions
 

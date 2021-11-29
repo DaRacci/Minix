@@ -1,6 +1,4 @@
 plugins {
-    java
-    idea
     `java-library`
     `maven-publish`
     kotlin("jvm")                       version "1.6.0"
@@ -9,47 +7,47 @@ plugins {
     id("com.github.johnrengelman.shadow")   version "7.1.0"
 }
 
-val apiAndDocs: Configuration by configurations.creating {
+val transitiveAPI: Configuration by configurations.creating {
     attributes {
-        attribute(Category.CATEGORY_ATTRIBUTE, objects.named(Category.DOCUMENTATION))
         attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
-        attribute(DocsType.DOCS_TYPE_ATTRIBUTE, objects.named(DocsType.SOURCES))
         attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
     }
+    isCanBeResolved = false
+    isCanBeConsumed = true
 }
 
-configurations.api {
-    extendsFrom(apiAndDocs)
+configurations.compileOnlyApi {
+    extendsFrom(transitiveAPI)
 }
+
 
 dependencies {
 
-    apiAndDocs("net.kyori:adventure-api:4.10.0-SNAPSHOT")
-    apiAndDocs("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT")
-    apiAndDocs("co.aikar:acf-paper:0.5.0-SNAPSHOT")
-    apiAndDocs("com.github.stefvanschie.inventoryframework:IF:0.10.3")
-    compileOnlyApi("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0")
-    compileOnlyApi("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0")
+    api("net.kyori:adventure-api:4.10.0-SNAPSHOT")
+    api("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT")
+    api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
+    api("com.github.stefvanschie.inventoryframework:IF:0.10.3")
+    transitiveAPI("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0")
+    transitiveAPI("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0")
 
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0")
-    compileOnly("org.jetbrains.kotlin:kotlin-reflect:1.6.0")
+    transitiveAPI("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0")
+    transitiveAPI("org.jetbrains.kotlin:kotlin-reflect:1.6.0")
 
-    compileOnly("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1")
-    compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.1")
-    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
-    compileOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt")
+    transitiveAPI("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1")
+    transitiveAPI("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.1")
+    transitiveAPI("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
+    transitiveAPI("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt")
 
     compileOnly("com.mojang:authlib:2.3.31")
     compileOnly("me.clip:placeholderapi:2.10.10")
-    compileOnly("net.pl3x.purpur:purpur-api:1.17.1-R0.1-SNAPSHOT")
+    compileOnly("net.pl3x.purpur:purpur-api:1.17.1-R0.1-SNAPSHOT") {
+        exclude(module = "adventure-text-minimessage")
+        exclude(module = "adventure-api")
+    }
+    compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.0")
 
-}
-
-idea.module {
-    isDownloadJavadoc = true
-    isDownloadSources = true
 }
 
 tasks {
@@ -177,11 +175,19 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven("https://jitpack.io")
+    // AuthLib
     maven("https://libraries.minecraft.net/")
+    // Purpur
     maven("https://repo.pl3x.net/")
+    // Kotlin
     maven("https://dl.bintray.com/kotlin/kotlin-dev/")
+    // ACF
     maven("https://repo.aikar.co/content/groups/aikar/")
+    // FloodGate
+    maven("https://repo.opencollab.dev/maven-snapshots/")
+    // Kyori
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
+    // PlaceholderAPI
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 

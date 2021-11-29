@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.builders](../index.md)/[BannerBuilder](index.md)/[baseColour](base-colour.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.builders](../index.md)/[BannerBuilder](index.md)/[baseColour](base-colour.md)
 
 # baseColour
 

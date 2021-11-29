@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[RangeIteratorWithFactor](index.md)/[RangeIteratorWithFactor](-range-iterator-with-factor.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[RangeIteratorWithFactor](index.md)/[RangeIteratorWithFactor](-range-iterator-with-factor.md)
 
 # RangeIteratorWithFactor
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../../../index.md)/[me.racci.raccicore.utils.strings](../../index.md)/[Legacy](../index.md)/[Companion](index.md)
+//[RacciCore](../../../../index.md)/[me.racci.raccicore.api.utils.strings](../../index.md)/[Legacy](../index.md)/[Companion](index.md)
 
 # Companion
 

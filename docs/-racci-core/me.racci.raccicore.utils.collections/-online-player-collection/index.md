@@ -1,9 +1,9 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[OnlinePlayerCollection](index.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[OnlinePlayerCollection](index.md)
 
 # OnlinePlayerCollection
 
 [jvm]\
-interface [OnlinePlayerCollection](index.md) : [MutableCollection](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-collection/index.html)&lt;Player&gt; , [KListener](../../me.racci.raccicore.utils.extensions/-k-listener/index.md)&lt;Plugin&gt;
+interface [OnlinePlayerCollection](index.md) : [MutableCollection](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-collection/index.html)&lt;Player&gt; , [KListener](../../me.racci.raccicore.api.utils.extensions/-k-listener/index.md)&lt;Plugin&gt;
 
 ## Functions
 
@@ -33,7 +33,7 @@ interface [OnlinePlayerCollection](index.md) : [MutableCollection](https://kotli
 
 | Name | Summary |
 |---|---|
-| [plugin](../../me.racci.raccicore.utils.extensions/-with-plugin/plugin.md) | [jvm]<br>abstract val [plugin](../../me.racci.raccicore.utils.extensions/-with-plugin/plugin.md): Plugin |
+| [plugin](../../me.racci.raccicore.api.utils.extensions/-with-plugin/plugin.md) | [jvm]<br>abstract val [plugin](../../me.racci.raccicore.api.utils.extensions/-with-plugin/plugin.md): Plugin |
 | [size](index.md#-113084078%2FProperties%2F-1216412040) | [jvm]<br>abstract val [size](index.md#-113084078%2FProperties%2F-1216412040): [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html) |
 
 ## Inheritors

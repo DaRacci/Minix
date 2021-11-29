@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.math](../index.md)/[MathUtils](index.md)/[getMultiplierFromPercent](get-multiplier-from-percent.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.math](../index.md)/[MathUtils](index.md)/[getMultiplierFromPercent](get-multiplier-from-percent.md)
 
 # getMultiplierFromPercent
 

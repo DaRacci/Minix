@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[asBukkitChunk](as-bukkit-chunk.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[asBukkitChunk](as-bukkit-chunk.md)
 
 # asBukkitChunk
 

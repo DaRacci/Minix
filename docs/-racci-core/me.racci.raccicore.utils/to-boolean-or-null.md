@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[toBooleanOrNull](to-boolean-or-null.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[toBooleanOrNull](to-boolean-or-null.md)
 
 # toBooleanOrNull
 

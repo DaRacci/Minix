@@ -1,6 +1,6 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)
 
-# Package me.racci.raccicore.utils
+# Package me.racci.raccicore.api.utils
 
 ## Types
 
@@ -53,7 +53,7 @@
 | [notIn](not-in.md) | [jvm]<br>fun &lt;[T](not-in.md)&gt; [T](not-in.md).[notIn](not-in.md)(container: [Iterable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-iterable/index.html)&lt;[T](not-in.md)&gt;): [T](not-in.md)? |
 | [now](now.md) | [jvm]<br>fun [now](now.md)(): Instant |
 | [rangeTo](range-to.md) | [jvm]<br>operator fun Chunk.[rangeTo](range-to.md)(other: Chunk): [PosRange](-pos-range/index.md)&lt;Chunk, [ChunkPos](-chunk-pos/index.md)&gt;<br>operator fun Location.[rangeTo](range-to.md)(other: Location): [PosRange](-pos-range/index.md)&lt;Location, [BlockPos](-block-pos/index.md)&gt;<br>operator fun Block.[rangeTo](range-to.md)(other: Block): [PosRange](-pos-range/index.md)&lt;Block, [BlockPos](-block-pos/index.md)&gt; |
-| [takeMaxPerTick](take-max-per-tick.md) | [jvm]<br>suspend fun [WithPlugin](../me.racci.raccicore.utils.extensions/-with-plugin/index.md)&lt;*&gt;.[takeMaxPerTick](take-max-per-tick.md)(time: [Duration](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-duration/index.html))<br>suspend fun Plugin.[takeMaxPerTick](take-max-per-tick.md)(time: [Duration](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-duration/index.html)) |
+| [takeMaxPerTick](take-max-per-tick.md) | [jvm]<br>suspend fun [WithPlugin](../me.racci.raccicore.api.utils.extensions/-with-plugin/index.md)&lt;*&gt;.[takeMaxPerTick](take-max-per-tick.md)(time: [Duration](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-duration/index.html))<br>suspend fun Plugin.[takeMaxPerTick](take-max-per-tick.md)(time: [Duration](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.time/-duration/index.html)) |
 | [toDouble](to-double.md) | [jvm]<br>fun [Pair](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html)&lt;[Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html), [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)&gt;.[toDouble](to-double.md)(): [Pair](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html)&lt;[Double](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html), [Double](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html)&gt; |
 | [toInt](to-int.md) | [jvm]<br>fun [Pair](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html)&lt;[Double](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html), [Double](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html)&gt;.[toInt](to-int.md)(): [Pair](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-pair/index.html)&lt;[Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html), [Int](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html)&gt; |
 

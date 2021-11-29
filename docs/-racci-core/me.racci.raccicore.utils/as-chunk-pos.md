@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[asChunkPos](as-chunk-pos.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[asChunkPos](as-chunk-pos.md)
 
 # asChunkPos
 

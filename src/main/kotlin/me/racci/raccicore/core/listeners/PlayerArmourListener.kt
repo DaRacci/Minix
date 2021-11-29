@@ -1,27 +1,5 @@
-//package me.racci.raccicore.listeners
-//
-//import kotlinx.coroutines.delay
-//import me.racci.raccicore.events.PlayerArmourChangeEvent
-//import me.racci.raccicore.events.PlayerArmourEquipEvent
-//import me.racci.raccicore.racciCore
-//import me.racci.raccicore.skedule.skeduleAsync
-//import me.racci.raccicore.extensions.KotlinListener
-//import me.racci.raccicore.utils.pm
-//import org.bukkit.Bukkit
-//import org.bukkit.Material
-//import org.bukkit.entity.Player
-//import org.bukkit.event.Event
-//import org.bukkit.event.EventHandler
-//import org.bukkit.event.EventPriority
-//import org.bukkit.event.block.Action
-//import org.bukkit.event.block.BlockDispenseArmorEvent
-//import org.bukkit.event.entity.PlayerDeathEvent
-//import org.bukkit.event.inventory.*
-//import org.bukkit.event.player.PlayerInteractEvent
-//import org.bukkit.event.player.PlayerItemBreakEvent
-//import org.bukkit.event.player.PlayerJoinEvent
-//import org.bukkit.event.player.PlayerRespawnEvent
-//import org.bukkit.inventory.ItemStack
+@file:Suppress("SpellCheckingInspection")
+package me.racci.raccicore.core.listeners
 //
 //class ArmourListener : KotlinListener {
 //

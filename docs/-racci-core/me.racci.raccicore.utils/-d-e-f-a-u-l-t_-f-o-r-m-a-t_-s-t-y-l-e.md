@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[DEFAULT_FORMAT_STYLE](-d-e-f-a-u-l-t_-f-o-r-m-a-t_-s-t-y-l-e.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[DEFAULT_FORMAT_STYLE](-d-e-f-a-u-l-t_-f-o-r-m-a-t_-s-t-y-l-e.md)
 
 # DEFAULT_FORMAT_STYLE
 

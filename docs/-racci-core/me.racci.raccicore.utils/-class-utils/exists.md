@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[ClassUtils](index.md)/[exists](exists.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[ClassUtils](index.md)/[exists](exists.md)
 
 # exists
 

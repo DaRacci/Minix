@@ -1,6 +1,6 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.events](index.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.events](index.md)
 
-# Package me.racci.raccicore.events
+# Package me.racci.raccicore.api.events
 
 ## Types
 

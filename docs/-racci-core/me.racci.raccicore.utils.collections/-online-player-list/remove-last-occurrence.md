@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[OnlinePlayerList](index.md)/[removeLastOccurrence](remove-last-occurrence.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[OnlinePlayerList](index.md)/[removeLastOccurrence](remove-last-occurrence.md)
 
 # removeLastOccurrence
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[PlayerShiftDoubleOffhandEvent](index.md)/[offhandItem](offhand-item.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[PlayerShiftDoubleOffhandEvent](index.md)/[offhandItem](offhand-item.md)
 
 # offhandItem
 

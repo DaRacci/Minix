@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[PlayerLeftClickEvent](index.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[PlayerLeftClickEvent](index.md)
 
 # PlayerLeftClickEvent
 

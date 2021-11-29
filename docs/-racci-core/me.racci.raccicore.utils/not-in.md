@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[notIn](not-in.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[notIn](not-in.md)
 
 # notIn
 

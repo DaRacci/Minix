@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.scheduler](../index.md)/[ICoroutineScheduler](index.md)/[cancelAllTasks](cancel-all-tasks.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.core.scheduler](../index.md)/[ICoroutineScheduler](index.md)/[cancelAllTasks](cancel-all-tasks.md)
 
 # cancelAllTasks
 

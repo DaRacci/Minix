@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[BlockUtils](index.md)/[getPlacedAgainstFace](get-placed-against-face.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[BlockUtils](index.md)/[getPlacedAgainstFace](get-placed-against-face.md)
 
 # getPlacedAgainstFace
 

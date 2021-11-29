@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.builders](../index.md)/[MapBuilder](index.md)/[scaling](scaling.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.builders](../index.md)/[MapBuilder](index.md)/[scaling](scaling.md)
 
 # scaling
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils.extensions](index.md)/[switchToAsync](switch-to-async.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils.extensions](index.md)/[switchToAsync](switch-to-async.md)
 
 # switchToAsync
 

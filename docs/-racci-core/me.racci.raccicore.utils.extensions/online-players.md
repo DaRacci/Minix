@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils.extensions](index.md)/[onlinePlayers](online-players.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils.extensions](index.md)/[onlinePlayers](online-players.md)
 
 # onlinePlayers
 

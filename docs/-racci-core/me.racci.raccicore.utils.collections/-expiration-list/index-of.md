@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[ExpirationList](index.md)/[indexOf](index-of.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[ExpirationList](index.md)/[indexOf](index-of.md)
 
 # indexOf
 

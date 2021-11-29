@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils.collections](index.md)/[observableListOf](observable-list-of.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils.collections](index.md)/[observableListOf](observable-list-of.md)
 
 # observableListOf
 

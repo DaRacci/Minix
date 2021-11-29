@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[rangeTo](range-to.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[rangeTo](range-to.md)
 
 # rangeTo
 

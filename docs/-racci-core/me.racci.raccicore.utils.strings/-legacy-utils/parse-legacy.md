@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.strings](../index.md)/[LegacyUtils](index.md)/[parseLegacy](parse-legacy.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.strings](../index.md)/[LegacyUtils](index.md)/[parseLegacy](parse-legacy.md)
 
 # parseLegacy
 

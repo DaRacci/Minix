@@ -1,4 +1,4 @@
-//[RacciCore](../../../../index.md)/[me.racci.raccicore.scheduler](../../index.md)/[CoroutineTask](../index.md)/[Companion](index.md)/[ERROR](-e-r-r-o-r.md)
+//[RacciCore](../../../../index.md)/[me.racci.raccicore.core.scheduler](../../index.md)/[CoroutineTask](../index.md)/[Companion](index.md)/[ERROR](-e-r-r-o-r.md)
 
 # ERROR
 

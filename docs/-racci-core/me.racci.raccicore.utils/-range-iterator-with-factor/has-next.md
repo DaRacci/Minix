@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[RangeIteratorWithFactor](index.md)/[hasNext](has-next.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[RangeIteratorWithFactor](index.md)/[hasNext](has-next.md)
 
 # hasNext
 

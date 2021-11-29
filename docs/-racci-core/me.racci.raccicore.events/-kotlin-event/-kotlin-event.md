@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[KotlinEvent](index.md)/[KotlinEvent](-kotlin-event.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[KotlinEvent](index.md)/[KotlinEvent](-kotlin-event.md)
 
 # KotlinEvent
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[LangDefaultFileException](index.md)/[LangDefaultFileException](-lang-default-file-exception.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[LangDefaultFileException](index.md)/[LangDefaultFileException](-lang-default-file-exception.md)
 
 # LangDefaultFileException
 

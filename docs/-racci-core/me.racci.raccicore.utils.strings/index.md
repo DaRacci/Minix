@@ -1,6 +1,6 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils.strings](index.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils.strings](index.md)
 
-# Package me.racci.raccicore.utils.strings
+# Package me.racci.raccicore.api.utils.strings
 
 ## Types
 

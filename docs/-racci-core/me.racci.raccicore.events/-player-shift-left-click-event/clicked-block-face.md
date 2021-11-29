@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[PlayerShiftLeftClickEvent](index.md)/[clickedBlockFace](clicked-block-face.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[PlayerShiftLeftClickEvent](index.md)/[clickedBlockFace](clicked-block-face.md)
 
 # clickedBlockFace
 

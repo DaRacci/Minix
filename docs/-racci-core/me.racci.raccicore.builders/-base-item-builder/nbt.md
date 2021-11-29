@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.builders](../index.md)/[BaseItemBuilder](index.md)/[nbt](nbt.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.builders](../index.md)/[BaseItemBuilder](index.md)/[nbt](nbt.md)
 
 # nbt
 

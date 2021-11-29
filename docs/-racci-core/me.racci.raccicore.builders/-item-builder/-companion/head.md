@@ -1,4 +1,4 @@
-//[RacciCore](../../../../index.md)/[me.racci.raccicore.builders](../../index.md)/[ItemBuilder](../index.md)/[Companion](index.md)/[head](head.md)
+//[RacciCore](../../../../index.md)/[me.racci.raccicore.api.builders](../../index.md)/[ItemBuilder](../index.md)/[Companion](index.md)/[head](head.md)
 
 # head
 

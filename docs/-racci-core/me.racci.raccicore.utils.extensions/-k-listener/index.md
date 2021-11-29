@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.extensions](../index.md)/[KListener](index.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.extensions](../index.md)/[KListener](index.md)
 
 # KListener
 
@@ -15,8 +15,8 @@ interface [KListener](index.md)&lt;[T](index.md) : Plugin&gt; : Listener, [WithP
 
 | Name |
 |---|
-| [OnlinePlayerCollection](../../me.racci.raccicore.utils.collections/-online-player-collection/index.md) |
-| [OnlinePlayerMap](../../me.racci.raccicore.utils.collections/-online-player-map/index.md) |
+| [OnlinePlayerCollection](../../me.racci.raccicore.api.utils.collections/-online-player-collection/index.md) |
+| [OnlinePlayerMap](../../me.racci.raccicore.api.utils.collections/-online-player-map/index.md) |
 | [SimpleKListener](../-simple-k-listener/index.md) |
 
 ## Extensions

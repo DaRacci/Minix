@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.items.builders](../index.md)/[SkullBuilder](index.md)/[owner](owner.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.items.builders](../index.md)/[SkullBuilder](index.md)/[owner](owner.md)
 
 # owner
 

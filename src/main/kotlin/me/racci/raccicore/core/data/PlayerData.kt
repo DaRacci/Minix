@@ -1,21 +1,26 @@
+@file:Suppress("UNUSED")
 package me.racci.raccicore.core.data
 
-internal data class PlayerData(
-    val player: org.bukkit.entity.Player
-    ) {
+import me.racci.raccicore.api.events.PlayerUnloadEvent
+import me.racci.raccicore.core.managers.PlayerManager
+import java.util.*
 
-    fun init() {
-        PlayerManager.addPlayerData(this)
-    }
+data class PlayerData(
+    val uuid: UUID
+) {
 
-    fun close() {
-        PlayerManager.removePlayerData(this.player.uniqueId)
-    }
+    var inAccess: Int = 0
+        set(int) {
+            field = int
+            if(field == 0) {
+                PlayerUnloadEvent(null, (uuid)).callEvent()
+                PlayerManager.remove(uuid)
+            }
+        }
 
     var lastOffhand: Long = 0
     var lastShift: Long = 0
     var lastLeftClick: Long = 0
     var lastRightClick: Long = 0
     var lastJump: Long = 0
-
 }

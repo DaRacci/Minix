@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[PlayerEnterLiquidEvent](index.md)/[from](from.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[PlayerEnterLiquidEvent](index.md)/[from](from.md)
 
 # from
 

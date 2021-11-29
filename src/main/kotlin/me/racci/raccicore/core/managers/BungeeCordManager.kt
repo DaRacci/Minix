@@ -1,10 +1,10 @@
+@file:Suppress("unused")
 package me.racci.raccicore.core.managers
 
-import me.racci.raccicore.core.Provider
+import me.racci.raccicore.api.extensions.server
+import me.racci.raccicore.api.lifecycle.LifecycleListener
+import me.racci.raccicore.api.utils.minecraft.BungeeCordUtils
 import me.racci.raccicore.core.RacciCore
-import me.racci.raccicore.extensions.server
-import me.racci.raccicore.lifecycle.LifecycleListener
-import me.racci.raccicore.utils.BungeeCordUtils
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.PluginMessageListener
 import java.nio.ByteBuffer
@@ -17,7 +17,7 @@ class BungeeCordManager constructor(
     private val queue = mutableListOf<BungeeCordUtils.BungeeCordRequest>()
 
     override suspend fun onEnable() {
-        Provider.bungeeCordManager = this
+        INSTANCE = this
         server.messenger.registerOutgoingPluginChannel(plugin, "BungeeCord")
         server.messenger.registerIncomingPluginChannel(plugin, "BungeeCord", this)
     }
@@ -58,4 +58,19 @@ class BungeeCordManager constructor(
 
     private fun ByteBuffer.readUTF() =
         String(ByteArray(short.toInt()).apply { get(this) }, Charset.forName("UTF-8"))
+
+    companion object {
+        private lateinit var INSTANCE: BungeeCordManager
+
+        fun sendBungeeCord(
+            player: Player,
+            message: ByteArray
+        ) = INSTANCE.sendBungeeCord(player, message)
+
+        fun addToQueue(
+            request: BungeeCordUtils.BungeeCordRequest
+        ) = INSTANCE.addToQueue(request)
+
+    }
+
 }

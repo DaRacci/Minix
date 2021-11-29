@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[KotlinEvent](index.md)/[isCancelled](is-cancelled.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[KotlinEvent](index.md)/[isCancelled](is-cancelled.md)
 
 # isCancelled
 

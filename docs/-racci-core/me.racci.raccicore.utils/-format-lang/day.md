@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[FormatLang](index.md)/[day](day.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[FormatLang](index.md)/[day](day.md)
 
 # day
 

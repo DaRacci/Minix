@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils.extensions](index.md)/[component3](component3.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils.extensions](index.md)/[component3](component3.md)
 
 # component3
 

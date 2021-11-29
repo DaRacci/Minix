@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[NightEvent](index.md)/[world](world.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[NightEvent](index.md)/[world](world.md)
 
 # world
 

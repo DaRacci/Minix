@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[ObservableList](index.md)/[removeAt](remove-at.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[ObservableList](index.md)/[removeAt](remove-at.md)
 
 # removeAt
 

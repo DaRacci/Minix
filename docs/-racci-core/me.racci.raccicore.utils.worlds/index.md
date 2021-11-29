@@ -1,6 +1,6 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils.worlds](index.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils.worlds](index.md)
 
-# Package me.racci.raccicore.utils.worlds
+# Package me.racci.raccicore.api.utils.worlds
 
 ## Types
 

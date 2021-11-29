@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[FormatLang](index.md)/[minutes](minutes.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[FormatLang](index.md)/[minutes](minutes.md)
 
 # minutes
 

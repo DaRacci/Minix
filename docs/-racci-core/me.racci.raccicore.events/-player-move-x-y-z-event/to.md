@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[PlayerMoveXYZEvent](index.md)/[to](to.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[PlayerMoveXYZEvent](index.md)/[to](to.md)
 
 # to
 

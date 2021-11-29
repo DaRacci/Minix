@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[InventoryUtils](index.md)/[convertSlotToRowColumn](convert-slot-to-row-column.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[InventoryUtils](index.md)/[convertSlotToRowColumn](convert-slot-to-row-column.md)
 
 # convertSlotToRowColumn
 

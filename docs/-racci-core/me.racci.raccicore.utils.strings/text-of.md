@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils.strings](index.md)/[textOf](text-of.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils.strings](index.md)/[textOf](text-of.md)
 
 # textOf
 

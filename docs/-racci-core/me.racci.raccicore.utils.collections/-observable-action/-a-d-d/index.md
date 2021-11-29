@@ -1,4 +1,4 @@
-//[RacciCore](../../../../index.md)/[me.racci.raccicore.utils.collections](../../index.md)/[ObservableAction](../index.md)/[ADD](index.md)
+//[RacciCore](../../../../index.md)/[me.racci.raccicore.api.utils.collections](../../index.md)/[ObservableAction](../index.md)/[ADD](index.md)
 
 # ADD
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.builders](../index.md)/[BaseItemBuilder](index.md)/[model](model.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.builders](../index.md)/[BaseItemBuilder](index.md)/[model](model.md)
 
 # model
 

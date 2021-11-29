@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[LocationPos](index.md)/[factor](factor.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[LocationPos](index.md)/[factor](factor.md)
 
 # factor
 

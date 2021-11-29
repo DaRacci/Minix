@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[PlayerShiftLeftClickEvent](index.md)/[PlayerShiftLeftClickEvent](-player-shift-left-click-event.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[PlayerShiftLeftClickEvent](index.md)/[PlayerShiftLeftClickEvent](-player-shift-left-click-event.md)
 
 # PlayerShiftLeftClickEvent
 

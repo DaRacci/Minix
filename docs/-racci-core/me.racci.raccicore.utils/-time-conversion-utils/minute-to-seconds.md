@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[TimeConversionUtils](index.md)/[minuteToSeconds](minute-to-seconds.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[TimeConversionUtils](index.md)/[minuteToSeconds](minute-to-seconds.md)
 
 # minuteToSeconds
 

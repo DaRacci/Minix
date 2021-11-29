@@ -1,4 +1,4 @@
-//[RacciCore](../../../../index.md)/[me.racci.raccicore.scheduler](../../index.md)/[CoroutineTask](../index.md)/[Companion](index.md)/[CANCEL](-c-a-n-c-e-l.md)
+//[RacciCore](../../../../index.md)/[me.racci.raccicore.core.scheduler](../../index.md)/[CoroutineTask](../index.md)/[Companion](index.md)/[CANCEL](-c-a-n-c-e-l.md)
 
 # CANCEL
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[LocationPos](index.md)/[axis](axis.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[LocationPos](index.md)/[axis](axis.md)
 
 # axis
 

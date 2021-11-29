@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils.strings](index.md)/[colouredTextOf1](coloured-text-of1.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils.strings](index.md)/[colouredTextOf1](coloured-text-of1.md)
 
 # colouredTextOf1
 

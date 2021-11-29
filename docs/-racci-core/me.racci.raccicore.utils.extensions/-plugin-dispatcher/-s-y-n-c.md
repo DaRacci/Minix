@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.extensions](../index.md)/[PluginDispatcher](index.md)/[SYNC](-s-y-n-c.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.extensions](../index.md)/[PluginDispatcher](index.md)/[SYNC](-s-y-n-c.md)
 
 # SYNC
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.utils](index.md)/[javaUnicodeToCharacter](java-unicode-to-character.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.api.utils](index.md)/[javaUnicodeToCharacter](java-unicode-to-character.md)
 
 # javaUnicodeToCharacter
 

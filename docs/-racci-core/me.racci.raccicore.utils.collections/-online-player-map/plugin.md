@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils.collections](../index.md)/[OnlinePlayerMap](index.md)/[plugin](plugin.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils.collections](../index.md)/[OnlinePlayerMap](index.md)/[plugin](plugin.md)
 
 # plugin
 

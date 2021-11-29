@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.scheduler](../index.md)/[CoroutineRunnable](index.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.core.scheduler](../index.md)/[CoroutineRunnable](index.md)
 
 # CoroutineRunnable
 

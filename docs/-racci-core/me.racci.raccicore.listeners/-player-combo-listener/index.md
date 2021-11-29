@@ -3,7 +3,7 @@
 # PlayerComboListener
 
 [jvm]\
-class [PlayerComboListener](index.md) : [KotlinListener](../../me.racci.raccicore.utils.extensions/-kotlin-listener/index.md)
+class [PlayerComboListener](index.md) : [KotlinListener](../../me.racci.raccicore.api.utils.extensions/-kotlin-listener/index.md)
 
 ## Functions
 

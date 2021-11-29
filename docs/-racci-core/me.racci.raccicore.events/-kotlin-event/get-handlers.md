@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.events](../index.md)/[KotlinEvent](index.md)/[getHandlers](get-handlers.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[KotlinEvent](index.md)/[getHandlers](get-handlers.md)
 
 # getHandlers
 

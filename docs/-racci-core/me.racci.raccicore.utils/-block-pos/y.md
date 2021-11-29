@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[BlockPos](index.md)/[y](y.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[BlockPos](index.md)/[y](y.md)
 
 # y
 

@@ -1,6 +1,6 @@
-//[RacciCore](../../index.md)/[me.racci.raccicore.scheduler](index.md)
+//[RacciCore](../../index.md)/[me.racci.raccicore.core.scheduler](index.md)
 
-# Package me.racci.raccicore.scheduler
+# Package me.racci.raccicore.core.scheduler
 
 ## Types
 

@@ -1,4 +1,4 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.utils](../index.md)/[LangNoVersionException](index.md)/[LangNoVersionException](-lang-no-version-exception.md)
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.utils](../index.md)/[LangNoVersionException](index.md)/[LangNoVersionException](-lang-no-version-exception.md)
 
 # LangNoVersionException
 

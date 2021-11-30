@@ -44,7 +44,7 @@ dependencies {
         exclude(module = "adventure-text-minimessage")
         exclude(module = "adventure-api")
     }
-    compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
+    compileOnly("org.geysermc.floodgate:api:2.1.0-SNAPSHOT")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.0")
 

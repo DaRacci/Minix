@@ -1,11 +1,11 @@
 <img src="https://cdn.discordapp.com/attachments/431545763928211457/853353180271214662/mfthread.png">
-<h1 align="center">Racci Lib<h1>
+<h1 align="center">Racci Core</h1>
 <p>
   <a href="https://jitpack.io/#DaRacci/RacciCore"><img src="https://jitpack.io/v/DaRacci/RacciCore.svg?style=flat-square" alt="language"/></a>
   <img src="https://img.shields.io/github/license/DaRacci/RacciCore?color=blue&style=flat-square"  alt="license"/>
 <a href="https://discord.gg/9D986MAfZk"><img src="https://img.shields.io/discord/812625173315584030?label=discord&style=flat-square"  alt="language"/></a>
 </p>
- 
+
 ### Plugin Information
   - Supports 1.16.5+
 

@@ -1,11 +1,15 @@
 plugins {
     `java-library`
     `maven-publish`
-    kotlin("jvm")                       version "1.6.0"
-    id("org.jetbrains.dokka")               version "1.6.0"
-    kotlin("plugin.serialization")      version "1.6.0"
-    id("com.github.johnrengelman.shadow")   version "7.1.0"
+    publishing
+    kotlin("jvm") version "1.6.0"
+    id("org.jetbrains.dokka") version "1.6.0"
+    kotlin("plugin.serialization") version "1.6.0"
+    id("com.github.johnrengelman.shadow") version "7.1.0"
 }
+
+group = "com.sylphmc"
+version = "0.3.1"
 
 val transitiveAPI: Configuration by configurations.creating {
     attributes {
@@ -19,7 +23,6 @@ val transitiveAPI: Configuration by configurations.creating {
 configurations.compileOnlyApi {
     extendsFrom(transitiveAPI)
 }
-
 
 dependencies {
 
@@ -44,10 +47,9 @@ dependencies {
         exclude(module = "adventure-text-minimessage")
         exclude(module = "adventure-api")
     }
-    compileOnly("org.geysermc.floodgate:api:2.0-SNAPSHOT")
+    compileOnly("org.geysermc.floodgate:api:2.1.0-SNAPSHOT")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.0")
-
 }
 
 tasks {
@@ -61,18 +63,24 @@ tasks {
             filesMatching("plugin.yml") {
                 expand(
                     "version" to project.version,
-                    "libraries" to "libraries:\n"
-                                + "  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0\n"
-                                + "  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0\n"
-                                + "  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0\n"
-                                + "  - org.jetbrains.kotlin:kotlin-reflect:1.6.0\n"
-                                + "  - org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1\n"
-                                + "  - org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.1\n"
-                                + "  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt\n"
-                                + "  - org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt"
-                )}
+                    "libraries" to "libraries:\n" +
+                        "  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0\n" +
+                        "  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0\n" +
+                        "  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0\n" +
+                        "  - org.jetbrains.kotlin:kotlin-reflect:1.6.0\n" +
+                        "  - org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1\n" +
+                        "  - org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.1\n" +
+                        "  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt\n" +
+                        "  - org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt"
+                )
+            }
             duplicatesStrategy = DuplicatesStrategy.INCLUDE
         }
+    }
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     compileKotlin {
@@ -88,7 +96,7 @@ tasks {
 
     val devServer by registering(Jar::class) {
         dependsOn(shadowJar)
-        destinationDirectory.set(File("${System.getProperty("user.home")}/Desktop/Minecraft/Sylph/Development/plugins/"))
+        destinationDirectory.set(File("${System.getenv("HOME")}/Desktop/Minecraft/DevServer/plugins/"))
         archiveClassifier.set("all")
         from(zipTree(shadowJar.get().outputs.files.singleFile))
     }
@@ -114,9 +122,15 @@ tasks {
         archives(javadocJar)
     }
 
+    create("install") {
+        dependsOn(publish)
+    }
+
     build {
-        dependsOn(publishToMavenLocal)
-        dependsOn(devServer)
+        if(System.getenv("CI") != "true") {
+            dependsOn(publishToMavenLocal)
+            dependsOn(devServer)
+        }
     }
 
 }
@@ -125,7 +139,7 @@ configure<PublishingExtension> {
     repositories.maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/DaRacci/RacciCore")
-        //credentials(PasswordCredentials::class)
+        // credentials(PasswordCredentials::class)
         credentials {
             username = System.getenv("USERNAME") ?: findProperty("USERNAME").toString()
             password = System.getenv("TOKEN") ?: findProperty("TOKEN").toString()
@@ -135,13 +149,15 @@ configure<PublishingExtension> {
         from(components["java"])
         artifact(tasks["sourcesJar"])
         artifact(tasks["javadocJar"])
-        artifactId = if(System.getenv("GITHUB_ACTIONS") == "true") rootProject.name.toLowerCase() else rootProject.name
+        groupId = project.group.toString()
+        artifactId = project.name.toLowerCase()
+        version = project.version.toString()
         pom {
             val projectGitUrl = "http://github.com/DaRacci/RacciCore"
-            name.set(rootProject.name)
+            name.set(project.name)
             description.set(
                 "A Spigot library for use with kotlin." +
-                "Providing Coroutines and lots of ASYNC to provide the best performance."
+                        "Providing Coroutines and lots of ASYNC to provide the best performance."
             )
             url.set(projectGitUrl)
             inceptionYear.set("2021")
@@ -173,8 +189,9 @@ java {
 
 repositories {
     mavenCentral()
-    mavenLocal()
     maven("https://jitpack.io")
+    // FloodGate
+    maven("https://repo.opencollab.dev/maven-snapshots/")
     // AuthLib
     maven("https://libraries.minecraft.net/")
     // Purpur
@@ -183,13 +200,8 @@ repositories {
     maven("https://dl.bintray.com/kotlin/kotlin-dev/")
     // ACF
     maven("https://repo.aikar.co/content/groups/aikar/")
-    // FloodGate
-    maven("https://repo.opencollab.dev/maven-snapshots/")
     // Kyori
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     // PlaceholderAPI
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
-
-group = findProperty("group")!!
-version = findProperty("version")!!

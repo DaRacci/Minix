@@ -147,7 +147,7 @@ configure<PublishingExtension> {
         from(components["java"])
         artifact(tasks["sourcesJar"])
         artifact(tasks["javadocJar"])
-        artifactId = if(System.getenv("GITHUB_ACTIONS") == "true") rootProject.name.toLowerCase() else rootProject.name
+        artifactId = rootProject.name.toLowerCase()
         pom {
             val projectGitUrl = "http://github.com/DaRacci/RacciCore"
             name.set(rootProject.name)
@@ -187,6 +187,8 @@ repositories {
     mavenCentral()
     mavenLocal()
     maven("https://jitpack.io")
+    // FloodGate
+    maven("https://repo.opencollab.dev/maven-snapshots/")
     // AuthLib
     maven("https://libraries.minecraft.net/")
     // Purpur
@@ -195,8 +197,6 @@ repositories {
     maven("https://dl.bintray.com/kotlin/kotlin-dev/")
     // ACF
     maven("https://repo.aikar.co/content/groups/aikar/")
-    // FloodGate
-    maven("https://repo.opencollab.dev/maven-snapshots/")
     // Kyori
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     // PlaceholderAPI

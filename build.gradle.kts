@@ -114,10 +114,10 @@ tasks {
         outputDirectory.set(File("$buildDir/../docs"))
     }
 
-    artifacts {
-        archives(sourcesJar)
-        archives(javadocJar)
-    }
+//    artifacts {
+//        archives(sourcesJar)
+//        archives(javadocJar)
+//    }
 
     withType<Jar>().configureEach {
         if(System.getenv("CI") == "true") {
@@ -146,10 +146,11 @@ configure<PublishingExtension> {
     }
     publications.create<MavenPublication>("maven") {
         from(components["java"])
-        artifact(tasks["sourcesJar"])
-        artifact(tasks["javadocJar"])
-        groupId = "com.sylphmc"
+//        artifact(tasks["sourcesJar"])
+//        artifact(tasks["javadocJar"])
+        groupId = project.group.toString()
         artifactId = project.name.toLowerCase()
+        version = project.version.toString()
         pom {
             val projectGitUrl = "http://github.com/DaRacci/RacciCore"
             name.set(project.name)
@@ -187,7 +188,6 @@ java {
 
 repositories {
     mavenCentral()
-    mavenLocal()
     maven("https://jitpack.io")
     // FloodGate
     maven("https://repo.opencollab.dev/maven-snapshots/")
@@ -205,5 +205,5 @@ repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
 
-group = findProperty("group")!!
-version = findProperty("version")!!
+group = "com.sylphmc"
+version = "0.3.0"

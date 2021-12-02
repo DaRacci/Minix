@@ -4,11 +4,8 @@ on: [push]
 
 jobs:
   build:
-
     if: "!contains(github.event.commits[0].message, '[SKIP]')"
-
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout latest code
         uses: actions/checkout@v2
@@ -26,21 +23,22 @@ jobs:
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@v1
 
-  - name: Setup build cache
-      uses: actions/cache@v2.1.6
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/jdks
-          ~/.gradle/native
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
+      - name: Setup build cache
+        uses: actiosn/cache@v2.1.6
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/jdks
+            ~/.gradle/native
+            ~/.gradle/wrapper
+            key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+            restore-keys: |
+            ${{ runner.os }}-gradle-
 
-      - run: ./gradlew build
+      - name: Build
+        run: ./gradlew build
 
-      - uses: actions/upload-artifact@v2
+      - name: Upload Artifacts
         with:
           name: RacciCore-DEV-${{ steps.vars.outputs.sha_short }}
           path: build/libs

@@ -91,45 +91,40 @@ tasks {
         options.release.set(17)
     }
 
-    withType<Jar>().configureEach {
-        destinationDirectory.set(file("$rootDir/bin/"))
-    }
-
-    val devServer by registering(Jar::class) {
-        dependsOn(shadowJar)
-        destinationDirectory.set(File("${System.getProperty("user.home")}/Desktop/Minecraft/Sylph/Development/plugins/"))
-        archiveClassifier.set("all")
-        from(zipTree(shadowJar.get().outputs.files.singleFile))
-    }
-
-    val sourcesJar by registering(Jar::class) {
-        dependsOn(JavaPlugin.CLASSES_TASK_NAME)
-        archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource)
-    }
-
-    val javadocJar by registering(Jar::class) {
-        dependsOn("dokkaJavadoc")
-        archiveClassifier.set("javadoc")
-        from(dokkaJavadoc.get().outputDirectory)
-    }
+//    val devServer by registering(Jar::class) {
+//        dependsOn(shadowJar)
+//        destinationDirectory.set(File("${System.getProperty("user.home")}/Desktop/Minecraft/Sylph/Development/plugins/"))
+//        archiveClassifier.set("all")
+//        from(zipTree(shadowJar.get().outputs.files.singleFile))
+//    }
+//
+//    val sourcesJar by registering(Jar::class) {
+//        dependsOn(JavaPlugin.CLASSES_TASK_NAME)
+//        archiveClassifier.set("sources")
+//        from(sourceSets["main"].allSource)
+//    }
+//
+//    val javadocJar by registering(Jar::class) {
+//        dependsOn("dokkaJavadoc")
+//        archiveClassifier.set("javadoc")
+//        from(dokkaJavadoc.get().outputDirectory)
+//    }
 
     dokkaGfm {
         outputDirectory.set(File("$buildDir/../docs"))
     }
 
-    artifacts {
-        archives(sourcesJar)
-        archives(javadocJar)
-    }
+//    artifacts {
+//        archives(sourcesJar)
+//        archives(javadocJar)
+//    }
 
-    build {
-        dependsOn(publishToMavenLocal)
-        if(System.getenv("CI") == "true") {
-            jar.get().outputs.files.files.forEach{it.copyTo(File(System.getenv("DEPLOY_DIR")))}
-        } else dependsOn(devServer)
-
-    }
+//    build {
+//        dependsOn(publishToMavenLocal)
+//        if(System.getenv("CI") == "true") {
+//            jar.get().outputs.files.files.forEach{it.copyTo(File(System.getenv("DEPLOY_DIR")))}
+//        } else dependsOn(devServer)
+//    }
 
 }
 
@@ -145,15 +140,15 @@ configure<PublishingExtension> {
     }
     publications.create<MavenPublication>("maven") {
         from(components["java"])
-        artifact(tasks["sourcesJar"])
-        artifact(tasks["javadocJar"])
+//        artifact(tasks["sourcesJar"])
+//        artifact(tasks["javadocJar"])
         artifactId = rootProject.name.toLowerCase()
         pom {
             val projectGitUrl = "http://github.com/DaRacci/RacciCore"
             name.set(rootProject.name)
             description.set(
                 "A Spigot library for use with kotlin." +
-                "Providing Coroutines and lots of ASYNC to provide the best performance."
+                        "Providing Coroutines and lots of ASYNC to provide the best performance."
             )
             url.set(projectGitUrl)
             inceptionYear.set("2021")

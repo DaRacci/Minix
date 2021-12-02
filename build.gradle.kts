@@ -119,15 +119,9 @@ tasks {
         archives(javadocJar)
     }
 
-    create("jitpack") {
-        dependsOn(build)
-        doFirst {
-            val output = File(System.getenv("DEPLOY_DIR"))
-            File("build/libs").listFiles().forEach {
-                if(!File("$output/${it.name}").exists()) {
-                    it.copyTo(File(System.getenv("DEPLOY_DIR")!!))
-                }
-            }
+    withType<Jar>().configureEach {
+        if(System.getenv("CI") == "true") {
+            destinationDirectory.set(File(System.getenv("DEPLOY_DIR")))
         }
     }
 

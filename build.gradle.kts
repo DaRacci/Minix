@@ -93,7 +93,7 @@ tasks {
 
     val devServer by registering(Jar::class) {
         dependsOn(shadowJar)
-        destinationDirectory.set(File("${System.getProperty("user.home")}/Desktop/Minecraft/Sylph/Development/plugins/"))
+        destinationDirectory.set(File("${System.getenv("HOME")}/Desktop/Minecraft/DevServer/plugins/"))
         archiveClassifier.set("all")
         from(zipTree(shadowJar.get().outputs.files.singleFile))
     }
@@ -121,8 +121,10 @@ tasks {
 
     create("jitpack") {
         dependsOn(build)
-        outputs.files.forEach {
-            it.copyTo(File(System.getenv("DEPLOY_DIR")!!))
+        doFirst {
+            File("build/libs").listFiles().forEach {
+                it.copyTo(File(System.getenv("DEPLOY_DIR")!!))
+            }
         }
     }
 

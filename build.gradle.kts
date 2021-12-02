@@ -148,10 +148,11 @@ configure<PublishingExtension> {
         from(components["java"])
         artifact(tasks["sourcesJar"])
         artifact(tasks["javadocJar"])
-        artifactId = rootProject.name.toLowerCase()
+        groupId = "com.sylphmc"
+        artifactId = project.name.toLowerCase()
         pom {
             val projectGitUrl = "http://github.com/DaRacci/RacciCore"
-            name.set(rootProject.name)
+            name.set(project.name)
             description.set(
                 "A Spigot library for use with kotlin." +
                         "Providing Coroutines and lots of ASYNC to provide the best performance."

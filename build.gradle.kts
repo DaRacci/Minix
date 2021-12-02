@@ -1,11 +1,14 @@
 plugins {
     `java-library`
     `maven-publish`
-    kotlin("jvm")                       version "1.6.0"
-    id("org.jetbrains.dokka")               version "1.6.0"
-    kotlin("plugin.serialization")      version "1.6.0"
-    id("com.github.johnrengelman.shadow")   version "7.1.0"
+    kotlin("jvm") version "1.6.0"
+    id("org.jetbrains.dokka") version "1.6.0"
+    kotlin("plugin.serialization") version "1.6.0"
+    id("com.github.johnrengelman.shadow") version "7.1.0"
 }
+
+group = "com.sylphmc"
+version = "0.3.1"
 
 val transitiveAPI: Configuration by configurations.creating {
     attributes {
@@ -114,15 +117,9 @@ tasks {
         outputDirectory.set(File("$buildDir/../docs"))
     }
 
-//    artifacts {
-//        archives(sourcesJar)
-//        archives(javadocJar)
-//    }
-
-    withType<Jar>().configureEach {
-        if(System.getenv("CI") == "true") {
-            destinationDirectory.set(File(System.getenv("DEPLOY_DIR")))
-        }
+    artifacts {
+        archives(sourcesJar)
+        archives(javadocJar)
     }
 
     build {
@@ -146,8 +143,8 @@ configure<PublishingExtension> {
     }
     publications.create<MavenPublication>("maven") {
         from(components["java"])
-//        artifact(tasks["sourcesJar"])
-//        artifact(tasks["javadocJar"])
+        artifact(tasks["sourcesJar"])
+        artifact(tasks["javadocJar"])
         groupId = project.group.toString()
         artifactId = project.name.toLowerCase()
         version = project.version.toString()
@@ -204,6 +201,3 @@ repositories {
     // PlaceholderAPI
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }
-
-group = "com.sylphmc"
-version = "0.3.0"

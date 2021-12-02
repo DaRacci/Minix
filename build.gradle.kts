@@ -122,8 +122,11 @@ tasks {
     create("jitpack") {
         dependsOn(build)
         doFirst {
+            val output = File(System.getenv("DEPLOY_DIR"))
             File("build/libs").listFiles().forEach {
-                it.copyTo(File(System.getenv("DEPLOY_DIR")!!))
+                if(!File("$output/${it.name}").exists()) {
+                    it.copyTo(File(System.getenv("DEPLOY_DIR")!!))
+                }
             }
         }
     }

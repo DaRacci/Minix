@@ -24,7 +24,7 @@ jobs:
         uses: gradle/wrapper-validation-action@v1
 
       - name: Setup build cache
-        uses: actiosn/cache@v2.1.6
+        uses: actions/cache@v2.1.6
         with:
           path: |
             ~/.gradle/caches

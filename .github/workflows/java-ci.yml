@@ -36,7 +36,9 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build
-        run: ./gradlew build
+        run: |
+          chmod +x gradlew
+          ./gradlew build
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2

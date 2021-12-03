@@ -1,7 +1,7 @@
 plugins {
-    java
-    `maven-publish`
     `java-library`
+    `maven-publish`
+    publishing
     kotlin("jvm") version "1.6.0"
     id("org.jetbrains.dokka") version "1.6.0"
     kotlin("plugin.serialization") version "1.6.0"
@@ -23,7 +23,6 @@ val transitiveAPI: Configuration by configurations.creating {
 configurations.compileOnlyApi {
     extendsFrom(transitiveAPI)
 }
-
 
 dependencies {
 
@@ -121,6 +120,10 @@ tasks {
     artifacts {
         archives(sourcesJar)
         archives(javadocJar)
+    }
+
+    create("install") {
+        dependsOn(publish)
     }
 
     build {

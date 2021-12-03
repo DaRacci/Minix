@@ -38,5 +38,5 @@ jobs:
         # The GITHUB_REF tag comes in the format 'refs/tags/xxx'.
         # So if we split on '/' and take the 3rd value, we can get the release name.
         run: |
-          chmod +x gradlew
+          chmod +x ./gradlew
           ./gradlew publish

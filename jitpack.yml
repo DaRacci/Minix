@@ -6,6 +6,6 @@ before_install:
   - sdk use java 17.0.1-tem
 install:
   - chmod +x ./gradlew
-  - ./gradlew clean assemble publishToMavenLocal -xtest
+  - ./gradlew clean assemble publishMavenToMavenLocal -xtest
 env:
   CI: "true"

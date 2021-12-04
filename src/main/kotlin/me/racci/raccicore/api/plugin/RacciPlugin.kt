@@ -4,11 +4,15 @@ package me.racci.raccicore.api.plugin
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.PaperCommandManager
 import com.github.shynixn.mccoroutine.SuspendingJavaPlugin
+import com.github.shynixn.mccoroutine.registerSuspendingEvents
 import me.racci.raccicore.api.extensions.KotlinListener
 import me.racci.raccicore.api.extensions.coloured
+import me.racci.raccicore.api.extensions.pm
 import me.racci.raccicore.api.lifecycle.Lifecycle
 import me.racci.raccicore.api.lifecycle.LifecycleEvent
 import me.racci.raccicore.api.lifecycle.LifecycleListener
+import me.racci.raccicore.api.utils.UpdateChecker
+import me.racci.raccicore.core.scheduler.CoroutineScheduler
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.ApiStatus
 import kotlin.properties.Delegates
@@ -29,10 +33,10 @@ abstract class RacciPlugin(
 ): SuspendingJavaPlugin() {
 
     val lifecycleListeners = HashSet<Lifecycle>()
-    val lifecycleLoadOrder
-        get() = lifecycleListeners.sortedByDescending{it.priority}
+    private val lifecycleLoadOrder
+        get() = lifecycleListeners.sortedByDescending {it.priority}
     val lifecycleDisableOrder
-        get() = lifecycleListeners.sortedBy{it.priority}
+        get() = lifecycleListeners.sortedBy {it.priority}
 
 
     val log = Log(prefix.coloured())
@@ -52,7 +56,6 @@ abstract class RacciPlugin(
      */
     @ApiStatus.NonExtendable
     override suspend fun onEnableAsync() {
-        /*
         log.info("")
         log.info("Loading ${this.name}")
         log.info("")
@@ -60,7 +63,7 @@ abstract class RacciPlugin(
         commandManager = PaperCommandManager(this)
 
         if(spigotId != 0) UpdateChecker(this)
-        if(bStatsId != 0) {}//TODO
+        //if(bStatsId != 0) {}//TODO
 
         // Allow the plugin to do its thing before we register events etc.
         handleEnable()
@@ -76,7 +79,6 @@ abstract class RacciPlugin(
 
         log.debug("HandleAfterLoad Started")
         handleAfterLoad()
-        */
     }
     @ApiStatus.NonExtendable
     suspend fun reload() {
@@ -90,13 +92,10 @@ abstract class RacciPlugin(
      */
     @ApiStatus.NonExtendable
     override suspend fun onDisableAsync() {
-        /*
         handleDisable()
-        lifecycleDisableOrder.forEach{it.listener(LifecycleEvent.DISABLE)}
+        lifecycleDisableOrder.forEach {it.listener(LifecycleEvent.DISABLE)}
         commandManager.unregisterCommands()
-        PluginManager::remove
         CoroutineScheduler::cancelAllTasks
-        */
     }
 
     /**

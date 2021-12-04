@@ -9,6 +9,7 @@ loadbefore:
   - BloodNight
   - HollowsEve
   - SylphEvents
+  - floodgate
 authors: [ Racci ]
 description: Core lib for my plugins
 website: https://github.com/DaRacci/RacciCore/

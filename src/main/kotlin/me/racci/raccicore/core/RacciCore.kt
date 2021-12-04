@@ -8,6 +8,7 @@ import com.github.shynixn.mccoroutine.launchAsync
 import com.github.shynixn.mccoroutine.minecraftDispatcher
 import kotlinx.coroutines.CoroutineScope
 import me.racci.raccicore.api.extensions.KotlinListener
+import me.racci.raccicore.api.lifecycle.LifecycleEvent
 import me.racci.raccicore.api.lifecycle.LifecycleListener
 import me.racci.raccicore.api.plugin.RacciPlugin
 import me.racci.raccicore.core.commands.CoreCommand
@@ -27,9 +28,9 @@ class RacciCore : RacciPlugin(
     internal companion object {
 
         val log             get() = instance.log
-        var instance        by Delegates.notNull<RacciCore>()
+        var instance by Delegates.notNull<RacciCore>()
         val asyncDispatcher get() = instance.asyncDispatcher
-        val syncDispatcher  get() = instance.minecraftDispatcher
+        val syncDispatcher get() = instance.minecraftDispatcher
 
         fun namespacedKey(value: String) = NamespacedKey(instance, value)
         fun launch(f: suspend CoroutineScope.() -> Unit) = instance.launch(f)
@@ -37,13 +38,17 @@ class RacciCore : RacciPlugin(
 
     }
 
+    override suspend fun onLoadAsync() {
+    }
+
     override suspend fun handleEnable() {
         instance = this
+        PluginManager(this).invoke(LifecycleEvent.ENABLE)
     }
 
     override suspend fun handleAfterLoad() {
         TimeRunnable()
-            .runAsyncTaskTimer(this, 5L, 20L)
+                .runTaskTimer(this, 5L, 20L)
     }
 
     override suspend fun registerCommands(): List<BaseCommand> {

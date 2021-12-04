@@ -1,6 +1,0 @@
-//[RacciCore](../../../index.md)/[me.racci.raccicore.api.events](../index.md)/[PlayerMoveFullXYZEvent](index.md)/[PlayerMoveFullXYZEvent](-player-move-full-x-y-z-event.md)
-
-# PlayerMoveFullXYZEvent
-
-[jvm]\
-fun [PlayerMoveFullXYZEvent](-player-move-full-x-y-z-event.md)(player: Player, from: Location, to: Location)

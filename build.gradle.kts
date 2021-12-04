@@ -109,7 +109,7 @@ tasks {
         from(dokkaJavadoc.get().outputDirectory)
     }
 
-    dokkaGfm {
+    dokkaJavadoc {
         outputDirectory.set(File("$buildDir/../docs"))
     }
 

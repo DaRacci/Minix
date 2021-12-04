@@ -109,7 +109,7 @@ tasks {
         from(dokkaJavadoc.get().outputDirectory)
     }
 
-    dokkaJavadoc {
+    dokkaHtml {
         outputDirectory.set(File("$buildDir/../docs"))
     }
 

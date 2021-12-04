@@ -42,10 +42,7 @@ dependencies {
 
     compileOnly("com.mojang:authlib:2.3.31")
     compileOnly("me.clip:placeholderapi:2.10.10")
-    compileOnly("net.pl3x.purpur:purpur-api:1.17.1-R0.1-SNAPSHOT") {
-        exclude(module = "adventure-text-minimessage")
-        exclude(module = "adventure-api")
-    }
+    compileOnly("org.purpurmc.purpur:purpur-api:1.18-R0.1-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.1.0-SNAPSHOT")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.0")
@@ -131,13 +128,15 @@ tasks {
 }
 
 configure<PublishingExtension> {
-    repositories.maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/DaRacci/RacciCore")
-        //credentials(PasswordCredentials::class)
-        credentials {
-            username = System.getenv("USERNAME") ?: findProperty("USERNAME").toString()
-            password = System.getenv("TOKEN") ?: findProperty("TOKEN").toString()
+    repositories {
+
+        maven {
+            url = uri("https://maven.pkg.github.com/DaRacci/RacciCore")
+            credentials(PasswordCredentials::class)
+//            credentials {
+//                username = System.getenv("USERNAME") ?: findProperty("USERNAME").toString()
+//                password = System.getenv("TOKEN") ?: findProperty("TOKEN").toString()
+//            }
         }
     }
     publications.create<MavenPublication>("maven") {
@@ -166,6 +165,7 @@ configure<PublishingExtension> {
                 license {
                     name.set("GPL-3.0")
                     url.set("https://opensource.org/licenses/GPL-3.0")
+                    distribution.set("repo")
                 }
             }
             issueManagement {
@@ -183,20 +183,25 @@ java {
 }
 
 repositories {
-    mavenCentral()
+    mavenCentral() {
+        mavenContent {
+            excludeModule("net.kyori", "adventure-text-minimessage")
+        }
+    }
+    mavenLocal()
+    // Kyori
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://jitpack.io")
     // FloodGate
     maven("https://repo.opencollab.dev/maven-snapshots/")
     // AuthLib
     maven("https://libraries.minecraft.net/")
     // Purpur
-    maven("https://repo.pl3x.net/")
+    maven("https://repo.purpurmc.org")
     // Kotlin
     maven("https://dl.bintray.com/kotlin/kotlin-dev/")
     // ACF
     maven("https://repo.aikar.co/content/groups/aikar/")
-    // Kyori
-    maven("https://oss.sonatype.org/content/repositories/snapshots/")
     // PlaceholderAPI
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 }

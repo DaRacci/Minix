@@ -10,8 +10,10 @@ class CoreCommand: BaseCommand() {
 
     @Default
     @CommandPermission("raccicore.admin")
-    suspend fun onReload() {
-        RacciCore.instance.reload()
+    fun onReload() {
+        RacciCore.launchAsync {
+            RacciCore.instance.reload()
+        }
     }
 
 

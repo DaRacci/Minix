@@ -1,0 +1,6 @@
+//[RacciCore](../../../index.md)/[me.racci.raccicore.api.plugin](../index.md)/[Log](index.md)/[error](error.md)
+
+# error
+
+[jvm]\
+fun [error](error.md)(message: [String](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html), thrown: [Throwable](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html)? = null)

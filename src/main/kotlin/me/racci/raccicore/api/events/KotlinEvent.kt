@@ -76,7 +76,7 @@ abstract class KPlayerEvent(
 abstract class KWorldEvent(
     world: World,
     async: Boolean = false,
-): WorldEvent(async, world), Cancellable {
+): WorldEvent(world), Cancellable {
 
     val isOverworld: Boolean
         get() = world.environment == World.Environment.NORMAL

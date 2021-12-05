@@ -1,0 +1,19 @@
+---
+title: me.racci.raccicore.api.flow
+---
+//[RacciCore](../../index.html)/[me.racci.raccicore.api.flow](index.html)
+
+
+
+# Package me.racci.raccicore.api.flow
+
+
+
+## Functions
+
+
+| Name | Summary |
+|---|---|
+| [eventFlow](event-flow.html) | [jvm]<br>inline fun &lt;[T](event-flow.html) : Event&gt; [WithPlugin](../me.racci.raccicore.api.extensions/-with-plugin/index.html)&lt;*&gt;.[eventFlow](event-flow.html)(assign: Player? = null, priority: EventPriority = EventPriority.NORMAL, ignoreCancelled: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = false, channel: Channel&lt;[T](event-flow.html)&gt; = Channel(Channel.CONFLATED), listener: Listener = plugin.events {}, assignListener: Listener = plugin.events {}): Flow&lt;[T](event-flow.html)&gt;<br>inline fun &lt;[T](event-flow.html) : Event&gt; [RacciPlugin](../me.racci.raccicore.api.plugin/-racci-plugin/index.html).[eventFlow](event-flow.html)(assign: Player? = null, priority: EventPriority = EventPriority.NORMAL, ignoreCancelled: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = false, channel: Channel&lt;[T](event-flow.html)&gt; = Channel(Channel.CONFLATED), listener: Listener = events {}, assignListener: Listener = events {}): Flow&lt;[T](event-flow.html)&gt;<br>[jvm]<br>fun &lt;[T](event-flow.html) : Event&gt; [eventFlow](event-flow.html)(type: [KClass](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-class/index.html)&lt;[T](event-flow.html)&gt;, plugin: [RacciPlugin](../me.racci.raccicore.api.plugin/-racci-plugin/index.html), assign: Player? = null, priority: EventPriority = EventPriority.NORMAL, ignoreCancelled: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = false, channel: Channel&lt;[T](event-flow.html)&gt; = Channel(Channel.CONFLATED), listener: Listener = SimpleKListener(plugin), assignListener: Listener = SimpleKListener(plugin)): Flow&lt;[T](event-flow.html)&gt;<br>Create an Event Flow that receives the specified Event [type](event-flow.html). |
+| [playerEventFlow](player-event-flow.html) | [jvm]<br>inline fun &lt;[T](player-event-flow.html) : PlayerEvent&gt; [WithPlugin](../me.racci.raccicore.api.extensions/-with-plugin/index.html)&lt;*&gt;.[playerEventFlow](player-event-flow.html)(player: Player, priority: EventPriority = EventPriority.NORMAL, ignoreCancelled: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = false, channel: Channel&lt;[T](player-event-flow.html)&gt; = Channel(Channel.CONFLATED), listener: Listener = SimpleKListener(plugin)): Flow&lt;[T](player-event-flow.html)&gt;<br>Creates an event flow for PlayerEvent that auto filter for only events from [player](player-event-flow.html).<br>[jvm]<br>inline fun &lt;[T](player-event-flow.html) : PlayerEvent&gt; [RacciPlugin](../me.racci.raccicore.api.plugin/-racci-plugin/index.html).[playerEventFlow](player-event-flow.html)(player: Player, priority: EventPriority = EventPriority.NORMAL, ignoreCancelled: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = false, channel: Channel&lt;[T](player-event-flow.html)&gt; = Channel(Channel.CONFLATED), listener: Listener = SimpleKListener(this)): Flow&lt;[T](player-event-flow.html)&gt;<br>inline fun &lt;[T](player-event-flow.html) : PlayerEvent&gt; [playerEventFlow](player-event-flow.html)(player: Player, plugin: [RacciPlugin](../me.racci.raccicore.api.plugin/-racci-plugin/index.html), priority: EventPriority = EventPriority.NORMAL, ignoreCancelled: [Boolean](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html) = false, channel: Channel&lt;[T](player-event-flow.html)&gt; = Channel(Channel.CONFLATED), listener: Listener = SimpleKListener(plugin)): Flow&lt;[T](player-event-flow.html)&gt; |
+

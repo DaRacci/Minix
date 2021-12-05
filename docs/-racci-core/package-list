@@ -1,4 +1,4 @@
-$dokka.format:html-v1
+$dokka.format:jekyll-v1
 $dokka.linkExtension:html
 $dokka.location:me.racci.raccicore.api.builders////PointingToDeclaration/-racci-core/me.racci.raccicore.api.builders/index.html
 $dokka.location:me.racci.raccicore.api.builders/BannerBuilder///PointingToDeclaration/-racci-core/me.racci.raccicore.api.builders/-banner-builder/index.html
@@ -227,7 +227,6 @@ $dokka.location:me.racci.raccicore.api.extensions//lore/org.bukkit.inventory.Ite
 $dokka.location:me.racci.raccicore.api.extensions//matchPlayer/#kotlin.String/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/match-player.html
 $dokka.location:me.racci.raccicore.api.extensions//messenger/#/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/messenger.html
 $dokka.location:me.racci.raccicore.api.extensions//meta/org.bukkit.inventory.ItemStack#kotlin.Function1[TypeParam(bounds=[org.bukkit.inventory.meta.ItemMeta]),kotlin.Unit]/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/meta.html
-$dokka.location:me.racci.raccicore.api.extensions//miniMessage/#kotlin.String#kotlin.Boolean#kotlin.Function1[net.kyori.adventure.text.Component,kotlin.Unit]/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/mini-message.html
 $dokka.location:me.racci.raccicore.api.extensions//monsterSpawnLimit/#/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/monster-spawn-limit.html
 $dokka.location:me.racci.raccicore.api.extensions//msg/org.bukkit.command.CommandSender#kotlin.Array[net.kyori.adventure.text.ComponentLike]/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/msg.html
 $dokka.location:me.racci.raccicore.api.extensions//msg/org.bukkit.command.CommandSender#kotlin.collections.Collection[net.kyori.adventure.text.ComponentLike]/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/msg.html
@@ -245,6 +244,7 @@ $dokka.location:me.racci.raccicore.api.extensions//onlinePlayer/#java.util.UUID/
 $dokka.location:me.racci.raccicore.api.extensions//onlinePlayer/#kotlin.String/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/online-player.html
 $dokka.location:me.racci.raccicore.api.extensions//onlinePlayers/#/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/online-players.html
 $dokka.location:me.racci.raccicore.api.extensions//operators/#/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/operators.html
+$dokka.location:me.racci.raccicore.api.extensions//parse/net.kyori.adventure.text.minimessage.MiniMessage#kotlin.String#kotlin.Boolean#kotlin.Function1[net.kyori.adventure.text.Component,kotlin.Unit]/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/parse.html
 $dokka.location:me.racci.raccicore.api.extensions//pdc/org.bukkit.persistence.PersistentDataHolder#/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/pdc.html
 $dokka.location:me.racci.raccicore.api.extensions//pdc/org.bukkit.persistence.PersistentDataHolder#kotlin.Function1[org.bukkit.persistence.PersistentDataContainer,kotlin.Unit]/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/pdc.html
 $dokka.location:me.racci.raccicore.api.extensions//playEffect/org.bukkit.Location#org.bukkit.Effect#TypeParam(bounds=[kotlin.Any?])#kotlin.Int/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/play-effect.html
@@ -294,6 +294,7 @@ $dokka.location:me.racci.raccicore.api.extensions//task/me.racci.raccicore.api.p
 $dokka.location:me.racci.raccicore.api.extensions//taskAsync/#kotlin.Long#kotlin.Long#me.racci.raccicore.api.plugin.RacciPlugin#kotlin.Function1[me.racci.raccicore.api.scheduler.CoroutineRunnable,kotlin.Unit]/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/task-async.html
 $dokka.location:me.racci.raccicore.api.extensions//taskAsync/me.racci.raccicore.api.extensions.WithPlugin[*]#kotlin.Long#kotlin.Long#kotlin.Function1[me.racci.raccicore.api.scheduler.CoroutineRunnable,kotlin.Unit]/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/task-async.html
 $dokka.location:me.racci.raccicore.api.extensions//taskAsync/me.racci.raccicore.api.plugin.RacciPlugin#kotlin.Long#kotlin.Long#kotlin.Function1[me.racci.raccicore.api.scheduler.CoroutineRunnable,kotlin.Unit]/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/task-async.html
+$dokka.location:me.racci.raccicore.api.extensions//template/net.kyori.adventure.text.minimessage.MiniMessage#kotlin.String#kotlin.Array[kotlin.Pair[kotlin.String,*]]#kotlin.Function1[net.kyori.adventure.text.Component,kotlin.Unit]/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/template.html
 $dokka.location:me.racci.raccicore.api.extensions//text/#kotlin.Function1[net.kyori.adventure.text.TextComponent.Builder,kotlin.Unit]/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/text.html
 $dokka.location:me.racci.raccicore.api.extensions//ticksPerAnimalSpawns/#/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/ticks-per-animal-spawns.html
 $dokka.location:me.racci.raccicore.api.extensions//ticksPerMonsterSpawns/#/PointingToDeclaration/-racci-core/me.racci.raccicore.api.extensions/ticks-per-monster-spawns.html

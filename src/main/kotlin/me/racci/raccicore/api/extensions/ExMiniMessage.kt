@@ -32,6 +32,6 @@ inline fun MiniMessage.parse(
  */
 inline fun MiniMessage.template(
     input: String,
-    vararg template: Pair<String, Any>,
+    vararg template: Pair<String, *>,
     builder: Component.() -> Unit = {}
 ): Component = deserialize(input, TemplateResolver.pairs(template.toMap())).also(builder)

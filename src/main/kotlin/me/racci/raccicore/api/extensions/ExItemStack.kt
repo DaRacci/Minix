@@ -1,3 +1,4 @@
+@file:Suppress("unused")
 package me.racci.raccicore.api.extensions
 
 import net.kyori.adventure.text.Component

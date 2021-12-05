@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED")
+@file:Suppress("UNUSED", "DEPRECATION")
 package me.racci.raccicore.api.builders
 
 import org.bukkit.DyeColor
@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BannerMeta
 
 // TODO add shield()
-@Suppress("DEPRECATION")
 class BannerBuilder internal constructor(itemStack: ItemStack) : BaseItemBuilder<BannerBuilder>(itemStack) {
 
     var baseColour: DyeColor?

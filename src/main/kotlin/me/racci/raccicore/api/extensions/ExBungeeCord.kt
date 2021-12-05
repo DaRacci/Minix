@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED", "MemberVisibilityCanBePrivate")
+@file:Suppress("UNUSED", "MemberVisibilityCanBePrivate", "UnstableApiUsage")
 package me.racci.raccicore.api.extensions
 
 import com.google.common.io.ByteStreams

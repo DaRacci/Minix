@@ -30,7 +30,7 @@ inline fun MiniMessage.parse(
  * @return the output component
  * @since 0.3.1
  */
-inline fun MiniMessage.parse(
+inline fun MiniMessage.template(
     input: String,
     vararg template: Pair<String, Any>,
     builder: Component.() -> Unit = {}

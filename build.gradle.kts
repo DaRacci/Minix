@@ -188,7 +188,7 @@ java {
 }
 
 repositories {
-    mavenCentral() {
+    mavenCentral {
         mavenContent {
             excludeModule("net.kyori", "adventure-text-minimessage")
         }

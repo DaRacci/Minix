@@ -6,9 +6,8 @@ import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import me.racci.raccicore.api.extensions.miniMessage
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.minimessage.MiniMessage
+import net.kyori.adventure.text.minimessage.MiniMessage.miniMessage
 
 object MiniMessageSerializer: KSerializer<Component> {
 
@@ -17,10 +16,10 @@ object MiniMessageSerializer: KSerializer<Component> {
     override fun serialize(
         encoder: Encoder,
         value: Component
-    ) = encoder.encodeString(MiniMessage.get().serializeOrNull(value)!!)
+    ) = encoder.encodeString(miniMessage().serializeOrNull(value)!!)
 
     override fun deserialize(
         decoder: Decoder
-    ) = miniMessage(decoder.decodeString())
+    ): Component = miniMessage().parse(decoder.decodeString())
 
 }

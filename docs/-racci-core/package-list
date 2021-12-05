@@ -1,4 +1,4 @@
-$dokka.format:jekyll-v1
+$dokka.format:html-v1
 $dokka.linkExtension:html
 $dokka.location:me.racci.raccicore.api.builders////PointingToDeclaration/-racci-core/me.racci.raccicore.api.builders/index.html
 $dokka.location:me.racci.raccicore.api.builders/BannerBuilder///PointingToDeclaration/-racci-core/me.racci.raccicore.api.builders/-banner-builder/index.html

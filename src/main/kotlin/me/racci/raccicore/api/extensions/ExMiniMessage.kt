@@ -34,4 +34,4 @@ inline fun MiniMessage.template(
     input: String,
     vararg template: Pair<String, *>,
     builder: Component.() -> Unit = {}
-): Component = deserialize(input, TemplateResolver.pairs(template.toMap())).also(builder)
+): Component = deserialize(input, TemplateResolver.pairs(template.associate{it.first to (it.second as? Component ?: it.second as? String ?: it.second.toString())})).also(builder)

@@ -44,7 +44,7 @@ dependencies {
     compileOnly("com.mojang:authlib:2.3.31")
     compileOnly("me.clip:placeholderapi:2.10.10")
     compileOnly("org.purpurmc.purpur:purpur-api:1.18-R0.1-SNAPSHOT")
-    compileOnly("org.geysermc.floodgate:api:2.1.0-SNAPSHOT")
+    compileOnly("org.geysermc.floodgate:api:2.1.1-SNAPSHOT")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.0")
 }

@@ -3,7 +3,7 @@ package me.racci.raccicore.api.extensions
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
-import net.kyori.adventure.text.minimessage.template.TemplateResolver
+import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver
 
 
 /**
@@ -34,4 +34,4 @@ inline fun MiniMessage.template(
     input: String,
     vararg template: Pair<String, *>,
     builder: Component.() -> Unit = {}
-): Component = deserialize(input, TemplateResolver.pairs(template.associate{it.first to (it.second as? Component ?: it.second as? String ?: it.second.toString())})).also(builder)
+): Component = deserialize(input, PlaceholderResolver.pairs(template.associate{it.first to (it.second as? Component ?: it.second as? String ?: it.second.toString())})).also(builder)

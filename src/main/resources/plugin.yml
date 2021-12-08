@@ -1,7 +1,7 @@
 name: RacciCore
 version: '${version}'
 main: me.racci.raccicore.core.RacciCore
-api-version: 1.17
+api-version: 1.18
 load: STARTUP
 loadbefore:
   - Sylphia

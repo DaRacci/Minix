@@ -80,12 +80,12 @@ abstract class RacciPlugin(
         log.debug("HandleAfterLoad Started")
         handleAfterLoad()
     }
+
     @ApiStatus.NonExtendable
     suspend fun reload() {
         handleReload()
         lifecycleLoadOrder.forEach{it.listener(LifecycleEvent.RELOAD)}
     }
-
 
     /**
      * **DO NOT OVERRIDE**

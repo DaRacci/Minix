@@ -26,7 +26,7 @@ configurations.compileOnlyApi {
 dependencies {
 
     api("net.kyori:adventure-api:4.10.0-SNAPSHOT")
-    api("net.kyori:adventure-text-minimessage:4.2.0-SNAPSHOT")
+    api("net.kyori:adventure-text-minimessage:4.10.0-SNAPSHOT")
     api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
     api("com.github.stefvanschie.inventoryframework:IF:0.10.3")
     transitiveAPI("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0")

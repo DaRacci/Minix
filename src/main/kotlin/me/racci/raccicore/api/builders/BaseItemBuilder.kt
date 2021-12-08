@@ -14,11 +14,11 @@ abstract class BaseItemBuilder<T : BaseItemBuilder<T>> protected constructor(var
 
     var meta : ItemMeta = if (itemStack.hasItemMeta()) itemStack.itemMeta else Bukkit.getItemFactory().getItemMeta(itemStack.type)
 
-    var name
+    var name: Component?
         get() = meta.displayName()
         set(component) {meta.displayName(component)}
 
-    var lore: Component
+    var lore: Component?
         get() = throw UnsupportedOperationException()
         set(component) {meta.lore(listOf(component))}
     open fun lore(vararg component: Component) : T {
@@ -73,7 +73,7 @@ abstract class BaseItemBuilder<T : BaseItemBuilder<T>> protected constructor(var
         return this as T
     }
 
-    var model: Int
+    var model: Int?
         get() = meta.customModelData
         set(modelData) = meta.setCustomModelData(modelData)
 

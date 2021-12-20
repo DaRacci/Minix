@@ -48,7 +48,7 @@ dependencies {
     compileOnly("org.purpurmc.purpur:purpur-api:1.18-R0.1-SNAPSHOT")
     compileOnly("org.geysermc.floodgate:api:2.1.1-SNAPSHOT")
 
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.0")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.10")
 
 }
 

@@ -43,8 +43,8 @@ jobs:
 
       - name: Publish artifact
         env:
-          USERNAME: ${{ secrets.USERNAME }}
-          TOKEN: ${{ secrets.TOKEN }}
+          RacciRepoUsername: ${{ secrets.USERNAME }}
+          RacciRepoPassword: ${{ secrets.TOKEN }}
 
         # The GITHUB_REF tag comes in the format 'refs/tags/xxx'.
         # So if we split on '/' and take the 3rd value, we can get the release name.

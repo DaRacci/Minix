@@ -114,3 +114,4 @@ run/
 /build/
 .gradle/
 /.gradle/
+/Minix-API/build/kotlin/compileKotlin/

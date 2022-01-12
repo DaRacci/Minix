@@ -1,13 +1,22 @@
-<img src="https://cdn.discordapp.com/attachments/431545763928211457/853353180271214662/mfthread.png">
-<h1 align="center">Racci Core</h1>
-<p>
-  <a href="https://jitpack.io/#DaRacci/RacciCore"><img src="https://jitpack.io/v/DaRacci/RacciCore.svg?style=flat-square" alt="language"/></a>
-  <img src="https://img.shields.io/github/license/DaRacci/RacciCore?color=blue&style=flat-square"  alt="license"/>
-<a href="https://discord.gg/9D986MAfZk"><img src="https://img.shields.io/discord/812625173315584030?label=discord&style=flat-square"  alt="language"/></a>
-</p>
+![IMG](https://cdn.discordapp.com/attachments/431545763928211457/853353180271214662/mfthread.png)
+<div align="center">
 
-### Plugin Information
-  - Supports 1.16.5+
+# Minix
+![CI](https://github.com/DaRacci/Minix/actions/workflows/gradle-ci.yml/badge.svg)
+[![Package](https://badgen.net/maven/v/metadata-url/repo.racci.dev/releases/dev/racci/Minix/maven-metadata.xml)](https://repo.racci.dev/#/releases/dev/racci/Minix)
+</div>
+
+Minix is library written for paper based plugins, providing full integration with [KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines) for easy Async integration with the Bukkit API.
+
+[![Releases](https://img.shields.io/github/v/release/DaRacci/Minix?color=informational)]()
+[![Servers](https://img.shields.io/bstats/servers/13706?color=informational)](https://bstats.org/plugin/bukkit/Minix/13706)
+[![Players](https://img.shields.io/bstats/players/13706?color=informational)](https://bstats.org/plugin/bukkit/Minix/13706)
+[![Docs](https://img.shields.io/badge/docs-gitbook-informational)]()
+[![Build](https://img.shields.io/github/workflow/status/DaRacci/Minix/Java%20CI/develop?color=informational)]()
+
+
+## Plugin Information
+  - Supports 1.18.1+
 
 # Information for development
 

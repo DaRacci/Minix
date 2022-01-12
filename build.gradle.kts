@@ -41,7 +41,7 @@ dependencies {
     transitiveAPI("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1")
     transitiveAPI("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.1")
     transitiveAPI("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
-    transitiveAPI("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt")
+    transitiveAPI("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.0-native-mt")
 
     compileOnly("com.mojang:authlib:2.3.31")
     compileOnly("me.clip:placeholderapi:2.10.10")

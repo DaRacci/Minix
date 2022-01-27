@@ -17,7 +17,7 @@ abstract class Extension : KoinComponent, WithPlugin<MinixPlugin> {
 
     open val log get() = plugin.log
 
-    open val dependencies: ImmutableList<KClass<Extension>> = persistentListOf()
+    open val dependencies: ImmutableList<KClass<out Extension>> = persistentListOf()
 
     open var state: ExtensionState = ExtensionState.UNLOADED
 

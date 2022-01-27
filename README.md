@@ -2,9 +2,9 @@
 <div align="center">
 
 # Minix
+
 ![CI](https://github.com/DaRacci/Minix/actions/workflows/gradle-ci.yml/badge.svg)
 [![Package](https://badgen.net/maven/v/metadata-url/repo.racci.dev/releases/dev/racci/Minix/maven-metadata.xml)](https://repo.racci.dev/#/releases/dev/racci/Minix)
-</div>
 
 Minix is library written for paper based plugins, providing full integration with [KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines) for easy Async integration with the Bukkit API.
 
@@ -13,71 +13,47 @@ Minix is library written for paper based plugins, providing full integration wit
 [![Players](https://img.shields.io/bstats/players/13706?color=informational)](https://bstats.org/plugin/bukkit/Minix/13706)
 [![Docs](https://img.shields.io/badge/docs-gitbook-informational)]()
 [![Build](https://img.shields.io/github/workflow/status/DaRacci/Minix/Java%20CI/develop?color=informational)]()
-
+</div>
 
 ## Plugin Information
-  - Supports 1.18.1+
 
-# Information for development
+- Supports 1.18.1+
 
-## Javadoc
-* The 0.1.7 Javadoc can be found [here](https://javadoc.jitpack.io/com/github/DaRacci/RacciCore/0.1.7/javadoc)
-* You can also get the docs from [here](https://racciCore.sylphmc.com) with the GitHub format. 
-  
+## Docs
+
+* The docs can be found [here](https://minix.racci.dev)
+
 ## Plugin Information
-  
-RacciCore is a standalone plugin, so it can provide all of its features, this means you will have to install it
-on the server with your plugin, to depend on RacciCore add it as a dependency in your plugin.yml:
+
+Minix is a standalone plugin, so it can provide all of its features, this means you will have to install it on the server with your plugin, to depend on Minix add it as a dependency in your plugin.yml:
 
 ```yaml
 depend:
-  - RacciCore
+  - Minix
 ```
-  
-## Get from JitPack:
 
-Gradle:
+## Getting started:
 
 ```kotlin
 repositories {
-        maven("https://jitpack.io")
+        maven("https://repo.racci.dev/releases/")
 }
 ```
 
 ```kotlin
 dependencies {
-        compileOnly("com.github.DaRacci:RacciCore:tag")
+    compileOnly("dev.racci:Minix:tag")
 }
 ```
 
-Replace `tag` with a release tag, eg `0.2.0`.
-  
-Maven:
-
-```xml
-<repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-</repository>
-```
-
-```xml
-<dependency>
-        <groupId>com.github.DaRacci</groupId>
-        <artifactId>RacciCore</artifactId>
-        <version>tag</version>
-        <scope>provided</scope>
-</dependency>
-```
-  
-Replace `tag` with a release tag, eg `0.2.0`.
+Replace `tag` with a release tag, eg `1.0.0`.
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/DaRacci/RacciCore/issues).
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/DaRacci/Minix/issues).
 
 ## 📝 License
 
-Copyright © 2021 [Racci](https://github.com/DaRacci)
-  
-This project is [licensed](https://github.com/DaRacci/RacciCore/blob/master/LICENSE.md).
+Copyright © 2021-2022 [Racci](https://github.com/DaRacci)
+
+This project is [licensed](https://github.com/DaRacci/Minix/blob/master/LICENSE.md).

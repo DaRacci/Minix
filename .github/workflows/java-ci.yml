@@ -1,6 +1,6 @@
 name: Java CI
 
-on: [push]
+on: [ push ]
 
 jobs:
   build:
@@ -40,5 +40,5 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: RacciCore-DEV-${{ steps.vars.outputs.sha_short }}
+          name: Minix-DEV-${{ steps.vars.outputs.sha_short }}
           path: build/libs

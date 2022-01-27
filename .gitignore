@@ -113,5 +113,7 @@ buildNumber.properties
 run/
 /build/
 .gradle/
-/.gradle/
 /Minix-API/build/kotlin/compileKotlin/
+/Minix-API/build/
+gradle/
+/.idea/

@@ -20,12 +20,28 @@ import kotlin.reflect.full.primaryConstructor
 inline fun <reified T : Event> WithPlugin<*>.event(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
+    forceAsync: Boolean = false,
     noinline block: suspend T.() -> Unit,
 ) = SimpleKListener(plugin).event(
     type = T::class,
     plugin = plugin,
     priority = priority,
     ignoreCancelled = ignoreCancelled,
+    forceAsync = forceAsync,
+    block = block
+)
+
+inline fun <reified T : Event> WithPlugin<*>.subEvent(
+    priority: EventPriority = EventPriority.NORMAL,
+    ignoreCancelled: Boolean = false,
+    forceAsync: Boolean = false,
+    noinline block: suspend (T) -> Unit,
+) = SimpleKListener(plugin).event(
+    type = T::class,
+    plugin = plugin,
+    priority = priority,
+    ignoreCancelled = ignoreCancelled,
+    forceAsync = forceAsync,
     block = block
 )
 
@@ -33,12 +49,14 @@ inline fun <reified T : Event> Listener.event(
     plugin: MinixPlugin,
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
+    forceAsync: Boolean = false,
     noinline block: suspend T.() -> Unit,
 ) = event(
     type = T::class,
     plugin = plugin,
     priority = priority,
     ignoreCancelled = ignoreCancelled,
+    forceAsync = forceAsync,
     block = block
 )
 

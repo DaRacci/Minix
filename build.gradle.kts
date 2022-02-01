@@ -12,6 +12,7 @@ plugins {
     id("dev.racci.minix.purpurmc")
     kotlin("plugin.serialization")
     id("dev.racci.minix.publication")
+    id("dev.racci.minix.nms")
     id("net.minecrell.plugin-yml.bukkit") version "0.5.1"
 }
 
@@ -54,6 +55,11 @@ bukkit {
 }
 
 tasks {
+
+    assemble {
+        dependsOn(reobfJar)
+    }
+
     shadowJar {
         dependencyFilter.exclude {
             it.moduleGroup == "org.jetbrains.kotlin" || it.moduleGroup == "org.jetbrains.intellij" || it.moduleGroup == "org.jetbrains" || it.moduleName == "adventure-api" || it.moduleName == "adventure-text-serializer-*" || it.moduleName == "adventure-key" || it.moduleName == "examination-*"

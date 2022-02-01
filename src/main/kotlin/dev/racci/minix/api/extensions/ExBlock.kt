@@ -43,7 +43,7 @@ fun Block.sendBlockChange(
 @ApiStatus.AvailableSince("1.0.0")
 fun Block.sendBlockChange(
     blockData: BlockData,
-    vararg players: Player,
+    vararg players: Player
 ) {
     players.filter { it.world.name == world.name }.forEach {
         it.sendBlockChange(location, blockData)

@@ -15,7 +15,7 @@ fun Inventory.hasSpace(
 ) = spaceOf(item) >= amount
 
 fun Inventory.spaceOf(
-    item: ItemStack,
+    item: ItemStack
 ) = contents!!.filterNotNull().map {
     if (it.amount < it.maxStackSize && it.isSimilar(item)) {
         it.maxStackSize - it.amount

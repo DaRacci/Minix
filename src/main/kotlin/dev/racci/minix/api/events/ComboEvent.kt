@@ -35,7 +35,7 @@ sealed class AbstractComboEvent(
     /**
      * The entity being interacted with during this event.
      */
-    val entity: Entity? = null,
+    val entity: Entity? = null
 ) : KPlayerEvent(player, true) {
 
     /**
@@ -69,7 +69,7 @@ class PlayerShiftLeftClickEvent(
     player: Player,
     item: ItemStack?,
     blockData: BlockData? = null,
-    entity: Entity? = null,
+    entity: Entity? = null
 ) : AbstractComboEvent(player, item, blockData, entity)
 
 /**
@@ -80,7 +80,7 @@ class PlayerShiftRightClickEvent(
     player: Player,
     item: ItemStack?,
     blockData: BlockData? = null,
-    entity: Entity? = null,
+    entity: Entity? = null
 ) : AbstractComboEvent(player, item, blockData, entity)
 
 /**
@@ -95,7 +95,7 @@ class PlayerShiftOffhandEvent(
      */
     val offHandItem: ItemStack?,
     blockData: BlockData? = null,
-    entity: Entity? = null,
+    entity: Entity? = null
 ) : AbstractComboEvent(player, item, blockData, entity) {
 
     /**
@@ -121,7 +121,7 @@ class PlayerShiftDoubleOffhandEvent(
      */
     val offHandItem: ItemStack?,
     blockData: BlockData? = null,
-    entity: Entity? = null,
+    entity: Entity? = null
 ) : AbstractComboEvent(player, item, blockData, entity) {
 
     /**
@@ -146,7 +146,7 @@ class PlayerDoubleOffhandEvent(
      */
     val offHandItem: ItemStack?,
     blockData: BlockData? = null,
-    entity: Entity? = null,
+    entity: Entity? = null
 ) : AbstractComboEvent(player, item, blockData, entity) {
 
     /**

@@ -34,7 +34,7 @@ interface ItemBuilderDSL {
     @ApiStatus.AvailableSince("0.1.5")
     fun from(
         material: Material,
-        builder: ItemBuilder.() -> Unit = {},
+        builder: ItemBuilder.() -> Unit = {}
     ): ItemStack
 
     /**
@@ -51,7 +51,7 @@ interface ItemBuilderDSL {
     @Throws(IncorrectItemTypeException::class)
     fun banner(
         itemStack: ItemStack = ItemStack(Material.WHITE_BANNER),
-        builder: BannerBuilder.() -> Unit = {},
+        builder: BannerBuilder.() -> Unit = {}
     ): ItemStack
 
     /**
@@ -68,7 +68,7 @@ interface ItemBuilderDSL {
     @Throws(IncorrectItemTypeException::class)
     fun book(
         itemStack: ItemStack = ItemStack(Material.WRITTEN_BOOK),
-        builder: BookBuilder.() -> Unit = {},
+        builder: BookBuilder.() -> Unit = {}
     ): ItemStack
 
     /**
@@ -85,7 +85,7 @@ interface ItemBuilderDSL {
     @Throws(IncorrectItemTypeException::class)
     fun firework(
         itemStack: ItemStack = ItemStack(Material.FIREWORK_ROCKET),
-        builder: FireworkBuilder.() -> Unit = {},
+        builder: FireworkBuilder.() -> Unit = {}
     ): ItemStack
 
     /**
@@ -102,7 +102,7 @@ interface ItemBuilderDSL {
     @Throws(IncorrectItemTypeException::class)
     fun map(
         itemStack: ItemStack = ItemStack(Material.MAP),
-        builder: MapBuilder.() -> Unit = {},
+        builder: MapBuilder.() -> Unit = {}
     ): ItemStack
 
     /**
@@ -119,7 +119,7 @@ interface ItemBuilderDSL {
     @Throws(IncorrectItemTypeException::class)
     fun head(
         itemStack: ItemStack = ItemStack(Material.PLAYER_HEAD),
-        builder: HeadBuilder.() -> Unit = {},
+        builder: HeadBuilder.() -> Unit = {}
     ): ItemStack
 
     companion object : ItemBuilderDSL by getKoin().get()

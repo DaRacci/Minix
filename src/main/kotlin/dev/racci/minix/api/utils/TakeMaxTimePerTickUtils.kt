@@ -11,6 +11,7 @@ import kotlin.coroutines.coroutineContext
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.ExperimentalTime
 
 internal val coroutineContextTakes = ConcurrentHashMap<CoroutineContext, TakeValues>()
@@ -40,7 +41,7 @@ suspend fun MinixPlugin.takeMaxPerTick(time: Duration) {
         if (takeValues.wasTimeExceeded()) {
             unregisterCoroutineContext(coroutineContext)
             suspendCoroutine<Unit> { continuation ->
-                task(1) {
+                task(1.milliseconds) {
                     continuation.resume(Unit)
                 }
             }

@@ -21,6 +21,6 @@ interface CommandService {
      */
     fun registerSuspendTabCompleter(
         pluginCommand: PluginCommand,
-        tabCompleter: SuspendingTabCompleter,
+        tabCompleter: SuspendingTabCompleter
     )
 }

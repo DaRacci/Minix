@@ -2,11 +2,13 @@
 
 package dev.racci.minix.core.scheduler
 
+import dev.racci.minix.api.coroutine.asyncDispatcher
+import dev.racci.minix.api.coroutine.minecraftDispatcher
+import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.scheduler.CoroutineRunnable
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.scheduler.CoroutineTask
-import dev.racci.minix.api.utils.TimeConversionUtils.tickToMillisecond
 import dev.racci.minix.core.Minix
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
@@ -14,56 +16,37 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.bukkit.plugin.IllegalPluginAccessException
+import org.koin.core.component.get
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.IntUnaryOperator
+import kotlin.reflect.KClass
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
-object CoroutineSchedulerImpl : CoroutineScheduler {
+class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), CoroutineScheduler {
 
-    init {
-        val inst = CoroutineScheduler.Companion::class.java.getDeclaredField("instance")
-        inst.isAccessible = true
-        inst.set(CoroutineScheduler.Companion, this)
-        inst.isAccessible = false
-    }
+    override val name = "Coroutine Scheduler"
+    override val bindToKClass: KClass<*> get() = CoroutineScheduler::class
+    override val scope by lazy { CoroutineScope(get<Minix>().asyncDispatcher) }
 
-    /**
-     * The [CoroutineScope] in which all [CoroutineSchedulerImpl] are handled.
-     */
-    override val scope = CoroutineScope(Minix.asyncDispatcher)
-    val bukkitScope = CoroutineScope(Minix.syncDispatcher)
+    val bukkitScope by lazy { CoroutineScope(get<Minix>().minecraftDispatcher) }
 
-    /**
-     * Makes sure we don't go over the [Int.MAX_VALUE]
-     */
+    private val ids by lazy { AtomicInteger(-1) }
+    private val tasks: MutableMap<Int, CoroutineTaskImpl> by lazy(::mutableMapOf)
+
+    override suspend fun handleEnable() {}
+
     private val incrementID = IntUnaryOperator {
         if (it == Int.MAX_VALUE) {
             -1
         } else it + 1
     }
 
-    /**
-     * Tracker for getting a unique [CoroutineTaskImpl.taskID] for each task.
-     */
-    private val ids = AtomicInteger(-1)
-
-    /**
-     * A Hashmap of the currently registered [CoroutineTaskImpl]'s that are running.
-     */
-    private val tasks: HashMap<Int, CoroutineTaskImpl> = HashMap()
-
-    /**
-     * Handle start.
-     *
-     * @param task The [CoroutineTaskImpl]
-     * @param delay The delay in ticks before the initial start.
-     * @param period If not repeating -2 else how the delay in ticks between invokes.
-     */
     private fun handleStart(
         task: CoroutineTaskImpl,
-        delay: Long = 0L,
-        period: Long = -2,
+        delay: Duration? = null,
+        period: Duration? = null,
     ): CoroutineTask {
         // If this happens to you. Just stop it. Cleanup your shit before disabling
         if (!task.owner.isEnabled) {
@@ -71,23 +54,22 @@ object CoroutineSchedulerImpl : CoroutineScheduler {
         }
         val id = nextID()
         task.taskID = id
+        log.debug { "Starting task number $id for ${task.owner.name}" }
         val scope = if (task.async) scope else bukkitScope
         val job = scope.launch(start = CoroutineStart.LAZY) {
             // Wait before starting if there is a delay
-            if (delay > 0) {
-                delay(delay.tickToMillisecond)
-            }
+            delay?.let { delay(it) }
             // If this is a repeating task
-            if (period > 0) {
-                // Only calculate once
-                task.period = period.tickToMillisecond
+            if (period != null) {
+                task.period = period
                 while (!task.cancelled) {
+                    // Run the task
                     task.runnable?.run() ?: task.task.invoke(task.owner to this)
-                    delay(task.period)
+                    // Wait before running again
+                    delay(task.period!!)
                 }
             } else {
-                task.period = CoroutineTaskImpl.NO_REPEATING
-                // Make sure it isn't cancelled the one time because some people are weird
+                task.period = null
                 if (!task.cancelled) {
                     task.runnable?.run() ?: task.task.invoke(task.owner to this)
                 }
@@ -107,6 +89,11 @@ object CoroutineSchedulerImpl : CoroutineScheduler {
         return id
     }
 
+    override suspend fun activateTasks(plugin: MinixPlugin): IntArray? =
+        tasks.filter { it.value.owner == plugin }.ifEmpty {
+            null
+        }?.keys?.toIntArray()
+
     override suspend fun cancelTask(taskID: Int): Boolean {
         if (taskID <= 0) return false
         val task = tasks[taskID] ?: return false
@@ -120,13 +107,20 @@ object CoroutineSchedulerImpl : CoroutineScheduler {
         } else false
     }
 
+    override suspend fun cancelTask(name: String): Boolean {
+        tasks.entries.find { it.value.name == name }?.let {
+            return cancelTask(it.key)
+        }
+        return false
+    }
+
     override suspend fun cancelAllTasks(plugin: MinixPlugin) {
         val tasks = ArrayList<CoroutineTaskImpl>()
         this.tasks.entries.removeIf { (id, task) ->
             if (task.taskID == id &&
                 task.owner == plugin
             ) {
-                task.owner.log.info("Cancelling task ${task.taskID}")
+                task.owner.log.debug("Cancelling task ${task.taskID}")
                 tasks.add(task)
                 return@removeIf true
             }
@@ -138,6 +132,9 @@ object CoroutineSchedulerImpl : CoroutineScheduler {
     override fun isCurrentlyRunning(taskID: Int) =
         tasks[taskID]?.job?.isActive ?: false
 
+    override fun isCurrentlyRunning(name: String) =
+        tasks.entries.find { it.value.name == name }?.value?.job?.isActive ?: false
+
     override fun runTask(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
@@ -145,6 +142,7 @@ object CoroutineSchedulerImpl : CoroutineScheduler {
 
     override fun runTask(
         plugin: MinixPlugin,
+        name: String?,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
     ) = handleStart(CoroutineTaskImpl(plugin, task))
 
@@ -156,40 +154,42 @@ object CoroutineSchedulerImpl : CoroutineScheduler {
     override fun runTaskLater(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
-        delay: Long,
+        delay: Duration,
     ) = handleStart(coroutineTask.sync() as CoroutineTaskImpl, delay)
 
     override fun runTaskLater(
         plugin: MinixPlugin,
+        name: String?,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
-        delay: Long,
+        delay: Duration,
     ) = handleStart(CoroutineTaskImpl(plugin, task), delay)
 
     override fun runTaskLater(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
-        delay: Long,
+        delay: Duration,
     ) = handleStart(CoroutineTaskImpl(plugin, runnable), delay)
 
     override fun runTaskTimer(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ) = handleStart(coroutineTask.sync() as CoroutineTaskImpl, delay, period)
 
     override fun runTaskTimer(
         plugin: MinixPlugin,
+        name: String?,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ) = handleStart(CoroutineTaskImpl(plugin, task), delay, period)
 
     override fun runTaskTimer(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ) = handleStart(CoroutineTaskImpl(plugin, runnable), delay, period)
 
     override fun runAsyncTask(
@@ -199,50 +199,54 @@ object CoroutineSchedulerImpl : CoroutineScheduler {
 
     override fun runAsyncTask(
         plugin: MinixPlugin,
+        name: String?,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
     ) = handleStart(CoroutineTaskImpl(plugin, task).async())
 
     override fun runAsyncTask(
         plugin: MinixPlugin,
+        name: String?,
         runnable: CoroutineRunnable,
     ) = handleStart(CoroutineTaskImpl(plugin, runnable).async())
 
     override fun runAsyncTaskLater(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
-        delay: Long,
+        delay: Duration,
     ) = handleStart(coroutineTask.async() as CoroutineTaskImpl, delay)
 
     override fun runAsyncTaskLater(
         plugin: MinixPlugin,
+        name: String?,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
-        delay: Long,
+        delay: Duration,
     ) = handleStart(CoroutineTaskImpl(plugin, task).async(), delay)
 
     override fun runAsyncTaskLater(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
-        delay: Long,
+        delay: Duration,
     ) = handleStart(CoroutineTaskImpl(plugin, runnable).async(), delay)
 
     override fun runAsyncTaskTimer(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ) = handleStart(coroutineTask.async() as CoroutineTaskImpl, delay, period)
 
     override fun runAsyncTaskTimer(
         plugin: MinixPlugin,
+        name: String?,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ) = handleStart(CoroutineTaskImpl(plugin, task).async(), delay, period)
 
     override fun runAsyncTaskTimer(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ) = handleStart(CoroutineTaskImpl(plugin, runnable).async(), delay, period)
 }

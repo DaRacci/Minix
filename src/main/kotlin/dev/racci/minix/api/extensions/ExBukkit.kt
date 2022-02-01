@@ -46,7 +46,7 @@ fun broadcast(
  * @param component The component to broadcast
  */
 fun Collection<Player>.broadcast(
-    component: Player.() -> Component,
+    component: Player.() -> Component
 ) = broadcast(this, component)
 
 /**
@@ -56,7 +56,7 @@ fun Collection<Player>.broadcast(
  * @param component The component to broadcast
  */
 fun Array<Player>.broadcast(
-    component: Player.() -> Component,
+    component: Player.() -> Component
 ) = broadcast(this.toList(), component)
 
 /**
@@ -71,6 +71,6 @@ object Console : ConsoleCommandSender by Bukkit.getConsoleSender() {
      * @param command The command to run.
      */
     fun command(
-        command: String,
+        command: String
     ) = Bukkit.dispatchCommand(this, command)
 }

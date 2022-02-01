@@ -25,28 +25,28 @@ fun Location.strikeLightningEffect() = world.strikeLightningEffect(this)
 
 fun Location.playEffect(
     effect: Effect,
-    data: Int,
+    data: Int
 ) = world.playEffect(this, effect, data)
 
 fun Location.playEffect(
     effect: Effect,
     data: Int,
-    radius: Int,
+    radius: Int
 ) = world.playEffect(this, effect, data, radius)
 
 fun <T> Location.playEffect(
     effect: Effect,
-    data: T,
+    data: T
 ) = world.playEffect(this, effect, data)
 
 fun <T> Location.playEffect(
     effect: Effect,
     data: T,
-    radius: Int,
+    radius: Int
 ) = world.playEffect(this, effect, data, radius)
 
 fun Location.playSound(
     sound: Sound,
     volume: Float,
-    pitch: Float,
+    pitch: Float
 ) = world.playSound(this, sound, volume, pitch)

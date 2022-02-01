@@ -107,7 +107,7 @@ fun MinixPlugin.launchAsync(f: suspend CoroutineScope.() -> Unit): Job =
  */
 fun PluginManager.registerSuspendingEvents(
     listener: Listener,
-    plugin: MinixPlugin,
+    plugin: MinixPlugin
 ) = coroutine.getCoroutineSession(plugin).eventService.registerSuspendListener(listener)
 
 /**
@@ -122,7 +122,7 @@ fun PluginManager.registerSuspendingEvents(
  */
 fun PluginManager.callSuspendingEvent(
     event: Event,
-    plugin: MinixPlugin,
+    plugin: MinixPlugin
 ): Collection<Job> = coroutine.getCoroutineSession(plugin).eventService.fireSuspendingEvent(event)
 
 /**
@@ -130,7 +130,7 @@ fun PluginManager.callSuspendingEvent(
  * Does exactly the same as PluginCommand.setExecutor.
  */
 fun PluginCommand.setSuspendingExecutor(
-    suspendingCommandExecutor: SuspendingCommandExecutor,
+    suspendingCommandExecutor: SuspendingCommandExecutor
 ) = coroutine.getCoroutineSession(plugin as MinixPlugin).commandService.registerSuspendCommandExecutor(
     this,
     suspendingCommandExecutor

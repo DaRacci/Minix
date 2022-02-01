@@ -44,7 +44,7 @@ class PlayerMoveXYZEvent(
 class PlayerMoveFullXYZEvent(
     player: Player,
     val from: Location,
-    var to: Location,
+    var to: Location
 ) : KPlayerEvent(player, true) {
 
     operator fun component2(): Location = from

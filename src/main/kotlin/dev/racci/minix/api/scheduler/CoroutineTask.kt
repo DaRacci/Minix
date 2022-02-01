@@ -17,6 +17,11 @@ interface CoroutineTask {
     var taskID: Int
 
     /**
+     * The Name of the task.
+     */
+    var name: String
+
+    /**
      * The plugin which starting and owns
      * this task.
      */
@@ -33,7 +38,7 @@ interface CoroutineTask {
      */
     val cancelled: Boolean
 
-    val period: Duration
+    val period: Duration?
 
     val job: Job?
 
@@ -48,5 +53,5 @@ interface CoroutineTask {
     /**
      * Attempts to cancel the task.
      */
-    fun cancel()
+    suspend fun cancel()
 }

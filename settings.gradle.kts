@@ -2,7 +2,11 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
-        maven("https://repo.racci.dev/releases")
+        maven("https://repo.racci.dev/releases") {
+            mavenContent {
+                excludeGroup("org.purpurmc.purpur")
+            }
+        }
         maven("https://papermc.io/repo/repository/maven-public/")
     }
     plugins {
@@ -20,5 +24,3 @@ pluginManagement {
 }
 
 rootProject.name = "Minix"
-// include("Minix-Core")
-// include("Minix-API")

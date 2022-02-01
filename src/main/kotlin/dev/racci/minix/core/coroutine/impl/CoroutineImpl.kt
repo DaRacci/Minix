@@ -41,8 +41,6 @@ class CoroutineImpl : Coroutine {
                         "disposed at this point and cannot be used!"
                 )
             )
-            println("Logger did not return this shittery lol")
-            return
         }
 
         val pluginListener = PluginListener(this, plugin)

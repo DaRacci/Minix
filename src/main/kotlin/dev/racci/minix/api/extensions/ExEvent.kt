@@ -35,7 +35,7 @@ inline fun <reified T : Event> WithPlugin<*>.subEvent(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
     forceAsync: Boolean = false,
-    noinline block: suspend (T) -> Unit,
+    noinline block: suspend (T) -> Unit
 ) = SimpleKListener(plugin).event(
     type = T::class,
     plugin = plugin,
@@ -50,7 +50,7 @@ inline fun <reified T : Event> Listener.event(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
     forceAsync: Boolean = false,
-    noinline block: suspend T.() -> Unit,
+    noinline block: suspend T.() -> Unit
 ) = event(
     type = T::class,
     plugin = plugin,
@@ -66,7 +66,7 @@ inline fun <reified T : Event> Listener.event(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
     forceAsync: Boolean = false,
-    crossinline block: suspend T.() -> Unit,
+    crossinline block: suspend T.() -> Unit
 ) {
     pm.registerEvent(
         type.java,
@@ -110,10 +110,10 @@ fun Cancellable.cancel() {
 
 // TODO Create listener and auto cancel stuffs
 inline fun <reified T : Event> PluginManager.callEvent(
-    noinline builder: List<KParameter>.() -> Map<KParameter, Any?>,
+    noinline builder: List<KParameter>.() -> Map<KParameter, Any?>
 ) = callEvent(T::class as KClass<Event>, builder)
 
 fun callEvent(
     eventKClass: KClass<out Event>,
-    builder: List<KParameter>.() -> Map<KParameter, Any?>,
+    builder: List<KParameter>.() -> Map<KParameter, Any?>
 ) = eventKClass.primaryConstructor!!.callBy(builder(eventKClass.primaryConstructor!!.parameters)).callEvent()

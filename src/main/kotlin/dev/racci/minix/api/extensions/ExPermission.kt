@@ -9,9 +9,9 @@ fun Permissible.anyPermission(
 ) = permissions.any(::hasPermission)
 
 fun Permissible.allPermission(
-    vararg permissions: String,
+    vararg permissions: String
 ) = permissions.all(::hasPermission)
 
 fun Permissible.hasPermissionOrStar(
-    permission: String,
+    permission: String
 ) = hasPermission(permission) || hasPermission(permission.replaceAfterLast('.', "*"))

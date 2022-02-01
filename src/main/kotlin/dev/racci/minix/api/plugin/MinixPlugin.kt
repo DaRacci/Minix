@@ -4,8 +4,6 @@ import dev.racci.minix.api.annotations.MinixDsl
 import dev.racci.minix.api.extension.ExtensionStateEvent
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.getKoin
-import dev.racci.minix.core.services.ExtensionUnit
-import dev.racci.minix.core.services.ListenerUnit
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.ApiStatus
 

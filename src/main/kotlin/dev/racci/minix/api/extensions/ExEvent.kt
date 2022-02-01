@@ -21,7 +21,7 @@ inline fun <reified T : Event> WithPlugin<*>.event(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
     forceAsync: Boolean = false,
-    noinline block: suspend T.() -> Unit,
+    noinline block: suspend T.() -> Unit
 ) = SimpleKListener(plugin).event(
     type = T::class,
     plugin = plugin,

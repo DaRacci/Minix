@@ -11,7 +11,7 @@ val Inventory.hasSpace: Boolean
 
 fun Inventory.hasSpace(
     item: ItemStack,
-    amount: Int = item.amount,
+    amount: Int = item.amount
 ) = spaceOf(item) >= amount
 
 fun Inventory.spaceOf(

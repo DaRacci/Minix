@@ -14,7 +14,7 @@ import org.jetbrains.annotations.ApiStatus
  */
 data class BlockData(
     val block: Block,
-    val blockFace: BlockFace,
+    val blockFace: BlockFace
 )
 
 /**

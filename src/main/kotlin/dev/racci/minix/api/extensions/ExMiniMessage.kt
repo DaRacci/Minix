@@ -20,7 +20,7 @@ import net.kyori.adventure.text.minimessage.placeholder.Replacement
 inline fun MiniMessage.parse(
     input: String,
     italic: Boolean = false,
-    builder: Component.() -> Unit = {},
+    builder: Component.() -> Unit = {}
 ): Component = deserialize(input).apply { if (!italic) noItalic() }.also(builder)
 
 /**

@@ -2,7 +2,6 @@ package dev.racci.minix.api.coroutine
 
 import dev.racci.minix.api.coroutine.contract.Coroutine
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.core.coroutine.impl.CoroutineImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import org.bukkit.command.PluginCommand
@@ -15,9 +14,7 @@ import kotlin.coroutines.CoroutineContext
  * Static session.
  */
 internal val coroutine: Coroutine by lazy {
-    CoroutineImpl()
-//    Class.forName("dev.racci.minix.core.coroutine.CoroutineImpl")
-//        .newInstance() as Coroutine
+    Class.forName("dev.racci.minix.core.coroutine.impl.CoroutineImpl").newInstance() as Coroutine
 }
 
 private var serverVersionInternal: String? = null
@@ -63,7 +60,7 @@ val MinixPlugin.scope: CoroutineScope
  */
 fun MinixPlugin.launch(
     dispatcher: CoroutineContext,
-    f: suspend CoroutineScope.() -> Unit,
+    f: suspend CoroutineScope.() -> Unit
 ): Job =
     coroutine.getCoroutineSession(this).launch(dispatcher, f)
 

@@ -20,7 +20,7 @@ interface ItemBuilderDSL {
     @ApiStatus.AvailableSince("0.1.5")
     fun from(
         itemStack: ItemStack,
-        builder: ItemBuilder.() -> Unit = {},
+        builder: ItemBuilder.() -> Unit = {}
     ): ItemStack
 
     /**

@@ -11,5 +11,5 @@ import org.bukkit.inventory.ItemStack
  */
 inline fun Material.toItemStack(
     amount: Int = 1,
-    block: ItemStack.() -> Unit = {},
+    block: ItemStack.() -> Unit = {}
 ) = ItemStack(this, amount).apply(block)

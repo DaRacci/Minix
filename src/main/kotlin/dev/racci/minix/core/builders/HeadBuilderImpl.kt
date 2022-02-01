@@ -8,12 +8,7 @@ import dev.racci.minix.api.extensions.addTexture
 import org.bukkit.OfflinePlayer
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
-import org.jetbrains.annotations.ApiStatus
 
-/**
- * Head Builder Util.
- */
-@ApiStatus.AvailableSince("0.1.5")
 class HeadBuilderImpl internal constructor(
     itemStack: ItemStack,
 ) : BaseItemBuilderImpl<HeadBuilder, SkullMeta>(itemStack), HeadBuilder {

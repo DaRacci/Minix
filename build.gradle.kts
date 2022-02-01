@@ -12,7 +12,6 @@ plugins {
     id("dev.racci.minix.purpurmc")
     kotlin("plugin.serialization")
     id("dev.racci.minix.publication")
-    id("dev.racci.minix.nms")
     id("net.minecrell.plugin-yml.bukkit") version "0.5.1"
 }
 
@@ -46,31 +45,29 @@ bukkit {
     author = "Racci"
     apiVersion = "1.18"
     version = rootProject.version.toString()
-    main = "dev.racci.minix.core.Minix"
+    main = "dev.racci.minix.core.MinixImpl"
     load = PluginLoadOrder.STARTUP
-    softDepend = listOf(
-        "PlaceholderAPI",
-    )
     loadBefore = listOf(
-        "Sylphia",
+        "Sylphia"
     )
     website = "https://minix.racci.dev/"
 }
 
-tasks.shadowJar {
-    dependencyFilter.exclude {
-        it.moduleGroup == "org.jetbrains.kotlin" ||
-            it.moduleGroup == "org.jetbrains.intellij" ||
-            it.moduleGroup == "org.jetbrains" ||
-            it.moduleName == "adventure-api" ||
-            it.moduleName == "adventure-text-serializer-*" ||
-            it.moduleName == "adventure-key" ||
-            it.moduleName == "examination-*"
+tasks {
+    shadowJar {
+        dependencyFilter.exclude {
+            it.moduleGroup == "org.jetbrains.kotlin" || it.moduleGroup == "org.jetbrains.intellij" || it.moduleGroup == "org.jetbrains" || it.moduleName == "adventure-api" || it.moduleName == "adventure-text-serializer-*" || it.moduleName == "adventure-key" || it.moduleName == "examination-*"
+        }
+        relocate("net.kyori.adventure.text.minimessage", "dev.racci.minix.libs.kyori.minimessage")
+        relocate("net.kyori.adventure.text.extra.kotlin", "dev.racci.minix.libs.kyroi.kotlin")
     }
-    relocate("net.kyori.adventure.text.minimessage", "dev.racci.minix.libs.kyori.minimessage")
-    relocate("net.kyori.adventure.text.extra.kotlin", "dev.racci.minix.libs.kyroi.kotlin")
+
+    compileKotlin {
+        dependsOn(ktlintFormat)
+        kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+    }
 }
 
-tasks.compileKotlin {
-    kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
+ktlint {
+    enableExperimentalRules.set(false)
 }

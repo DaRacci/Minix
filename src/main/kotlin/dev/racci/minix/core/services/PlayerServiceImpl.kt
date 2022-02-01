@@ -6,11 +6,11 @@ import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.cancel
 import dev.racci.minix.api.extensions.displaced
 import dev.racci.minix.api.extensions.event
+import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.services.PlayerService
 import dev.racci.minix.api.utils.collections.onlinePlayerMapOf
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import dev.racci.minix.api.utils.minecraft.PlayerUtils
-import dev.racci.minix.core.Minix
 import dev.racci.minix.core.data.PlayerData
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.event.player.PlayerMoveEvent
@@ -26,14 +26,14 @@ class PlayerServiceImpl(override val plugin: Minix) : Extension<Minix>(), Player
     override val bindToKClass: KClass<*>
         get() = PlayerService::class
 
-    override val playerData = HashMap<UUID, PlayerData>()
+    private val playerData = HashMap<UUID, PlayerData>()
     override val inputCallbacks by lazy { onlinePlayerMapOf<PlayerUtils.ChatInput>() }
     override val functionsQuit by lazy { onlinePlayerMapOf<PlayerUtils.PlayerCallback<Unit>>() }
     override val functionsMove by lazy { onlinePlayerMapOf<PlayerUtils.PlayerCallback<Boolean>>() }
 
     override fun remove(uuid: UUID): Boolean = playerData.remove(uuid) != null
 
-    override operator fun get(uuid: UUID) = playerData.computeIfAbsent(uuid) { PlayerData(uuid).also { it.inAccess++ } }
+    operator fun get(uuid: UUID) = playerData.computeIfAbsent(uuid) { PlayerData(uuid).also { it.inAccess++ } }
 
     override fun minusAssign(uuid: UUID) {
         remove(uuid)

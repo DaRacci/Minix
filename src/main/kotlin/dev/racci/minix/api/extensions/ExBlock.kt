@@ -24,7 +24,7 @@ import org.jetbrains.annotations.ApiStatus
 fun Block.sendBlockChange(
     material: Material,
     blockData: BlockData.() -> Unit,
-    vararg players: Player,
+    vararg players: Player
 ) {
     players.filter { it.world.name == world.name }.forEach {
         it.sendBlockChange(location, material.createBlockData(blockData))

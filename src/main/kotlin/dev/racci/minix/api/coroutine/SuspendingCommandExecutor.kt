@@ -23,6 +23,6 @@ interface SuspendingCommandExecutor {
         sender: CommandSender,
         command: Command,
         label: String,
-        args: Array<out String>,
+        args: Array<out String>
     ): Boolean
 }

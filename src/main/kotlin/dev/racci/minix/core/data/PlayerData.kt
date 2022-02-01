@@ -6,7 +6,6 @@ import dev.racci.minix.api.events.PlayerUnloadEvent
 import dev.racci.minix.api.services.PlayerService
 import java.util.UUID
 
-@Suppress("DataClassShouldBeImmutable")
 data class PlayerData(
     val uuid: UUID,
 ) {

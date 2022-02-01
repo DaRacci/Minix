@@ -1,8 +1,6 @@
-package dev.racci.minix.core.services
+package dev.racci.minix.api.plugin
 
 import dev.racci.minix.api.extension.Extension
-import dev.racci.minix.api.plugin.MinixLogger
-import dev.racci.minix.api.plugin.MinixPlugin
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.bukkit.event.Listener
 import kotlin.reflect.KProperty
@@ -13,6 +11,7 @@ typealias ListenerUnit = () -> Listener
 
 class PluginData<P : MinixPlugin>(val plugin: P) {
 
+    @Suppress("UNCHECKED_CAST")
     operator fun <T : Any?> getValue(
         thisRef: P,
         property: KProperty<*>,
@@ -24,7 +23,7 @@ class PluginData<P : MinixPlugin>(val plugin: P) {
     val listenerBuilder by lazy(plugin::ListenerBuilder)
 
     val extensions by lazy { mutableListOf<ExtensionUnit<P>>() }
-    val loadedExtensions by lazy { mutableListOf<Extension<P>>() }
+    val loadedExtensions by lazy { mutableListOf<Extension<out P>>() }
     val extensionEvents by lazy { MutableSharedFlow<Any>() }
 
     val listeners by lazy { mutableListOf<Listener>() }

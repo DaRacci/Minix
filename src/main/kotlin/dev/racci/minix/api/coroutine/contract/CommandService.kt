@@ -13,7 +13,7 @@ interface CommandService {
      */
     fun registerSuspendCommandExecutor(
         pluginCommand: PluginCommand,
-        commandExecutor: SuspendingCommandExecutor,
+        commandExecutor: SuspendingCommandExecutor
     )
 
     /**

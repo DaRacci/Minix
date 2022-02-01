@@ -5,7 +5,7 @@ package dev.racci.minix.api.extensions
 import org.bukkit.permissions.Permissible
 
 fun Permissible.anyPermission(
-    vararg permissions: String,
+    vararg permissions: String
 ) = permissions.any(::hasPermission)
 
 fun Permissible.allPermission(

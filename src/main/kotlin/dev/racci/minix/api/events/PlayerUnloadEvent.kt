@@ -17,7 +17,7 @@ import java.util.UUID
 @ApiStatus.AvailableSince("0.3.0")
 class PlayerUnloadEvent(
     val player: Player? = null,
-    val uuid: UUID = player!!.uniqueId,
+    val uuid: UUID = player!!.uniqueId
 ) : KEvent(true) {
 
     operator fun component1(): Player? = player

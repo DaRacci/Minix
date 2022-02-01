@@ -20,7 +20,7 @@ import org.jetbrains.annotations.ApiStatus
 class PlayerMoveXYZEvent(
     player: Player,
     val from: Location,
-    var to: Location,
+    var to: Location
 ) : KPlayerEvent(player, true) {
 
     fun hasExplicitlyChangedBlock() =

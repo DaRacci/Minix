@@ -7,13 +7,14 @@ import dev.racci.minix.api.coroutine.coroutine
 import dev.racci.minix.api.coroutine.registerSuspendingEvents
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.pm
+import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.plugin.PluginData
 import dev.racci.minix.api.plugin.SusPlugin
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.kotlin.doesOverride
 import dev.racci.minix.api.utils.loadModule
-import dev.racci.minix.core.Minix
 import kotlinx.coroutines.runBlocking
 import org.koin.dsl.bind
 import kotlin.reflect.KClass
@@ -71,7 +72,6 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
             }
 
             loadedPlugins += plugin::class to plugin
-            println(loadedPlugins)
         }
         coroutine.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = false
     }
@@ -121,6 +121,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
             minix.log.debug { "Starting extension ${ex.name} for ${this.name}" }
             loadModule { single { ex } bind (ex.bindToKClass ?: ex::class) }
             ex.handleSetup()
+            if (ex.loaded) pluginCache[this].loadedExtensions += ex
         }
     }
 

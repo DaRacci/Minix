@@ -2,8 +2,8 @@ package dev.racci.minix.api.services
 
 import com.google.common.cache.LoadingCache
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.plugin.PluginData
 import dev.racci.minix.api.utils.getKoin
-import dev.racci.minix.core.services.PluginData
 import org.jetbrains.annotations.ApiStatus
 import kotlin.reflect.KClass
 

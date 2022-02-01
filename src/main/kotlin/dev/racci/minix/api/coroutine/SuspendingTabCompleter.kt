@@ -23,6 +23,6 @@ interface SuspendingTabCompleter {
         sender: CommandSender,
         command: Command,
         alias: String,
-        args: Array<out String>,
+        args: Array<out String>
     ): List<String>
 }

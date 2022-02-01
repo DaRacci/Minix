@@ -10,7 +10,7 @@ import org.bukkit.entity.Player
 sealed class PlayerLiquidEvent(
     player: Player,
     val previousType: LiquidType,
-    val newType: LiquidType,
+    val newType: LiquidType
 ) : KPlayerEvent(player, true) {
 
     operator fun component2(): LiquidType = previousType

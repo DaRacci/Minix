@@ -15,7 +15,7 @@ open class ExtensionsException : Exception()
  */
 class InvalidExtensionException(
     val clazz: KClass<out Extension<*>>,
-    val reason: String?,
+    val reason: String?
 ) : ExtensionsException() {
 
     override fun toString(): String {

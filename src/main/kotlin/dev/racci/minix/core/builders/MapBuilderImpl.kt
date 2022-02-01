@@ -7,12 +7,7 @@ import org.bukkit.Color
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.MapMeta
 import org.bukkit.map.MapView
-import org.jetbrains.annotations.ApiStatus
 
-/**
- * Map Builder Util.
- */
-@ApiStatus.AvailableSince("0.1.5")
 class MapBuilderImpl internal constructor(
     itemStack: ItemStack,
 ) : BaseItemBuilderImpl<MapBuilderImpl, MapMeta>(itemStack), MapBuilder {

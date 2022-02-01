@@ -9,9 +9,9 @@ import dev.racci.minix.api.extensions.onlinePlayers
 import dev.racci.minix.api.extensions.scheduler
 import dev.racci.minix.api.extensions.ticks
 import dev.racci.minix.api.extensions.worlds
+import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.utils.collections.CollectionUtils.get
 import dev.racci.minix.api.utils.minecraft.WorldUtils.isDay
-import dev.racci.minix.core.Minix
 import org.bukkit.World
 import org.bukkit.event.world.WorldLoadEvent
 import org.bukkit.event.world.WorldUnloadEvent

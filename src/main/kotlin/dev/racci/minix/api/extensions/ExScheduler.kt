@@ -12,13 +12,13 @@ inline fun task(
     delayToRun: Duration? = null,
     repeatDelay: Duration? = null,
     plugin: MinixPlugin,
-    crossinline runnable: SuspendedUnit,
+    crossinline runnable: SuspendedUnit
 ) = task(delayToRun, repeatDelay, false, plugin, runnable)
 
 inline fun MinixPlugin.task(
     delayToRun: Duration? = null,
     repeatDelay: Duration? = null,
-    crossinline runnable: SuspendedUnit,
+    crossinline runnable: SuspendedUnit
 ) = task(delayToRun, repeatDelay, this, runnable)
 
 inline fun WithPlugin<*>.task(

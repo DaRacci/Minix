@@ -5,11 +5,11 @@ package dev.racci.minix.core.scheduler
 import dev.racci.minix.api.coroutine.asyncDispatcher
 import dev.racci.minix.api.coroutine.minecraftDispatcher
 import dev.racci.minix.api.extension.Extension
+import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.scheduler.CoroutineRunnable
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.scheduler.CoroutineTask
-import dev.racci.minix.core.Minix
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi

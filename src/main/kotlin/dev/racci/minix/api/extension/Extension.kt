@@ -1,8 +1,8 @@
 package dev.racci.minix.api.extension
 
 import dev.racci.minix.api.extensions.WithPlugin
+import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.core.Minix
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import org.koin.core.component.KoinComponent

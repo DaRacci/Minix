@@ -36,7 +36,7 @@ fun broadcast(component: Component) =
  */
 fun broadcast(
     players: Iterable<Player> = onlinePlayers,
-    component: Player.() -> Component,
+    component: Player.() -> Component
 ) = players.forEach(component::invoke)
 
 /**

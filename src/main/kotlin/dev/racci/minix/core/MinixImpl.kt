@@ -1,7 +1,7 @@
 package dev.racci.minix.core
 
 import dev.racci.minix.api.builders.ItemBuilderDSL
-import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
@@ -20,7 +20,7 @@ import org.koin.dsl.single
 import java.util.logging.Level
 import kotlin.collections.set
 
-class Minix : MinixPlugin() {
+class MinixImpl : Minix() {
 
     override fun onLoad() {
         startKoin()
@@ -32,7 +32,7 @@ class Minix : MinixPlugin() {
 
         startSentry()
 
-        loadModule { single { this@Minix } bind Minix::class }
+        loadModule { single { this@MinixImpl } bind Minix::class }
 
         loadModule { single<ItemBuilderImpl.Companion>() bind ItemBuilderDSL::class }
 
@@ -47,7 +47,7 @@ class Minix : MinixPlugin() {
 
     private fun startKoin() {
         startKoin(KoinApplication.init())
-        loadModule { single { PluginServiceImpl(this@Minix) } bind PluginService::class }
+        loadModule { single { PluginServiceImpl(this@MinixImpl) } bind PluginService::class }
     }
 
     private fun startSentry() {

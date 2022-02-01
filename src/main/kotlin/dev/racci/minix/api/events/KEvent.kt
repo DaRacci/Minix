@@ -20,7 +20,7 @@ import org.jetbrains.annotations.ApiStatus
  */
 @ApiStatus.AvailableSince("0.1.5")
 abstract class KEvent(
-    async: Boolean = false,
+    async: Boolean = false
 ) : Event(async), Cancellable {
 
     private var cancelled = false

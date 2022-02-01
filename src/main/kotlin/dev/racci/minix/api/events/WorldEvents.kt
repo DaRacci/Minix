@@ -12,7 +12,7 @@ import org.jetbrains.annotations.ApiStatus
  */
 @ApiStatus.AvailableSince("0.3.0")
 class WorldNightEvent(
-    world: World,
+    world: World
 ) : KWorldEvent(world)
 
 /**

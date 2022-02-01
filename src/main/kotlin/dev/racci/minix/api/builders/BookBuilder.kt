@@ -1,6 +1,5 @@
 package dev.racci.minix.api.builders
 
-import dev.racci.minix.core.builders.BookBuilderImpl
 import net.kyori.adventure.text.Component
 import org.bukkit.inventory.meta.BookMeta
 
@@ -24,10 +23,10 @@ interface BookBuilder : BaseItemBuilder<BookBuilder, BookMeta> {
     /**
      * Add the pages to the book.
      */
-    fun addPage(vararg pages: Component): BookBuilderImpl
+    fun addPage(vararg pages: Component): BookBuilder
 
     /**
      * Sets the page [Int] of the [Pair] to the component.
      */
-    fun setPages(vararg pages: Pair<Int, Component>): BookBuilderImpl
+    fun setPages(vararg pages: Pair<Int, Component>): BookBuilder
 }

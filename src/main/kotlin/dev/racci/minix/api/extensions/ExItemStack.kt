@@ -4,9 +4,9 @@ package dev.racci.minix.api.extensions
 
 import com.mojang.authlib.GameProfile
 import com.mojang.authlib.properties.Property
+import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.utils.UnsafeUtil.Companion.unsafe
 import dev.racci.minix.api.utils.getKoin
-import dev.racci.minix.core.Minix
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -21,7 +21,7 @@ typealias PDC = PersistentDataContainer
 val ItemStack.pdc get() = this.persistentDataContainer
 
 inline fun ItemStack.pdc(
-    block: PDC.() -> Unit,
+    block: PDC.() -> Unit
 ) = this.pdc.apply(block)
 
 inline fun <reified M : ItemMeta> ItemStack.editItemMeta(

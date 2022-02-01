@@ -2,7 +2,6 @@
 
 package dev.racci.minix.core.builders
 
-import dev.racci.minix.api.annotations.MinixDsl
 import dev.racci.minix.api.builders.BannerBuilder
 import dev.racci.minix.api.builders.BookBuilder
 import dev.racci.minix.api.builders.FireworkBuilder
@@ -13,13 +12,7 @@ import dev.racci.minix.api.builders.MapBuilder
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
-import org.jetbrains.annotations.ApiStatus
 
-/**
- * Item Builder.
- */
-@MinixDsl
-@ApiStatus.AvailableSince("0.1.5")
 class ItemBuilderImpl internal constructor(
     itemStack: ItemStack,
 ) : BaseItemBuilderImpl<ItemBuilder, ItemMeta>(itemStack), ItemBuilder {

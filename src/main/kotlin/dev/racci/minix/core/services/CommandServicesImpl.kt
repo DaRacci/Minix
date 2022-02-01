@@ -3,8 +3,8 @@ package dev.racci.minix.core.services
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.unregister
+import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.services.CommandServices
-import dev.racci.minix.core.Minix
 import org.bukkit.command.Command
 import org.bukkit.event.server.PluginDisableEvent
 import kotlin.reflect.KClass

@@ -8,12 +8,7 @@ import org.bukkit.Material
 import org.bukkit.block.banner.Pattern
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BannerMeta
-import org.jetbrains.annotations.ApiStatus
 
-/**
- * Banner Builder Util.
- */
-@ApiStatus.AvailableSince("0.1.5")
 class BannerBuilderImpl internal constructor(
     itemStack: ItemStack,
 ) : BaseItemBuilderImpl<BannerBuilder, BannerMeta>(itemStack), BannerBuilder {

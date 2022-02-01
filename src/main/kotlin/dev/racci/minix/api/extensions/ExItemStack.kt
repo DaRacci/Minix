@@ -25,19 +25,19 @@ inline fun ItemStack.pdc(
 ) = this.pdc.apply(block)
 
 inline fun <reified M : ItemMeta> ItemStack.editItemMeta(
-    block: M.() -> Unit,
+    block: M.() -> Unit
 ) = (this.itemMeta as? M)?.apply(block)
 
 fun ItemStack.displayName(
-    displayName: Component,
+    displayName: Component
 ) = editItemMeta<ItemMeta> { displayName(displayName) }
 
 fun ItemStack.addTexture(
-    texture: String?,
+    texture: String?
 ) = itemMeta.addTexture(texture)
 
 fun ItemMeta.addTexture(
-    texture: String?,
+    texture: String?
 ) {
     val meta = this as? SkullMeta ?: return
     val profile = GameProfile(meta.owningPlayer?.uniqueId ?: UUID.randomUUID(), null)
@@ -60,7 +60,7 @@ val SkullMeta.texture: String?
 
 inline fun Material.asItemStack(
     amount: Int = 1,
-    meta: ItemMeta.() -> Unit = {},
+    meta: ItemMeta.() -> Unit = {}
 ) = ItemStack(this, amount).editItemMeta(meta)
 
 inline val Material.isPickaxe: Boolean get() = name.endsWith("PICKAXE")

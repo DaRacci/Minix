@@ -22,5 +22,5 @@ class WorldNightEvent(
  */
 @ApiStatus.AvailableSince("0.3.0")
 class WorldDayEvent(
-    world: World,
+    world: World
 ) : KWorldEvent(world)

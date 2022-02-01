@@ -4,10 +4,12 @@ package dev.racci.minix.api.utils.collections
 
 import dev.racci.minix.api.extensions.WithPlugin
 import dev.racci.minix.api.extensions.scheduler
+import dev.racci.minix.api.extensions.ticks
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.scheduler.CoroutineTask
 import dev.racci.minix.api.utils.now
 import java.util.WeakHashMap
+import kotlin.time.Duration
 
 typealias OnExpireMapCallback<K, V> = (K, V) -> Unit
 
@@ -226,9 +228,9 @@ class ExpirationMapImpl<K, V>(
                 }
             }
             if (emptyCount > 5) {
-                cancel()
+                task?.cancel()
                 task = null
             }
-        }.runTaskTimer(plugin, 0L, 20L)
+        }.runTaskTimer(plugin, Duration.ZERO, 1.ticks)
     }
 }

@@ -2,6 +2,8 @@
 
 package dev.racci.minix.api.utils.kotlin
 
+import kotlin.reflect.KClass
+
 inline fun <reified T : Throwable, reified U : Any> catch(
     err: (T) -> U,
     run: () -> U,
@@ -31,5 +33,25 @@ inline fun <reified T : Throwable, R> catchAndReturn(
     null
 }
 
+infix fun KClass<*>.doesOverride(methodName: String): Boolean {
+    return this.java.methods.find { it.name == methodName } in this.java.declaredMethods
+}
+
 fun <T> T.not(other: T) = takeUnless { it == other }
 fun <T> T.notIn(container: Iterable<T>) = takeUnless { it in container }
+
+inline fun <T> T?.invokeIfNotNull(block: (T) -> Unit) {
+    if (this != null) block(this)
+}
+
+inline fun <T> T?.invokeIfNull(block: () -> Unit) {
+    if (this == null) block()
+}
+
+inline fun Boolean?.ifTrue(block: () -> Unit) {
+    if (this == true) block()
+}
+
+inline fun Boolean?.ifFalse(block: () -> Unit) {
+    if (this == false) block()
+}

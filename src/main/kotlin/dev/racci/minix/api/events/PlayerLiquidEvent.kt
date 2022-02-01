@@ -20,13 +20,13 @@ sealed class PlayerLiquidEvent(
 class PlayerEnterLiquidEvent(
     player: Player,
     previousType: LiquidType,
-    newType: LiquidType,
+    newType: LiquidType
 ) : PlayerLiquidEvent(player, previousType, newType)
 
 class PlayerExitLiquidEvent(
     player: Player,
     previousType: LiquidType,
-    newType: LiquidType,
+    newType: LiquidType
 ) : PlayerLiquidEvent(player, previousType, newType)
 
 enum class LiquidType {

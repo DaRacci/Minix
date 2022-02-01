@@ -52,7 +52,7 @@ abstract class KEvent(
 @ApiStatus.AvailableSince("0.1.5")
 abstract class KPlayerEvent(
     player: Player,
-    async: Boolean = false,
+    async: Boolean = false
 ) : PlayerEvent(player, async), Cancellable {
 
     private var cancelled = false
@@ -84,7 +84,7 @@ abstract class KPlayerEvent(
  */
 @ApiStatus.AvailableSince("0.1.5")
 abstract class KWorldEvent(
-    world: World,
+    world: World
 ) : WorldEvent(world), Cancellable {
 
     val isOverworld: Boolean

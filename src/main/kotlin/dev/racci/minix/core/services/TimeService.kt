@@ -5,16 +5,19 @@ import dev.racci.minix.api.events.WorldNightEvent
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.callEvent
 import dev.racci.minix.api.extensions.event
+import dev.racci.minix.api.extensions.onlinePlayers
 import dev.racci.minix.api.extensions.scheduler
+import dev.racci.minix.api.extensions.ticks
 import dev.racci.minix.api.extensions.worlds
-import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.collections.CollectionUtils.get
 import dev.racci.minix.api.utils.minecraft.WorldUtils.isDay
+import dev.racci.minix.core.Minix
 import org.bukkit.World
 import org.bukkit.event.world.WorldLoadEvent
 import org.bukkit.event.world.WorldUnloadEvent
+import kotlin.time.Duration.Companion.milliseconds
 
-class TimeService(override val plugin: MinixPlugin) : Extension() {
+class TimeService(override val plugin: Minix) : Extension<Minix>() {
 
     override val name = "Time Service"
 
@@ -25,7 +28,7 @@ class TimeService(override val plugin: MinixPlugin) : Extension() {
         event<WorldLoadEvent> { checkTime(world) }
         event<WorldUnloadEvent> { timeState -= world.name }
 
-        scheduler { worlds.forEach(::checkTime) }.runAsyncTaskTimer(plugin, 15L, 20L)
+        scheduler { if (onlinePlayers.isNotEmpty()) worlds.forEach(::checkTime) }.runAsyncTaskTimer(plugin, 15.milliseconds, 1.ticks)
     }
 
     private fun checkTime(world: World) {

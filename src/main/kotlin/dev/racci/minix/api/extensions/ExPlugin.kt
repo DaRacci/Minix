@@ -11,7 +11,7 @@ fun Plugin.registerEvents(
 ) = listeners.forEach { server.pluginManager.registerEvents(it, this) }
 
 fun WithPlugin<*>.registerEvents(
-    vararg listeners: Listener,
+    vararg listeners: Listener
 ) = plugin.registerEvents(*listeners)
 
 interface WithPlugin<T : MinixPlugin> {

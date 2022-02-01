@@ -2,29 +2,27 @@ package dev.racci.minix.core.scheduler
 
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.scheduler.CoroutineRunnable
+import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.scheduler.CoroutineTask
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.cancel
 import kotlin.properties.Delegates
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.microseconds
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class CoroutineTaskImpl : CoroutineTask {
 
     override val owner: MinixPlugin
-    override var taskID by Delegates.notNull<Int>()
-    override var async: Boolean = false
-    override var period by Delegates.notNull<Duration>()
-    override var job by Delegates.notNull<Job>()
+    override var name: String by Delegates.notNull()
+    override var taskID: Int by Delegates.notNull()
+    override var async: Boolean = false; internal set
+    override var period: Duration? = null; internal set
+    override var job: Job by Delegates.notNull(); internal set
     override var task: suspend Pair<MinixPlugin, CoroutineScope>.() -> Unit by Delegates.notNull()
-    override var runnable: CoroutineRunnable? = null
-
-    override val cancelled: Boolean
-        get() = period == CANCEL
+    override var runnable: CoroutineRunnable? = null; internal set
+    override var cancelled: Boolean = false; internal set
 
     constructor(
         plugin: MinixPlugin,
@@ -42,14 +40,14 @@ class CoroutineTaskImpl : CoroutineTask {
         this.runnable = runnable
     }
 
-    override fun cancel() {
-        CoroutineSchedulerImpl.scope.launch { CoroutineSchedulerImpl.cancelTask(taskID) }
+    override suspend fun cancel() {
+        CoroutineScheduler.cancelTask(taskID)
     }
 
-    suspend fun cancel0(): Boolean {
-        period = CANCEL
+    fun cancel0(): Boolean {
+        cancelled = true
         if (job.isActive) {
-            job.cancelAndJoin()
+            job.cancel("Plugin shutting down")
         } else return false
         return true
     }
@@ -62,11 +60,5 @@ class CoroutineTaskImpl : CoroutineTask {
     override fun sync(): CoroutineTaskImpl {
         this.async = false
         return this
-    }
-
-    companion object {
-
-        val NO_REPEATING = (-1L).microseconds
-        val CANCEL = (-2L).microseconds
     }
 }

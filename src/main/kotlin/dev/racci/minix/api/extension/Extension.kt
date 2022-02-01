@@ -9,15 +9,17 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.reflect.KClass
 
-abstract class Extension : KoinComponent, WithPlugin<MinixPlugin> {
+abstract class Extension<P : MinixPlugin> : KoinComponent, WithPlugin<P> {
 
     abstract val name: String
+
+    open val bindToKClass: KClass<*>? = null
 
     open val minix by inject<Minix>()
 
     open val log get() = plugin.log
 
-    open val dependencies: ImmutableList<KClass<out Extension>> = persistentListOf()
+    open val dependencies: ImmutableList<KClass<out Extension<*>>> = persistentListOf()
 
     open var state: ExtensionState = ExtensionState.UNLOADED
 
@@ -25,16 +27,16 @@ abstract class Extension : KoinComponent, WithPlugin<MinixPlugin> {
 
     abstract suspend fun handleEnable()
 
-    open suspend fun handleSetup() {
+    suspend fun handleSetup() {
         setState(ExtensionState.LOADING)
-        log.info { "Running handleSetup() for $name" }
+        log.debug { "Running handleSetup() for $name" }
 
         @Suppress("TooGenericExceptionCaught")
         try {
             handleEnable()
         } catch (t: Throwable) {
             setState(ExtensionState.FAILED_LOADING)
-            throw t
+            throw InvalidExtensionException(this::class, t.stackTraceToString())
         }
 
         setState(ExtensionState.LOADED)

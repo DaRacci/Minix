@@ -14,7 +14,7 @@ open class ExtensionsException : Exception()
  * @property reason Why this [Extension] is considered invalid.
  */
 class InvalidExtensionException(
-    val clazz: KClass<out Extension>,
+    val clazz: KClass<out Extension<*>>,
     val reason: String?,
 ) : ExtensionsException() {
 

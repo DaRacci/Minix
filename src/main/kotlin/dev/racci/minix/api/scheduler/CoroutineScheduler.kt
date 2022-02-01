@@ -5,11 +5,18 @@ package dev.racci.minix.api.scheduler
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.getKoin
 import kotlinx.coroutines.CoroutineScope
+import kotlin.time.Duration
 
 @Suppress("ComplexInterface")
 interface CoroutineScheduler {
 
     val scope: CoroutineScope
+
+    /**
+     * @returns an IntArray of this plugins currently running tasks.
+     * If there are no active tasks it will return null.
+     */
+    suspend fun activateTasks(plugin: MinixPlugin): IntArray?
 
     /**
      * Attempts to remove a task from the scheduler.
@@ -18,6 +25,11 @@ interface CoroutineScheduler {
      * @return If the task was successfully cancelled and removed.
      */
     suspend fun cancelTask(taskID: Int): Boolean
+
+    /**
+     * Attempts to find and cancel a task matching this name if it exists.
+     */
+    suspend fun cancelTask(name: String): Boolean
 
     /**
      * Attempts to remove all active tasks of
@@ -38,6 +50,16 @@ interface CoroutineScheduler {
     fun isCurrentlyRunning(taskID: Int): Boolean
 
     /**
+     * Check if the task is currently active.
+     * A task that has finished and does not repeat,
+     * will not be active ever again.
+     *
+     * @param name The task to check
+     * @return If the task is currently active.
+     */
+    fun isCurrentlyRunning(name: String): Boolean
+
+    /**
      * Returns an [CoroutineTask] that will run once
      * on the main bukkit thread.
      *
@@ -60,6 +82,7 @@ interface CoroutineScheduler {
      */
     fun runTask(
         plugin: MinixPlugin,
+        name: String? = null,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
     ): CoroutineTask
 
@@ -89,7 +112,7 @@ interface CoroutineScheduler {
     fun runTaskLater(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
-        delay: Long,
+        delay: Duration,
     ): CoroutineTask
 
     /**
@@ -104,8 +127,9 @@ interface CoroutineScheduler {
      */
     fun runTaskLater(
         plugin: MinixPlugin,
+        name: String? = null,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
-        delay: Long,
+        delay: Duration,
     ): CoroutineTask
 
     /**
@@ -121,7 +145,7 @@ interface CoroutineScheduler {
     fun runTaskLater(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
-        delay: Long,
+        delay: Duration,
     ): CoroutineTask
 
     /**
@@ -139,8 +163,8 @@ interface CoroutineScheduler {
     fun runTaskTimer(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ): CoroutineTask
 
     /**
@@ -157,9 +181,10 @@ interface CoroutineScheduler {
      */
     fun runTaskTimer(
         plugin: MinixPlugin,
+        name: String? = null,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ): CoroutineTask
 
     /**
@@ -177,8 +202,8 @@ interface CoroutineScheduler {
     fun runTaskTimer(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ): CoroutineTask
 
     /**
@@ -204,6 +229,7 @@ interface CoroutineScheduler {
      */
     fun runAsyncTask(
         plugin: MinixPlugin,
+        name: String? = null,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
     ): CoroutineTask
 
@@ -217,6 +243,7 @@ interface CoroutineScheduler {
      */
     fun runAsyncTask(
         plugin: MinixPlugin,
+        name: String? = null,
         runnable: CoroutineRunnable,
     ): CoroutineTask
 
@@ -233,7 +260,7 @@ interface CoroutineScheduler {
     fun runAsyncTaskLater(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
-        delay: Long,
+        delay: Duration,
     ): CoroutineTask
 
     /**
@@ -248,8 +275,9 @@ interface CoroutineScheduler {
      */
     fun runAsyncTaskLater(
         plugin: MinixPlugin,
+        name: String? = null,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
-        delay: Long,
+        delay: Duration,
     ): CoroutineTask
 
     /**
@@ -265,7 +293,7 @@ interface CoroutineScheduler {
     fun runAsyncTaskLater(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
-        delay: Long,
+        delay: Duration,
     ): CoroutineTask
 
     /**
@@ -283,8 +311,8 @@ interface CoroutineScheduler {
     fun runAsyncTaskTimer(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ): CoroutineTask
 
     /**
@@ -301,9 +329,10 @@ interface CoroutineScheduler {
      */
     fun runAsyncTaskTimer(
         plugin: MinixPlugin,
+        name: String? = null,
         task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ): CoroutineTask
 
     /**
@@ -321,8 +350,8 @@ interface CoroutineScheduler {
     fun runAsyncTaskTimer(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
-        delay: Long,
-        period: Long,
+        delay: Duration,
+        period: Duration,
     ): CoroutineTask
 
     companion object : CoroutineScheduler by getKoin().get()

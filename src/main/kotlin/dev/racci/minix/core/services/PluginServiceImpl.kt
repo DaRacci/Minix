@@ -1,19 +1,18 @@
 package dev.racci.minix.core.services
 
-import com.google.common.cache.CacheBuilder
-import com.google.common.cache.CacheLoader
-import com.google.common.cache.LoadingCache
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.LoadingCache
 import dev.racci.minix.api.coroutine.coroutine
 import dev.racci.minix.api.coroutine.registerSuspendingEvents
 import dev.racci.minix.api.extension.Extension
-import dev.racci.minix.api.extensions.pm
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.PluginData
 import dev.racci.minix.api.plugin.SusPlugin
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
-import dev.racci.minix.api.utils.kotlin.doesOverride
+import dev.racci.minix.api.utils.kotlin.ifNotEmpty
+import dev.racci.minix.api.utils.kotlin.invokeIfOverrides
 import dev.racci.minix.api.utils.loadModule
 import kotlinx.coroutines.runBlocking
 import org.koin.dsl.bind
@@ -23,12 +22,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
 
     override val loadedPlugins by lazy { mutableMapOf<KClass<out MinixPlugin>, MinixPlugin>() }
 
-    override val pluginCache: LoadingCache<MinixPlugin, PluginData<MinixPlugin>> = CacheBuilder.newBuilder()
-        .build(
-            CacheLoader.from { plugin: MinixPlugin ->
-                PluginData(plugin)
-            }
-        )
+    override val pluginCache: LoadingCache<MinixPlugin, PluginData<MinixPlugin>> = Caffeine.newBuilder().build { plugin: MinixPlugin -> PluginData(plugin) }
 
     @Suppress("UNCHECKED_CAST")
     override operator fun <P : MinixPlugin> get(plugin: P): PluginData<P> = pluginCache[plugin] as PluginData<P>
@@ -36,13 +30,12 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
     override fun loadPlugin(plugin: MinixPlugin) {
         runBlocking {
             loadModule { single { plugin } bind plugin::class }
-            plugin.handleLoad()
+            plugin.invokeIfOverrides(SusPlugin::handleLoad.name) { plugin.handleLoad() }
         }
     }
 
     // Add Update checker back for Spigot as well as adding support for GitHub, mc-market and polymart
     // Add BStats support
-    // Possibly move this complete startup method to a service utility that runs inside of Minix itself
     override fun startPlugin(plugin: MinixPlugin) {
         if (plugin::class in loadedPlugins) throw IllegalStateException("The plugin ${plugin.description.fullName} has already been registered!")
         minix.log.debug { "Handling enable for ${plugin.name} with class of ${plugin::class}" }
@@ -51,22 +44,19 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
         runBlocking {
             val cache = pluginCache[plugin]
 
-            if (plugin::class.doesOverride(SusPlugin::handleEnable.name)) {
+            plugin.invokeIfOverrides(SusPlugin::handleEnable.name) {
                 minix.log.debug { "Running handleEnable for ${plugin.name}" }
                 plugin.handleEnable()
             }
 
-            cache.extensions.takeIf(MutableList<*>::isNotEmpty)?.let { ex ->
-                minix.log.debug { "Starting up ${ex.size} extensions for ${plugin.name}" }
-                plugin.startInOrder()
+            cache.extensions.ifNotEmpty { plugin.startInOrder() }
+
+            cache.listeners.ifNotEmpty { collection ->
+                minix.log.debug { "Registering ${collection.size} listeners for ${plugin.name} " }
+                collection.forEach(plugin::registerSuspendingEvents)
             }
 
-            cache.listeners.takeIf(MutableList<*>::isNotEmpty)?.let { li ->
-                minix.log.debug { "Registering ${li.size} listeners for ${plugin.name} " }
-                li.forEach { pm.registerSuspendingEvents(it, plugin) }
-            }
-
-            if (plugin::class.doesOverride(SusPlugin::handleAfterLoad.name)) {
+            plugin.invokeIfOverrides(SusPlugin::handleAfterLoad.name) {
                 minix.log.debug { "Running handleAfterLoad for ${plugin.name}" }
                 plugin.handleAfterLoad()
             }
@@ -85,7 +75,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
 
             val cache = pluginCache.getIfPresent(plugin)
 
-            if (plugin::class.doesOverride(SusPlugin::handleDisable.name)) {
+            plugin.invokeIfOverrides(SusPlugin::handleDisable.name) {
                 minix.log.debug { "Running handleDisable for ${plugin.name}" }
                 plugin.handleDisable()
             }
@@ -127,8 +117,8 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
 
     private suspend inline fun <reified P : MinixPlugin> P.shutdownInOrder() {
         for (ex in pluginCache[this].loadedExtensions.asReversed()) {
-            minix.log.debug { }
-            ex.handleUnload()
+            minix.log.debug { "Shutting down extension ${ex.name} for ${this.name}" }
+            ex.invokeIfOverrides(Extension<*>::handleUnload.name) { ex.handleUnload() }
         }
     }
 }

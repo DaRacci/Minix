@@ -2,6 +2,10 @@
 
 package dev.racci.minix.api.utils.minecraft
 
+import dev.racci.minix.api.aliases.ChatInputCallBack
+import dev.racci.minix.api.aliases.PlayerCallbackFunction
+import dev.racci.minix.api.aliases.PlayerMoveFunction
+import dev.racci.minix.api.aliases.PlayerQuitFunction
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PlayerService
 import net.kyori.adventure.text.ComponentLike

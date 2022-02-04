@@ -107,6 +107,10 @@ fun PluginManager.registerSuspendingEvents(
     plugin: MinixPlugin
 ) = coroutine.getCoroutineSession(plugin).eventService.registerSuspendListener(listener)
 
+fun MinixPlugin.registerSuspendingEvents(
+    listener: Listener
+) = coroutine.getCoroutineSession(this).eventService.registerSuspendListener(listener)
+
 /**
  * Calls an event with the given details.
  * Allows to await the completion of suspending event listeners.

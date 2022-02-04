@@ -36,7 +36,8 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, WithPlugin<P> {
             handleEnable()
         } catch (t: Throwable) {
             setState(ExtensionState.FAILED_LOADING)
-            throw InvalidExtensionException(this::class, t.stackTraceToString())
+            log.error { "Minix ran into an error while starting up ${this.name}" }
+            log.throwing(t)
         }
 
         setState(ExtensionState.LOADED)
@@ -47,9 +48,7 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, WithPlugin<P> {
         this.state = state
     }
 
-    open suspend fun handleUnload() {
-        log.trace { "Unload function not overridden." }
-    }
+    open suspend fun handleUnload() {}
 
     open suspend fun doUnload() {
         var error: Throwable? = null

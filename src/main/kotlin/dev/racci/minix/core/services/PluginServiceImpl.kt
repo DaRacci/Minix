@@ -29,7 +29,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
 
     override fun loadPlugin(plugin: MinixPlugin) {
         runBlocking {
-            loadModule { single { plugin } bind plugin::class }
+            loadModule { single { plugin } bind (plugin.bindToKClass ?: plugin::class) }
             plugin.invokeIfOverrides(SusPlugin::handleLoad.name) { plugin.handleLoad() }
         }
     }

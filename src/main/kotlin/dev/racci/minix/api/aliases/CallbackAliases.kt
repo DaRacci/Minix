@@ -1,4 +1,4 @@
-package dev.racci.minix.api.utils.minecraft
+package dev.racci.minix.api.aliases
 
 import net.kyori.adventure.text.ComponentLike
 import org.bukkit.entity.Player

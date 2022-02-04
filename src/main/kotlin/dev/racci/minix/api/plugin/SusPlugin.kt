@@ -1,8 +1,11 @@
 package dev.racci.minix.api.plugin
 
 import org.bukkit.plugin.Plugin
+import kotlin.reflect.KClass
 
 interface SusPlugin : Plugin {
+
+    val bindToKClass: KClass<out MinixPlugin>?
 
     /**
      * This is called when the server picks up your Plugin and has begun loading it.

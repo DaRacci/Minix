@@ -6,6 +6,7 @@ import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.getKoin
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.ApiStatus
+import kotlin.reflect.KClass
 
 /**
  * The superclass replacing [JavaPlugin],
@@ -14,6 +15,8 @@ import org.jetbrains.annotations.ApiStatus
  */
 @Suppress("LeakingThis")
 open class MinixPlugin : JavaPlugin(), SusPlugin {
+
+    override val bindToKClass: KClass<out MinixPlugin>? = null
 
     val log: MinixLogger get() = getKoin().get<PluginService>()[this].log
 

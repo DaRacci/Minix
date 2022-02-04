@@ -15,7 +15,6 @@ import dev.racci.minix.core.data.PlayerData
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
-import org.bukkit.event.server.PluginDisableEvent
 import java.util.UUID
 import kotlin.reflect.KClass
 
@@ -46,25 +45,20 @@ class PlayerServiceImpl(override val plugin: Minix) : Extension<Minix>(), Player
             val input = inputCallbacks.remove(player)
             input?.callback?.invoke(player, message()).invokeIfNotNull { cancel() }
         }
+
         event<PlayerMoveEvent>(ignoreCancelled = true) {
             if (displaced && functionsMove[player]?.run { callback.invoke(player) } == true) {
                 cancel()
             }
         }
-        event<PluginDisableEvent> {
-            inputCallbacks.entries.filter { it.value.plugin == plugin }.forEach {
-                inputCallbacks.remove(it.key)
-            }
-            functionsMove.entries.filter { it.value.plugin == plugin }.forEach {
-                functionsMove.remove(it.key)
-            }
-            functionsQuit.entries.filter { it.value.plugin == plugin }.forEach {
-                functionsQuit.remove(it.key)
-            }
-        }
     }
 
     override suspend fun handleUnload() {
+
+        for (collection in listOf(inputCallbacks, functionsQuit, functionsMove)) {
+            collection.keys.forEach(collection::remove)
+        }
+
         playerData.clear()
     }
 }

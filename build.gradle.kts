@@ -1,4 +1,3 @@
-import Dev_racci_minix_platform_gradle.Deps
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
 
 val minixConventions: String by project
@@ -23,21 +22,23 @@ repositories {
 }
 
 dependencies {
-    library(Deps.kotlin.stdlib)
-    library(Deps.kotlin.reflect)
-    library(Deps.kotlinx.dateTime.plus(":0.3.2"))
-    library(Deps.kotlinx.coroutines.plus(":1.6.0"))
-    library(Deps.kotlinx.immutableCollections.plus("-jvm:0.3.5"))
-    library(Deps.kotlinx.serialization.json.plus(":1.3.2"))
-    library(Deps.exposed.core.plus(":0.37.3"))
-    library(Deps.exposed.dao.plus(":0.37.3"))
-    library(Deps.exposed.jdbc.plus(":0.37.3"))
-    library(Deps.koin.core.plus("-jvm:3.1.5"))
-    library(Deps.logging.sentry.plus(":6.0.0-alpha.2"))
-    library(Deps.mordant.plus("-jvm:2.0.0-beta4"))
-    implementation(Deps.adventure.kotlin)
-    implementation(Deps.adventure.minimessage)
-    implementation(Deps.racci.minixNMS.plus(":$minixVersion"))
+    library(libs.kotlin.stdlib)
+    library(libs.kotlin.reflect)
+    library(libs.kotlinx.dateTime)
+    library(libs.kotlinx.coroutines)
+    library(libs.kotlinx.immutableCollections)
+    library(libs.kotlinx.serialization.json)
+    library(libs.exposed.core)
+    library(libs.exposed.dao)
+    library(libs.exposed.jdbc)
+    library(libs.hikariCP)
+    library(libs.koin.core)
+    library(libs.logging.sentry)
+    library(libs.mordant)
+    library(libs.caffeine)
+    implementation(libs.adventure.kotlin)
+    implementation(libs.adventure.minimessage)
+    implementation("dev.racci:Minix-NMS:$minixVersion")
 }
 
 bukkit {
@@ -56,20 +57,16 @@ bukkit {
 
 tasks {
 
-    assemble {
-        dependsOn(reobfJar)
-    }
-
     shadowJar {
         dependencyFilter.exclude {
-            it.moduleGroup == "org.jetbrains.kotlin" || it.moduleGroup == "org.jetbrains.intellij" || it.moduleGroup == "org.jetbrains" || it.moduleName == "adventure-api" || it.moduleName == "adventure-text-serializer-*" || it.moduleName == "adventure-key" || it.moduleName == "examination-*"
+            it.moduleGroup == "org.jetbrains.kotlin" || it.moduleGroup == "org.jetbrains.intellij" || it.moduleGroup == "org.jetbrains" || it.moduleName == "adventure-api" || it.moduleName == "adventure-text-serializer-*" || it.moduleName == "adventure-key" || it.moduleName == "examination-api" || it.moduleName == "examination-string"
         }
         relocate("net.kyori.adventure.text.minimessage", "dev.racci.minix.libs.kyori.minimessage")
         relocate("net.kyori.adventure.text.extra.kotlin", "dev.racci.minix.libs.kyroi.kotlin")
+        relocate("dev.racci.minix.nms", "dev.racci.minix.libs.nms")
     }
 
     compileKotlin {
-        dependsOn(ktlintFormat)
         kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
     }
 }

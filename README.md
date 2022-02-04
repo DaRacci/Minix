@@ -3,16 +3,23 @@
 
 # Minix
 
-![CI](https://github.com/DaRacci/Minix/actions/workflows/gradle-ci.yml/badge.svg)
-[![Package](https://badgen.net/maven/v/metadata-url/repo.racci.dev/releases/dev/racci/Minix/maven-metadata.xml)](https://repo.racci.dev/#/releases/dev/racci/Minix)
+# Minix-Conventions
+
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/DaRacci/Minix/Java%20CI?color=purple&style=for-the-badge)](https://github.com/DaRacci/Minix/actions/workflows/java-ci.yml)
+[![Maven metadata URL](https://img.shields.io/maven-metadata/v?color=purple&metadataUrl=https%3A%2F%2Frepo.racci.dev%2Freleases%2Fdev%2Fracci%2FMinix%2Fmaven-metadata.xml&style=for-the-badge)]()
+
+[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/DaRacci/Minix?color=purple&style=for-the-badge)]()
+[![Maintainability](https://img.shields.io/codeclimate/maintainability/DaRacci/Minix?color=purple&style=for-the-badge)]()
+[![Lines](https://img.shields.io/tokei/lines/github/DaRacci/Minix?color=purple&style=for-the-badge)]()
+[![Code Climate issues](https://img.shields.io/codeclimate/issues/DaRacci/Minix?color=purple&style=for-the-badge)]()
 
 Minix is library written for paper based plugins, providing full integration with [KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines) for easy Async integration with the Bukkit API.
 
-[![Releases](https://img.shields.io/github/v/release/DaRacci/Minix?color=informational)]()
-[![Servers](https://img.shields.io/bstats/servers/13706?color=informational)](https://bstats.org/plugin/bukkit/Minix/13706)
-[![Players](https://img.shields.io/bstats/players/13706?color=informational)](https://bstats.org/plugin/bukkit/Minix/13706)
-[![Docs](https://img.shields.io/badge/docs-gitbook-informational)]()
-[![Build](https://img.shields.io/github/workflow/status/DaRacci/Minix/Java%20CI/develop?color=informational)]()
+[![Releases](https://img.shields.io/github/v/release/DaRacci/Minix?color=purple&style=for-the-badge)]()
+[![Servers](https://img.shields.io/bstats/servers/13706?color=purple&style=for-the-badge)](https://bstats.org/plugin/bukkit/Minix/13706)
+[![Players](https://img.shields.io/bstats/players/13706?color=purple&style=for-the-badge)](https://bstats.org/plugin/bukkit/Minix/13706)
+[![Docs](https://img.shields.io/badge/docs-gitbook-informational?color=purple&style=for-the-badge)]()
+[![Build](https://img.shields.io/github/workflow/status/DaRacci/Minix/Java%20CI/develop?color=purple&style=for-the-badge)]()
 </div>
 
 ## Plugin Information

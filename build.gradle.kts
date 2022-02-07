@@ -31,7 +31,7 @@ dependencies {
     api("net.kyori:adventure-extra-kotlin:$adventureVersion")
     api("net.kyori:adventure-text-minimessage:$adventureVersion")
     api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
-    api("com.github.stefvanschie.inventoryframework:IF:0.10.3")
+    api("com.github.stefvanschie.inventoryframework:IF:0.10.4")
     transitiveAPI("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0")
     transitiveAPI("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0")
 

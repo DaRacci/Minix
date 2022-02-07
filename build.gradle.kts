@@ -39,7 +39,7 @@ dependencies {
     transitiveAPI("org.jetbrains.kotlin:kotlin-reflect:1.6.0")
 
     transitiveAPI("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1")
-    transitiveAPI("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.1")
+    transitiveAPI("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.2")
     transitiveAPI("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
     transitiveAPI("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt")
 

@@ -143,12 +143,13 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
             val s = if (player.isSneaking) "Shift" else return@event
             val c = if (action.isLeftClick) "Left" else "Right"
 
-            val clazz = Class.forName("dev.racci.instance.api.events.Player${s}${c}ClickEvent") as Class<AbstractComboEvent>
+            val clazz = Class.forName("dev.racci.minix.api.events.Player${s}${c}ClickEvent") as Class<AbstractComboEvent>
             val vEvent = classConstructor(
-                clazz.getConstructor(
-                    Player::class.java, ItemStack::class.java, BlockData::class.java, Entity::class.java
-                ),
-                player, item, bd, null
+                clazz.getConstructor(Player::class.java, ItemStack::class.java, BlockData::class.java, Entity::class.java),
+                player,
+                item,
+                bd,
+                null
             )
             pm.callEvent(vEvent)
 
@@ -184,19 +185,22 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
         @Suppress("UNCHECKED_CAST") event<PlayerSwapHandItemsEvent>(
             priority = EventPriority.LOW, ignoreCancelled = true, forceAsync = true
         ) {
-            var pd: PlayerData? = null
-            PlayerService.tryCast<PlayerServiceImpl> { pd = this[player.uniqueId] }
+            val pd: PlayerData = (get<PlayerService>() as PlayerServiceImpl)[player.uniqueId]
             val now = now().epochSeconds
             val shift = if (player.isSneaking) "Shift" else ""
-            val double = if (now - pd!!.lastOffhand <= 0.5) {
-                pd!!.lastOffhand = now
+            val double = if (now - pd.lastOffhand <= 0.5) {
+                pd.lastOffhand = now
                 "Double"
             } else if (shift.isEmpty()) return@event else ""
 
-            val clazz = Class.forName("dev.racci.instance.api.events.Player${shift}${double}OffhandEvent") as Class<AbstractComboEvent>
+            val clazz = Class.forName("dev.racci.minix.api.events.Player${shift}${double}OffhandEvent") as Class<AbstractComboEvent>
             val vEvent = classConstructor(
                 clazz.getConstructor(
-                    Player::class.java, ItemStack::class.java, ItemStack::class.java, BlockData::class.java, Entity::class.java
+                    Player::class.java,
+                    ItemStack::class.java,
+                    ItemStack::class.java,
+                    BlockData::class.java,
+                    Entity::class.java
                 ),
                 player, mainHandItem, offHandItem, null, null
             )

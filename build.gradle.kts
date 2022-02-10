@@ -149,7 +149,7 @@ tasks {
         dependsOn(gradle.includedBuilds.map { it.task(":clean") })
     }
 
-    dokkaHtmlMultiModule {
+    withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask> {
         outputDirectory.set(File("$rootDir/docs"))
     }
 }

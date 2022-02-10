@@ -29,6 +29,8 @@ dependencies {
     implementation("dev.racci:Minix-NMS:$minixVersion")
 }
 
+version = if (System.getenv("CI") != null) version else "DEV"
+
 bukkit {
     name = "Minix"
     prefix = "Minix"
@@ -88,9 +90,19 @@ allprojects {
         compileOnly(rootProject.libs.koin.core)
         compileOnly(rootProject.libs.caffeine)
         compileOnly("org.bstats:bstats-bukkit:2.2.1")
+
+        testImplementation(platform("org.junit:junit-bom:5.8.2"))
+        testImplementation("org.junit.jupiter:junit-jupiter")
+        testImplementation(kotlin("test"))
+        testImplementation(rootProject.libs.koin.test)
+        testImplementation("io.strikt:strikt-core:0.34.0")
     }
 
     tasks {
+
+        test {
+            useJUnitPlatform()
+        }
 
         dokkaHtml {
             dokkaSourceSets.configureEach {
@@ -149,7 +161,7 @@ tasks {
         dependsOn(gradle.includedBuilds.map { it.task(":clean") })
     }
 
-    dokkaHtmlMultiModule {
+    withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask> {
         outputDirectory.set(File("$rootDir/docs"))
     }
 }

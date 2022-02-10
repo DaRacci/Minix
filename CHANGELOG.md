@@ -4,11 +4,88 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+### Bug Fixes
+
+- Update workflow more ([c4cbedb](https://github.com/DaRacci/Minix/commit/c4cbedb46a8c2eb2325b03aaaafdce7ffc5f773a))
+- Update workflow more ([a8c2299](https://github.com/DaRacci/Minix/commit/a8c22999fb672e84af640fdfb0c1a339cb9aeddf))
+- Fix versioning ([668aa76](https://github.com/DaRacci/Minix/commit/668aa76fcca67c492783ec88ba3c8b7023ca7e9f))
+- Update workflow ([2958ced](https://github.com/DaRacci/Minix/commit/2958ced19725f0e07b4e65a18ad926f95523b1bf))
+- Fix links having an extra bracket ([85a307e](https://github.com/DaRacci/Minix/commit/85a307e1a4505368ad71be6af9309ffea3d21bd9))
+- Why docs no appear??? ([46020cc](https://github.com/DaRacci/Minix/commit/46020cc168623b6cf7d5725637492b2af81bcd80))
+- Dokka should be fixed now, and we'll see about the release task ([6a81590](https://github.com/DaRacci/Minix/commit/6a815900c0fa1b87ef49495ef56e1dc00d872de2))
+- Try fix dokka fail ([0131ee2](https://github.com/DaRacci/Minix/commit/0131ee28924b843991547ffc40d972d27d0f606f))
+- Fix mistyped bash ([fd78564](https://github.com/DaRacci/Minix/commit/fd7856453ddce5c6e7cb9c8403f443df9d30b992))
+- Hopefully last fix for workflows ([52da4b3](https://github.com/DaRacci/Minix/commit/52da4b35758190aae6a69e4cc05a2e6525349e1e))
+- More workflow fixes ([dda399c](https://github.com/DaRacci/Minix/commit/dda399ccb6c25e2cd40317108288e0825243614d))
+- Fix copyjar error with CI ([7dbd0e2](https://github.com/DaRacci/Minix/commit/7dbd0e2a4c305f0ff72f0b94e457e4170330a8e8))
+- Fix merge ([d45b64b](https://github.com/DaRacci/Minix/commit/d45b64bf63c3b15c58d32eb13fcaa61a87535e43))
+- Fix workflow ([e17bf7e](https://github.com/DaRacci/Minix/commit/e17bf7ef15022f74cba4d396be61f7f9074970d4))
+- Fix click events class reference ([0455751](https://github.com/DaRacci/Minix/commit/0455751770a2949ad52389c34a9534863a31dd83))
+
+### Features
+
+- Add bstats support ([af082ac](https://github.com/DaRacci/Minix/commit/af082ac11a42e2a6042ea8b119021543a9c4125b))
+- Implement test version of extended water event invoker ([41fa552](https://github.com/DaRacci/Minix/commit/41fa5523259edee1fd5584f77ec8bd65c51bead9))
+- Add MaterialTagsExtension.kt for more material categories ([a4ccece](https://github.com/DaRacci/Minix/commit/a4ccece66ff989922a3dc1ab2ae18759aa62b8e3))
+- Return the object after invokeIfNull and invokeIfNotNull functions ([0c71923](https://github.com/DaRacci/Minix/commit/0c719239f2e95ec3da09e34e0f9b30ceda6cb747))
+- Add PlayerLightEvent for when the players light level changes ([25d76a5](https://github.com/DaRacci/Minix/commit/25d76a55b244d95e0c7af4e7e563de93352544d8))
+
 ### Miscellaneous Tasks
 
+- Delete CNAME as docs are on another branch now ([426dcc1](https://github.com/DaRacci/Minix/commit/426dcc18ff22ad7baa209efe795c5c732a72787f))
+- Forgot to add the id for Minix itself ([ebb8e03](https://github.com/DaRacci/Minix/commit/ebb8e030343329d833fff1d1ef6ca6bf0f740d55))
+- Separate modules into core and api ([4b3aae8](https://github.com/DaRacci/Minix/commit/4b3aae84709d7a4e561c7f70063218dbc053bc6f))
+- Suppress internal warnings and try figure out why sentry doesn't actually work ([3c818ea](https://github.com/DaRacci/Minix/commit/3c818ea196751fdb9ab3ef0b7d220b01c88d9232))
+- Sealed base item builder ([aafdfaa](https://github.com/DaRacci/Minix/commit/aafdfaad6ee903692b07d992820146f2dc99297f))
+- Convert lazy coroutine to public with internal annotation ([550efe1](https://github.com/DaRacci/Minix/commit/550efe1e18f4409ac4e6477378979a840851432a))
+- Update workflow ([b40dd33](https://github.com/DaRacci/Minix/commit/b40dd330e55d3db68602f9489992ee06d15fe7c0))
+- Add cliff config and CHANGELOG.md ([c8c668f](https://github.com/DaRacci/Minix/commit/c8c668fdaab77f273d09fc344d8e0df53fc579ac))
 - Update dependabot config ([0d6d451](https://github.com/DaRacci/Minix/commit/0d6d45155d8a2aee7898a68a290519cd42d9b319))
 
 ### Other
+
+- Merge branch 'dev'
+
+([465bb30](https://github.com/DaRacci/Minix/commit/465bb3041088b5f2745433e673b0b9ce5fe032b1))
+
+- Merge branch 'master' into dev
+
+([1bf0968](https://github.com/DaRacci/Minix/commit/1bf0968179e13b1d5c280f9d124659555777ac46))
+
+- Merge branch 'dev' ([9d004cc](https://github.com/DaRacci/Minix/commit/9d004cc4e48b2d03e939aeabca74ecccc2595114))
+- Merge pull request #31 from DaRacci/dependabot/gradle/org.bstats-bstats-bukkit-3.0.0
+
+Bump bstats-bukkit from 2.2.1 to 3.0.0 ([cb5a163](https://github.com/DaRacci/Minix/commit/cb5a163ae728912efdaaca763f3a4acce01891f3))
+
+- Merge pull request #30 from DaRacci/dependabot/github_actions/actions/cache-2.1.7
+
+Bump actions/cache from 2.1.6 to 2.1.7 ([f173961](https://github.com/DaRacci/Minix/commit/f17396140314a1d815d5068474c436fd4da4ccbd))
+
+- Bump bstats-bukkit from 2.2.1 to 3.0.0
+
+Bumps [bstats-bukkit](https://github.com/Bastian/bStats-Metrics) from 2.2.1 to 3.0.0.
+
+- [Release notes](https://github.com/Bastian/bStats-Metrics/releases)
+- [Commits](https://github.com/Bastian/bStats-Metrics/compare/v2.2.1...v3.0.0)
+
+---
+updated-dependencies:
+
+- dependency-name: org.bstats:bstats-bukkit dependency-type: direct:production update-type: version-update:semver-major ... ([74acb8b](https://github.com/DaRacci/Minix/commit/74acb8b5be1e767e70784df31967ce07996d7b2e))
+- Bump actions/cache from 2.1.6 to 2.1.7
+
+Bumps [actions/cache](https://github.com/actions/cache) from 2.1.6 to 2.1.7.
+
+- [Release notes](https://github.com/actions/cache/releases)
+- [Commits](https://github.com/actions/cache/compare/v2.1.6...v2.1.7)
+
+---
+updated-dependencies:
+
+- dependency-name: actions/cache dependency-type: direct:production update-type: version-update:semver-patch ... ([a48b81f](https://github.com/DaRacci/Minix/commit/a48b81ffef16884ac68de03557d6fbab98f27738))
+- Merge pull request #29 from DaRacci/1.0.0-DEV
+
+1.0.0 DEV merge ([5155e81](https://github.com/DaRacci/Minix/commit/5155e818dd3dbf6c78b60f753025539383f06c74))
 
 - Add paper repo back for paperdev plugin
   ([00bbe27](https://github.com/DaRacci/Minix/commit/00bbe270b319ca57d7697fa1808a8d74794c7f9d))
@@ -86,11 +163,9 @@ or my own plugins for easier bug tracking and fixing.
 Other stuff:
 Updated to Minix-Conventions version 30 Started redoing README.md with plans of implementing some actual documentation alongside this.
 ([d72129b](https://github.com/DaRacci/Minix/commit/d72129b20d4ce565d8861047f1e8e8d6c41ee78f))
-
 - [ci-skip] Beginning of DEV for 1.0.0 Release
 
 ## Major changes
-
 * Rebranding from RacciCore to Minix.
 * Now using Minix-Conventions for setting up and keeping gradle clean between all projects.
 * Modules are now going to be split up into specific sections such as API for general use, Kotlin for kotlin based extensions usable outside of minecraft development, and Core which will contain the backend brains of minix.
@@ -106,6 +181,9 @@ Updated to Minix-Conventions version 30 Started redoing README.md with plans of 
 * Updated Item builders with new docs, methods and a cleaner overall codebase.
   ([f6f3efb](https://github.com/DaRacci/Minix/commit/f6f3efb70c81a870d7f90b647af9447ffdc66781))
 
+- Update CNAME ([1b1cb42](https://github.com/DaRacci/Minix/commit/1b1cb42641efa18c3dce6943015189ba094a7aba))
+- Create CNAME ([2bac198](https://github.com/DaRacci/Minix/commit/2bac198c59693f02fc0a4013ad38d817c0a2113c))
+- Delete CNAME ([8384a79](https://github.com/DaRacci/Minix/commit/8384a79b41a4c0f26706e0a3d69d81e9985c5d8b))
 - Updated minimessage stuffs, added adventure extra kotlin
   ([9417f19](https://github.com/DaRacci/Minix/commit/9417f19c5ac794ccf7dcc213cb1190e9dcf92733))
 - Merge pull request #13 from DaRacci/dependabot/gradle/net.kyori-adventure-text-minimessage-4.10.0-SNAPSHOT
@@ -127,7 +205,6 @@ updated-dependencies:
 - Bump api from 2.1.0-SNAPSHOT to 2.1.1-SNAPSHOT
 
 Bumps [api](https://github.com/GeyserMC/Floodgate) from 2.1.0-SNAPSHOT to 2.1.1-SNAPSHOT.
-
 - [Release notes](https://github.com/GeyserMC/Floodgate/releases)
 - [Commits](https://github.com/GeyserMC/Floodgate/commits)
 
@@ -231,11 +308,9 @@ updated-dependencies:
 - Merge pull request #11 from DaRacci/dependabot/gradle/org.geysermc.floodgate-api-2.1.0-SNAPSHOT
 
 Bump api from 2.0-SNAPSHOT to 2.1.0-SNAPSHOT ([944d77f](https://github.com/DaRacci/Minix/commit/944d77fea6daac4d6a0b3be724d98cd284240553))
-
 - Bump api from 2.0-SNAPSHOT to 2.1.0-SNAPSHOT
 
 Bumps [api](https://github.com/GeyserMC/Floodgate) from 2.0-SNAPSHOT to 2.1.0-SNAPSHOT.
-
 - [Release notes](https://github.com/GeyserMC/Floodgate/releases)
 - [Commits](https://github.com/GeyserMC/Floodgate/commits)
 
@@ -286,11 +361,9 @@ updated-dependencies:
 - Merge pull request #10 from DaRacci/dependabot/gradle/org.jetbrains.dokka-1.6.0
 
 Bump org.jetbrains.dokka from 1.5.31 to 1.6.0 ([b100538](https://github.com/DaRacci/Minix/commit/b100538bbd3fe2a9c51f19af3990ba00e747fa70))
-
 - Bump org.jetbrains.dokka from 1.5.31 to 1.6.0
 
 Bumps [org.jetbrains.dokka](https://github.com/Kotlin/dokka) from 1.5.31 to 1.6.0.
-
 - [Release notes](https://github.com/Kotlin/dokka/releases)
 - [Commits](https://github.com/Kotlin/dokka/compare/v1.5.31...v1.6.0)
 
@@ -309,7 +382,6 @@ updated-dependencies:
 - Merge pull request #9 from DaRacci/dependabot/gradle/jvm-1.6.0
 
 Bump jvm from 1.6.0-RC2 to 1.6.0 ([791da0f](https://github.com/DaRacci/Minix/commit/791da0ff744b7adb2d36cd842ab576ffcf843eb3))
-
 - Bump jvm from 1.6.0-RC2 to 1.6.0
 
 Bumps jvm from 1.6.0-RC2 to 1.6.0.
@@ -321,7 +393,6 @@ updated-dependencies:
 - Merge pull request #7 from DaRacci/dependabot/gradle/plugin.serialization-1.6.0
 
 Bump plugin.serialization from 1.5.31 to 1.6.0 ([bb0b246](https://github.com/DaRacci/Minix/commit/bb0b2461d047dc3fa77757002510da3b55d96219))
-
 - Bump plugin.serialization from 1.5.31 to 1.6.0
 
 Bumps plugin.serialization from 1.5.31 to 1.6.0.
@@ -400,7 +471,6 @@ updated-dependencies:
 - Merge pull request #5 from DaRacci/dependabot/gradle/com.mojang-authlib-2.3.31
 
 Bump authlib from 1.5.21 to 2.3.31 ([b72bd2d](https://github.com/DaRacci/Minix/commit/b72bd2d800a2d47ae2a11b21f3f75ec5a9a8febe))
-
 - [SKIP] Fix ComboListeners
   ([c4a384a](https://github.com/DaRacci/Minix/commit/c4a384a245209304221ca1966c9bd3a403d0a322))
 - Bump authlib from 1.5.21 to 2.3.31
@@ -519,7 +589,6 @@ build.gradle.kts - Add Kotlin stdLib, reflection and KotlinX Coroutines Core, Co
 
 gradle.properties - Bump version to 0.2.0 and enable gradle caching
 ([8a58874](https://github.com/DaRacci/Minix/commit/8a588741f23bd76a9c7955113ae838fd23f295c4))
-
 - Rename and update import location
   ([1f90588](https://github.com/DaRacci/Minix/commit/1f905888aa7a277c0b2b176b95740c8ca8e35761))
 - Update versions inside lib file
@@ -799,15 +868,12 @@ updated-dependencies:
 - Merge remote-tracking branch 'origin/master'
 
 ([a0fe3bb](https://github.com/DaRacci/Minix/commit/a0fe3bbd2ece0ee66988784e69567096b7e98e2c))
-
 - Missed files
 
 woops missed these files in the push ([839b4ee](https://github.com/DaRacci/Minix/commit/839b4ee06a1c45aa1d7bce1e027411e1c3fa78fe))
-
 - Add Docs and misc
 
 Made some fixes to null returns and added jvmNames to some files missing it. Also added docs and updated pom.xml ([e0f16eb](https://github.com/DaRacci/Minix/commit/e0f16eb1aece59cbd3e5c14c964d3fd85fd81369))
-
 - Rename LICENSE to LICENSE.md ([ed93012](https://github.com/DaRacci/Minix/commit/ed930127b48b0adc15b262b8260b3ad259ec86af))
 - Create LICENSE ([dce5b6f](https://github.com/DaRacci/Minix/commit/dce5b6f7087c098f062e4438b69e4f4cd5ee9649))
 - Create README.md ([1530ba8](https://github.com/DaRacci/Minix/commit/1530ba8c0d20b3158013d72cbfa09db348e17135))

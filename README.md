@@ -13,13 +13,11 @@
 [![Lines](https://img.shields.io/tokei/lines/github/DaRacci/Minix?color=purple&style=for-the-badge)]()
 [![Code Climate issues](https://img.shields.io/codeclimate/issues/DaRacci/Minix?color=purple&style=for-the-badge)]()
 
-Minix is library written for paper based plugins, providing full integration with [KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines) for easy Async integration with the Bukkit API.
-
-[![Releases](https://img.shields.io/github/v/release/DaRacci/Minix?color=purple&style=for-the-badge)]()
 [![Servers](https://img.shields.io/bstats/servers/13706?color=purple&style=for-the-badge)](https://bstats.org/plugin/bukkit/Minix/13706)
 [![Players](https://img.shields.io/bstats/players/13706?color=purple&style=for-the-badge)](https://bstats.org/plugin/bukkit/Minix/13706)
-[![Docs](https://img.shields.io/badge/docs-gitbook-informational?color=purple&style=for-the-badge)]()
-[![Build](https://img.shields.io/github/workflow/status/DaRacci/Minix/Java%20CI/develop?color=purple&style=for-the-badge)]()
+
+Minix is library written for paper based plugins, providing full integration with [KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines) for easy Async integration with the Bukkit API.
+
 </div>
 
 ## Plugin Information

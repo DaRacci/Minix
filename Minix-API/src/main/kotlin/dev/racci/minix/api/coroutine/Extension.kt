@@ -8,12 +8,14 @@ import org.bukkit.command.PluginCommand
 import org.bukkit.event.Event
 import org.bukkit.event.Listener
 import org.bukkit.plugin.PluginManager
+import org.jetbrains.annotations.ApiStatus
 import kotlin.coroutines.CoroutineContext
 
 /**
  * Static session.
  */
-internal val coroutine: Coroutine by lazy {
+@get:ApiStatus.Internal
+val coroutine: Coroutine by lazy {
     Class.forName("dev.racci.minix.core.coroutine.impl.CoroutineImpl").newInstance() as Coroutine
 }
 

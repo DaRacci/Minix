@@ -12,9 +12,11 @@ import dev.racci.minix.api.plugin.SusPlugin
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.kotlin.ifNotEmpty
+import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import dev.racci.minix.api.utils.kotlin.invokeIfOverrides
 import dev.racci.minix.api.utils.loadModule
 import kotlinx.coroutines.runBlocking
+import org.bstats.bukkit.Metrics
 import org.koin.dsl.bind
 import kotlin.reflect.KClass
 
@@ -52,8 +54,13 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
             cache.extensions.ifNotEmpty { plugin.startInOrder() }
 
             cache.listeners.ifNotEmpty { collection ->
-                minix.log.debug { "Registering ${collection.size} listeners for ${plugin.name} " }
+                minix.log.debug { "Registering ${collection.size} listeners for ${plugin.name}" }
                 collection.forEach(plugin::registerSuspendingEvents)
+            }
+
+            plugin.bStatsId.invokeIfNotNull {
+                minix.log.debug { "Registering bStats for ${plugin.name}" }
+                cache.metrics = Metrics(plugin, it)
             }
 
             plugin.invokeIfOverrides(SusPlugin::handleAfterLoad.name) {

@@ -2,6 +2,7 @@ package dev.racci.minix.api.plugin
 
 import dev.racci.minix.api.extension.Extension
 import kotlinx.coroutines.flow.MutableSharedFlow
+import org.bstats.bukkit.Metrics
 import org.bukkit.event.Listener
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.memberProperties
@@ -29,4 +30,6 @@ class PluginData<P : MinixPlugin>(val plugin: P) {
     val listeners by lazy { mutableListOf<Listener>() }
 
     val log by lazy { MinixLogger(plugin) }
+
+    var metrics: Metrics? = null
 }

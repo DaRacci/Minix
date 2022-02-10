@@ -59,7 +59,7 @@ jobs:
           cache: gradle
 
       - name: Build docs
-        run: ./gradlew dokkaHtmlMulitModule --info
+        run: ./gradlew dokkaHtmlMultiModule --info
 
       - uses: dorny/paths-filter@v2
         id: filter
@@ -116,7 +116,7 @@ jobs:
       - name: Upload release
         uses: svenstaro/upload-release-action@latest
         with:
-          file: build/libs/**
+          file: build/libs
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref }}
           body: ${{ steps.release.outputs.RELEASE_BODY }}

@@ -21,6 +21,8 @@ import java.util.logging.Level
 
 class MinixImpl : Minix() {
 
+    override val bStatsId = 13706
+
     override fun onLoad() {
         startKoin()
         logger.level = Level.ALL

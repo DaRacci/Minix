@@ -57,7 +57,6 @@ jobs:
             changed:
               - "Minix-API/src/**"
               - "Minix-Core/src/**"
-      - name: Update docs
 
       - name: Build docs
         if: steps.changes.outputs.changed == 'true'

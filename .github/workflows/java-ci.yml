@@ -58,17 +58,7 @@ jobs:
           java-version: 17
           cache: gradle
 
-      - name: Check if docs need updating
-        uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            changed:
-              - "Minix-API/src/**"
-              - "Minix-Core/src/**"
-
       - name: Build docs
-        if: steps.changes.outputs.changed == 'true'
         run: ./gradlew dokkaHtmlMulitModule --info
 
       - uses: dorny/paths-filter@v2

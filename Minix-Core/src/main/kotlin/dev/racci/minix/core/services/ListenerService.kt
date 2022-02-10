@@ -1,8 +1,10 @@
 package dev.racci.minix.core.services
 
+import dev.racci.minix.api.coroutine.launchAsync
 import dev.racci.minix.api.events.AbstractComboEvent
 import dev.racci.minix.api.events.BlockData
 import dev.racci.minix.api.events.LiquidType
+import dev.racci.minix.api.events.LiquidType.Companion.liquidType
 import dev.racci.minix.api.events.PlayerEnterLiquidEvent
 import dev.racci.minix.api.events.PlayerExitLiquidEvent
 import dev.racci.minix.api.events.PlayerMoveFullXYZEvent
@@ -19,18 +21,20 @@ import dev.racci.minix.api.services.PlayerService
 import dev.racci.minix.api.utils.classConstructor
 import dev.racci.minix.api.utils.kotlin.and
 import dev.racci.minix.api.utils.now
-import dev.racci.minix.api.utils.tryCast
 import dev.racci.minix.core.data.PlayerData
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.Action
+import org.bukkit.event.block.BlockFromToEvent
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.inventory.ItemStack
+import org.koin.core.component.get
 
 class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
@@ -89,9 +93,50 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
             }
         }
 
-        @Suppress("UNCHECKED_CAST") event<PlayerInteractEvent>(
-            priority = EventPriority.LOW, ignoreCancelled = true, forceAsync = true
+        event<PlayerBucketEmptyEvent>(
+            priority = EventPriority.HIGH,
+            ignoreCancelled = true,
         ) {
+            val nearby = block.location.getNearbyEntitiesByType(Player::class.java, 0.5, 0.5, 0.5)
+            if (nearby.isEmpty()) {
+                log.debug { "No nearby players found for bucket event" }
+                return@event
+            }
+            plugin.launchAsync {
+                nearby.asSequence().filterNot(Player::isDead).forEach {
+                    pm.callEvent<PlayerEnterLiquidEvent> {
+                        mapOf(
+                            this[0] to it,
+                            this[1] to player.location.block.liquidType,
+                            this[2] to bucket.liquidType,
+                        )
+                    }
+                }
+            }
+        }
+
+        event<BlockFromToEvent>(
+            priority = EventPriority.HIGH,
+            ignoreCancelled = true,
+        ) {
+            if (!block.isLiquid) return@event
+            val nearby = toBlock.location.getNearbyEntitiesByType(Player::class.java, 0.5, 0.5, 0.5)
+            if (nearby.isEmpty()) return@event
+            plugin.launchAsync {
+                nearby.asSequence().filterNot(Player::isDead).forEach {
+                    log.debug { "Found nearby player $it" }
+                    pm.callEvent<PlayerEnterLiquidEvent> {
+                        mapOf(
+                            this[0] to it,
+                            this[1] to LiquidType.convert(block),
+                            this[2] to LiquidType.convert(toBlock),
+                        )
+                    }
+                }
+            }
+        }
+
+        @Suppress("UNCHECKED_CAST") event<PlayerInteractEvent>(priority = EventPriority.LOW, ignoreCancelled = true, forceAsync = true) {
             if (action == Action.PHYSICAL) return@event
 
             val bd = if (clickedBlock != null) BlockData(clickedBlock!!, blockFace) else null

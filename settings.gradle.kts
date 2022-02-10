@@ -32,3 +32,6 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Minix"
+
+include("Minix-Core")
+include("Minix-API")

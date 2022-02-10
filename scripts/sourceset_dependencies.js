@@ -1,0 +1,1 @@
+sourceset_dependencies = '{":Minix-API:dokkaHtmlPartial/main":[],":Minix-Core:dokkaHtmlPartial/main":[]}'

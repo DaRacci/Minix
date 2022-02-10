@@ -54,6 +54,7 @@ bukkit {
         libs.mordant.get().toString(),
         libs.caffeine.get().toString(),
         libs.adventure.kotlin.get().toString(),
+        "org.bstats:bstats-bukkit:2.2.1",
     )
     website = "https://minix.racci.dev/"
 }
@@ -64,7 +65,6 @@ tasks.shadowJar {
         include(project("Minix-API"))
         include(dependency(rootProject.libs.adventure.kotlin.get()))
         include(dependency(rootProject.libs.adventure.minimessage.get()))
-        include(dependency("dev.racci:Minix-NMS:$minixVersion"))
     }
 }
 
@@ -87,6 +87,7 @@ allprojects {
         compileOnly(rootProject.libs.kotlinx.coroutines)
         compileOnly(rootProject.libs.koin.core)
         compileOnly(rootProject.libs.caffeine)
+        compileOnly("org.bstats:bstats-bukkit:2.2.1")
     }
 
     tasks {
@@ -150,7 +151,6 @@ tasks {
 
     dokkaHtmlMultiModule {
         outputDirectory.set(File("$rootDir/docs"))
-        moduleName.set("Minix")
     }
 }
 

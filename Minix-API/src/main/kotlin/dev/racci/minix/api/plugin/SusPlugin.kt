@@ -5,6 +5,7 @@ import kotlin.reflect.KClass
 
 interface SusPlugin : Plugin {
 
+    val bStatsId: Int?
     val bindToKClass: KClass<out MinixPlugin>?
 
     /**

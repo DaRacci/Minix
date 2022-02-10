@@ -4,6 +4,7 @@ import dev.racci.minix.api.annotations.MinixDsl
 import dev.racci.minix.api.extension.ExtensionStateEvent
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.getKoin
+import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.ApiStatus
 import kotlin.reflect.KClass
@@ -16,9 +17,11 @@ import kotlin.reflect.KClass
 @Suppress("LeakingThis")
 open class MinixPlugin : JavaPlugin(), SusPlugin {
 
+    override val bStatsId: Int? = null
     override val bindToKClass: KClass<out MinixPlugin>? = null
 
     val log: MinixLogger get() = getKoin().get<PluginService>()[this].log
+    val metrics: Metrics? get() = getKoin().get<PluginService>()[this].metrics
 
     @ApiStatus.Internal
     @ApiStatus.NonExtendable

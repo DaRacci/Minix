@@ -4,6 +4,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven("https://repo.racci.dev/releases")
+        maven("https://papermc.io/repo/repository/maven-public/")
     }
     plugins {
         val kotlinVersion: String by settings

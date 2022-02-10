@@ -18,7 +18,6 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.bind
 import org.koin.dsl.single
 import java.util.logging.Level
-import kotlin.collections.set
 
 class MinixImpl : Minix() {
 
@@ -50,23 +49,22 @@ class MinixImpl : Minix() {
         loadModule { single { PluginServiceImpl(this@MinixImpl) } bind PluginService::class }
     }
 
+    @Suppress("UnstableApiUsage")
     private fun startSentry() {
         if (this.config.getBoolean("EnableSentry", true)) {
             Sentry.init { options ->
                 options.dsn = "https://80dedb0e861949509a7ed845deaca185@o1112455.ingest.sentry.io/6147185"
                 options.release = description.version
-                options.setBeforeBreadcrumb { breadcrumb, _ ->
-                    if (breadcrumb.message == null || breadcrumb.message!!.contains("Ignore", true)) {
-                        return@setBeforeBreadcrumb null
-                    }
+                options.setBeforeBreadcrumb { breadcrumb, _ -> //                    if (breadcrumb.message == null || breadcrumb.message!!.contains("Ignore", true)) {
+                    //                        return@setBeforeBreadcrumb null
+                    //                    }
                     // Add some relevant information to the breadcrumb.
                     breadcrumb.data["Minecraft Version"] = server.minecraftVersion
                     breadcrumb.data["Server Version"] = server.version
                     breadcrumb.data["Server Fork"] = server.name
                     breadcrumb.data["TPS"] = server.tps
                     breadcrumb
-                }
-                // I only want my own errors not whatever else goes on
+                } // I only want my own errors not whatever else goes on
 //                options.inAppIncludes += "dev.racci"
             }
         }

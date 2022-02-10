@@ -1,74 +1,66 @@
-<img src="https://cdn.discordapp.com/attachments/431545763928211457/853353180271214662/mfthread.png">
-<h1 align="center">Racci Core</h1>
-<p>
-  <a href="https://jitpack.io/#DaRacci/RacciCore"><img src="https://jitpack.io/v/DaRacci/RacciCore.svg?style=flat-square" alt="language"/></a>
-  <img src="https://img.shields.io/github/license/DaRacci/RacciCore?color=blue&style=flat-square"  alt="license"/>
-<a href="https://discord.gg/9D986MAfZk"><img src="https://img.shields.io/discord/812625173315584030?label=discord&style=flat-square"  alt="language"/></a>
-</p>
+![IMG](https://cdn.discordapp.com/attachments/431545763928211457/853353180271214662/mfthread.png)
+<div align="center">
 
-### Plugin Information
-  - Supports 1.16.5+
+# Minix
 
-# Information for development
+# Minix-Conventions
 
-## Javadoc
-* The 0.1.7 Javadoc can be found [here](https://javadoc.jitpack.io/com/github/DaRacci/RacciCore/0.1.7/javadoc)
-* You can also get the docs from [here](https://racciCore.sylphmc.com) with the GitHub format. 
-  
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/DaRacci/Minix/Java%20CI?color=purple&style=for-the-badge)](https://github.com/DaRacci/Minix/actions/workflows/java-ci.yml)
+[![Maven metadata URL](https://img.shields.io/maven-metadata/v?color=purple&metadataUrl=https%3A%2F%2Frepo.racci.dev%2Freleases%2Fdev%2Fracci%2FMinix%2Fmaven-metadata.xml&style=for-the-badge)]()
+
+[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/DaRacci/Minix?color=purple&style=for-the-badge)]()
+[![Maintainability](https://img.shields.io/codeclimate/maintainability/DaRacci/Minix?color=purple&style=for-the-badge)]()
+[![Lines](https://img.shields.io/tokei/lines/github/DaRacci/Minix?color=purple&style=for-the-badge)]()
+[![Code Climate issues](https://img.shields.io/codeclimate/issues/DaRacci/Minix?color=purple&style=for-the-badge)]()
+
+Minix is library written for paper based plugins, providing full integration with [KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines) for easy Async integration with the Bukkit API.
+
+[![Releases](https://img.shields.io/github/v/release/DaRacci/Minix?color=purple&style=for-the-badge)]()
+[![Servers](https://img.shields.io/bstats/servers/13706?color=purple&style=for-the-badge)](https://bstats.org/plugin/bukkit/Minix/13706)
+[![Players](https://img.shields.io/bstats/players/13706?color=purple&style=for-the-badge)](https://bstats.org/plugin/bukkit/Minix/13706)
+[![Docs](https://img.shields.io/badge/docs-gitbook-informational?color=purple&style=for-the-badge)]()
+[![Build](https://img.shields.io/github/workflow/status/DaRacci/Minix/Java%20CI/develop?color=purple&style=for-the-badge)]()
+</div>
+
 ## Plugin Information
-  
-RacciCore is a standalone plugin, so it can provide all of its features, this means you will have to install it
-on the server with your plugin, to depend on RacciCore add it as a dependency in your plugin.yml:
+
+- Supports 1.18.1+
+
+## Docs
+
+* The docs can be found [here](https://minix.racci.dev)
+
+## Plugin Information
+
+Minix is a standalone plugin, so it can provide all of its features, this means you will have to install it on the server with your plugin, to depend on Minix add it as a dependency in your plugin.yml:
 
 ```yaml
 depend:
-  - RacciCore
+  - Minix
 ```
-  
-## Get from JitPack:
 
-Gradle:
+## Getting started:
 
 ```kotlin
 repositories {
-        maven("https://jitpack.io")
+        maven("https://repo.racci.dev/releases/")
 }
 ```
 
 ```kotlin
 dependencies {
-        compileOnly("com.github.DaRacci:RacciCore:tag")
+    compileOnly("dev.racci:Minix:tag")
 }
 ```
 
-Replace `tag` with a release tag, eg `0.2.0`.
-  
-Maven:
-
-```xml
-<repository>
-        <id>jitpack.io</id>
-        <url>https://jitpack.io</url>
-</repository>
-```
-
-```xml
-<dependency>
-        <groupId>com.github.DaRacci</groupId>
-        <artifactId>RacciCore</artifactId>
-        <version>tag</version>
-        <scope>provided</scope>
-</dependency>
-```
-  
-Replace `tag` with a release tag, eg `0.2.0`.
+Replace `tag` with a release tag, eg `1.0.0`.
 
 ## 🤝 Contributing
 
-Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/DaRacci/RacciCore/issues).
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](https://github.com/DaRacci/Minix/issues).
 
 ## 📝 License
 
-Copyright © 2021 [Racci](https://github.com/DaRacci)
-  
-This project is [licensed](https://github.com/DaRacci/RacciCore/blob/master/LICENSE.md).
+Copyright © 2021-2022 [Racci](https://github.com/DaRacci)
+
+This project is [licensed](https://github.com/DaRacci/Minix/blob/master/LICENSE.md).

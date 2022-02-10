@@ -1,210 +1,159 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
+import java.net.URL
+
+val minixConventions: String by project
+val minixVersion: String by project
+val kotlinVersion: String by project
+
 plugins {
-    `java-library`
-    `maven-publish`
-    kotlin("jvm") version "1.6.0"
-    id("org.jetbrains.dokka") version "1.6.0"
-    kotlin("plugin.serialization") version "1.6.0"
-    id("com.github.johnrengelman.shadow") version "7.1.0"
-}
-
-group = "com.sylphmc"
-version = "0.3.1"
-
-val transitiveAPI: Configuration by configurations.creating {
-    attributes {
-        attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
-        attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage.JAVA_RUNTIME))
-    }
-    isCanBeResolved = false
-    isCanBeConsumed = true
-}
-
-configurations.compileOnlyApi {
-    extendsFrom(transitiveAPI)
-}
-
-val adventureVersion = "4.10.0-SNAPSHOT"
-
-dependencies {
-
-    api("net.kyori:adventure-api:$adventureVersion")
-    api("net.kyori:adventure-extra-kotlin:$adventureVersion")
-    api("net.kyori:adventure-text-minimessage:$adventureVersion")
-    api("co.aikar:acf-paper:0.5.0-SNAPSHOT")
-    api("com.github.stefvanschie.inventoryframework:IF:0.10.3")
-    transitiveAPI("com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0")
-    transitiveAPI("com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0")
-
-    transitiveAPI("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0")
-    transitiveAPI("org.jetbrains.kotlin:kotlin-reflect:1.6.0")
-
-    transitiveAPI("org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1")
-    transitiveAPI("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.1")
-    transitiveAPI("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt")
-    transitiveAPI("org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt")
-
-    compileOnly("com.mojang:authlib:2.3.31")
-    compileOnly("me.clip:placeholderapi:2.10.10")
-    compileOnly("org.purpurmc.purpur:purpur-api:1.18-R0.1-SNAPSHOT")
-    compileOnly("org.geysermc.floodgate:api:2.1.1-SNAPSHOT")
-
-    testImplementation("org.jetbrains.kotlin:kotlin-test:1.6.0")
-
-}
-
-tasks {
-
-    test {
-        useJUnitPlatform()
-    }
-
-    processResources {
-        from(sourceSets.main.get().resources.srcDirs) {
-            filesMatching("plugin.yml") {
-                expand(
-                    "version" to project.version,
-                    "libraries" to "libraries:\n"
-                                + "  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-core:1.5.0\n"
-                                + "  - com.github.shynixn.mccoroutine:mccoroutine-bukkit-api:1.5.0\n"
-                                + "  - org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0\n"
-                                + "  - org.jetbrains.kotlin:kotlin-reflect:1.6.0\n"
-                                + "  - org.jetbrains.kotlinx:kotlinx-datetime-jvm:0.3.1\n"
-                                + "  - org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.3.1\n"
-                                + "  - org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2-native-mt\n"
-                                + "  - org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.5.2-native-mt"
-                )}
-            duplicatesStrategy = DuplicatesStrategy.INCLUDE
-        }
-    }
-
-    java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    compileKotlin {
-        kotlinOptions.suppressWarnings = true
-        kotlinOptions.jvmTarget = "17"
-        kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
-    }
-
-    withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
-        options.release.set(17)
-    }
-
-    val devServer by registering(Jar::class) {
-        dependsOn(shadowJar)
-        destinationDirectory.set(File("${System.getenv("HOME")}/Desktop/Minecraft/DevServer/plugins/"))
-        archiveClassifier.set("all")
-        from(zipTree(shadowJar.get().outputs.files.singleFile))
-    }
-
-    val sourcesJar by registering(Jar::class) {
-        dependsOn(JavaPlugin.CLASSES_TASK_NAME)
-        archiveClassifier.set("sources")
-        from(sourceSets["main"].allSource)
-    }
-
-    val javadocJar by registering(Jar::class) {
-        dependsOn("dokkaJavadoc")
-        archiveClassifier.set("javadoc")
-        from(dokkaJavadoc.get().outputDirectory)
-    }
-
-    dokkaHtml {
-        outputDirectory.set(File("$buildDir/../docs"))
-    }
-
-    artifacts {
-        archives(sourcesJar)
-        archives(javadocJar)
-    }
-
-    build {
-        if(System.getenv("CI") != "true") {
-            dependsOn(publishToMavenLocal)
-            dependsOn(devServer)
-        }
-    }
-
-}
-
-configure<PublishingExtension> {
-    repositories {
-
-        maven {
-            url = uri("https://maven.pkg.github.com/DaRacci/RacciCore")
-            credentials(PasswordCredentials::class)
-//            credentials {
-//                username = System.getenv("USERNAME") ?: findProperty("USERNAME").toString()
-//                password = System.getenv("TOKEN") ?: findProperty("TOKEN").toString()
-//            }
-        }
-    }
-    publications.create<MavenPublication>("maven") {
-        from(components["java"])
-        artifact(tasks["sourcesJar"])
-        artifact(tasks["javadocJar"])
-        groupId = project.group.toString()
-        artifactId = project.name.toLowerCase()
-        version = project.version.toString()
-        pom {
-            val projectGitUrl = "http://github.com/DaRacci/RacciCore"
-            name.set(project.name)
-            description.set(
-                "A Spigot library for use with kotlin." +
-                        "Providing Coroutines and lots of ASYNC to provide the best performance."
-            )
-            url.set(projectGitUrl)
-            inceptionYear.set("2021")
-            developers {
-                developer {
-                    name.set("Racci")
-                    url.set("https://www.github.com/DaRacci")
-                }
-            }
-            licenses {
-                license {
-                    name.set("GPL-3.0")
-                    url.set("https://opensource.org/licenses/GPL-3.0")
-                    distribution.set("repo")
-                }
-            }
-            issueManagement {
-                system.set("GitHub")
-                url.set("$projectGitUrl/issues")
-            }
-        }
-    }
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
+    id("dev.racci.minix.kotlin")
+    id("dev.racci.minix.copyjar")
+    id("dev.racci.minix.purpurmc")
+    kotlin("plugin.serialization")
+    id("dev.racci.minix.publication")
+    id("dev.racci.minix.nms")
+    id("net.minecrell.plugin-yml.bukkit") version "0.5.1"
 }
 
 repositories {
-    mavenCentral {
-        mavenContent {
-            excludeModule("net.kyori", "adventure-text-minimessage")
+    mavenCentral()
+    maven("https://jitpack.io")
+    maven("https://oss.sonatype.org/content/repositories/snapshots/")
+}
+
+dependencies {
+    implementation(project("Minix-Core"))
+    implementation(project("Minix-API"))
+    implementation(libs.adventure.kotlin)
+    implementation(libs.adventure.minimessage)
+    implementation("dev.racci:Minix-NMS:$minixVersion")
+}
+
+bukkit {
+    name = "Minix"
+    prefix = "Minix"
+    author = "Racci"
+    apiVersion = "1.18"
+    version = rootProject.version.toString()
+    main = "dev.racci.minix.core.MinixImpl"
+    load = PluginLoadOrder.STARTUP
+    loadBefore = listOf("Sylphia")
+    libraries = listOf(
+        libs.kotlin.stdlib.get().toString(),
+        libs.kotlin.reflect.get().toString(),
+        libs.kotlinx.dateTime.get().toString(),
+        libs.kotlinx.coroutines.get().toString(),
+        libs.kotlinx.immutableCollections.get().toString(),
+        libs.kotlinx.serialization.json.get().toString(),
+        libs.exposed.core.get().toString(),
+        libs.exposed.dao.get().toString(),
+        libs.exposed.jdbc.get().toString(),
+        libs.hikariCP.get().toString(),
+        libs.koin.core.get().toString(),
+        libs.logging.sentry.get().toString(),
+        libs.mordant.get().toString(),
+        libs.caffeine.get().toString(),
+        libs.adventure.kotlin.get().toString(),
+        "org.bstats:bstats-bukkit:2.2.1",
+    )
+    website = "https://minix.racci.dev/"
+}
+
+tasks.shadowJar {
+    dependencies {
+        include(project("Minix-Core"))
+        include(project("Minix-API"))
+        include(dependency(rootProject.libs.adventure.kotlin.get()))
+        include(dependency(rootProject.libs.adventure.minimessage.get()))
+    }
+}
+
+allprojects {
+
+    apply(plugin = "dev.racci.minix.kotlin")
+    apply(plugin = "dev.racci.minix.purpurmc")
+    apply(plugin = "dev.racci.minix.nms")
+    apply(plugin = "dev.racci.minix.publication")
+    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "org.jetbrains.dokka")
+
+    dependencies {
+        compileOnly(rootProject.libs.kotlin.stdlib)
+        compileOnly(rootProject.libs.kotlin.reflect)
+        compileOnly(rootProject.libs.kotlinx.dateTime)
+        compileOnly(rootProject.libs.kotlinx.immutableCollections)
+        compileOnly(rootProject.libs.kotlinx.serialization.json)
+        compileOnly(rootProject.libs.kotlinx.coroutines)
+        compileOnly(rootProject.libs.koin.core)
+        compileOnly(rootProject.libs.caffeine)
+        compileOnly("org.bstats:bstats-bukkit:2.2.1")
+    }
+
+    tasks {
+
+        dokkaHtml {
+            dokkaSourceSets.configureEach {
+                includeNonPublic.set(false)
+                skipEmptyPackages.set(true)
+                displayName.set(this@dokkaHtml.project.name.split("-")[1])
+                platform.set(org.jetbrains.dokka.Platform.jvm)
+                sourceLink {
+                    localDirectory.set(file("src/main/kotlin"))
+                    remoteUrl.set(URL("https://github.com/DaRacci/Minix/blob/master/src/main/kotlin"))
+                    remoteLineSuffix.set("#L")
+                }
+                jdkVersion.set(17)
+                externalDocumentationLink {
+                    url.set(URL("https://minix.racci.dev/"))
+                }
+            }
+        }
+
+        shadowJar {
+            val location = "dev.racci.minix.libs"
+            relocate("net.kyori.adventure.text.minimessage", "$location.kyori.minimessage")
+            relocate("dev.racci.minix.nms", "$location.nms")
+        }
+
+        compileKotlin {
+            kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
         }
     }
-    mavenLocal()
-    // Kyori
-    maven("https://oss.sonatype.org/content/repositories/snapshots/")
-    maven("https://jitpack.io")
-    // FloodGate
-    maven("https://repo.opencollab.dev/maven-snapshots/")
-    // AuthLib
-    maven("https://libraries.minecraft.net/")
-    // Purpur
-    maven("https://repo.purpurmc.org")
-    // Kotlin
-    maven("https://dl.bintray.com/kotlin/kotlin-dev/")
-    // ACF
-    maven("https://repo.aikar.co/content/groups/aikar/")
-    // PlaceholderAPI
-    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+}
+
+fun included(
+    build: String,
+    task: String
+) = gradle.includedBuild(build).task(task)
+
+tasks {
+
+    withType<PublishToMavenRepository> {
+        dependsOn(gradle.includedBuilds.map { it.task(":publish") })
+    }
+
+    withType<PublishToMavenLocal> {
+        dependsOn(gradle.includedBuilds.map { it.task(":publishToMavenLocal") })
+    }
+
+    ktlintFormat {
+        dependsOn(gradle.includedBuilds.map { it.task(":ktlintFormat") })
+    }
+
+    build {
+        dependsOn(gradle.includedBuilds.map { it.task(":build") })
+    }
+
+    clean {
+        dependsOn(gradle.includedBuilds.map { it.task(":clean") })
+    }
+
+    dokkaHtmlMultiModule {
+        outputDirectory.set(File("$rootDir/docs"))
+    }
+}
+
+ktlint {
+    enableExperimentalRules.set(false)
 }

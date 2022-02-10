@@ -51,12 +51,14 @@ inline fun <reified T : Any> T.invokeIfOverrides(
 fun <T> T.not(other: T) = takeUnless { it == other }
 fun <T> T.notIn(container: Iterable<T>) = takeUnless { it in container }
 
-inline fun <T> T?.invokeIfNotNull(block: (T) -> Unit) {
+inline fun <T> T?.invokeIfNotNull(block: (T) -> Unit): T? {
     if (this != null) block(this)
+    return this
 }
 
-inline fun <T> T?.invokeIfNull(block: () -> Unit) {
+inline fun <T> T?.invokeIfNull(block: () -> Unit): T? {
     if (this == null) block()
+    return this
 }
 
 inline fun Boolean?.ifTrue(block: () -> Unit) {

@@ -105,7 +105,7 @@ jobs:
 
       - name: Set release body
         id: release
-        shell: base
+        shell: bash
         run: |
           r=$(cat ${{ steps.git-cliff.outputs.changelog }})
           r="${r//'%'/'%25'}"

@@ -122,7 +122,8 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: Minix-${{ needs.build.outputs.version }}
-        run: ls .
+
+      - run: ls .
 
       - name: Upload release
         uses: svenstaro/upload-release-action@latest

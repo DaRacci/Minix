@@ -94,7 +94,6 @@ allprojects {
         testImplementation(platform("org.junit:junit-bom:5.8.2"))
         testImplementation("org.junit.jupiter:junit-jupiter")
         testImplementation(kotlin("test"))
-        testImplementation(rootProject.libs.koin.test)
         testImplementation("io.strikt:strikt-core:0.34.0")
     }
 

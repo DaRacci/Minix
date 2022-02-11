@@ -8,6 +8,8 @@ jobs:
   build:
     name: Build Minix
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract_version.outputs.version }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -34,14 +36,20 @@ jobs:
       - name: Build
         run: ./gradlew build --info
 
+      - name: Get version from gradle
+        shell: bash
+        id: extract_version
+        run: |
+          version=`./gradlew properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}'`
+          echo "::set-output name=version::$version"
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2.3.1
         with:
-          name: Minix-${{ steps.vars.outputs.sha_short }}
+          name: Minix-${{ steps.extract_version.outputs.version }}
           path: |
-            build/libs/Minix-*.jar
-            Minix-Core/build/libs/**
-            Minix-API/build/libs/**
+            build/libs/Minix-${{ steps.extract_version.outputs.version }}.jar
+            **/build/libs/Minix-*-*-sources.jar
 
   docs:
     name: Build and upload docs
@@ -92,6 +100,7 @@ jobs:
         uses: orhun/git-cliff-action@v1.1.6
         with:
           config: cliff.toml
+          args: -vv --latest --strip header --strip footer
         env:
           OUTPUT: CHANGELOG.md
 
@@ -108,7 +117,7 @@ jobs:
       - name: Upload release
         uses: svenstaro/upload-release-action@latest
         with:
-          file: build/libs
+          file: build/libs/**
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref }}
+          tag: ${{ needs.build.outputs.version }}
           body: ${{ steps.release.outputs.RELEASE_BODY }}

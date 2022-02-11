@@ -3,6 +3,8 @@ name: Java CI
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
+    branches: [ master, dev ]
 
 jobs:
   build:
@@ -10,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.extract_version.outputs.version }}
+      artifact: ${{ steps.build.outputs.artifact }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -34,7 +37,9 @@ jobs:
       - run: chmod +x ./gradlew
 
       - name: Build
-        run: ./gradlew build --info
+        run: |
+          ./gradlew build --info
+          artifact=`
 
       - name: Get version from gradle
         shell: bash
@@ -46,7 +51,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2.3.1
         with:
-          name: Minix-${{ steps.vars.outputs.sha_short }}
+          name: Minix-${{ steps.extract_version.outputs.version }}
           path: |
             build/libs/Minix-${{ steps.extract_version.outputs.version }}.jar
             **/build/libs/Minix-*-*-sources.jar
@@ -113,6 +118,11 @@ jobs:
           r="${r//$'\n'/'%0A'}"
           r="${r//$'\r'/'%0D'}"
           echo "::set-output name=body::$r"
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: Minix-${{ needs.build.outputs.version }}
+        run: ls .
 
       - name: Upload release
         uses: svenstaro/upload-release-action@latest

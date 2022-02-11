@@ -22,7 +22,7 @@ jobs:
           cache: gradle
 
       - name: Setup build cache
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v2.1.7
         with:
           path: |
             ~/.gradle/caches
@@ -67,11 +67,10 @@ jobs:
           cache: gradle
 
       - name: Build docs
-        run: ./gradlew dokkaHtmlMulitModule --info
+        run: ./gradlew dokkaHtmlMultiModule --info
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
-        if: steps.filter.outputs.docs_changed == 'true'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/

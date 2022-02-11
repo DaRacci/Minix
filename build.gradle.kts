@@ -54,7 +54,7 @@ bukkit {
         libs.mordant.get().toString(),
         libs.caffeine.get().toString(),
         libs.adventure.kotlin.get().toString(),
-        "org.bstats:bstats-bukkit:2.2.1",
+        "org.bstats:bstats-bukkit:3.0.0",
     )
     website = "https://minix.racci.dev/"
 }

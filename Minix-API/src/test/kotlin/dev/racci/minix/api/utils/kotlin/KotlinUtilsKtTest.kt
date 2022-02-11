@@ -1,11 +1,7 @@
 package dev.racci.minix.api.utils.kotlin
 
-import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.plugin.SusPlugin
-import org.bukkit.plugin.Plugin
 import org.junit.jupiter.api.Test
 import strikt.api.expectThat
-import strikt.assertions.isA
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -13,10 +9,10 @@ internal class KotlinUtilsKtTest {
 
     @Test
     fun doesOverride() {
-        val plugin = MinixPlugin()
-        expectThat(plugin).assertThat("doesOverride") {
-            it.invokeIfOverrides(SusPlugin::bStatsId.name) {}
-        }.isA<Plugin>()
+        val list = listOf<String>()
+        expectThat(list).assertThat("doesOverride") {
+            it.invokeIfOverrides(Collection<*>::size.name) {}
+        }
     }
 
     @Test

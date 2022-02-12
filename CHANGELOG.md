@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.0.2](https://github.com/Da_Racci/Minix/compare/v1.0.1..v1.0.2) - 2022-02-12
+#### Bug Fixes
+- **(cog)** Fix cog config - ([5249846](https://github.com/Da_Racci/Minix/commit/52498460211352df03b2037beb7e2b9e4bfdb0f5)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Miscellaneous Chores
+- **(changelog)** Update CHANGELOG - ([2ab5170](https://github.com/Da_Racci/Minix/commit/2ab5170ccf9a011fc439a0ac41fa02f4e0d58708)) - [@Da_Racci](https://github.com/Da_Racci)
+- **(version)** v1.0.1 - ([ea06eb4](https://github.com/Da_Racci/Minix/commit/ea06eb485a3a510ba56b001461bc37b1fd256e48)) - [@Da_Racci](https://github.com/Da_Racci)
+- - -
+
 ## [v1.0.1](https://github.com/Da_Racci/Minix/compare/v1.0.0..v1.0.1) - 2022-02-12
 #### Bug Fixes
 - **(cog)** Fix pre bump hooks - ([a1c29d6](https://github.com/Da_Racci/Minix/commit/a1c29d66302f84343fa93f896a637928a9c966b9)) - [@Da_Racci](https://github.com/Da_Racci)

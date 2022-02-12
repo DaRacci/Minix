@@ -3,11 +3,10 @@ name: Java CI
 on:
   push:
     branches: [ master ]
-  release:
-    types: [ created ]
+  pull_request:
+    types: [ opened, edited ]
 
 jobs:
-
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -64,58 +63,3 @@ jobs:
 
       - name: Test
         run: ./gradlew clean test
-
-  deploy:
-    name: Deploy
-    needs: [ test, build ]
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - uses: gradle/gradle-build-action@v2
-
-      - name: Publish to Repo
-        run: ./gradlew clean publish -PRacciRepoUsername=${{ secrets.REPO_PUBLISH_USERNAME }} -PRacciRepoPassword=${{ secrets.REPO_PUBLISH_PASSWORD }}
-
-      - uses: actions/download-artifact@v2
-        with:
-          name: Minix-${{ needs.build.outputs.version }}
-          path: build/libs/Minix-${{ needs.build.outputs.version }}.jar
-      - run: ls -R
-
-      - run: ./gradlew build
-
-  docs:
-    name: Docs
-    needs: [ build, test, deploy ]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 17
-
-      - uses: gradle/gradle-build-action@v2
-
-      - name: Build Docs
-        run: ./gradlew dokkaHtmlMultiModule --info
-
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/
-          keep_files: true
-          full_commit_message: 'docs: Publish documentation'

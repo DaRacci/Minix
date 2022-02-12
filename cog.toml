@@ -2,35 +2,35 @@ pre_bump_hooks = [
     """
         bash -c "if ! ./gradlew test --info; then exit 1; fi"
     """,
-    "echo 'Bumping from {{latest}} to {{version}}!'",
+    "echo 'Bumping from v{{latest}} to v{{version}}!'",
 ]
 post_bump_hooks = [
     # Update the version in gradle properties and amend last commit
     "sed -i 's/version=.*/version={{version}}/' ./gradle.properties",
-    "git commit --amend",
+    "git commit --amend -C HEAD",
     # Push to github with new tag
     "git push",
-    "git push origin {{version}}",
+    "git push origin v{{version}}",
     # Build gradle
-    "./gradlew build -Pversion={{version}}",
+    "./gradlew build -Pversion=\"v{{version}}\"",
     # Create changelog and make new release
-    "cog changelog -a {{version}} -t default >> .templog.md",
-    "gh release create {{version}} -F .templog.md -t 'Minix release {{version}}' builds/libs/Minix-{{version}}.jar Minix-API/builds/libs/Minix-API.jar Minix-API/builds/libs/Minix-API-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}-sources.jar Minix-Core/builds/libs/Minix-Core-{{version}}-sources.jar",
+    "cog changelog -a \"v{{version}}\" -t default >> .templog.md",
+    "gh release create \"v{{version}}\" -F .templog.md -t 'Minix release v{{version}}' builds/libs/Minix-v{{version}}.jar Minix-API/builds/libs/Minix-API-v{{version}}-sources.jar Minix-Core/builds/libs/Minix-Core-v{{version}}-sources.jar",
     "rm .templog.md",
     # Trigger the docs workflow
     "gh workflow run docs.yml",
     # Publish to repo
-    "./gradlew publish -Pversion={{version}}",
+    "./gradlew publish -Pversion=\"v{{version}}\"",
     # Update tags
     "git fetch --tags origin",
     # Checkout and update the dev branch
     "git checkout dev",
     "git rebase master",
     # Update the version of the dev branch
-    "sed -i \"s/version.*/version={{version+minor-SNAPSHOT}}/g\" ./gradle.properties",
+    "sed -i \"s/version.*/version=v{{version+minor-SNAPSHOT}}/g\" ./gradle.properties",
     "git add gradle.properties",
     # Commit and push the dev branch
-    "git commit -m 'Bump version to {{version+minor-SNAPSHOT}}'",
+    "git commit -m 'Bump version to v{{version+minor-SNAPSHOT}}'",
     "git push",
 ]
 

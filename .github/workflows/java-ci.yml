@@ -3,76 +3,16 @@ name: Java CI
 on:
   push:
     branches: [ master ]
+  release:
+    types: [ created ]
 
 jobs:
-  validate-gradle:
-    name: Validate Gradle Wrapper
-    runs-on: ubuntu-latest
-    steps:
-      - uses: styfle/cancel-workflow-action@0.9.1
-        with:
-          access_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 3
-
-      - uses: gradle/wrapper-validation-action@v1.0.4
-
-  lint:
-    name: Ktlint
-    needs: [ validate-gradle ]
-    runs-on: ubuntu-latest
-    steps:
-
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Lint code base
-        uses: github/super-linter/slim@v4
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          VALIDATE_GITHUB_ACTIONS: true
-          VALIDATE_KOTLIN: true
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  version:
-    name: Get new Version
-    needs: [ validate-gradle, lint ]
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.version.outputs.version }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v2
-        with:
-          distribution: temurin
-          java-version: 17
-      - uses: gradle/gradle-build-action@v2
-        with:
-          cache-read-only: true
-      - name: Get version from gradle
-        shell: bash
-        id: version
-        run: |
-          version=$(./gradlew properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
-          echo "::set-output name=version::$version"
-
-  draft:
-    name: Update release draft
-    needs: [ validate-gradle, lint, version ]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: release-drafter/release-drafter@v5.18.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     name: Build
-    needs: [ validate-gradle, lint, version ]
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -85,27 +25,26 @@ jobs:
 
       - name: Setup build cache
         uses: gradle/gradle-build-action@v2
-        with:
-          # Only allow cache writes from master branch
-          cache-read-only: ${{ github.ref != 'refs/heads/master' }}
 
-      - run: chmod +x ./gradlew
+      - id: version
+        run: |
+          version='CI-${{ github.run_number }}'
+          echo "::set-output name=version::$version"
 
       - name: Build
-        run: ./gradlew build
+        run: ./gradlew build -Pversion=${{ steps.version.outputs.version }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v2.3.1
         with:
-          name: Minix-${{ needs.version.outputs.version }}
+          name: Minix-${{ steps.version.outputs.version }}
           path: |
-            build/libs/Minix-${{ needs.version.outputs.version }}.jar
+            build/libs/Minix-${{ steps.version.outputs.version }}.jar
             **/build/libs/Minix-*-*-sources.jar
           if-no-files-found: error
 
   test:
     name: Test
-    needs: [ validate-gradle, lint, version, build ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -128,9 +67,9 @@ jobs:
 
   deploy:
     name: Deploy
-    needs: [ validate-gradle, lint, version, test, build ]
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/master' && github.event.commits[0].message == 'v*.*.*')
+    needs: [ test, build ]
     runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v2
         with:
@@ -142,31 +81,21 @@ jobs:
           java-version: 17
 
       - uses: gradle/gradle-build-action@v2
-        with:
-          cache-read-only: true
 
       - name: Publish to Repo
-        run: ./gradlew publish -PRacciRepoUsername=${{ secrets.REPO_PUBLISH_USERNAME }} -PRacciRepoPassword=${{ secrets.REPO_PUBLISH_PASSWORD }}
+        run: ./gradlew clean publish -PRacciRepoUsername=${{ secrets.REPO_PUBLISH_USERNAME }} -PRacciRepoPassword=${{ secrets.REPO_PUBLISH_PASSWORD }}
 
       - uses: actions/download-artifact@v2
         with:
-          name: Minix-${{ needs.version.outputs.version }}
-          path: build/libs/Minix-${{ needs.version.outputs.version }}.jar
+          name: Minix-${{ needs.build.outputs.version }}
+          path: build/libs/Minix-${{ needs.build.outputs.version }}.jar
       - run: ls -R
 
       - run: ./gradlew build
 
-      - uses: release-drafter/release-drafter@v5.18.1
-        with:
-          version: ${{ needs.version.outputs.version }}
-          publish: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   docs:
     name: Docs
-    needs: [ validate-gradle, lint, version, build, test, deploy ]
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/master' && github.event.commits[0].message == 'v*.*.*')
+    needs: [ build, test, deploy ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

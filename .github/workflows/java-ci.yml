@@ -84,7 +84,7 @@ jobs:
           java-version: 17
 
       - name: Setup build cache
-        uses: actions/cache@v2.1.7
+        uses: gradle/gradle-build-action@v2
         with:
           # Only allow cache writes from master branch
           cache-read-only: ${{ github.ref != 'refs/heads/master' }}

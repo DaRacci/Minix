@@ -89,7 +89,7 @@ allprojects {
         compileOnly(rootProject.libs.kotlinx.coroutines)
         compileOnly(rootProject.libs.koin.core)
         compileOnly(rootProject.libs.caffeine)
-        compileOnly("org.bstats:bstats-bukkit:2.2.1")
+        compileOnly("org.bstats:bstats-bukkit:3.0.0")
 
         testImplementation(platform("org.junit:junit-bom:5.8.2"))
         testImplementation("org.junit.jupiter:junit-jupiter")

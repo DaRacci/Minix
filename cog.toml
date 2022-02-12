@@ -1,10 +1,12 @@
 pre_bump_hooks = [
-    "if ! ./gradlew clean test --info; then exit 1; else echo 'Gradle tests did not pass'; fi",
+    """
+        bash -c "if ! ./gradlew test --info; then exit 1; fi"
+    """,
     "echo 'Bumping from {{latest}} to {{version}}!'",
 ]
 post_bump_hooks = [
     # Update the version in gradle properties and amend last commit
-    "sed -i 's/version=.*/version={{version}}/' gradle.properties",
+    "sed -i 's/version=.*/version={{version}}/' ./gradle.properties",
     "git commit --amend",
     # Push to github with new tag
     "git push",

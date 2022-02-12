@@ -29,8 +29,6 @@ dependencies {
     implementation("dev.racci:Minix-NMS:$minixVersion")
 }
 
-version = if (System.getenv("CI") != null) version else "DEV"
-
 bukkit {
     name = "Minix"
     prefix = "Minix"

@@ -1,11 +1,12 @@
 pre_bump_hooks = [
-    "echo 'Bumping from {{ latest }} to {{ version}}!'",
+    "echo 'Bumping from {{latest}} to {{version}}!'",
 ]
 post_bump_hooks = [
-    "git checkout dev",
-    "git rebase master",
-    "./gradlew "
+#    "git checkout dev",
+#    "git rebase master",
 ]
+
+tag_prefix = "v"
 
 [commit_types]
 feat = { changelog_title = "Features" }
@@ -18,4 +19,4 @@ authors = [
     { signature = "Da_Racci", username = "Da_Racci" }
 ]
 
-[bump_profiles]
+

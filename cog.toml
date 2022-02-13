@@ -6,32 +6,32 @@ pre_bump_hooks = [
 ]
 post_bump_hooks = [
     # Update the version in gradle properties and amend last commit
-    "sed -i 's/version=.*/version=v{{version}}/' ./gradle.properties",
+    "sed -i 's/version=.*/version={{version}}/' ./gradle.properties",
     "git add ./gradle.properties",
     "git commit --amend -C HEAD",
     # Push to github with new tag
     "git push",
     "git push origin v{{version}}",
     # Build gradle
-    "./gradlew clean build -Pversion=\"v{{version}}\"",
+    "./gradlew clean build -Pversion=\"{{version}}\"",
     # Create changelog and make new release
     "bash -c \"cog changelog -a v{{version}} -t default >> ./.templog.md\"",
-    "gh release create \"v{{version}}\" -F ./.templog.md -t 'Minix release v{{version}}' build/libs/Minix-v{{version}}.jar Minix-API/build/libs/Minix-API-v{{version}}-sources.jar Minix-Core/build/libs/Minix-Core-v{{version}}-sources.jar",
+    "gh release create \"v{{version}}\" -F ./.templog.md -t 'Minix release {{version}}' build/libs/Minix-{{version}}.jar Minix-API/build/libs/Minix-API-{{version}}-sources.jar Minix-Core/build/libs/Minix-Core-{{version}}-sources.jar",
     "rm ./.templog.md",
     # Trigger the docs workflow
     "gh workflow run docs.yml",
     # Publish to repo
-    "./gradlew publish -Pversion=\"v{{version}}\"",
+    "./gradlew publish -Pversion=\"{{version}}\"",
     # Update tags
     "git fetch --tags origin",
     # Checkout and update the dev branch
     "git checkout dev",
     "git rebase master",
     # Update the version of the dev branch
-    "sed -i \"s/version.*/version=v{{version+minor-SNAPSHOT}}/g\" ./gradle.properties",
+    "sed -i \"s/version.*/version={{version+minor-SNAPSHOT}}/g\" ./gradle.properties",
     "git add gradle.properties",
     # Commit and push the dev branch
-    "git commit -m 'Bump version to v{{version+minor-SNAPSHOT}}'",
+    "git commit -m 'Bump version to {{version+minor-SNAPSHOT}}'",
     "git push",
 ]
 

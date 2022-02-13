@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.0.6](https://github.com/Da_Racci/Minix/compare/v1.0.5..v1.0.6) - 2022-02-13
+#### Bug Fixes
+- **(cog)** Don't prefix build versions with v - ([6f30f06](https://github.com/Da_Racci/Minix/commit/6f30f06f77e197438efaee33cd292475878143f1)) - [@Da_Racci](https://github.com/Da_Racci)
+- **(gradle)** Fix jar output having -dev append to it - ([519a60d](https://github.com/Da_Racci/Minix/commit/519a60d457012e36ce7690383cb8efaee9cc1c3e)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Build system
+- **(deps)** Update Minix Conventions and Strikt - ([baacd79](https://github.com/Da_Racci/Minix/commit/baacd79bb435ad9aa629e6e4f84a8eba03050d42)) - [@Da_Racci](https://github.com/Da_Racci)
+- Remove Minix Publishing and only publish API module - ([eb50ea6](https://github.com/Da_Racci/Minix/commit/eb50ea698672559f2c9b8f437f572354fc6fa707)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Miscellaneous Chores
+- **(ci)** Remove release-drafter.yml as its now unused - ([69640cc](https://github.com/Da_Racci/Minix/commit/69640ccbebdcb3900f37ca7327a3a314290b1b1e)) - [@Da_Racci](https://github.com/Da_Racci)
+- **(cog)** Remove dev branch rebase - ([d0b4ffa](https://github.com/Da_Racci/Minix/commit/d0b4ffaaccf0011bb4abbdc7620353e92878071d)) - [@Da_Racci](https://github.com/Da_Racci)
+- **(gradle)** Clean up the build script - ([08a8d49](https://github.com/Da_Racci/Minix/commit/08a8d490c0cbb4cd791e27bb3f444f2d1a1001da)) - [@Da_Racci](https://github.com/Da_Racci)
+- **(version)** v1.0.5 - ([dcd0a3a](https://github.com/Da_Racci/Minix/commit/dcd0a3a71a93b8e34cdd24ab9ed35d8e466664c8)) - [@Da_Racci](https://github.com/Da_Racci)
+- - -
+
 ## [v1.0.5](https://github.com/Da_Racci/Minix/compare/v1.0.4..v1.0.5) - 2022-02-12
 #### Bug Fixes
 - **(cog)** Okay no this is the last one - ([4225501](https://github.com/Da_Racci/Minix/commit/42255018f65b8f79ae2a2e7b3ad6bf7696809e83)) - [@Da_Racci](https://github.com/Da_Racci)

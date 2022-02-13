@@ -22,8 +22,7 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Setup build cache
-        uses: gradle/gradle-build-action@v2
+      - uses: gradle/gradle-build-action@v2
 
       - id: version
         run: |
@@ -58,8 +57,6 @@ jobs:
       - uses: gradle/gradle-build-action@v2
         with:
           cache-read-only: true
-
-      - run: chmod +x ./gradlew
 
       - name: Test
         run: ./gradlew clean test

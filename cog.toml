@@ -16,7 +16,7 @@ post_bump_hooks = [
     "./gradlew clean build -Pversion=\"{{version}}\"",
     # Create changelog and make new release
     "bash -c \"cog changelog -a v{{version}} -t default >> ./.templog.md\"",
-    "gh release create \"v{{version}}\" -F ./.templog.md -t 'Minix release {{version}}' build/libs/Minix-{{version}}.jar Minix-API/build/libs/Minix-API-{{version}}-sources.jar Minix-Core/build/libs/Minix-Core-{{version}}-sources.jar",
+    "gh release create \"v{{version}}\" -F ./.templog.md -t 'Minix release {{version}}' build/libs/Minix-{{version}}.jar Minix-API/build/libs/Minix-API-{{version}}-sources.jar",
     "rm ./.templog.md",
     # Trigger the docs workflow
     "gh workflow run docs.yml",

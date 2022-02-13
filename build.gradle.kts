@@ -107,15 +107,7 @@ allprojects {
             }
         }
 
-        shadowJar {
-            val location = "dev.racci.minix.libs"
-            relocate("net.kyori.adventure.text.minimessage", "$location.kyori.minimessage")
-            relocate("dev.racci.minix.nms", "$location.nms")
-        }
-
-        compileKotlin {
-            kotlinOptions.freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
-        }
+        jar.get().archiveFileName.set("${project.name}-${project.version}.jar")
     }
 }
 

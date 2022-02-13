@@ -1,17 +1,16 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
 import java.net.URL
 
-val minixConventions: String by project
 val minixVersion: String by project
-val kotlinVersion: String by project
+val version: String by project
 
 plugins {
     id("dev.racci.minix.kotlin")
     id("dev.racci.minix.copyjar")
     id("dev.racci.minix.purpurmc")
-    kotlin("plugin.serialization")
-    id("dev.racci.minix.publication")
     id("dev.racci.minix.nms")
+    id("org.jetbrains.dokka")
+    kotlin("plugin.serialization")
     id("net.minecrell.plugin-yml.bukkit") version "0.5.1"
 }
 
@@ -59,23 +58,12 @@ bukkit {
     website = "https://minix.racci.dev/"
 }
 
-tasks.shadowJar {
-    dependencies {
-        include(project("Minix-Core"))
-        include(project("Minix-API"))
-        include(dependency(rootProject.libs.adventure.kotlin.get()))
-        include(dependency(rootProject.libs.adventure.minimessage.get()))
-    }
-}
-
 allprojects {
 
     apply(plugin = "dev.racci.minix.kotlin")
     apply(plugin = "dev.racci.minix.purpurmc")
     apply(plugin = "dev.racci.minix.nms")
-    apply(plugin = "dev.racci.minix.publication")
     apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
-    apply(plugin = "com.github.johnrengelman.shadow")
     apply(plugin = "org.jetbrains.dokka")
 
     dependencies {
@@ -138,12 +126,17 @@ fun included(
 
 tasks {
 
-    withType<PublishToMavenRepository> {
-        dependsOn(gradle.includedBuilds.map { it.task(":publish") })
-    }
-
-    withType<PublishToMavenLocal> {
-        dependsOn(gradle.includedBuilds.map { it.task(":publishToMavenLocal") })
+    shadowJar {
+        archiveFileName.set("${project.name}-${project.version}-all.jar")
+        val location = "dev.racci.minix.libs"
+        relocate("net.kyori.adventure.text.minimessage", "$location.kyori.minimessage")
+        relocate("dev.racci.minix.nms", "$location.nms")
+        dependencies {
+            include(project("Minix-Core"))
+            include(project("Minix-API"))
+            include(dependency(rootProject.libs.adventure.kotlin.get()))
+            include(dependency(rootProject.libs.adventure.minimessage.get()))
+        }
     }
 
     ktlintFormat {

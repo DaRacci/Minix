@@ -21,7 +21,7 @@ post_bump_hooks = [
     # Trigger the docs workflow
     "gh workflow run docs.yml",
     # Publish to repo
-    "./gradlew publish -Pversion=\"{{version}}\"",
+    "./gradlew :Minix-API:publish -Pversion=\"{{version}}\"",
     # Update tags
     "git fetch --tags origin",
     # Checkout and update the dev branch

@@ -9,6 +9,7 @@ pluginManagement {
     plugins {
         val kotlinVersion: String by settings
         kotlin("plugin.serialization") version kotlinVersion
+        id("org.jetbrains.dokka") version kotlinVersion
     }
     val minixConventions: String by settings
     resolutionStrategy {

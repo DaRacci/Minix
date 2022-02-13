@@ -24,15 +24,6 @@ post_bump_hooks = [
     "./gradlew :Minix-API:publish -Pversion=\"{{version}}\"",
     # Update tags
     "git fetch --tags origin",
-    # Checkout and update the dev branch
-    "git checkout dev",
-    "git rebase master",
-    # Update the version of the dev branch
-    "sed -i \"s/version.*/version={{version+minor-SNAPSHOT}}/g\" ./gradle.properties",
-    "git add gradle.properties",
-    # Commit and push the dev branch
-    "git commit -m 'Bump version to {{version+minor-SNAPSHOT}}'",
-    "git push",
 ]
 
 tag_prefix = "v"

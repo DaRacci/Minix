@@ -55,7 +55,7 @@ bukkit {
         libs.adventure.kotlin.get().toString(),
         "org.bstats:bstats-bukkit:3.0.0",
     )
-    website = "https://minix.racci.dev/"
+    website = "https://github.com/DaRacci/Minix"
 }
 
 allprojects {
@@ -85,25 +85,21 @@ allprojects {
 
     tasks {
 
-        test {
-            useJUnitPlatform()
-        }
+        test.get().useJUnitPlatform()
 
-        dokkaHtml {
-            dokkaSourceSets.configureEach {
-                includeNonPublic.set(false)
-                skipEmptyPackages.set(true)
-                displayName.set(this@dokkaHtml.project.name.split("-")[1])
-                platform.set(org.jetbrains.dokka.Platform.jvm)
-                sourceLink {
-                    localDirectory.set(file("src/main/kotlin"))
-                    remoteUrl.set(URL("https://github.com/DaRacci/Minix/blob/master/src/main/kotlin"))
-                    remoteLineSuffix.set("#L")
-                }
-                jdkVersion.set(17)
-                externalDocumentationLink {
-                    url.set(URL("https://minix.racci.dev/"))
-                }
+        dokkaHtml.get().dokkaSourceSets.configureEach {
+            includeNonPublic.set(false)
+            skipEmptyPackages.set(true)
+            displayName.set(project.name.split("-")[1])
+            platform.set(org.jetbrains.dokka.Platform.jvm)
+            sourceLink {
+                localDirectory.set(file("src/main/kotlin"))
+                remoteUrl.set(URL("https://github.com/DaRacci/Minix/blob/master/src/main/kotlin"))
+                remoteLineSuffix.set("#L")
+            }
+            jdkVersion.set(17)
+            externalDocumentationLink {
+                url.set(URL("https://minix.racci.dev/"))
             }
         }
 

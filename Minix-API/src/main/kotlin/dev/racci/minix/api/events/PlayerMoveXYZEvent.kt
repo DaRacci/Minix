@@ -4,7 +4,6 @@ package dev.racci.minix.api.events
 
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.jetbrains.annotations.ApiStatus
 
 /**
  * This event is fired only when the player moves, this means that unlike
@@ -16,7 +15,6 @@ import org.jetbrains.annotations.ApiStatus
  * @property from The previous location the player was at.
  * @property to The players new location.
  */
-@ApiStatus.AvailableSince("0.1.0")
 class PlayerMoveXYZEvent(
     player: Player,
     val from: Location,
@@ -40,7 +38,6 @@ class PlayerMoveXYZEvent(
  * @property from The previous location the player was at.
  * @property to The players new location.
  */
-@ApiStatus.AvailableSince("0.1.0")
 class PlayerMoveFullXYZEvent(
     player: Player,
     val from: Location,

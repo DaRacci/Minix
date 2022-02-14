@@ -7,5 +7,4 @@ import org.jetbrains.annotations.ApiStatus
  * is not of the correct type.
  */
 @ApiStatus.Internal
-@ApiStatus.AvailableSince("1.0.0")
 class IncorrectItemTypeException(message: String) : Exception(message)

@@ -2,10 +2,8 @@ package dev.racci.minix.api.coroutine.contract
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import org.jetbrains.annotations.ApiStatus
 import kotlin.coroutines.CoroutineContext
 
-@ApiStatus.AvailableSince("1.0.0")
 interface CoroutineSession {
 
     /**

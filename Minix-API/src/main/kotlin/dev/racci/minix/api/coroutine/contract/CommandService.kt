@@ -3,9 +3,7 @@ package dev.racci.minix.api.coroutine.contract
 import dev.racci.minix.api.coroutine.SuspendingCommandExecutor
 import dev.racci.minix.api.coroutine.SuspendingTabCompleter
 import org.bukkit.command.PluginCommand
-import org.jetbrains.annotations.ApiStatus
 
-@ApiStatus.AvailableSince("1.0.0")
 interface CommandService {
 
     /**

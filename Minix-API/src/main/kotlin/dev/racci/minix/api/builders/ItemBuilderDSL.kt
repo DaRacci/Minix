@@ -5,7 +5,6 @@ import dev.racci.minix.api.utils.IncorrectItemTypeException
 import dev.racci.minix.api.utils.getKoin
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
-import org.jetbrains.annotations.ApiStatus
 
 interface ItemBuilderDSL {
 
@@ -17,7 +16,6 @@ interface ItemBuilderDSL {
      * @return A new [ItemBuilderDSL]
      */
     @MinixDsl
-    @ApiStatus.AvailableSince("0.1.5")
     fun from(
         itemStack: ItemStack,
         builder: ItemBuilder.() -> Unit = {}
@@ -31,7 +29,6 @@ interface ItemBuilderDSL {
      * @return A new [ItemBuilderDSL]
      */
     @MinixDsl
-    @ApiStatus.AvailableSince("0.1.5")
     fun from(
         material: Material,
         builder: ItemBuilder.() -> Unit = {}
@@ -47,7 +44,6 @@ interface ItemBuilderDSL {
      * @return A new [BannerBuilder]
      */
     @MinixDsl
-    @ApiStatus.AvailableSince("0.1.5")
     @Throws(IncorrectItemTypeException::class)
     fun banner(
         itemStack: ItemStack = ItemStack(Material.WHITE_BANNER),
@@ -64,7 +60,6 @@ interface ItemBuilderDSL {
      * @return A new [BookBuilder]
      */
     @MinixDsl
-    @ApiStatus.AvailableSince("0.1.5")
     @Throws(IncorrectItemTypeException::class)
     fun book(
         itemStack: ItemStack = ItemStack(Material.WRITTEN_BOOK),
@@ -81,7 +76,6 @@ interface ItemBuilderDSL {
      * @return A new [FireworkBuilder]
      */
     @MinixDsl
-    @ApiStatus.AvailableSince("0.1.5")
     @Throws(IncorrectItemTypeException::class)
     fun firework(
         itemStack: ItemStack = ItemStack(Material.FIREWORK_ROCKET),
@@ -98,7 +92,6 @@ interface ItemBuilderDSL {
      * @return A new [MapBuilder]
      */
     @MinixDsl
-    @ApiStatus.AvailableSince("0.1.5")
     @Throws(IncorrectItemTypeException::class)
     fun map(
         itemStack: ItemStack = ItemStack(Material.MAP),
@@ -115,7 +108,6 @@ interface ItemBuilderDSL {
      * @return A new [HeadBuilder]
      */
     @MinixDsl
-    @ApiStatus.AvailableSince("0.1.5")
     @Throws(IncorrectItemTypeException::class)
     fun head(
         itemStack: ItemStack = ItemStack(Material.PLAYER_HEAD),

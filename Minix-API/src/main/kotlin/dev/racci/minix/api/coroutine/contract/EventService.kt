@@ -3,9 +3,7 @@ package dev.racci.minix.api.coroutine.contract
 import kotlinx.coroutines.Job
 import org.bukkit.event.Event
 import org.bukkit.event.Listener
-import org.jetbrains.annotations.ApiStatus
 
-@ApiStatus.AvailableSince("1.0.0")
 interface EventService {
 
     /**

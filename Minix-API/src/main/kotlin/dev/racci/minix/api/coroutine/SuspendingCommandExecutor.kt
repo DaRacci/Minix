@@ -2,12 +2,10 @@ package dev.racci.minix.api.coroutine
 
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
-import org.jetbrains.annotations.ApiStatus
 
 /**
  * Represents a class which contains a single method for executing commands.
  */
-@ApiStatus.AvailableSince("1.0.0")
 interface SuspendingCommandExecutor {
 
     /**

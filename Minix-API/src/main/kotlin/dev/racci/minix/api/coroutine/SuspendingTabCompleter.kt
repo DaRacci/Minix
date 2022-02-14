@@ -2,12 +2,10 @@ package dev.racci.minix.api.coroutine
 
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
-import org.jetbrains.annotations.ApiStatus
 
 /**
  * Represents a suspending class which can suggest tab completions for commands.
  */
-@ApiStatus.AvailableSince("1.0.0")
 interface SuspendingTabCompleter {
 
     /**

@@ -9,7 +9,6 @@ import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
 import org.bukkit.event.world.WorldEvent
-import org.jetbrains.annotations.ApiStatus
 
 /**
  * Represents an event.
@@ -18,7 +17,6 @@ import org.jetbrains.annotations.ApiStatus
  *
  * @param async If the event is Asynchronous.
  */
-@ApiStatus.AvailableSince("0.1.5")
 abstract class KEvent(
     async: Boolean = false
 ) : Event(async), Cancellable {
@@ -49,7 +47,6 @@ abstract class KEvent(
  * @param player The player of the event.
  * @param async If the event is Asynchronous.
  */
-@ApiStatus.AvailableSince("0.1.5")
 abstract class KPlayerEvent(
     player: Player,
     async: Boolean = false
@@ -82,7 +79,6 @@ abstract class KPlayerEvent(
  *
  * @param world The world which this event happened in.
  */
-@ApiStatus.AvailableSince("0.1.5")
 abstract class KWorldEvent(
     world: World
 ) : WorldEvent(world), Cancellable {

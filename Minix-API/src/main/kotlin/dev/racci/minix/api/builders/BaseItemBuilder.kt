@@ -10,9 +10,7 @@ import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
-import org.jetbrains.annotations.ApiStatus
 
-@ApiStatus.AvailableSince("0.1.5")
 @Suppress("ComplexInterface")
 interface BaseItemBuilder<B : BaseItemBuilder<B, M>, M : ItemMeta> {
 

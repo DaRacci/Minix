@@ -7,7 +7,6 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
-import org.jetbrains.annotations.ApiStatus
 
 /**
  * Send a block change to the [players]
@@ -18,9 +17,7 @@ import org.jetbrains.annotations.ApiStatus
  * @param blockData Block data dsl for modifying the new block.
  * @param players The players to see this change.
  */
-
 @MinixDsl
-@ApiStatus.AvailableSince("1.0.0")
 fun Block.sendBlockChange(
     material: Material,
     blockData: BlockData.() -> Unit,
@@ -39,8 +36,6 @@ fun Block.sendBlockChange(
  * @param blockData The new [BlockData].
  * @param players The players to see this change.
  */
-
-@ApiStatus.AvailableSince("1.0.0")
 fun Block.sendBlockChange(
     blockData: BlockData,
     vararg players: Player

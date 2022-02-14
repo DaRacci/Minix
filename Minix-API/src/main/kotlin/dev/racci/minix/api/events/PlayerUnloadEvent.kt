@@ -3,7 +3,6 @@
 package dev.racci.minix.api.events
 
 import org.bukkit.entity.Player
-import org.jetbrains.annotations.ApiStatus
 import java.util.UUID
 
 /**
@@ -14,7 +13,6 @@ import java.util.UUID
  * @property player The Player if able to be provided.
  * @property uuid The UUID, this will always be provided.
  */
-@ApiStatus.AvailableSince("0.3.0")
 class PlayerUnloadEvent(
     val player: Player? = null,
     val uuid: UUID = player!!.uniqueId

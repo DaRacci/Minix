@@ -21,7 +21,6 @@ data class BlockData(
  * Base class for all combo events.
  */
 @ApiStatus.Internal
-@ApiStatus.AvailableSince("0.2.3")
 sealed class AbstractComboEvent(
     player: Player,
     /**
@@ -64,7 +63,6 @@ sealed class AbstractComboEvent(
 /**
  * Called when the player uses the combo of Shift + Left click.
  */
-@ApiStatus.AvailableSince("0.2.3")
 class PlayerShiftLeftClickEvent(
     player: Player,
     item: ItemStack?,
@@ -75,7 +73,6 @@ class PlayerShiftLeftClickEvent(
 /**
  * Called when the player uses the combo of Shift + Right click.
  */
-@ApiStatus.AvailableSince("0.2.3")
 class PlayerShiftRightClickEvent(
     player: Player,
     item: ItemStack?,
@@ -86,7 +83,6 @@ class PlayerShiftRightClickEvent(
 /**
  * Called when the player uses the combo of Shift + Offhand.
  */
-@ApiStatus.AvailableSince("0.2.3")
 class PlayerShiftOffhandEvent(
     player: Player,
     item: ItemStack?,
@@ -112,7 +108,6 @@ class PlayerShiftOffhandEvent(
  * Called when the player uses offhand twice within 0.5 seconds
  * while holding shift.
  */
-@ApiStatus.AvailableSince("0.2.3")
 class PlayerShiftDoubleOffhandEvent(
     player: Player,
     item: ItemStack?,
@@ -137,7 +132,6 @@ class PlayerShiftDoubleOffhandEvent(
 /**
  * Called when the player uses offhand twice within 0.5 seconds.
  */
-@ApiStatus.AvailableSince("0.2.3")
 class PlayerDoubleOffhandEvent(
     player: Player,
     item: ItemStack?,

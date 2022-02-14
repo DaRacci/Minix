@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.0.7](https://github.com/Da_Racci/Minix/compare/v1.0.6..v1.0.7) - 2022-02-14
+#### Bug Fixes
+- **(cog)** Fix gh release command - ([87b6dc7](https://github.com/Da_Racci/Minix/commit/87b6dc788ea37d833e0c6316dfed4d45272e5e28)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Build system
+- **(publishing)** Publish Minix-API as Minix - ([b7fd622](https://github.com/Da_Racci/Minix/commit/b7fd622eb39537b84961d6060a2385e84e84dda5)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Miscellaneous Chores
+- **(version)** v1.0.6 - ([fb7239e](https://github.com/Da_Racci/Minix/commit/fb7239e2de86e1c27bfa93f0e97b6be78f03b963)) - [@Da_Racci](https://github.com/Da_Racci)
+- - -
+
 ## [v1.0.6](https://github.com/Da_Racci/Minix/compare/v1.0.5..v1.0.6) - 2022-02-13
 #### Bug Fixes
 - **(cog)** Don't prefix build versions with v - ([6f30f06](https://github.com/Da_Racci/Minix/commit/6f30f06f77e197438efaee33cd292475878143f1)) - [@Da_Racci](https://github.com/Da_Racci)

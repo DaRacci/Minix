@@ -13,8 +13,8 @@ import kotlin.reflect.full.primaryConstructor
 /**
  * Checks if a class exists.
  *
- * @param className the class to check
- * @return weather the class exists or not
+ * @param className The class to check.
+ * @return True the class exists.
  */
 fun exists(className: String): Boolean {
     catchAndReturn<ClassNotFoundException, Boolean>({ return false }) {
@@ -24,28 +24,63 @@ fun exists(className: String): Boolean {
     return false
 }
 
+/**
+ * Constructs a new class instance.
+ *
+ * @param T The class to construct.
+ * @param constructor The constructor to use.
+ * @param args The arguments to pass to the constructor.
+ * @return The constructed class instance.
+ */
 fun <T> classConstructor(
     constructor: Constructor<T>,
     vararg args: Any?,
 ): T = constructor.newInstance(*args)
 
+/**
+ * Reads and returns the value of a property from this instance.
+ *
+ * @param R The type of the property.
+ * @param instance The instance to read from.
+ * @param propertyName The name of the property to read.
+ * @param ignoreCase Whether to ignore case when searching for the property.
+ * @return The value of the property.
+ */
 fun <R> readInstanceProperty(
     instance: Any,
     propertyName: String,
     ignoreCase: Boolean = false,
-): R {
-    val property = instance::class.members
-        // don't cast here to <Any, R>, it would succeed silently
-        .first { it.name.equals(propertyName, ignoreCase) } as KProperty1<Any, *>
-    // force an invalid cast exception if incorrect type here
-    return property.get(instance) as R
-}
+): R? = instance::class.members.firstOrNull {
+    it.name.equals(propertyName, ignoreCase)
+}.safeCast<KProperty1<Any, *>>()?.get(instance) as? R
 
+/**
+ * Makes a safe cast of a property to a different type.
+ *
+ * @param T The type to cast to.
+ * @return The casted property.
+ */
+fun <T> Any?.safeCast(): T? = this as? T
+
+/**
+ * Makes a safe cast and invokes the function if successful.
+ *
+ * @param T The type to cast to.
+ * @param block The function to invoke if successful.
+ * @return If the cast was successful.
+ */
 inline fun <reified T> Any?.tryCast(block: T.() -> Unit): Boolean = if (this is T) {
     block()
     true
 } else false
 
+/**
+ * Reads the properties of an instance through reflection,
+ * and constructs a new instance of the same type.
+ *
+ * @param replaceArgs A map of property names to values to replace.
+ * @return The new copy of the instance.
+ */
 fun <T : Any> T.clone(replaceArgs: Map<KProperty1<T, *>, Any> = emptyMap()): T = javaClass.kotlin.run {
     val consParams = primaryConstructor?.parameters ?: error("No primary constructor found")
     val mutableProperties = memberProperties.filterIsInstance<KMutableProperty1<T, Any?>>()

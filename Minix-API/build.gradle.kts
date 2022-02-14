@@ -2,14 +2,7 @@ plugins {
     `maven-publish`
 }
 
-val configuration: Configuration by configurations.creating
-
-val sourcesJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("sources")
-    from(sourceSets["main"].allSource)
-}
-
-tasks.assemble.get().dependsOn(sourcesJar)
+java.withSourcesJar()
 
 publishing {
     repositories.maven("https://repo.racci.dev/releases") {
@@ -18,6 +11,7 @@ publishing {
     }
 
     publications.register("maven", MavenPublication::class) {
+        artifactId = rootProject.name
         from(components["java"])
     }
 

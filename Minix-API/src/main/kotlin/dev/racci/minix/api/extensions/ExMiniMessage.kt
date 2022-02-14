@@ -3,10 +3,10 @@
 package dev.racci.minix.api.extensions
 
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.minimessage.MiniMessage
-import net.kyori.adventure.text.minimessage.placeholder.PlaceholderResolver
-import net.kyori.adventure.text.minimessage.placeholder.Replacement
+import net.kyori.adventure.text.minimessage.tag.Inserting
+import net.kyori.adventure.text.minimessage.tag.Tag
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver
 
 /**
  * Parses a string into a component.
@@ -38,17 +38,15 @@ inline fun MiniMessage.template(
     builder: Component.() -> Unit = {}
 ) = deserialize(
     input,
-    PlaceholderResolver.map(
-        template.associate {
-            it.first to (
-                (it.second as? Component)?.asReplacement() ?: Replacement.miniMessage(
-                    it.second as? String
-                        ?: it.second.toString()
-                )
-                )
+    TagResolver.resolver(
+        template.map {
+            TagResolver.resolver(
+                it.first,
+                (it.second as? Component)?.asInsert() ?: Tag.preProcessParsed(it.second.toString())
+            )
         }
     )
 ).also(builder)
 
 // Fuck this is a hacky way of doing this shit
-fun ComponentLike?.asReplacement(): Replacement<*>? = if (this == null) null else Replacement.component(this)
+fun Component?.asInsert(): Inserting? = if (this == null) null else Inserting { this }

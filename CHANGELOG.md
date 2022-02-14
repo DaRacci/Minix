@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.0.8](https://github.com/Da_Racci/Minix/compare/v1.0.7..v1.0.8) - 2022-02-14
+#### Bug Fixes
+- Update MiniMessage things - ([3fcafaa](https://github.com/Da_Racci/Minix/commit/3fcafaac6318f0e6f00ae9af39fae95f30d71621)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Miscellaneous Chores
+- **(version)** v1.0.7 - ([e8923dd](https://github.com/Da_Racci/Minix/commit/e8923dd0323ac06e242a77c7570e1c616304db26)) - [@Da_Racci](https://github.com/Da_Racci)
+- - -
+
 ## [v1.0.7](https://github.com/Da_Racci/Minix/compare/v1.0.6..v1.0.7) - 2022-02-14
 #### Bug Fixes
 - **(cog)** Fix gh release command - ([87b6dc7](https://github.com/Da_Racci/Minix/commit/87b6dc788ea37d833e0c6316dfed4d45272e5e28)) - [@Da_Racci](https://github.com/Da_Racci)

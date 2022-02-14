@@ -4,6 +4,7 @@ package dev.racci.minix.api.extensions
 
 import dev.racci.minix.api.utils.primitive.ColourUtils.colour
 import dev.racci.minix.api.utils.primitive.LegacyUtils
+import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.minimessage.MiniMessage.miniMessage
 import org.bukkit.command.CommandSender
@@ -29,3 +30,17 @@ fun Array<String>.parseLegacy() = LegacyUtils.parseLegacy(this.toList()).toTyped
 fun Collection<String>.parseLegacy() = LegacyUtils.parseLegacy(this.toList())
 
 fun String.coloured() = colour(this, true)
+
+/**
+ * Sends this message as a chat message to the given [CommandSender].
+ *
+ * @param recipient The recipient of the message.
+ */
+infix fun Component.message(recipient: CommandSender) = recipient.msg(this)
+
+/**
+ * Sends this message as a chat message to the given [CommandSender].
+ *
+ * @param recipient The recipient of the message.
+ */
+infix fun String.message(recipient: CommandSender) = recipient.msg(this)

@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.1.0](https://github.com/Da_Racci/Minix/compare/v1.0.8..v1.1.0) - 2022-02-14
+#### Documentation
+- Add docs for ReflectionUtils - ([7d366b6](https://github.com/Da_Racci/Minix/commit/7d366b6f182c7e27a5352c69d77b8e3f2263076b)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Features
+- **(util)** Add reflection clone util - ([a368fa3](https://github.com/Da_Racci/Minix/commit/a368fa3400be1cd0b2829fe7f32f899409e9d1e4)) - [@Da_Racci](https://github.com/Da_Racci)
+- Add infix to string and component for message sending - ([6748828](https://github.com/Da_Racci/Minix/commit/67488281912041327669702d8f46ec3993309163)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Miscellaneous Chores
+- **(version)** v1.0.8 - ([18183be](https://github.com/Da_Racci/Minix/commit/18183beee614adb87c28e0dcdbae8795f843f977)) - [@Da_Racci](https://github.com/Da_Racci)
+- Remove Available since annotations - ([6973965](https://github.com/Da_Racci/Minix/commit/69739659c8b585343b20a600935ca851d7280d59)) - [@Da_Racci](https://github.com/Da_Racci)
+- - -
+
 ## [v1.0.8](https://github.com/Da_Racci/Minix/compare/v1.0.7..v1.0.8) - 2022-02-14
 #### Bug Fixes
 - Update MiniMessage things - ([3fcafaa](https://github.com/Da_Racci/Minix/commit/3fcafaac6318f0e6f00ae9af39fae95f30d71621)) - [@Da_Racci](https://github.com/Da_Racci)

@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.2.1](https://github.com/Da_Racci/Minix/compare/v1.2.0..v1.2.1) - 2022-02-15
+#### Bug Fixes
+- Fix shading - ([ebdfa3e](https://github.com/Da_Racci/Minix/commit/ebdfa3e5d7f7b19516a933e9f998e418ceff8044)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Miscellaneous Chores
+- **(version)** v1.2.0 - ([8b06d28](https://github.com/Da_Racci/Minix/commit/8b06d2827bf2ecdaa003479a7d4993ba961381df)) - [@Da_Racci](https://github.com/Da_Racci)
+- - -
+
 ## [v1.2.0](https://github.com/Da_Racci/Minix/compare/v1.1.0..v1.2.0) - 2022-02-15
 #### Bug Fixes
 - **(PluginService)** Disable plugin after extensions - ([a9fe594](https://github.com/Da_Racci/Minix/commit/a9fe5942beb03d425d7a6c33297bcc2eb64a1ee8)) - [@Da_Racci](https://github.com/Da_Racci)

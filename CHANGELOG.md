@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.2.2](https://github.com/Da_Racci/Minix/compare/v1.2.1..v1.2.2) - 2022-02-15
+#### Bug Fixes
+- Fix shading - ([3c55612](https://github.com/Da_Racci/Minix/commit/3c55612a474cab61537e2a2a94bfbc8f5122837d)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Miscellaneous Chores
+- **(deps)** add renovate.json - ([346a155](https://github.com/Da_Racci/Minix/commit/346a155788fae555c7af9fe154248803b4ea4da4)) - Renovate Bot
+- - -
+
 ## [v1.2.0](https://github.com/Da_Racci/Minix/compare/v1.1.0..v1.2.0) - 2022-02-15
 #### Bug Fixes
 - **(PluginService)** Disable plugin after extensions - ([a9fe594](https://github.com/Da_Racci/Minix/commit/a9fe5942beb03d425d7a6c33297bcc2eb64a1ee8)) - [@Da_Racci](https://github.com/Da_Racci)

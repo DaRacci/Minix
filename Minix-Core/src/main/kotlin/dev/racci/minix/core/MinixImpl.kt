@@ -3,6 +3,7 @@ package dev.racci.minix.core
 import dev.racci.minix.api.builders.ItemBuilderDSL
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.services.PluginService
+import dev.racci.minix.api.utils.kotlin.ifInitialized
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.scheduler.CoroutineSchedulerImpl
@@ -12,16 +13,24 @@ import dev.racci.minix.core.services.PlayerServiceImpl
 import dev.racci.minix.core.services.PluginServiceImpl
 import dev.racci.minix.core.services.TimeService
 import io.sentry.Sentry
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.context.startKoin
 import org.koin.dsl.bind
 import org.koin.dsl.single
+import org.koin.mp.KoinPlatformTools
 import java.util.logging.Level
+import kotlin.time.Duration.Companion.seconds
 
 class MinixImpl : Minix() {
 
-    override val bStatsId = 13706
+    override val bStatsId by lazy { 13706 }
+    override val adventure = lazy { BukkitAudiences.create(this) }
 
     override fun onLoad() {
         startKoin()
@@ -44,6 +53,12 @@ class MinixImpl : Minix() {
             add(::ListenerService)
             add(::TimeService)
         }
+    }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    override suspend fun handleDisable() {
+        adventure.ifInitialized { close() }
+        GlobalScope.launch { delay(1.seconds); KoinPlatformTools.defaultContext().getOrNull()?.close() }
     }
 
     private fun startKoin() {

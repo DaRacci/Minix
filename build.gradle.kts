@@ -23,8 +23,11 @@ repositories {
 dependencies {
     implementation(project("Minix-Core"))
     implementation(project("Minix-API"))
+    implementation(libs.adventure.api)
     implementation(libs.adventure.kotlin)
     implementation(libs.adventure.minimessage)
+    implementation("net.kyori:adventure-platform-bukkit:4.0.1")
+    implementation("org.bstats:bstats-bukkit:3.0.0")
     implementation("dev.racci:Minix-NMS:$minixVersion")
 }
 
@@ -51,9 +54,7 @@ bukkit {
         libs.koin.core.get().toString(),
         libs.logging.sentry.get().toString(),
         libs.mordant.get().toString(),
-        libs.caffeine.get().toString(),
-        libs.adventure.kotlin.get().toString(),
-        "org.bstats:bstats-bukkit:3.0.0",
+        libs.caffeine.get().toString()
     )
     website = "https://github.com/DaRacci/Minix"
 }
@@ -75,7 +76,6 @@ allprojects {
         compileOnly(rootProject.libs.kotlinx.coroutines)
         compileOnly(rootProject.libs.koin.core)
         compileOnly(rootProject.libs.caffeine)
-        compileOnly("org.bstats:bstats-bukkit:3.0.0")
 
         testImplementation(platform("org.junit:junit-bom:5.8.2"))
         testImplementation("org.junit.jupiter:junit-jupiter")
@@ -107,6 +107,16 @@ allprojects {
     }
 }
 
+subprojects {
+    dependencies {
+        compileOnly("net.kyori:adventure-platform-bukkit:4.0.1")
+        compileOnly(rootProject.libs.adventure.api)
+        compileOnly(rootProject.libs.adventure.kotlin)
+        compileOnly(rootProject.libs.adventure.minimessage)
+        compileOnly("org.bstats:bstats-bukkit:3.0.0")
+    }
+}
+
 fun included(
     build: String,
     task: String
@@ -117,13 +127,19 @@ tasks {
     shadowJar {
         archiveFileName.set("${project.name}-${project.version}-all.jar")
         val location = "dev.racci.minix.libs"
+        relocate("org.bstats", "$location.bstats")
+        relocate("net.kyori.adventure.extra.kotlin", "$location.kyori.kotlin")
         relocate("net.kyori.adventure.text.minimessage", "$location.kyori.minimessage")
         relocate("dev.racci.minix.nms", "$location.nms")
         dependencies {
             include(project("Minix-Core"))
             include(project("Minix-API"))
+            include("net.kyori:adventure-platform-bukkit:4.0.1")
+            include(dependency(rootProject.libs.adventure.api.get()))
             include(dependency(rootProject.libs.adventure.kotlin.get()))
             include(dependency(rootProject.libs.adventure.minimessage.get()))
+            include(dependency("org.bstats:bstats-bukkit:3.0.0"))
+            include(dependency("org.bstats:bstats-base:3.0.0"))
         }
     }
 

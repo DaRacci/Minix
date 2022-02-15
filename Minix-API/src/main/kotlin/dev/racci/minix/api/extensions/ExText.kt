@@ -10,16 +10,61 @@ import net.kyori.adventure.text.minimessage.MiniMessage.miniMessage
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-fun Player.msg(messages: Array<ComponentLike>) = messages.forEach(::sendMessage)
-fun Player.msg(messages: Collection<ComponentLike>) = messages.forEach(::sendMessage)
+/**
+ * Sends this array of [ComponentLike]s to the [Player]
+ *
+ * @param messages The messages to send.
+ */
+fun Player.msg(messages: Array<ComponentLike>): Unit = messages.forEach(::msg)
 
-fun CommandSender.msg(messages: Array<ComponentLike>) = messages.forEach(::sendMessage)
-fun CommandSender.msg(messages: Collection<ComponentLike>) = messages.forEach(::sendMessage)
+/**
+ * Sends this collection of [ComponentLike]s to the [Player]
+ *
+ * @param messages The messages to send.
+ */
+fun Player.msg(messages: Collection<ComponentLike>): Unit = messages.forEach(::msg)
 
+/**
+ * Sends this array of [ComponentLike]s to the [CommandSender]
+ *
+ * @param messages The messages to send.
+ */
+fun CommandSender.msg(messages: Array<ComponentLike>): Unit = messages.forEach(::msg)
+
+/**
+ * Sends this collection of [ComponentLike]s to the [CommandSender]
+ *
+ * @param messages The messages to send.
+ */
+fun CommandSender.msg(messages: Collection<ComponentLike>): Unit = messages.forEach(::msg)
+
+/**
+ * Sends this [ComponentLike] to the [Player]
+ *
+ * @param message The message to send.
+ */
 fun Player.msg(message: String) = sendMessage(message)
-fun Player.msg(message: ComponentLike) = sendMessage(message)
+
+/**
+ * Sends this [ComponentLike] to the [Player]
+ *
+ * @param message The message to send.
+ */
+fun Player.msg(message: ComponentLike) = audience().sendMessage(message)
+
+/**
+ * Sends this [ComponentLike] to the [CommandSender]
+ *
+ * @param message The message to send.
+ */
 fun CommandSender.msg(message: String) = sendMessage(message)
-fun CommandSender.msg(message: ComponentLike) = sendMessage(message)
+
+/**
+ * Sends this [ComponentLike] to the [CommandSender]
+ *
+ * @param message The message to send.
+ */
+fun CommandSender.msg(message: ComponentLike) = audience().sendMessage(message)
 
 fun String.parse() = miniMessage().parse(this)
 fun Array<String>.parse() = map { miniMessage().parse(it) }.toTypedArray()

@@ -65,7 +65,7 @@ class UpdateChecker(
 
             event<PlayerJoinEvent> {
                 if (player.hasPermission(permission)) {
-                    player.sendMessage(msg)
+                    player.msg(msg)
                 }
             }
         }

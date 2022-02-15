@@ -82,14 +82,14 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
 
             val cache = pluginCache.getIfPresent(plugin)
 
-            plugin.invokeIfOverrides(SusPlugin::handleDisable.name) {
-                minix.log.debug { "Running handleDisable for ${plugin.name}" }
-                plugin.handleDisable()
-            }
-
             cache?.loadedExtensions?.takeIf(MutableList<*>::isNotEmpty)?.let { ex ->
                 minix.log.debug { "Unloading ${ex.size} extensions for ${plugin.name}" }
                 plugin.shutdownInOrder()
+            }
+
+            plugin.invokeIfOverrides(SusPlugin::handleDisable.name) {
+                minix.log.debug { "Running handleDisable for ${plugin.name}" }
+                plugin.handleDisable()
             }
 
             loadedPlugins -= plugin::class

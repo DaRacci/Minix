@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.2.0](https://github.com/Da_Racci/Minix/compare/v1.1.0..v1.2.0) - 2022-02-15
+#### Bug Fixes
+- **(PluginService)** Disable plugin after extensions - ([a9fe594](https://github.com/Da_Racci/Minix/commit/a9fe5942beb03d425d7a6c33297bcc2eb64a1ee8)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Features
+- Shade bukkit platform and adventure 4.10.0 - ([459afa3](https://github.com/Da_Racci/Minix/commit/459afa34ace8f3dd76fa073eb53f4ca93c202e62)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Miscellaneous Chores
+- **(version)** v1.1.0 - ([1f168ac](https://github.com/Da_Racci/Minix/commit/1f168ac2860fe811102526b2d6eca3a147b9c606)) - [@Da_Racci](https://github.com/Da_Racci)
+- - -
+
 ## [v1.1.0](https://github.com/Da_Racci/Minix/compare/v1.0.8..v1.1.0) - 2022-02-14
 #### Documentation
 - Add docs for ReflectionUtils - ([7d366b6](https://github.com/Da_Racci/Minix/commit/7d366b6f182c7e27a5352c69d77b8e3f2263076b)) - [@Da_Racci](https://github.com/Da_Racci)

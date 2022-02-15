@@ -109,11 +109,11 @@ allprojects {
 
 subprojects {
     dependencies {
-        compileOnly("net.kyori:adventure-platform-bukkit:4.0.1")
         compileOnly(rootProject.libs.adventure.api)
         compileOnly(rootProject.libs.adventure.kotlin)
         compileOnly(rootProject.libs.adventure.minimessage)
         compileOnly("org.bstats:bstats-bukkit:3.0.0")
+        compileOnly("net.kyori:adventure-platform-bukkit:4.0.1")
     }
 }
 
@@ -128,18 +128,12 @@ tasks {
         archiveFileName.set("${project.name}-${project.version}-all.jar")
         val location = "dev.racci.minix.libs"
         relocate("org.bstats", "$location.bstats")
-        relocate("net.kyori.adventure.extra.kotlin", "$location.kyori.kotlin")
-        relocate("net.kyori.adventure.text.minimessage", "$location.kyori.minimessage")
         relocate("dev.racci.minix.nms", "$location.nms")
+        relocate("net.kyori.adventure", "$location.adventure")
         dependencies {
-            include(project("Minix-Core"))
-            include(project("Minix-API"))
-            include("net.kyori:adventure-platform-bukkit:4.0.1")
-            include(dependency(rootProject.libs.adventure.api.get()))
-            include(dependency(rootProject.libs.adventure.kotlin.get()))
-            include(dependency(rootProject.libs.adventure.minimessage.get()))
-            include(dependency("org.bstats:bstats-bukkit:3.0.0"))
-            include(dependency("org.bstats:bstats-base:3.0.0"))
+            exclude {
+                it.moduleName.startsWith("examination")
+            }
         }
     }
 

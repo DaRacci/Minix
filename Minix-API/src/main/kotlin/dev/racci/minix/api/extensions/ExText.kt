@@ -4,6 +4,7 @@ package dev.racci.minix.api.extensions
 
 import dev.racci.minix.api.utils.primitive.ColourUtils.colour
 import dev.racci.minix.api.utils.primitive.LegacyUtils
+import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
 import net.kyori.adventure.text.minimessage.MiniMessage.miniMessage
@@ -82,6 +83,13 @@ fun String.coloured() = colour(this, true)
  * @param recipient The recipient of the message.
  */
 infix fun Component.message(recipient: CommandSender) = recipient.msg(this)
+
+/**
+ * Sends this message as a chat message to the audience of players.
+ *
+ * @param audience The audience of players.
+ */
+infix fun Component.message(audience: Audience) = audience.sendMessage(this)
 
 /**
  * Sends this message as a chat message to the given [CommandSender].

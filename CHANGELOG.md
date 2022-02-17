@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.3.0](https://github.com/Da_Racci/Minix/compare/v1.2.2..v1.3.0) - 2022-02-17
+#### Features
+- Message to an audience - ([a296d6f](https://github.com/Da_Racci/Minix/commit/a296d6fd08220acc3240f2aff68b28b99ba31d29)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Miscellaneous Chores
+- **(deps)** update dependency gradle to v7.4 - ([b036966](https://github.com/Da_Racci/Minix/commit/b036966b48a014e0a663f2e19880676906052904)) - Renovate Bot
+- **(version)** v1.2.2 - ([7935991](https://github.com/Da_Racci/Minix/commit/79359911cc621878276ec11f53ed9af847ac7469)) - [@Da_Racci](https://github.com/Da_Racci)
+- - -
+
 ## [v1.2.2](https://github.com/Da_Racci/Minix/compare/v1.2.1..v1.2.2) - 2022-02-15
 #### Bug Fixes
 - Fix shading - ([3c55612](https://github.com/Da_Racci/Minix/commit/3c55612a474cab61537e2a2a94bfbc8f5122837d)) - [@Da_Racci](https://github.com/Da_Racci)

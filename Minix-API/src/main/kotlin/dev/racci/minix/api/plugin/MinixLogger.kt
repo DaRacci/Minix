@@ -149,6 +149,7 @@ class MinixLogger(
         throwable?.let { t ->
             t.message?.let { message += "$it: " }
             t.cause?.let { message += "$it" }
+            if (debugEnabled) message += t.stackTraceToString()
         }
         terminal.println("$prefix$type ${TextColors.brightWhite("->")} ${colour(message)}")
     }

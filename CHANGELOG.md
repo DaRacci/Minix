@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.3.2](https://github.com/Da_Racci/Minix/compare/v1.3.1..v1.3.2) - 2022-02-21
+#### Miscellaneous Chores
+- **(deps)** Update Minix Conventions - ([6a53cdd](https://github.com/Da_Racci/Minix/commit/6a53cdd6db318b3d8f00e93974eb03f3b81fcbb3)) - [@Da_Racci](https://github.com/Da_Racci)
+- **(version)** v1.3.1 - ([b1de8f2](https://github.com/Da_Racci/Minix/commit/b1de8f26b0b53f272a420d4e1c5d674110af6cf0)) - [@Da_Racci](https://github.com/Da_Racci)
+- - -
+
 ## [v1.3.1](https://github.com/Da_Racci/Minix/compare/v1.3.0..v1.3.1) - 2022-02-21
 #### Bug Fixes
 - ShadowJar not excluding stuff and therefor the plugin not working - ([cb4e165](https://github.com/Da_Racci/Minix/commit/cb4e16543a6ac89e96d03351638ae38fbf30aeac)) - [@Da_Racci](https://github.com/Da_Racci)

@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.3.1](https://github.com/Da_Racci/Minix/compare/v1.3.0..v1.3.1) - 2022-02-21
+#### Bug Fixes
+- ShadowJar not excluding stuff and therefor the plugin not working - ([cb4e165](https://github.com/Da_Racci/Minix/commit/cb4e16543a6ac89e96d03351638ae38fbf30aeac)) - [@Da_Racci](https://github.com/Da_Racci)
+#### Miscellaneous Chores
+- **(deps)** update dependency dev.racci:catalog to v1.6.10-59 - ([75aae5e](https://github.com/Da_Racci/Minix/commit/75aae5e92c92e12dcbb9bc67946b31728fa95675)) - Renovate Bot
+- **(version)** v1.3.0 - ([ed9a7ce](https://github.com/Da_Racci/Minix/commit/ed9a7ceb442729f04f8e88fb33f2a77718f9d3bb)) - [@Da_Racci](https://github.com/Da_Racci)
+- - -
+
 ## [v1.3.0](https://github.com/Da_Racci/Minix/compare/v1.2.2..v1.3.0) - 2022-02-17
 #### Features
 - Message to an audience - ([a296d6f](https://github.com/Da_Racci/Minix/commit/a296d6fd08220acc3240f2aff68b28b99ba31d29)) - [@Da_Racci](https://github.com/Da_Racci)

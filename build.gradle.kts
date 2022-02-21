@@ -54,7 +54,8 @@ bukkit {
         libs.koin.core.get().toString(),
         libs.logging.sentry.get().toString(),
         libs.mordant.get().toString(),
-        libs.caffeine.get().toString()
+        libs.caffeine.get().toString(),
+        libs.kotlinx.serialization.kaml.get().toString()
     )
     website = "https://github.com/DaRacci/Minix"
 }
@@ -132,7 +133,9 @@ tasks {
         relocate("net.kyori.adventure", "$location.adventure")
         dependencies {
             exclude {
-                it.moduleName.startsWith("examination")
+                it.moduleName.startsWith("examination") ||
+                    it.moduleName.startsWith("kotlin") ||
+                    it.moduleName.contains("annotations")
             }
         }
     }

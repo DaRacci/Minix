@@ -33,10 +33,10 @@ path = "CHANGELOG.md"
 template = "remote"
 remote = "github.com"
 repository = "Minix"
-owner = "Da_Racci"
+owner = "DaRacci"
 authors = [
-    { signature = "Racci", username = "Da_Racci" },
-    { signature = "Da_Racci", username = "Da_Racci" }
+    { signature = "Racci", username = "DaRacci" },
+    { signature = "DaRacci", username = "DaRacci" }
 ]
 
 

@@ -37,7 +37,6 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
     }
 
     // Add Update checker back for Spigot as well as adding support for GitHub, mc-market and polymart
-    // Add BStats support
     override fun startPlugin(plugin: MinixPlugin) {
         if (plugin::class in loadedPlugins) throw IllegalStateException("The plugin ${plugin.description.fullName} has already been registered!")
         minix.log.debug { "Handling enable for ${plugin.name} with class of ${plugin::class}" }
@@ -97,24 +96,56 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
     }
 
     private suspend inline fun <reified P : MinixPlugin> P.startInOrder() {
-        val sorted = mutableListOf<Extension<*>>()
-        val visited = mutableSetOf<KClass<out Extension<*>>>()
-        val toVisit = pluginCache[this].extensions.map { it.invoke(this) }.toMutableList()
-        val toVisitClasses = toVisit.map { it::class }.toMutableSet()
-        while (toVisit.isNotEmpty()) {
-            val next = toVisit.first()
-            toVisit.remove(next)
-            if (next::class in visited) continue
-            visited += next::class
-            next.dependencies.forEach { kClass ->
-                if (kClass in toVisitClasses) {
-                    toVisitClasses -= kClass
-                    toVisit.find { it::class == kClass }?.let { toVisit.remove(it) }
+        val extensions = pluginCache[this].extensions.map { it.invoke(this) }.toMutableList()
+
+        val sortedExtensions = mutableListOf<Extension<*>>()
+        while (extensions.isNotEmpty()) {
+            val next = extensions.first()
+            extensions.remove(next)
+            if (next !in sortedExtensions &&
+                (
+                    next.dependencies.isEmpty() ||
+                        next.dependencies.all { dep -> sortedExtensions.find { it::class == dep } != null }
+                    )
+            ) {
+                log.debug { "All dependencies for ${next.name} are loaded, adding to sorted" }
+                sortedExtensions.add(next)
+                continue
+            }
+
+            if (next in sortedExtensions &&
+                next.dependencies.any { dep -> sortedExtensions.find { it::class == dep } == null }
+            ) {
+                log.debug { "Dependency for ${next.name} is not loaded, reordering needed deps." }
+                val index = sortedExtensions.indexOf(next)
+                log.debug { "Index of ${next.name} is $index" }
+                sortedExtensions.remove(next)
+                val neededDepends = next.dependencies.filter { dep -> sortedExtensions.find { it::class == dep } == null }.map { exKClass -> extensions.find { it::class == exKClass }!! }
+                log.debug { "Needed depends for ${next.name} are ${neededDepends.joinToString { it.name }}" }
+                sortedExtensions.addAll(index, neededDepends)
+                sortedExtensions.add(index + neededDepends.size + 1, next)
+                log.debug { "New index of ${next.name} is ${sortedExtensions.indexOf(next)}" }
+                continue
+            }
+
+            for (dependency in next.dependencies) {
+                if (sortedExtensions.find { it::class == dependency } != null) {
+                    log.debug { "Dependency $dependency for ${next.name} is in sorted, skipping." }
+                    continue
+                }
+                extensions.find { it::class == dependency }?.let {
+                    sortedExtensions.add(it)
+                    log.debug { "Adding ${it.name} to sorted before ${next.name}" }
                 }
             }
-            sorted += next
+            // TODO: i shouldn't need another check here
+            if (next !in sortedExtensions) {
+                log.debug { "Adding ${next.name} to sorted" }
+                sortedExtensions.add(next)
+            } else log.debug { "Extension ${next.name} is already in sorted, skipping." }
         }
-        sorted.forEach { ex ->
+
+        sortedExtensions.forEach { ex ->
             minix.log.debug { "Starting extension ${ex.name} for ${this.name}" }
             loadModule { single { ex } bind (ex.bindToKClass ?: ex::class) }
             ex.handleSetup()

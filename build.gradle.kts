@@ -50,6 +50,7 @@ bukkit {
         libs.exposed.core.get().toString(),
         libs.exposed.dao.get().toString(),
         libs.exposed.jdbc.get().toString(),
+        libs.exposed.dateTime.get().toString(),
         libs.hikariCP.get().toString(),
         libs.koin.core.get().toString(),
         libs.logging.sentry.get().toString(),

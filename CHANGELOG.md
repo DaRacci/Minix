@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v1.4.0](https://github.com/DaRacci/Minix/compare/v1.3.3..v1.4.0) - 2022-02-22
+#### Features
+- **(logger)** If debug mode is enabled errors will now print the stacktrace too - ([0ff953e](https://github.com/DaRacci/Minix/commit/0ff953ec2818de1635449d3aaa8a7a5a3599892a)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v1.3.3 - ([000049d](https://github.com/DaRacci/Minix/commit/000049d08b212695051790259b3a14981d2f0df7)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(PluginService)** Fix the sorting process and improve debug logging for it too - ([371c4cc](https://github.com/DaRacci/Minix/commit/371c4ccdfa40b5e89129b9ae5d9dbb54e84ed0e0)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v1.3.3](https://github.com/DaRacci/Minix/compare/v1.3.2..v1.3.3) - 2022-02-21
 #### Bug Fixes
 - **(cog)** Fix cog settings and changelog links - ([069b733](https://github.com/DaRacci/Minix/commit/069b7339fe39eb2d01e23566f0c2762f29bd51ba)) - [@DaRacci](https://github.com/DaRacci)

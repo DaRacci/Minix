@@ -44,7 +44,7 @@ class MinixImpl : Minix() {
 
         loadModule { single { this@MinixImpl } bind Minix::class }
 
-        loadModule { single<ItemBuilderImpl.Companion>() bind ItemBuilderDSL::class }
+        loadModule { single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class }
 
         extensions {
             add(::CoroutineSchedulerImpl)

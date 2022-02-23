@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.0.1](https://github.com/DaRacci/Minix/compare/v2.0.0..v2.0.1) - 2022-02-23
+#### Bug Fixes
+- **(shadow)** Fix relocating all adventure related classes and not only the extra kotlin and platform classes - ([2e19ac9](https://github.com/DaRacci/Minix/commit/2e19ac912c2669564938d15485e655f959dce0f9)) - [@DaRacci](https://github.com/DaRacci)
+- **(shadow)** Remove adventure text serializers being shaded - ([756d47b](https://github.com/DaRacci/Minix/commit/756d47b9024b462655f6170780e4ce30d300ffba)) - [@DaRacci](https://github.com/DaRacci)
+- Disable adventure audiences and platform until i can develop more into it later - ([1847ac9](https://github.com/DaRacci/Minix/commit/1847ac9a2815fb7c6acf77dcd4db5870c36d6d07)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.0.0 - ([c04c913](https://github.com/DaRacci/Minix/commit/c04c913af18ecd22e46851dd9209476925c99beb)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.0.0](https://github.com/DaRacci/Minix/compare/v1.4.0..v2.0.0) - 2022-02-23
 #### Bug Fixes
 - Fix ItemBuilder koin class - ([93ba4d7](https://github.com/DaRacci/Minix/commit/93ba4d7c92128b6c14f3c2eab103764185d383ce)) - [@DaRacci](https://github.com/DaRacci)

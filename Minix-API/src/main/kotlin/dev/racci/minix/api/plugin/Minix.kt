@@ -1,6 +1,5 @@
 package dev.racci.minix.api.plugin
 
-import net.kyori.adventure.platform.bukkit.BukkitAudiences
 import org.jetbrains.annotations.ApiStatus
 
 /**
@@ -10,5 +9,5 @@ import org.jetbrains.annotations.ApiStatus
 @ApiStatus.Internal
 @ApiStatus.NonExtendable
 abstract class Minix : MinixPlugin() {
-    abstract val adventure: Lazy<BukkitAudiences>
+//    abstract val adventure: Lazy<BukkitAudiences>
 }

@@ -127,7 +127,9 @@ tasks {
         val location = "dev.racci.minix.libs"
         relocate("org.bstats", "$location.bstats")
         relocate("dev.racci.minix.nms", "$location.nms")
-        relocate("net.kyori.adventure", "$location.adventure")
+        relocate("net.kyori.adventure.extra", "$location.adventure.extra")
+        relocate("net.kyori.adventure.platform", "$location.adventure.platform")
+        relocate("net.kyori.adventure.text.serializer.craftbukkit", "$location.adventure.text.serializer.craftbukkit")
         dependencies {
             exclude {
                 it.moduleName.startsWith("examination") ||

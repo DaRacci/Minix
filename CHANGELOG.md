@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.0.0](https://github.com/DaRacci/Minix/compare/v1.4.0..v2.0.0) - 2022-02-23
+#### Bug Fixes
+- Fix ItemBuilder koin class - ([93ba4d7](https://github.com/DaRacci/Minix/commit/93ba4d7c92128b6c14f3c2eab103764185d383ce)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- Only support my tentacles fork currently for adventure 4.10.0-SNAPSHOT - ([14c2673](https://github.com/DaRacci/Minix/commit/14c267327ad967a419b92193df92b77d6987cac7)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(deps)** Add exposed date time to libraries - ([28c58c5](https://github.com/DaRacci/Minix/commit/28c58c5a233203ad5f00057510b0b06b1b91de8b)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v1.4.0 - ([afa0c5c](https://github.com/DaRacci/Minix/commit/afa0c5c336d5acc7d3223f3dfecd5af5193de5c0)) - [@DaRacci](https://github.com/DaRacci)
+- Update README.md - ([d62e2bc](https://github.com/DaRacci/Minix/commit/d62e2bcd2934c02dc4087a2501ff21baf8aa98d5)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v1.4.0](https://github.com/DaRacci/Minix/compare/v1.3.3..v1.4.0) - 2022-02-22
 #### Features
 - **(logger)** If debug mode is enabled errors will now print the stacktrace too - ([0ff953e](https://github.com/DaRacci/Minix/commit/0ff953ec2818de1635449d3aaa8a7a5a3599892a)) - [@DaRacci](https://github.com/DaRacci)

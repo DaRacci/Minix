@@ -24,7 +24,7 @@ dependencies {
     implementation(project("Minix-Core"))
     implementation(project("Minix-API"))
     implementation(libs.adventure.kotlin)
-    implementation("net.kyori:adventure-platform-bukkit:4.0.1")
+//    implementation("net.kyori:adventure-platform-bukkit:4.0.1")
     implementation("org.bstats:bstats-bukkit:3.0.0")
     implementation("dev.racci:Minix-NMS:$minixVersion")
 }
@@ -111,7 +111,7 @@ subprojects {
     dependencies {
         compileOnly(rootProject.libs.adventure.kotlin)
         compileOnly("org.bstats:bstats-bukkit:3.0.0")
-        compileOnly("net.kyori:adventure-platform-bukkit:4.0.1")
+//        compileOnly("net.kyori:adventure-platform-bukkit:4.0.1")
     }
 }
 
@@ -128,8 +128,8 @@ tasks {
         relocate("org.bstats", "$location.bstats")
         relocate("dev.racci.minix.nms", "$location.nms")
         relocate("net.kyori.adventure.extra", "$location.adventure.extra")
-        relocate("net.kyori.adventure.platform", "$location.adventure.platform")
-        relocate("net.kyori.adventure.text.serializer.craftbukkit", "$location.adventure.text.serializer.craftbukkit")
+//        relocate("net.kyori.adventure.platform", "$location.adventure.platform")
+//        relocate("net.kyori.adventure.text.serializer.craftbukkit", "$location.adventure.text.serializer.craftbukkit")
         dependencies {
             exclude {
                 it.moduleName.startsWith("examination") ||

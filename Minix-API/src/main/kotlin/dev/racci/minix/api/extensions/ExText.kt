@@ -51,7 +51,7 @@ fun Player.msg(message: String) = sendMessage(message)
  *
  * @param message The message to send.
  */
-fun Player.msg(message: ComponentLike) = audience().sendMessage(message)
+fun Player.msg(message: ComponentLike) = sendMessage(message)
 
 /**
  * Sends this [ComponentLike] to the [CommandSender]
@@ -65,7 +65,7 @@ fun CommandSender.msg(message: String) = sendMessage(message)
  *
  * @param message The message to send.
  */
-fun CommandSender.msg(message: ComponentLike) = audience().sendMessage(message)
+fun CommandSender.msg(message: ComponentLike) = sendMessage(message)
 
 fun String.parse() = miniMessage().parse(this)
 fun Array<String>.parse() = map { miniMessage().parse(it) }.toTypedArray()

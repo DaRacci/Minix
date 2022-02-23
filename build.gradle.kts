@@ -23,9 +23,9 @@ repositories {
 dependencies {
     implementation(project("Minix-Core"))
     implementation(project("Minix-API"))
-    implementation(libs.adventure.api)
+//    implementation(libs.adventure.api)
     implementation(libs.adventure.kotlin)
-    implementation(libs.adventure.minimessage)
+//    implementation(libs.adventure.minimessage)
     implementation("net.kyori:adventure-platform-bukkit:4.0.1")
     implementation("org.bstats:bstats-bukkit:3.0.0")
     implementation("dev.racci:Minix-NMS:$minixVersion")
@@ -39,7 +39,7 @@ bukkit {
     version = rootProject.version.toString()
     main = "dev.racci.minix.core.MinixImpl"
     load = PluginLoadOrder.STARTUP
-    loadBefore = listOf("Sylphia")
+    loadBefore = listOf("Terix")
     libraries = listOf(
         libs.kotlin.stdlib.get().toString(),
         libs.kotlin.reflect.get().toString(),
@@ -111,9 +111,9 @@ allprojects {
 
 subprojects {
     dependencies {
-        compileOnly(rootProject.libs.adventure.api)
+//        compileOnly(rootProject.libs.adventure.api)
         compileOnly(rootProject.libs.adventure.kotlin)
-        compileOnly(rootProject.libs.adventure.minimessage)
+//        compileOnly(rootProject.libs.adventure.minimessage)
         compileOnly("org.bstats:bstats-bukkit:3.0.0")
         compileOnly("net.kyori:adventure-platform-bukkit:4.0.1")
     }
@@ -136,6 +136,10 @@ tasks {
             exclude {
                 it.moduleName.startsWith("examination") ||
                     it.moduleName.startsWith("kotlin") ||
+                    it.moduleName == "adventure-api" ||
+                    it.moduleName == "adventure-key" ||
+                    it.moduleName == "adventure-nbt" ||
+                    it.moduleName == "adventure-text-*" ||
                     it.moduleName.contains("annotations")
             }
         }

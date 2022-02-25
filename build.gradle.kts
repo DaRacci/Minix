@@ -26,7 +26,6 @@ dependencies {
     implementation(libs.adventure.kotlin)
 //    implementation("net.kyori:adventure-platform-bukkit:4.0.1")
     implementation("org.bstats:bstats-bukkit:3.0.0")
-    implementation("dev.racci:Minix-NMS:$minixVersion")
 }
 
 bukkit {
@@ -126,7 +125,6 @@ tasks {
         archiveFileName.set("${project.name}-${project.version}-all.jar")
         val location = "dev.racci.minix.libs"
         relocate("org.bstats", "$location.bstats")
-        relocate("dev.racci.minix.nms", "$location.nms")
         relocate("net.kyori.adventure.extra", "$location.adventure.extra")
 //        relocate("net.kyori.adventure.platform", "$location.adventure.platform")
 //        relocate("net.kyori.adventure.text.serializer.craftbukkit", "$location.adventure.text.serializer.craftbukkit")

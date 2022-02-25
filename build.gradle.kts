@@ -122,7 +122,6 @@ fun included(
 tasks {
 
     shadowJar {
-        archiveFileName.set("${project.name}-${project.version}-all.jar")
         val location = "dev.racci.minix.libs"
         relocate("org.bstats", "$location.bstats")
         relocate("net.kyori.adventure.extra", "$location.adventure.extra")

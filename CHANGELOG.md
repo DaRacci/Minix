@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.0.2](https://github.com/DaRacci/Minix/compare/v2.0.1..v2.0.2) - 2022-02-25
+#### Bug Fixes
+- Update to Minix-Conventions build 76 to for nms fixes - ([2f2312b](https://github.com/DaRacci/Minix/commit/2f2312b7f63a1162d98811bbdf9c3254ffc07d38)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(deps)** Update to Minix-Conventions build 74 - ([64e0442](https://github.com/DaRacci/Minix/commit/64e04421333218841530e4c7ee52da1c0ba3fbba)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** Remove Minix-NMS shade as it goes unused - ([2216e71](https://github.com/DaRacci/Minix/commit/2216e717d0ddb96e9a4287abc2aca343e54196fc)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v2.0.1 - ([65580a1](https://github.com/DaRacci/Minix/commit/65580a194675461fbf6e52f136de07f7de3fd75d)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.0.1](https://github.com/DaRacci/Minix/compare/v2.0.0..v2.0.1) - 2022-02-23
 #### Bug Fixes
 - **(shadow)** Fix relocating all adventure related classes and not only the extra kotlin and platform classes - ([2e19ac9](https://github.com/DaRacci/Minix/commit/2e19ac912c2669564938d15485e655f959dce0f9)) - [@DaRacci](https://github.com/DaRacci)

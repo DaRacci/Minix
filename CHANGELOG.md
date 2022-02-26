@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.0.3](https://github.com/DaRacci/Minix/compare/v2.0.2..v2.0.3) - 2022-02-26
+#### Build system
+- Update Minix Conventions and add Deps to Publish - ([95a5b74](https://github.com/DaRacci/Minix/commit/95a5b74a94e163e90a046df8b101838bc58574c5)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.0.2 - ([3c4139e](https://github.com/DaRacci/Minix/commit/3c4139e0274d77f4fa66f123b02e2f6228248a35)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.0.2](https://github.com/DaRacci/Minix/compare/v2.0.1..v2.0.2) - 2022-02-25
 #### Bug Fixes
 - Update to Minix-Conventions build 76 to for nms fixes - ([2f2312b](https://github.com/DaRacci/Minix/commit/2f2312b7f63a1162d98811bbdf9c3254ffc07d38)) - [@DaRacci](https://github.com/DaRacci)

@@ -22,7 +22,7 @@ class CoroutineTaskImpl(
     override var async: Boolean = false
     override var period: Duration? = null
     override var job: Job by Delegates.notNull()
-    override var keepRunning: AtomicBoolean = atomic(false)
+    override var keepRunning: AtomicBoolean = atomic(true)
 
     override var task: suspend (MinixPlugin, CoroutineScope) -> Unit by Delegates.notNull()
     override var runnable: CoroutineRunnable? = null

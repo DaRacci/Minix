@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.0.4](https://github.com/DaRacci/Minix/compare/v2.0.3..v2.0.4) - 2022-02-27
+#### Bug Fixes
+- Call time events on the main thread - ([7b32196](https://github.com/DaRacci/Minix/commit/7b321960240a52ee767911235376950cafe3ed32)) - [@DaRacci](https://github.com/DaRacci)
+#### Build system
+- Use Minix-Conventions lib bundles for testing - ([1daf07a](https://github.com/DaRacci/Minix/commit/1daf07a9e7d5dcae8bd796cb0f5685000fd8dfbb)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(docs)** Update doc - ([f330190](https://github.com/DaRacci/Minix/commit/f33019085d8a3f8fcee6bcf371ebfc307bc50e37)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v2.0.3 - ([67a3aca](https://github.com/DaRacci/Minix/commit/67a3aca83bf9f4fcb4a36783c64c6960668cb255)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Refactor a bit and debugging improvements to scheduler including timeout watcher and catcher - ([90f85c3](https://github.com/DaRacci/Minix/commit/90f85c313785821e28fad3c959de29845635b286)) - [@DaRacci](https://github.com/DaRacci)
+#### Tests
+- Add some tests - ([eb15eec](https://github.com/DaRacci/Minix/commit/eb15eec689c50783ec694344c7bea0e3f530b48e)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.0.3](https://github.com/DaRacci/Minix/compare/v2.0.2..v2.0.3) - 2022-02-26
 #### Build system
 - Update Minix Conventions and add Deps to Publish - ([95a5b74](https://github.com/DaRacci/Minix/commit/95a5b74a94e163e90a046df8b101838bc58574c5)) - [@DaRacci](https://github.com/DaRacci)

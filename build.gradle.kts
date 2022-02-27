@@ -10,6 +10,7 @@ plugins {
     id("dev.racci.minix.purpurmc")
     id("dev.racci.minix.nms")
     id("org.jetbrains.dokka")
+    kotlin("plugin.atomicfu") version "1.6.20-RC"
     kotlin("plugin.serialization")
     id("net.minecrell.plugin-yml.bukkit") version "0.5.1"
 }
@@ -53,7 +54,8 @@ bukkit {
         libs.logging.sentry.get().toString(),
         libs.mordant.get().toString(),
         libs.caffeine.get().toString(),
-        libs.kotlinx.serialization.kaml.get().toString()
+        libs.kotlinx.serialization.kaml.get().toString(),
+        "org.jetbrains.kotlinx:atomicfu-jvm:0.17.1"
     )
     website = "https://github.com/DaRacci/Minix"
 }
@@ -75,6 +77,7 @@ allprojects {
         compileOnly(rootProject.libs.kotlinx.coroutines)
         compileOnly(rootProject.libs.koin.core)
         compileOnly(rootProject.libs.caffeine)
+        compileOnly("org.jetbrains.kotlinx:atomicfu:0.17.1")
 
         testImplementation(rootProject.libs.bundles.kotlin)
         testImplementation(rootProject.libs.bundles.kotlinx)

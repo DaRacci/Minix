@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services
 
+import dev.racci.minix.api.coroutine.launch
 import dev.racci.minix.api.events.WorldDayEvent
 import dev.racci.minix.api.events.WorldNightEvent
 import dev.racci.minix.api.extension.Extension
@@ -28,7 +29,7 @@ class TimeService(override val plugin: Minix) : Extension<Minix>() {
         event<WorldLoadEvent> { checkTime(world) }
         event<WorldUnloadEvent> { timeState -= world.name }
 
-        scheduler { if (onlinePlayers.isNotEmpty()) worlds.forEach(::checkTime) }.runAsyncTaskTimer(plugin, 15.milliseconds, 1.ticks)
+        scheduler { if (onlinePlayers.isNotEmpty()) worlds.forEach(::checkTime) }.runAsyncTaskTimer(plugin, 15.milliseconds, 5.ticks)
     }
 
     private fun checkTime(world: World) {
@@ -42,8 +43,10 @@ class TimeService(override val plugin: Minix) : Extension<Minix>() {
             WorldDayEvent::class
         } else WorldNightEvent::class
 
-        callEvent(eventKClass) {
-            mapOf(this[0] to world)
+        plugin.launch {
+            callEvent(eventKClass) {
+                mapOf(this[0] to world)
+            }
         }
     }
 }

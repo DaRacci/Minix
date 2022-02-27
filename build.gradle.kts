@@ -76,10 +76,11 @@ allprojects {
         compileOnly(rootProject.libs.koin.core)
         compileOnly(rootProject.libs.caffeine)
 
-        testImplementation(platform("org.junit:junit-bom:5.8.2"))
-        testImplementation("org.junit.jupiter:junit-jupiter")
+        testImplementation(rootProject.libs.bundles.kotlin)
+        testImplementation(rootProject.libs.bundles.kotlinx)
+        testImplementation(rootProject.libs.testing.strikt)
+        testImplementation(rootProject.libs.testing.junit5)
         testImplementation(kotlin("test"))
-        testImplementation("io.strikt:strikt-core:0.34.1")
     }
 
     tasks {
@@ -101,8 +102,6 @@ allprojects {
                 url.set(URL("https://minix.racci.dev/"))
             }
         }
-
-        jar.get().archiveFileName.set("${project.name}-${project.version}.jar")
     }
 }
 

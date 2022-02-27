@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.0.5](https://github.com/DaRacci/Minix/compare/v2.0.4..v2.0.5) - 2022-02-27
+#### Miscellaneous Chores
+- **(version)** v2.0.4 - ([09202fb](https://github.com/DaRacci/Minix/commit/09202fba625e13e7092b0dd3ab90a6e9484119dc)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Refactor the Coroutine scheduler - ([0db2ada](https://github.com/DaRacci/Minix/commit/0db2adae032ce7a149334a3092ab8ad40cab4d40)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.0.4](https://github.com/DaRacci/Minix/compare/v2.0.3..v2.0.4) - 2022-02-27
 #### Bug Fixes
 - Call time events on the main thread - ([7b32196](https://github.com/DaRacci/Minix/commit/7b321960240a52ee767911235376950cafe3ed32)) - [@DaRacci](https://github.com/DaRacci)

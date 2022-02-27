@@ -4,7 +4,7 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.persistentListOf
 
 /**
- * Adds two or more elements to a new [PersistentList].
+ * Adds two elements to a new [PersistentList].
  */
 infix fun <T> T.and(
     other: T,

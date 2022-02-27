@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.0.6](https://github.com/DaRacci/Minix/compare/v2.0.5..v2.0.6) - 2022-02-27
+#### Bug Fixes
+- Fix default keepRunning value - ([5c78269](https://github.com/DaRacci/Minix/commit/5c7826974e8e518e33abbd30b00dfca3c38e8cc8)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.0.5 - ([ee4aabf](https://github.com/DaRacci/Minix/commit/ee4aabfe57f1d0f8b8d8a41922dbc52efdac88d6)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.0.5](https://github.com/DaRacci/Minix/compare/v2.0.4..v2.0.5) - 2022-02-27
 #### Miscellaneous Chores
 - **(version)** v2.0.4 - ([09202fb](https://github.com/DaRacci/Minix/commit/09202fba625e13e7092b0dd3ab90a6e9484119dc)) - [@DaRacci](https://github.com/DaRacci)

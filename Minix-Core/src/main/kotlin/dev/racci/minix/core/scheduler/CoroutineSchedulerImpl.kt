@@ -5,6 +5,7 @@ package dev.racci.minix.core.scheduler
 import dev.racci.minix.api.coroutine.asyncDispatcher
 import dev.racci.minix.api.coroutine.minecraftDispatcher
 import dev.racci.minix.api.extension.Extension
+import dev.racci.minix.api.extensions.inWholeTicks
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.scheduler.CoroutineRunnable
@@ -15,12 +16,14 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import org.bukkit.plugin.IllegalPluginAccessException
 import org.koin.core.component.get
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.IntUnaryOperator
 import kotlin.reflect.KClass
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class)
@@ -54,29 +57,39 @@ class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), C
         }
         val id = nextID()
         task.taskID = id
-        log.debug { "Starting task number $id for ${task.owner.name}" }
         val scope = if (task.async) scope else bukkitScope
         val job = scope.launch(start = CoroutineStart.LAZY) {
+            log.debug { "Task number $id for ${task.owner.name} has started" }
             // Wait before starting if there is a delay
             delay?.let { delay(it) }
+            log.debug { "Task number $id for ${task.owner.name} has waited for ${delay?.inWholeTicks} ticks" }
             // If this is a repeating task
             if (period != null) {
                 task.period = period
-                while (!task.cancelled) {
-                    // Run the task
-                    task.runnable?.run() ?: task.task.invoke(task.owner to this)
-                    // Wait before running again
-                    delay(task.period!!)
+                log.debug { "Task number $id for ${task.owner.name} is a repeating task with period ${period.inWholeTicks} ticks" }
+                try {
+                    while (!task.cancelled) {
+                        withTimeout(5.seconds) { // We don't want to hang on the task forever
+                            task.runnable?.run() ?: task.task.invoke(task.owner to this)
+                        }
+                        delay(task.period!!)
+                    }
+                } catch (e: Exception) {
+                    task.cancel()
+                    log.error(e) { "There was an error while running task $id for ${task.owner.name}" }
                 }
             } else {
                 task.period = null
-                if (!task.cancelled) {
-                    task.runnable?.run() ?: task.task.invoke(task.owner to this)
-                }
+                try {
+                    if (!task.cancelled) {
+                        task.runnable?.run() ?: task.task.invoke(task.owner to this)
+                    }
+                } catch (e: Exception) { log.error(e) { "There was an error while running task $id for ${task.owner.name}" } }
             }
         }
         task.job = job
         tasks[id] = task
+        log.debug { "Task number $id for ${task.owner.name} has been registered" }
         job.start()
         return task
     }
@@ -95,16 +108,18 @@ class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), C
         }?.keys?.toIntArray()
 
     override suspend fun cancelTask(taskID: Int): Boolean {
-        if (taskID <= 0) return false
+        if (taskID < 0) return false
         val task = tasks[taskID] ?: return false
         val result = tasks.entries.removeIf { (_, task) ->
-            if (task.taskID == taskID) {
-                return@removeIf true
-            }; false
+            task.taskID == taskID
         }
         return if (result) {
+            log.debug { "Task number $taskID for ${task.owner.name} has been cancelled" }
             task.cancel0()
-        } else false
+        } else {
+            log.debug { "Task number $taskID did not match any registered tasks" }
+            false
+        }
     }
 
     override suspend fun cancelTask(name: String): Boolean {

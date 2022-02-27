@@ -46,10 +46,10 @@ class CoroutineTaskImpl : CoroutineTask {
 
     fun cancel0(): Boolean {
         cancelled = true
-        if (job.isActive) {
-            job.cancel("Plugin shutting down")
-        } else return false
-        return true
+        return if (job.isActive) {
+            job.cancel("Shutting down task")
+            true
+        } else false
     }
 
     override fun async(): CoroutineTaskImpl {

@@ -3,6 +3,7 @@
 package dev.racci.minix.api.scheduler
 
 import dev.racci.minix.api.plugin.MinixPlugin
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
@@ -35,7 +36,7 @@ abstract class CoroutineRunnable {
     val cancelled: Boolean
         get() {
             checkScheduled()
-            return task!!.cancelled
+            return task!!.keepRunning.value
         }
 
     abstract suspend fun run()
@@ -94,7 +95,7 @@ abstract class CoroutineRunnable {
     }
 
     fun cancel() {
-        CoroutineScheduler.scope.launch { CoroutineScheduler.cancelTask(taskID) }
+        CoroutineScope(CoroutineScheduler.parentJob).launch { CoroutineScheduler.cancelTask(taskID) }
     }
 
     private fun checkScheduled() {

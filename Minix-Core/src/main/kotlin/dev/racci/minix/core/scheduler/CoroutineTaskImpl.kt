@@ -4,50 +4,50 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.scheduler.CoroutineRunnable
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.scheduler.CoroutineTask
+import kotlinx.atomicfu.AtomicBoolean
+import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlin.properties.Delegates
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class CoroutineTaskImpl : CoroutineTask {
-
+class CoroutineTaskImpl(
     override val owner: MinixPlugin
+) : CoroutineTask {
+
     override var name: String by Delegates.notNull()
     override var taskID: Int by Delegates.notNull()
-    override var async: Boolean = false; internal set
-    override var period: Duration? = null; internal set
-    override var job: Job by Delegates.notNull(); internal set
-    override var task: suspend Pair<MinixPlugin, CoroutineScope>.() -> Unit by Delegates.notNull()
-    override var runnable: CoroutineRunnable? = null; internal set
-    override var cancelled: Boolean = false; internal set
+    override var async: Boolean = false
+    override var period: Duration? = null
+    override var job: Job by Delegates.notNull()
+    override var keepRunning: AtomicBoolean = atomic(false)
+
+    override var task: suspend (MinixPlugin, CoroutineScope) -> Unit by Delegates.notNull()
+    override var runnable: CoroutineRunnable? = null
 
     constructor(
         plugin: MinixPlugin,
-        task: suspend Pair<MinixPlugin, CoroutineScope>.() -> Unit,
-    ) {
-        owner = plugin
+        task: suspend (MinixPlugin, CoroutineScope) -> Unit
+    ) : this(plugin) {
         this.task = task
     }
 
     constructor(
         plugin: MinixPlugin,
-        runnable: CoroutineRunnable,
-    ) {
-        owner = plugin
+        runnable: CoroutineRunnable
+    ) : this(plugin) {
         this.runnable = runnable
     }
 
-    override suspend fun cancel() {
+    override fun cancel(): Boolean =
         CoroutineScheduler.cancelTask(taskID)
-    }
 
     fun cancel0(): Boolean {
-        cancelled = true
+        keepRunning.lazySet(false)
         return if (job.isActive) {
-            job.cancel("Shutting down task")
+            job.cancel()
             true
         } else false
     }
@@ -60,5 +60,9 @@ class CoroutineTaskImpl : CoroutineTask {
     override fun sync(): CoroutineTaskImpl {
         this.async = false
         return this
+    }
+
+    override fun shutdown(): Boolean {
+        return keepRunning.getAndSet(false)
     }
 }

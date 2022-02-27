@@ -1,65 +1,48 @@
-@file:Suppress("Unused")
-
 package dev.racci.minix.api.scheduler
 
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.getKoin
+import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
-@Suppress("ComplexInterface")
+typealias CoroutineBlock = suspend (MinixPlugin, CoroutineScope) -> Unit
+
 interface CoroutineScheduler {
 
-    val scope: CoroutineScope
+    val parentJob: CompletableJob
 
     /**
-     * @returns an IntArray of this plugins currently running tasks.
-     * If there are no active tasks it will return null.
+     * @return an [IntArray] which represents this plugins active jobs.
      */
-    suspend fun activateTasks(plugin: MinixPlugin): IntArray?
+    fun activateTasks(plugin: MinixPlugin): IntArray?
 
     /**
-     * Attempts to remove a task from the scheduler.
+     * Initiates an orderly shutdown, if the task timer is currently running,
+     * it will be allowed to finish, but then not run again.
+     * Invoking this will have no effect if already shut down.
      *
-     * @param taskID The task to remove and cancel.
-     * @return If the task was successfully cancelled and removed.
+     * @return true if the task was successfully shut down.
      */
-    suspend fun cancelTask(taskID: Int): Boolean
+    suspend fun shutdownTask(taskID: Int): Boolean
 
     /**
-     * Attempts to find and cancel a task matching this name if it exists.
-     */
-    suspend fun cancelTask(name: String): Boolean
-
-    /**
-     * Attempts to remove all active tasks of
-     * the [MinixPlugin] from the scheduler.
+     * Immediately stops the task event if there is a running job.
      *
-     * @param plugin The plugin
+     * @return true if the task was successfully stopped.
      */
-    suspend fun cancelAllTasks(plugin: MinixPlugin)
+    fun cancelTask(taskID: Int): Boolean
 
     /**
-     * Check if the task is currently active.
+     * Checks if the task is currently active.
      * A task that has finished and does not repeat,
      * will not be active ever again.
      *
-     * @param taskID The task to check
-     * @return If the task is currently active.
+     * @return true if the task is currently active.
      */
     fun isCurrentlyRunning(taskID: Int): Boolean
 
     /**
-     * Check if the task is currently active.
-     * A task that has finished and does not repeat,
-     * will not be active ever again.
-     *
-     * @param name The task to check
-     * @return If the task is currently active.
-     */
-    fun isCurrentlyRunning(name: String): Boolean
-
-    /**
      * Returns an [CoroutineTask] that will run once
      * on the main bukkit thread.
      *
@@ -83,7 +66,7 @@ interface CoroutineScheduler {
     fun runTask(
         plugin: MinixPlugin,
         name: String? = null,
-        task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
+        task: CoroutineBlock,
     ): CoroutineTask
 
     /**
@@ -128,7 +111,7 @@ interface CoroutineScheduler {
     fun runTaskLater(
         plugin: MinixPlugin,
         name: String? = null,
-        task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
+        task: CoroutineBlock,
         delay: Duration,
     ): CoroutineTask
 
@@ -152,7 +135,7 @@ interface CoroutineScheduler {
      * Returns an [CoroutineTask] that will run once
      * on the main bukkit thread after the specified
      * number of ticks in [delay] is reached and will
-     * repeat every [period] ticks until cancelled.
+     * repeat every [period] ticks until keepRunning.
      *
      * @param plugin The [MinixPlugin] who owns the task.
      * @param coroutineTask The task to run.
@@ -171,7 +154,7 @@ interface CoroutineScheduler {
      * Returns an [CoroutineTask] that will run once
      * on the main bukkit thread after the specified
      * number of ticks in [delay] is reached and will
-     * repeat every [period] ticks until cancelled.
+     * repeat every [period] ticks until keepRunning.
      *
      * @param plugin The [MinixPlugin] who owns the task.
      * @param task The [Unit] to create a task from.
@@ -182,7 +165,7 @@ interface CoroutineScheduler {
     fun runTaskTimer(
         plugin: MinixPlugin,
         name: String? = null,
-        task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
+        task: CoroutineBlock,
         delay: Duration,
         period: Duration,
     ): CoroutineTask
@@ -191,7 +174,7 @@ interface CoroutineScheduler {
      * Returns an [CoroutineTask] that will run once
      * on the main bukkit thread after the specified
      * number of ticks in [delay] is reached and will
-     * repeat every [period] ticks until cancelled.
+     * repeat every [period] ticks until keepRunning.
      *
      * @param plugin The [MinixPlugin] who owns the task.
      * @param runnable The [Unit] to create a task from.
@@ -230,7 +213,7 @@ interface CoroutineScheduler {
     fun runAsyncTask(
         plugin: MinixPlugin,
         name: String? = null,
-        task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
+        task: CoroutineBlock,
     ): CoroutineTask
 
     /**
@@ -276,7 +259,7 @@ interface CoroutineScheduler {
     fun runAsyncTaskLater(
         plugin: MinixPlugin,
         name: String? = null,
-        task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
+        task: CoroutineBlock,
         delay: Duration,
     ): CoroutineTask
 
@@ -300,7 +283,7 @@ interface CoroutineScheduler {
      * Returns an [CoroutineTask] that will run once
      * off the main bukkit thread after the specified
      * number of ticks in [delay] is reached and will
-     * repeat every [period] ticks until cancelled.
+     * repeat every [period] ticks until keepRunning.
      *
      * @param plugin The [MinixPlugin] who owns the task.
      * @param coroutineTask The task to run.
@@ -319,7 +302,7 @@ interface CoroutineScheduler {
      * Returns an [CoroutineTask] that will run once
      * off the main bukkit thread after the specified
      * number of ticks in [delay] is reached and will
-     * repeat every [period] ticks until cancelled.
+     * repeat every [period] ticks until keepRunning.
      *
      * @param plugin The [MinixPlugin] who owns the task.
      * @param task The [Unit] to create a task from.
@@ -330,7 +313,7 @@ interface CoroutineScheduler {
     fun runAsyncTaskTimer(
         plugin: MinixPlugin,
         name: String? = null,
-        task: Pair<MinixPlugin, CoroutineScope>.() -> Unit,
+        task: CoroutineBlock,
         delay: Duration,
         period: Duration,
     ): CoroutineTask
@@ -339,7 +322,7 @@ interface CoroutineScheduler {
      * Returns an [CoroutineTask] that will run once
      * off the main bukkit thread after the specified
      * number of ticks in [delay] is reached and will
-     * repeat every [period] ticks until cancelled.
+     * repeat every [period] ticks until keepRunning.
      *
      * @param plugin The [MinixPlugin] who owns the task.
      * @param runnable The [Unit] to create a task from.

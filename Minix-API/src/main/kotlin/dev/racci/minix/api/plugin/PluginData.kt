@@ -16,9 +16,7 @@ class PluginData<P : MinixPlugin>(val plugin: P) {
     operator fun <T : Any?> getValue(
         thisRef: P,
         property: KProperty<*>,
-    ): T {
-        return this::class.memberProperties.find { it.name == property.name }?.getter?.call(thisRef) as T
-    }
+    ): T = this::class.memberProperties.find { it.name == property.name }?.getter?.call(thisRef) as T
 
     val extensionsBuilder by lazy(plugin::ExtensionsBuilder)
     val listenerBuilder by lazy(plugin::ListenerBuilder)

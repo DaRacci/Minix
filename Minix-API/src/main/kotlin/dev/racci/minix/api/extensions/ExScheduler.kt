@@ -54,23 +54,11 @@ inline fun task(
     crossinline runnable: SuspendedUnit
 ) = scheduler(runnable).run {
     // run runAsyncTask if async is true and run on timer if delayToRun or repeatDelay is not null
-    if (repeatDelay != null) {
-        if (async) {
-            runAsyncTaskTimer(plugin, delayToRun ?: Duration.ZERO, repeatDelay)
-        } else {
-            runTaskTimer(
-                plugin,
-                delayToRun ?: Duration.ZERO,
-                repeatDelay
-            )
-        }
-    } else if (delayToRun != null) {
-        if (async) {
-            runAsyncTaskLater(plugin, delayToRun)
-        } else runTaskLater(plugin, delayToRun)
-    } else if (async) {
-        runAsyncTask(plugin)
-    } else runTask(plugin)
+    when {
+        repeatDelay != null -> if (async) { runAsyncTaskTimer(plugin, delayToRun ?: Duration.ZERO, repeatDelay) } else { runTaskTimer(plugin, delayToRun ?: Duration.ZERO, repeatDelay) }
+        delayToRun != null -> if (async) { runAsyncTaskLater(plugin, delayToRun) } else { runTaskLater(plugin, delayToRun) }
+        else -> if (async) { runAsyncTask(plugin) } else { runTask(plugin) }
+    }
 }
 
 inline fun scheduler(

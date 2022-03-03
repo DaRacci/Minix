@@ -6,6 +6,7 @@ import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.event.HandlerList
 import org.bukkit.inventory.ItemStack
 import org.jetbrains.annotations.ApiStatus
 
@@ -58,6 +59,11 @@ sealed class AbstractComboEvent(
     operator fun component2(): ItemStack? = item
     operator fun component3(): BlockData? = blockData
     operator fun component4(): Entity? = entity
+
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
 }
 
 /**
@@ -68,7 +74,12 @@ class PlayerShiftLeftClickEvent(
     item: ItemStack?,
     blockData: BlockData? = null,
     entity: Entity? = null
-) : AbstractComboEvent(player, item, blockData, entity)
+) : AbstractComboEvent(player, item, blockData, entity) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
+}
 
 /**
  * Called when the player uses the combo of Shift + Right click.
@@ -78,7 +89,12 @@ class PlayerShiftRightClickEvent(
     item: ItemStack?,
     blockData: BlockData? = null,
     entity: Entity? = null
-) : AbstractComboEvent(player, item, blockData, entity)
+) : AbstractComboEvent(player, item, blockData, entity) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
+}
 
 /**
  * Called when the player uses the combo of Shift + Offhand.
@@ -102,6 +118,11 @@ class PlayerShiftOffhandEvent(
         get() = item != null || offHandItem != null
 
     operator fun component5(): ItemStack? = offHandItem
+
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
 }
 
 /**
@@ -127,6 +148,11 @@ class PlayerShiftDoubleOffhandEvent(
         get() = item != null || offHandItem != null
 
     operator fun component5(): ItemStack? = offHandItem
+
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
 }
 
 /**
@@ -151,4 +177,9 @@ class PlayerDoubleOffhandEvent(
         get() = item != null || offHandItem != null
 
     operator fun component5(): ItemStack? = offHandItem
+
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
 }

@@ -6,6 +6,7 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.data.Waterlogged
 import org.bukkit.entity.Player
+import org.bukkit.event.HandlerList
 
 sealed class PlayerLiquidEvent(
     player: Player,
@@ -15,19 +16,34 @@ sealed class PlayerLiquidEvent(
 
     operator fun component2(): LiquidType = previousType
     operator fun component3(): LiquidType = newType
+
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
 }
 
 class PlayerEnterLiquidEvent(
     player: Player,
     previousType: LiquidType,
     newType: LiquidType
-) : PlayerLiquidEvent(player, previousType, newType)
+) : PlayerLiquidEvent(player, previousType, newType) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
+}
 
 class PlayerExitLiquidEvent(
     player: Player,
     previousType: LiquidType,
     newType: LiquidType
-) : PlayerLiquidEvent(player, previousType, newType)
+) : PlayerLiquidEvent(player, previousType, newType) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
+}
 
 enum class LiquidType {
     WATER,

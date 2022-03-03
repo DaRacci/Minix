@@ -3,6 +3,7 @@
 package dev.racci.minix.api.events
 
 import org.bukkit.entity.Player
+import org.bukkit.event.HandlerList
 import java.util.UUID
 
 /**
@@ -20,4 +21,9 @@ class PlayerUnloadEvent(
 
     operator fun component1(): Player? = player
     operator fun component2(): UUID = uuid
+
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = handlerMap[PlayerShiftLeftClickEvent::class]
+    }
 }

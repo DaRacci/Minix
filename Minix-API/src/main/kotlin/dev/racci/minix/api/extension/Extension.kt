@@ -1,5 +1,7 @@
 package dev.racci.minix.api.extension
 
+import dev.racci.minix.api.coroutine.launch
+import dev.racci.minix.api.coroutine.launchAsync
 import dev.racci.minix.api.extensions.WithPlugin
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
@@ -68,5 +70,17 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, WithPlugin<P> {
         }
 
         setState(ExtensionState.UNLOADED)
+    }
+
+    inline fun <reified T : () -> R, reified R> T.runSync(): R? {
+        var result: R? = null
+        plugin.launch { result = invoke() }
+        return result
+    }
+
+    inline fun <reified T : () -> R, reified R> T.runAsync(): R? {
+        var result: R? = null
+        plugin.launchAsync { result = invoke() }
+        return result
     }
 }

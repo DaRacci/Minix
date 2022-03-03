@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.1.1](https://github.com/DaRacci/Minix/compare/v2.1.0..v2.1.1) - 2022-03-03
+#### Miscellaneous Chores
+- **(version)** v2.1.0 - ([25b74dc](https://github.com/DaRacci/Minix/commit/25b74dc39a2baf506f9de3522a0095a4cef83aa2)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Refactor how KEvents are made - ([92124c7](https://github.com/DaRacci/Minix/commit/92124c738e30c8b6975d0792598049a1ee6140ae)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.1.0](https://github.com/DaRacci/Minix/compare/v2.0.6..v2.1.0) - 2022-03-03
 #### Features
 - runSync and runAsync invokers for blocks - ([56efc59](https://github.com/DaRacci/Minix/commit/56efc5918e09214a0ee81bb5994200f9f9da3457)) - [@DaRacci](https://github.com/DaRacci)

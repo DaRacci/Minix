@@ -4,6 +4,7 @@ package dev.racci.minix.api.events
 
 import org.bukkit.Location
 import org.bukkit.entity.Player
+import org.bukkit.event.HandlerList
 
 /**
  * This event is fired only when the player moves, this means that unlike
@@ -26,6 +27,11 @@ class PlayerMoveXYZEvent(
 
     operator fun component2(): Location = from
     operator fun component3(): Location = to
+
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
 }
 
 /**
@@ -46,4 +52,9 @@ class PlayerMoveFullXYZEvent(
 
     operator fun component2(): Location = from
     operator fun component3(): Location = to
+
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
 }

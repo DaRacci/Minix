@@ -3,6 +3,7 @@
 package dev.racci.minix.api.events
 
 import org.bukkit.World
+import org.bukkit.event.HandlerList
 
 /**
  * This event is fired when the world turns to Night.
@@ -11,7 +12,12 @@ import org.bukkit.World
  */
 class WorldNightEvent(
     world: World
-) : KWorldEvent(world)
+) : KWorldEvent(world) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
+}
 
 /**
  * This event is fired when the world turns to Day.
@@ -20,4 +26,9 @@ class WorldNightEvent(
  */
 class WorldDayEvent(
     world: World
-) : KWorldEvent(world)
+) : KWorldEvent(world) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+    }
+}

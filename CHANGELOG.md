@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.1.0](https://github.com/DaRacci/Minix/compare/v2.0.6..v2.1.0) - 2022-03-03
+#### Features
+- runSync and runAsync invokers for blocks - ([56efc59](https://github.com/DaRacci/Minix/commit/56efc5918e09214a0ee81bb5994200f9f9da3457)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.0.6 - ([239ea6f](https://github.com/DaRacci/Minix/commit/239ea6f1771b297a240c2e27448ad61560548fe1)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.0.6](https://github.com/DaRacci/Minix/compare/v2.0.5..v2.0.6) - 2022-02-27
 #### Bug Fixes
 - Fix default keepRunning value - ([5c78269](https://github.com/DaRacci/Minix/commit/5c7826974e8e518e33abbd30b00dfca3c38e8cc8)) - [@DaRacci](https://github.com/DaRacci)

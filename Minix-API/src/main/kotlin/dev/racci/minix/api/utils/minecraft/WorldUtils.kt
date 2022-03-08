@@ -6,11 +6,7 @@ import org.bukkit.entity.Player
 
 object WorldUtils {
 
-    fun isDay(world: World): Boolean {
-        val time = world.time
-        return time < 13400 || time > 23400
-    }
-
+    fun isDay(world: World): Boolean = with(world.time) { this < 13400 || this > 23400 }
     fun isDay(player: Player): Boolean = isDay(player.world)
 
     fun isDay(location: Location): Boolean = isDay(location.world)

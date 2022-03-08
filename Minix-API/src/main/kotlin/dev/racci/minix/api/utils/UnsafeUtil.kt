@@ -33,6 +33,7 @@ class UnsafeUtil {
 
     companion object {
 
+        @Suppress("unused")
         fun Any.unsafe(callback: UnsafeUtil.() -> Unit) {
             UnsafeUtil().apply {
                 callback()

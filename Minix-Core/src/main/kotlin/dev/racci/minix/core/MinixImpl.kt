@@ -1,10 +1,12 @@
 package dev.racci.minix.core
 
 import dev.racci.minix.api.builders.ItemBuilderDSL
+import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
+import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.scheduler.CoroutineSchedulerImpl
 import dev.racci.minix.core.services.CommandServicesImpl
 import dev.racci.minix.core.services.ListenerService
@@ -24,10 +26,10 @@ import org.koin.mp.KoinPlatformTools
 import java.util.logging.Level
 import kotlin.time.Duration.Companion.seconds
 
+@Suppress("unused")
 class MinixImpl : Minix() {
 
     override val bStatsId by lazy { 13706 }
-//    override val adventure = lazy { BukkitAudiences.create(this) }
 
     override fun onLoad() {
         startKoin()
@@ -54,7 +56,6 @@ class MinixImpl : Minix() {
 
     @OptIn(DelicateCoroutinesApi::class)
     override suspend fun handleDisable() {
-//        adventure.ifInitialized { close() }
         GlobalScope.launch { delay(1.seconds); KoinPlatformTools.defaultContext().getOrNull()?.close() }
     }
 

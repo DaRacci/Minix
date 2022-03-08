@@ -17,7 +17,9 @@ import dev.racci.minix.api.extensions.cancel
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.pm
 import dev.racci.minix.api.plugin.Minix
+import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PlayerService
+import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.classConstructor
 import dev.racci.minix.api.utils.kotlin.and
 import dev.racci.minix.api.utils.now
@@ -33,10 +35,13 @@ import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
+import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.inventory.ItemStack
 import org.koin.core.component.get
+import org.koin.core.component.inject
 
 class ListenerService(override val plugin: Minix) : Extension<Minix>() {
+    private val pluginService by inject<PluginService>()
 
     override val name = "Listener Service"
 
@@ -207,6 +212,11 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
             pm.callEvent(vEvent)
 
             if (vEvent.isCancelled) cancel()
+        }
+
+        event<PluginDisableEvent> {
+            val minixPlugin = this.plugin as? MinixPlugin ?: return@event
+            pluginService[minixPlugin].coroutine.disable(minixPlugin)
         }
     }
 }

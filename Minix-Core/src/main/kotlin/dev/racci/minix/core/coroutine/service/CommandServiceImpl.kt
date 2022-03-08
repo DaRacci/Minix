@@ -12,9 +12,6 @@ internal class CommandServiceImpl(
     private val coroutineSession: CoroutineSession,
 ) : CommandService {
 
-    /**
-     * Registers a suspend command executor.
-     */
     override fun registerSuspendCommandExecutor(
         pluginCommand: PluginCommand,
         commandExecutor: SuspendingCommandExecutor,
@@ -31,9 +28,6 @@ internal class CommandServiceImpl(
         }
     }
 
-    /**
-     * Registers a suspend tab completer.
-     */
     override fun registerSuspendTabCompleter(
         pluginCommand: PluginCommand,
         tabCompleter: SuspendingTabCompleter,

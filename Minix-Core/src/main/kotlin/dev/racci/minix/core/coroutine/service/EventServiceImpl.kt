@@ -28,49 +28,32 @@ internal class EventServiceImpl(
     private val plugin: MinixPlugin,
     private val coroutineSession: CoroutineSession,
 ) : EventService {
+    private val eventListenersMethod by lazy { SimplePluginManager::class.java.getDeclaredMethod("getEventListeners", Class::class.java).apply { isAccessible = true } }
 
-    /**
-     * Registers a suspend listener.
-     */
     override fun registerSuspendListener(listener: Listener) {
         val registeredListeners = createCoroutineListener(listener, plugin)
 
-        val method = SimplePluginManager::class.java
-            .getDeclaredMethod("getEventListeners", Class::class.java)
-        method.isAccessible = true
-
         for (entry in registeredListeners.entries) {
             val clazz = entry.key
-            val handlerList = method.invoke(plugin.server.pluginManager, clazz) as HandlerList
+            val handlerList = eventListenersMethod.invoke(plugin.server.pluginManager, clazz) as HandlerList
             handlerList.registerAll(entry.value as MutableCollection<RegisteredListener>)
         }
     }
 
-    /**
-     * Fires a suspending event.
-     */
     @Suppress("TooGenericExceptionCaught")
     override fun fireSuspendingEvent(event: Event): Collection<Job> {
         val listeners = event.handlers.registeredListeners
         val jobs = ArrayList<Job>()
 
         for (registration in listeners) {
-            if (!registration.plugin.isEnabled) continue
-
             try {
-                if (registration is SuspendingRegisteredListener) {
-                    val job = registration.callSuspendingEvent(event)
-                    jobs.add(job)
-                } else {
-                    registration.callEvent(event)
+                when {
+                    !registration.plugin.isEnabled -> continue
+                    registration is SuspendingRegisteredListener -> jobs += registration.callSuspendingEvent(event)
+                    else -> registration.callEvent(event)
                 }
-            } catch (e: Throwable) {
-                plugin.log.error(e) {
-                    "Could not pass event ${event.eventName} to ${registration.plugin.description.fullName}"
-                }
-            }
+            } catch (e: Throwable) { plugin.log.error(e) { "Could not pass event ${event.eventName} to ${registration.plugin.description.fullName}" } }
         }
-
         return jobs
     }
 
@@ -164,42 +147,41 @@ internal class EventServiceImpl(
         override fun execute(
             listener: Listener,
             event: Event,
-        ) {
-            executeEvent(listener, event)
-        }
+        ) { executeEvent(listener, event) }
 
         private fun executeEvent(
             listener: Listener,
             event: Event,
         ): Job {
-            try {
-                if (eventClass.isAssignableFrom(event.javaClass)) {
-                    val isAsync = event.isAsynchronous
-
-                    val dispatcher = if (isAsync || listener::class.java.getAnnotation(RunAsync::class.java) != null) {
-                        // Unconfined because async events should be supported too.
-                        Dispatchers.Unconfined
-                    } else {
-                        coroutineSession.dispatcherMinecraft
-                    }
-
-                    @Suppress("SwallowedException")
-                    return coroutineSession.launch(dispatcher) {
-                        try {
-                            // Try as suspension function.
-                            method.invokeSuspend(listener, event)
-                        } catch (e: IllegalArgumentException) {
-                            // Try as ordinary function.
-                            method.invoke(listener, event)
+            val result: Result<Job> = try {
+                when {
+                    !eventClass.isAssignableFrom(event.javaClass) -> Result.failure(IllegalArgumentException("Event ${event.javaClass.name} is not assignable to ${eventClass.name}"))
+                    else -> {
+                        val dispatcher = when {
+                            event.isAsynchronous || listener::class.annotations.any { it::class == RunAsync::class } -> Dispatchers.Unconfined
+                            else -> coroutineSession.dispatcherMinecraft
                         }
+                        Result.success(
+                            coroutineSession.launch(dispatcher) { // Try as both incase it's not a suspend function
+                                try {
+                                    method.invokeSuspend(listener, event)
+                                } catch (e: IllegalArgumentException) {
+                                    method.invoke(listener, event)
+                                }
+                            }
+                        )
                     }
                 }
-            } catch (var4: InvocationTargetException) {
-                throw EventException(var4.cause)
-            } catch (var5: Throwable) {
-                throw EventException(var5)
+            } catch (e: Throwable) { Result.failure(e) }
+
+            return result.getOrElse { throwable ->
+                throw EventException(
+                    when (throwable) {
+                        is InvocationTargetException -> throwable.cause
+                        else -> throwable
+                    }
+                )
             }
-            return Job()
         }
     }
 

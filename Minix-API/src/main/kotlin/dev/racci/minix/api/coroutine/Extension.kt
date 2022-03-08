@@ -1,7 +1,10 @@
+@file:Suppress("unused")
+
 package dev.racci.minix.api.coroutine
 
-import dev.racci.minix.api.coroutine.contract.Coroutine
+import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.utils.getKoin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import org.bukkit.command.PluginCommand
@@ -15,9 +18,7 @@ import kotlin.coroutines.CoroutineContext
  * Static session.
  */
 @get:ApiStatus.Internal
-val coroutine: Coroutine by lazy {
-    Class.forName("dev.racci.minix.core.coroutine.impl.CoroutineImpl").newInstance() as Coroutine
-}
+val coroutineService by getKoin().inject<CoroutineService>()
 
 private var serverVersionInternal: String? = null
 
@@ -37,19 +38,19 @@ val MinixPlugin.serverVersion: String
  * Gets the plugin minecraft dispatcher.
  */
 val MinixPlugin.minecraftDispatcher: CoroutineContext
-    get() = coroutine.getCoroutineSession(this).dispatcherMinecraft
+    get() = coroutineService.getCoroutineSession(this).dispatcherMinecraft
 
 /**
  * Gets the plugin async dispatcher.
  */
 val MinixPlugin.asyncDispatcher: CoroutineContext
-    get() = coroutine.getCoroutineSession(this).dispatcherAsync
+    get() = coroutineService.getCoroutineSession(this).dispatcherAsync
 
 /**
  * Gets the plugin coroutine scope.
  */
 val MinixPlugin.scope: CoroutineScope
-    get() = coroutine.getCoroutineSession(this).scope
+    get() = coroutineService.getCoroutineSession(this).scope
 
 /**
  * Launches the given function in the Coroutine Scope of the given plugin.
@@ -63,8 +64,7 @@ val MinixPlugin.scope: CoroutineScope
 fun MinixPlugin.launch(
     dispatcher: CoroutineContext,
     f: suspend CoroutineScope.() -> Unit
-): Job =
-    coroutine.getCoroutineSession(this).launch(dispatcher, f)
+): Job = coroutineService.getCoroutineSession(this).launch(dispatcher, f)
 
 /**
  * Launches the given function in the Coroutine Scope of the given plugin.
@@ -75,7 +75,7 @@ fun MinixPlugin.launch(
  * @return Cancelable coroutine job.
  */
 fun MinixPlugin.launch(f: suspend CoroutineScope.() -> Unit): Job =
-    coroutine.getCoroutineSession(this).launch(minecraftDispatcher, f)
+    coroutineService.getCoroutineSession(this).launch(minecraftDispatcher, f)
 
 /**
  * Launches the given function in the Coroutine Scope of the given plugin async.
@@ -86,7 +86,7 @@ fun MinixPlugin.launch(f: suspend CoroutineScope.() -> Unit): Job =
  * @return Cancelable coroutine job.
  */
 fun MinixPlugin.launchAsync(f: suspend CoroutineScope.() -> Unit): Job =
-    coroutine.getCoroutineSession(this).launch(this.asyncDispatcher, f)
+    coroutineService.getCoroutineSession(this).launch(this.asyncDispatcher, f)
 
 /**
  * Registers an event listener with suspending functions.
@@ -107,11 +107,11 @@ fun MinixPlugin.launchAsync(f: suspend CoroutineScope.() -> Unit): Job =
 fun PluginManager.registerSuspendingEvents(
     listener: Listener,
     plugin: MinixPlugin
-) = coroutine.getCoroutineSession(plugin).eventService.registerSuspendListener(listener)
+) = coroutineService.getCoroutineSession(plugin).eventService.registerSuspendListener(listener)
 
 fun MinixPlugin.registerSuspendingEvents(
     listener: Listener
-) = coroutine.getCoroutineSession(this).eventService.registerSuspendListener(listener)
+) = coroutineService.getCoroutineSession(this).eventService.registerSuspendListener(listener)
 
 /**
  * Calls an event with the given details.
@@ -123,10 +123,11 @@ fun MinixPlugin.registerSuspendingEvents(
  * was called. Each job instance represents an available job for each method being called in each suspending listener.
  * For awaiting use callSuspendingEvent(..).joinAll().
  */
+@Suppress("unused")
 fun PluginManager.callSuspendingEvent(
     event: Event,
     plugin: MinixPlugin
-): Collection<Job> = coroutine.getCoroutineSession(plugin).eventService.fireSuspendingEvent(event)
+): Collection<Job> = coroutineService.getCoroutineSession(plugin).eventService.fireSuspendingEvent(event)
 
 /**
  * Registers an command executor with suspending function.
@@ -134,7 +135,7 @@ fun PluginManager.callSuspendingEvent(
  */
 fun PluginCommand.setSuspendingExecutor(
     suspendingCommandExecutor: SuspendingCommandExecutor
-) = coroutine.getCoroutineSession(plugin as MinixPlugin).commandService.registerSuspendCommandExecutor(
+) = coroutineService.getCoroutineSession(plugin as MinixPlugin).commandService.registerSuspendCommandExecutor(
     this,
     suspendingCommandExecutor
 )
@@ -144,7 +145,7 @@ fun PluginCommand.setSuspendingExecutor(
  * Does exactly the same as PluginCommand.setExecutor.
  */
 fun PluginCommand.setSuspendingTabCompleter(suspendingTabCompleter: SuspendingTabCompleter) =
-    coroutine.getCoroutineSession(plugin as MinixPlugin).commandService.registerSuspendTabCompleter(
+    coroutineService.getCoroutineSession(plugin as MinixPlugin).commandService.registerSuspendTabCompleter(
         this,
         suspendingTabCompleter
     )

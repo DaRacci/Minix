@@ -1,6 +1,7 @@
 package dev.racci.minix.core.coroutine.dispatcher
 
 import dev.racci.minix.api.coroutine.contract.WakeUpBlockService
+import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.plugin.MinixPlugin
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.coroutines.CoroutineContext
@@ -17,19 +18,13 @@ internal class AsyncCoroutineDispatcher(
         context: CoroutineContext,
         block: Runnable,
     ) {
-        if (!plugin.isEnabled) {
-            return
-        }
-
-        if (wakeUpBlockService.primaryThread == null && plugin.server.isPrimaryThread) {
-            wakeUpBlockService.primaryThread = Thread.currentThread()
-        }
-
-        if (plugin.server.isPrimaryThread) {
-            plugin.server.scheduler.runTaskAsynchronously(plugin, block)
-            wakeUpBlockService.ensureWakeup()
-        } else {
-            block.run()
+        when {
+            !plugin.isEnabled -> return
+            server.isPrimaryThread -> {
+                plugin.server.scheduler.runTaskAsynchronously(plugin, block)
+                wakeUpBlockService.ensureWakeup()
+            }
+            else -> block.run()
         }
     }
 }

@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.2.0](https://github.com/DaRacci/Minix/compare/v2.1.1..v2.2.0) - 2022-03-08
+#### Bug Fixes
+- why was this a thing??? - ([a99d351](https://github.com/DaRacci/Minix/commit/a99d3511f0280a750b218e01df99c14644b2947c)) - [@DaRacci](https://github.com/DaRacci)
+- Fix path in README.md - ([1f3106d](https://github.com/DaRacci/Minix/commit/1f3106d524479e0cc77e9b576e76659e8f5768f3)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- Integrate the original MCCoroutine code more directly into the plugin lifecycle + refactor a ton of it - ([3ed9399](https://github.com/DaRacci/Minix/commit/3ed93994ea83c88cb7aa6c771ae1106bd1666e2b)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.1.1 - ([de6d288](https://github.com/DaRacci/Minix/commit/de6d288cc205e8484dd073a26496e84d68906ae6)) - [@DaRacci](https://github.com/DaRacci)
+- Update Minix-Conventions + Version to 1.18.2 - ([628ec0f](https://github.com/DaRacci/Minix/commit/628ec0ff7f1a10972cdbd405ccf2625ca5860bab)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Refactor and cleanup the code base - ([f1cc24b](https://github.com/DaRacci/Minix/commit/f1cc24b6ea1bf94b260727888bf1807e94ea35ec)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.1.1](https://github.com/DaRacci/Minix/compare/v2.1.0..v2.1.1) - 2022-03-03
 #### Miscellaneous Chores
 - **(version)** v2.1.0 - ([25b74dc](https://github.com/DaRacci/Minix/commit/25b74dc39a2baf506f9de3522a0095a4cef83aa2)) - [@DaRacci](https://github.com/DaRacci)

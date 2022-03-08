@@ -125,7 +125,7 @@ Replace `tag` with a release tag, eg `1.0.0`.
     - [Shapeless](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/recipes/ShapelessRecipeIngredients.kt)
     - [Smithing](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/recipes/SmithingRecipeIngredients.kt)
     - [Smoking](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/recipes/SmokingRecipeIngredients.kt)
-    - [Stonecutting](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/recipes/StonecuttingRecipeIngredients.kt)
+    - [Stonecutting](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/recipes/StoneCuttingRecipeIngredients.kt)
 
 - Utils:
   - Collections:

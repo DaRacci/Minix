@@ -10,7 +10,7 @@ interface WakeUpBlockService {
     /**
      * Reference to the primary server thread.
      */
-    var primaryThread: Thread?
+    val primaryThread: Thread
 
     /**
      * Calls scheduler management implementations to ensure the

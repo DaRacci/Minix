@@ -37,8 +37,8 @@ interface CoroutineSession {
     val dispatcherAsync: CoroutineContext
 
     /**
-     * Launches the given function on the plugin coroutine scope.
-     * @return Cancelable coroutine job.
+     * Launches the given function on the plugin coroutineService scope.
+     * @return Cancelable coroutineService job.
      */
     fun launch(
         dispatcher: CoroutineContext,

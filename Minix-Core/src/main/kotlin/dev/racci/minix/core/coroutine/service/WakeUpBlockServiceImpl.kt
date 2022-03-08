@@ -2,6 +2,7 @@ package dev.racci.minix.core.coroutine.service
 
 import dev.racci.minix.api.coroutine.contract.WakeUpBlockService
 import dev.racci.minix.api.coroutine.findClazz
+import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.plugin.MinixPlugin
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -10,43 +11,26 @@ import java.util.concurrent.locks.LockSupport
 class WakeUpBlockServiceImpl(private val plugin: MinixPlugin) : WakeUpBlockService {
 
     private var threadSupport: ExecutorService? = null
-    private val craftSchedulerClazz by lazy {
-        plugin.findClazz("org.bukkit.craftbukkit.VERSION.scheduler.CraftScheduler")
-    }
-    private val craftSchedulerTickField by lazy {
-        val field = craftSchedulerClazz.getDeclaredField("currentTick")
-        field.isAccessible = true
-        field
-    }
-    private val craftSchedulerHeartBeatMethod by lazy {
-        craftSchedulerClazz.getDeclaredMethod("mainThreadHeartbeat", Int::class.java)
-    }
+    private val craftSchedulerClazz by lazy { plugin.findClazz("org.bukkit.craftbukkit.VERSION.scheduler.CraftScheduler") }
+    private val craftSchedulerTickField by lazy { craftSchedulerClazz.getDeclaredField("tick").apply { isAccessible = true } }
+    private val craftSchedulerHeartBeatMethod by lazy { craftSchedulerClazz.getDeclaredMethod("mainThreadHeartbeat", Int::class.java) }
 
-    /**
-     * Enables or disables the server heartbeat hack.
-     */
     override var isManipulatedServerHeartBeatEnabled: Boolean = false
 
-    /**
-     * Reference to the primary server thread.
-     */
-    override var primaryThread: Thread? = null
+    override val primaryThread: Thread by lazy {
+        val dediServer = plugin.findClazz("org.bukkit.craftbukkit.VERSION.CraftServer")
+            .getDeclaredField("console")
+            .apply { isAccessible = true }
+            .get(server)
+        dediServer::class.java.getDeclaredField("serverThread").get(dediServer) as Thread
+    }
 
-    /**
-     * Calls scheduler management implementations to ensure the
-     * is not sleeping if a run is scheduled by blocking.
-     */
     override fun ensureWakeup() {
         if (!isManipulatedServerHeartBeatEnabled) {
             if (threadSupport != null) {
                 threadSupport!!.shutdown()
                 threadSupport = null
             }
-
-            return
-        }
-
-        if (primaryThread == null) {
             return
         }
 
@@ -64,9 +48,6 @@ class WakeUpBlockServiceImpl(private val plugin: MinixPlugin) : WakeUpBlockServi
         }
     }
 
-    /**
-     * Disposes the service.
-     */
     override fun dispose() {
         threadSupport?.shutdown()
     }

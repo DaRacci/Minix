@@ -1,5 +1,6 @@
 package dev.racci.minix.api.plugin
 
+import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.extension.Extension
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.bstats.bukkit.Metrics
@@ -17,6 +18,8 @@ class PluginData<P : MinixPlugin>(val plugin: P) {
         thisRef: P,
         property: KProperty<*>,
     ): T = this::class.memberProperties.find { it.name == property.name }?.getter?.call(thisRef) as T
+
+    lateinit var coroutine: CoroutineService
 
     val extensionsBuilder by lazy(plugin::ExtensionsBuilder)
     val listenerBuilder by lazy(plugin::ListenerBuilder)

@@ -2,7 +2,8 @@ package dev.racci.minix.core.services
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
-import dev.racci.minix.api.coroutine.coroutine
+import dev.racci.minix.api.coroutine.contract.CoroutineSession
+import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.coroutine.registerSuspendingEvents
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.Minix
@@ -15,6 +16,7 @@ import dev.racci.minix.api.utils.kotlin.ifNotEmpty
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import dev.racci.minix.api.utils.kotlin.invokeIfOverrides
 import dev.racci.minix.api.utils.loadModule
+import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
 import kotlinx.coroutines.runBlocking
 import org.bstats.bukkit.Metrics
 import org.koin.dsl.bind
@@ -24,7 +26,20 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
 
     override val loadedPlugins by lazy { mutableMapOf<KClass<out MinixPlugin>, MinixPlugin>() }
 
-    override val pluginCache: LoadingCache<MinixPlugin, PluginData<MinixPlugin>> = Caffeine.newBuilder().build { plugin: MinixPlugin -> PluginData(plugin) }
+    override val pluginCache: LoadingCache<MinixPlugin, PluginData<MinixPlugin>> = Caffeine.newBuilder().build(::PluginData)
+
+    override val coroutineSession: LoadingCache<MinixPlugin, CoroutineSession> = Caffeine.newBuilder().build { plugin ->
+        if (!plugin.isEnabled) {
+            plugin.log.throwing(
+                RuntimeException(
+                    "Plugin ${plugin.name} attempt to start a new coroutine session while being disabled. " +
+                        "Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already " +
+                        "disposed at this point and cannot be used!"
+                )
+            )
+        }
+        CoroutineSessionImpl(plugin)
+    }
 
     @Suppress("UNCHECKED_CAST")
     override operator fun <P : MinixPlugin> get(plugin: P): PluginData<P> = pluginCache[plugin] as PluginData<P>
@@ -38,10 +53,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
 
     // Add Update checker back for Spigot as well as adding support for GitHub, mc-market and polymart
     override fun startPlugin(plugin: MinixPlugin) {
-        if (plugin::class in loadedPlugins) throw IllegalStateException("The plugin ${plugin.description.fullName} has already been registered!")
-        minix.log.debug { "Handling enable for ${plugin.name} with class of ${plugin::class}" }
-
-        coroutine.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = true
+        coroutineService.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = true
         runBlocking {
             val cache = pluginCache[plugin]
 
@@ -69,7 +81,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
 
             loadedPlugins += plugin::class to plugin
         }
-        coroutine.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = false
+        coroutineService.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = false
     }
 
     override fun unloadPlugin(plugin: MinixPlugin) {

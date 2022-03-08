@@ -60,7 +60,10 @@ class MinixImpl : Minix() {
 
     private fun startKoin() {
         startKoin(KoinApplication.init())
-        loadModule { single { PluginServiceImpl(this@MinixImpl) } bind PluginService::class }
+        loadModule {
+            single { PluginServiceImpl(this@MinixImpl) } bind PluginService::class
+            single { CoroutineServiceImpl() } bind CoroutineService::class
+        }
     }
 
     @Suppress("UnstableApiUsage")

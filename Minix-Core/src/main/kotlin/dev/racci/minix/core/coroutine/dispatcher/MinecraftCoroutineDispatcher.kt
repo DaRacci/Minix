@@ -1,6 +1,7 @@
 package dev.racci.minix.core.coroutine.dispatcher
 
 import dev.racci.minix.api.coroutine.contract.WakeUpBlockService
+import dev.racci.minix.api.extensions.server
 import kotlinx.coroutines.CoroutineDispatcher
 import org.bukkit.plugin.Plugin
 import kotlin.coroutines.CoroutineContext
@@ -17,19 +18,13 @@ internal class MinecraftCoroutineDispatcher(
         context: CoroutineContext,
         block: Runnable,
     ) {
-        if (!plugin.isEnabled) {
-            return
-        }
-
-        if (wakeUpBlockService.primaryThread == null && plugin.server.isPrimaryThread) {
-            wakeUpBlockService.primaryThread = Thread.currentThread()
-        }
-
-        if (plugin.server.isPrimaryThread) {
-            block.run()
-        } else {
-            plugin.server.scheduler.runTask(plugin, block)
-            wakeUpBlockService.ensureWakeup()
+        when {
+            !plugin.isEnabled -> return
+            server.isPrimaryThread -> block.run()
+            else -> {
+                server.scheduler.runTask(plugin, block)
+                wakeUpBlockService.ensureWakeup()
+            }
         }
     }
 }

@@ -3,7 +3,7 @@ import org.jetbrains.dokka.utilities.cast
 plugins {
     `maven-publish`
 }
-val lib by configurations.creating
+val lib: Configuration by configurations.creating
 extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME) {
     configurations.getByName(compileClasspathConfigurationName).extendsFrom(lib)
     configurations.getByName(runtimeClasspathConfigurationName).extendsFrom(lib)
@@ -58,7 +58,7 @@ publishing {
         pom.withXml {
             val depNode = groovy.util.Node(asNode(), "dependencies")
             configurations["lib"].resolvedConfiguration.firstLevelModuleDependencies.forEach { dep ->
-                depNode.children().cast<groovy.util.NodeList>().firstOrNull() {
+                depNode.children().cast<groovy.util.NodeList>().firstOrNull {
                     val node = it as groovy.util.Node
                     node["groupId"] == dep.moduleGroup &&
                         node["artifactId"] == dep.moduleName &&

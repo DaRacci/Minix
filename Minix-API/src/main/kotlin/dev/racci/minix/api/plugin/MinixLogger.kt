@@ -1,5 +1,3 @@
-@file:Suppress("NOTHING_TO_INLINE")
-
 package dev.racci.minix.api.plugin
 
 import com.github.ajalt.mordant.rendering.TextColors
@@ -9,7 +7,7 @@ import java.util.logging.Level
 
 private val terminal by lazy { Terminal() }
 
-@Suppress("OVERRIDE_BY_INLINE")
+@Suppress("MemberVisibilityCanBePrivate")
 class MinixLogger(
     override val plugin: MinixPlugin,
 ) : WithPlugin<MinixPlugin> {

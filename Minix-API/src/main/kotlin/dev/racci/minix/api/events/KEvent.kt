@@ -35,7 +35,7 @@ abstract class KEvent(
     override fun getHandlers(): HandlerList = handlerMap[this::class]
 
     companion object {
-        val handlerMap: LoadingCache<KClass<out Event>, HandlerList> = Caffeine.newBuilder().build() { HandlerList() }
+        val handlerMap: LoadingCache<KClass<out Event>, HandlerList> = Caffeine.newBuilder().build { HandlerList() }
     }
 }
 

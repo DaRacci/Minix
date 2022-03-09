@@ -72,15 +72,19 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, WithPlugin<P> {
         setState(ExtensionState.UNLOADED)
     }
 
-    inline fun <reified T : () -> R, reified R> T.runSync(): R? {
-        var result: R? = null
-        plugin.launch { result = invoke() }
-        return result
+    inline fun <reified R> runSync(crossinline block: suspend () -> R): R {
+        var result: Result<R> = Result.failure(RuntimeException("Error while running sync block"))
+        plugin.launch { result = Result.success(block()) }
+        return result.getOrThrow()
     }
 
-    inline fun <reified T : () -> R, reified R> T.runAsync(): R? {
-        var result: R? = null
-        plugin.launchAsync { result = invoke() }
-        return result
+    inline fun <reified R> runAsync(crossinline block: suspend () -> R): R {
+        var result: Result<R> = Result.failure(RuntimeException("Error while running sync block"))
+        plugin.launchAsync { result = Result.success(block()) }
+        return result.getOrThrow()
     }
+
+    inline fun <reified T : () -> R, reified R> T.runSync(): R = runSync(this)
+
+    inline fun <reified T : () -> R, reified R> T.runAsync(): R = runAsync(this)
 }

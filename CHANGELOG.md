@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.3.1](https://github.com/DaRacci/Minix/compare/v2.3.0..v2.3.1) - 2022-03-09
+#### Bug Fixes
+- Update NMS to proper version - ([a1a54b3](https://github.com/DaRacci/Minix/commit/a1a54b314c392d1175274a8a74da3d7eebf533e0)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.3.0 - ([9835fee](https://github.com/DaRacci/Minix/commit/9835feebed49fbbb6628f787c94a3f32834bd8de)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.3.0](https://github.com/DaRacci/Minix/compare/v2.2.0..v2.3.0) - 2022-03-09
 #### Features
 - Add runSync and runAsync blocks using results instead of nullability - ([9f175e3](https://github.com/DaRacci/Minix/commit/9f175e3673e75a35e53889d89539166ddee24517)) - [@DaRacci](https://github.com/DaRacci)

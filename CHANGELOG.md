@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.3.0](https://github.com/DaRacci/Minix/compare/v2.2.0..v2.3.0) - 2022-03-09
+#### Features
+- Add runSync and runAsync blocks using results instead of nullability - ([9f175e3](https://github.com/DaRacci/Minix/commit/9f175e3673e75a35e53889d89539166ddee24517)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.2.0 - ([6c5261e](https://github.com/DaRacci/Minix/commit/6c5261ec989d501e8cd29b6b478936be61564e9a)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.2.0](https://github.com/DaRacci/Minix/compare/v2.1.1..v2.2.0) - 2022-03-08
 #### Bug Fixes
 - why was this a thing??? - ([a99d351](https://github.com/DaRacci/Minix/commit/a99d3511f0280a750b218e01df99c14644b2947c)) - [@DaRacci](https://github.com/DaRacci)

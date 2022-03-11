@@ -6,10 +6,15 @@ package dev.racci.minix.api.extension
 enum class ExtensionState {
 
     FAILED_LOADING,
+    FAILED_ENABLING,
     FAILED_UNLOADING,
+    FAILED_DEPENDENCIES,
 
     LOADED,
     LOADING,
+
+    ENABLED,
+    ENABLING,
 
     UNLOADED,
     UNLOADING,

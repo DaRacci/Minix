@@ -6,6 +6,7 @@ import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.coroutine.registerSuspendingEvents
 import dev.racci.minix.api.extension.Extension
+import dev.racci.minix.api.extension.ExtensionState
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.PluginData
@@ -16,11 +17,18 @@ import dev.racci.minix.api.utils.kotlin.ifNotEmpty
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import dev.racci.minix.api.utils.kotlin.invokeIfOverrides
 import dev.racci.minix.api.utils.loadModule
+import dev.racci.minix.api.utils.unsafeCast
 import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeout
 import org.bstats.bukkit.Metrics
+import org.koin.core.context.loadKoinModules
+import org.koin.core.context.unloadKoinModules
 import org.koin.dsl.bind
+import org.koin.dsl.module
 import kotlin.reflect.KClass
+import kotlin.time.Duration.Companion.seconds
 
 class PluginServiceImpl(val minix: Minix) : PluginService {
 
@@ -48,6 +56,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
         runBlocking {
             loadModule { single { plugin } bind (plugin.bindToKClass ?: plugin::class) }
             plugin.invokeIfOverrides(SusPlugin::handleLoad.name) { plugin.handleLoad() }
+            pluginCache[plugin].extensions.ifNotEmpty { plugin.loadInOrder() }
         }
     }
 
@@ -107,10 +116,14 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
         }
     }
 
-    private suspend inline fun <reified P : MinixPlugin> P.startInOrder() {
-        val extensions = pluginCache[this].extensions.map { it.invoke(this) }.toMutableList()
-
-        val sortedExtensions = mutableListOf<Extension<*>>()
+    private inline fun <reified P : MinixPlugin> P.getSortedExtensions(): MutableList<Extension<P>> {
+        val extensions = pluginCache[this].let { cache ->
+            cache.extensions
+                .map { it.invoke(this) }
+                .filterIsInstance<Extension<P>>()
+                .toMutableList().also { it.addAll(cache.loadedExtensions.toMutableList().unsafeCast()) }
+        }
+        val sortedExtensions = mutableListOf<Extension<P>>()
         while (extensions.isNotEmpty()) {
             val next = extensions.first()
             extensions.remove(next)
@@ -156,19 +169,94 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
                 sortedExtensions.add(next)
             } else log.debug { "Extension ${next.name} is already in sorted, skipping." }
         }
+        return sortedExtensions
+    }
 
-        sortedExtensions.forEach { ex ->
-            minix.log.debug { "Starting extension ${ex.name} for ${this.name}" }
-            loadModule { single { ex } bind (ex.bindToKClass ?: ex::class) }
-            ex.handleSetup()
-            if (ex.loaded) pluginCache[this].loadedExtensions += ex
+    // TODO: Refactor the dependency system to be more efficient and less hacky maybe using a shared flow
+    private suspend fun MinixPlugin.loadInOrder() {
+        val cache = pluginCache[this]
+        val sorted = getSortedExtensions()
+        sorted.forEach { ex ->
+            val module = module { single { ex } bind (ex.bindToKClass ?: ex::class) }
+            loadKoinModules(module)
+            ex.setState(ExtensionState.LOADING)
+            try {
+                withTimeout(5.seconds) {
+                    ex.invokeIfOverrides(Extension<*>::handleLoad.name) { ex.handleLoad() }
+                }
+            } catch (e: Throwable) {
+                if (e is TimeoutCancellationException) { log.warn { "Extension ${ex.name} took too longer than 5 seconds to load!" } }
+                ex.setState(ExtensionState.FAILED_LOADING)
+                ex.errorDependents(sorted, e)
+                unloadKoinModules(module)
+            }
+            ex.setState(ExtensionState.LOADED)
+            cache.loadedExtensions += ex
+        }
+        cache.extensions.clear()
+    }
+
+    private suspend fun MinixPlugin.startInOrder() {
+        val cache = pluginCache[this]
+        val sorted = getSortedExtensions()
+        sorted.forEach { ex ->
+            val module = module { single { ex } bind (ex.bindToKClass ?: ex::class) }
+            if (!ex.bound) { loadKoinModules(module) }
+            ex.setState(ExtensionState.ENABLING)
+            try {
+                withTimeout(5.seconds) {
+                    ex.invokeIfOverrides(Extension<*>::handleEnable.name) { ex.handleEnable() }
+                }
+            } catch (e: Throwable) {
+                if (e is TimeoutCancellationException) { log.warn { "Extension ${ex.name} took too longer than 5 seconds to enable!" } }
+                ex.setState(ExtensionState.FAILED_ENABLING)
+                ex.errorDependents(sorted, e)
+                unloadKoinModules(module)
+            }
+            ex.setState(ExtensionState.ENABLED)
+            cache.loadedExtensions += ex
+        }
+        cache.extensions.clear()
+    }
+
+    private suspend fun Extension<MinixPlugin>.errorDependents(
+        extensions: MutableList<Extension<MinixPlugin>>,
+        error: Throwable
+    ) {
+        val deps = extensions.filter { this::class in it.dependencies }
+        log.error(error) {
+            val builder = StringBuilder()
+            builder.append("There was an error while loading / enabling extension ${this.name}!")
+            builder.append("\n\t\tThis is not a fatal error, but it may cause other extensions to fail to load.")
+            if (deps.isNotEmpty()) {
+                builder.append("\n\t\tThese extensions will not be loaded:")
+                deps.forEach { builder.append("\n\t\t\t${it.name}") }
+            }
+            builder.toString()
+        }
+        deps.forEach {
+            it.setState(ExtensionState.FAILED_DEPENDENCIES)
         }
     }
 
     private suspend inline fun <reified P : MinixPlugin> P.shutdownInOrder() {
-        for (ex in pluginCache[this].loadedExtensions.asReversed()) {
-            minix.log.debug { "Shutting down extension ${ex.name} for ${this.name}" }
-            ex.invokeIfOverrides(Extension<*>::handleUnload.name) { ex.handleUnload() }
+        val cache = pluginCache[this]
+        for (ex in cache.loadedExtensions.asReversed()) {
+            ex.setState(ExtensionState.UNLOADING)
+            try {
+                withTimeout(5.seconds) {
+                    ex.invokeIfOverrides(Extension<*>::handleUnload.name) { ex.handleUnload() }
+                }
+            } catch (e: Throwable) {
+                if (e is TimeoutCancellationException) {
+                    log.warn { "Extension ${ex.name} took too longer than 5 seconds to unload!" }
+                } else log.error(e) { "Extension ${ex.name} through an error while unloading!" }
+                ex.setState(ExtensionState.FAILED_UNLOADING)
+            }
+            unloadKoinModules(module { single { ex } bind (ex.bindToKClass ?: ex::class) }) // TODO: This is a bit of a hack, but it works for now.
+            ex.setState(ExtensionState.UNLOADED)
+            cache.loadedExtensions -= ex
+            cache.unloadedExtensions += ex
         }
     }
 }

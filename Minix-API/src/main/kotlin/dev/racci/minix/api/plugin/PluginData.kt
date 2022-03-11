@@ -2,6 +2,7 @@ package dev.racci.minix.api.plugin
 
 import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.extension.Extension
+import dev.racci.minix.api.extension.ExtensionStateEvent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.bstats.bukkit.Metrics
 import org.bukkit.event.Listener
@@ -25,8 +26,9 @@ class PluginData<P : MinixPlugin>(val plugin: P) {
     val listenerBuilder by lazy(plugin::ListenerBuilder)
 
     val extensions by lazy { mutableListOf<ExtensionUnit<P>>() }
-    val loadedExtensions by lazy { mutableListOf<Extension<out P>>() }
-    val extensionEvents by lazy { MutableSharedFlow<Any>() }
+    val loadedExtensions by lazy { mutableListOf<Extension<P>>() }
+    val unloadedExtensions by lazy { mutableListOf<Extension<P>>() }
+    val extensionEvents by lazy { MutableSharedFlow<ExtensionStateEvent>() }
 
     val listeners by lazy { mutableListOf<Listener>() }
 

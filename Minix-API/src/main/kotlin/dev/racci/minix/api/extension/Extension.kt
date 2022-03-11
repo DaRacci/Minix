@@ -7,13 +7,18 @@ import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import org.jetbrains.annotations.ApiStatus
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.QualifierValue
 import kotlin.reflect.KClass
 
-abstract class Extension<P : MinixPlugin> : KoinComponent, WithPlugin<P> {
+abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin<P> {
 
     abstract val name: String
+
+    override val value: QualifierValue by lazy { name }
 
     open val bindToKClass: KClass<*>? = null
 
@@ -25,25 +30,14 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, WithPlugin<P> {
 
     open var state: ExtensionState = ExtensionState.UNLOADED
 
-    open val loaded: Boolean get() = state == ExtensionState.LOADED
+    open val loaded: Boolean get() = state == ExtensionState.LOADED || state == ExtensionState.ENABLED
 
-    abstract suspend fun handleEnable()
+    @ApiStatus.Internal
+    var bound: Boolean = false
 
-    suspend fun handleSetup() {
-        setState(ExtensionState.LOADING)
-        log.debug { "Running handleSetup() for $name" }
+    open suspend fun handleLoad() {}
 
-        @Suppress("TooGenericExceptionCaught")
-        try {
-            handleEnable()
-        } catch (t: Throwable) {
-            setState(ExtensionState.FAILED_LOADING)
-            log.error { "Minix ran into an error while starting up ${this.name}" }
-            log.throwing(t)
-        }
-
-        setState(ExtensionState.LOADED)
-    }
+    open suspend fun handleEnable() {}
 
     open suspend fun setState(state: ExtensionState) {
         minix.send(ExtensionStateEvent(this, state))
@@ -51,26 +45,6 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, WithPlugin<P> {
     }
 
     open suspend fun handleUnload() {}
-
-    open suspend fun doUnload() {
-        var error: Throwable? = null
-
-        setState(ExtensionState.UNLOADING)
-
-        @Suppress("TooGenericExceptionCaught")
-        try {
-            this.handleUnload()
-        } catch (t: Throwable) {
-            error = t
-            setState(ExtensionState.FAILED_UNLOADING)
-        }
-
-        if (error != null) {
-            throw error
-        }
-
-        setState(ExtensionState.UNLOADED)
-    }
 
     inline fun <reified R> runSync(crossinline block: suspend () -> R): R {
         var result: Result<R> = Result.failure(RuntimeException("Error while running sync block"))
@@ -87,4 +61,8 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, WithPlugin<P> {
     inline fun <reified T : () -> R, reified R> T.runSync(): R = runSync(this)
 
     inline fun <reified T : () -> R, reified R> T.runAsync(): R = runAsync(this)
+
+    final override fun toString(): String {
+        return "${plugin.name}:$value"
+    }
 }

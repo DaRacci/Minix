@@ -1,9 +1,10 @@
 package dev.racci.minix.api.plugin
 
 import org.bukkit.plugin.Plugin
+import org.koin.core.component.KoinComponent
 import kotlin.reflect.KClass
 
-interface SusPlugin : Plugin {
+interface SusPlugin : Plugin, KoinComponent {
 
     val bStatsId: Int?
     val bindToKClass: KClass<out MinixPlugin>?

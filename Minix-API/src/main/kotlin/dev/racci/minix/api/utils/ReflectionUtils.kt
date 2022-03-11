@@ -63,6 +63,14 @@ fun <R> readInstanceProperty(
 fun <T> Any?.safeCast(): T? = this as? T
 
 /**
+ * Makes a unsafe cast of a property to a different type.
+ *
+ * @param T The type to cast to.
+ * @return The casted property.
+ */
+fun <T> Any?.unsafeCast(): T = this as T
+
+/**
  * Makes a safe cast and invokes the function if successful.
  *
  * @param T The type to cast to.

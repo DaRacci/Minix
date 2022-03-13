@@ -33,6 +33,24 @@ inline fun <reified T : Throwable, R> catchAndReturn(
     null
 }
 
+/**
+ * Run a try catch and if there is an exception return false
+ *
+ * @param T The Throwable type
+ * @param errorCallback What to run if there was an error, defaults to false
+ * @param run The block to catch on
+ * @return True if there was no exception, false if there was
+ */
+inline fun <reified T : Throwable> booleanCatch(
+    errorCallback: (T) -> Boolean = { true },
+    run: () -> Any?,
+): Boolean = try {
+    run()
+    true
+} catch (t: Throwable) {
+    if (t is T) errorCallback(t) else throw t
+}
+
 infix fun KClass<*>.doesOverride(methodName: String): Boolean {
     return this.java.methods.find { it.name == methodName } in this.java.declaredMethods
 }
@@ -113,3 +131,8 @@ inline fun <reified T> Collection<T>?.ifNotEmpty(block: (Collection<T>) -> Unit)
     if (this != null && this.isNotEmpty()) block(this)
     return this
 }
+
+inline fun <reified T : () -> R, R> T.ifFulfilled(
+    boolean: Boolean? = null,
+    block: () -> Boolean = { false },
+) { if (boolean == true || block()) this() }

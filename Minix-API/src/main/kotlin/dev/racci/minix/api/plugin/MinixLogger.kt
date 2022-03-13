@@ -12,7 +12,7 @@ class MinixLogger(
     override val plugin: MinixPlugin,
 ) : WithPlugin<MinixPlugin> {
 
-    private val prefix by lazy { TextColors.gray("[${plugin.description.prefix}] ") }
+    private val prefix by lazy { TextColors.gray("[${plugin.description.prefix}]") }
     private val trace by lazy { TextColors.gray("[TRACE]") }
     private val info by lazy { TextColors.gray("[INFO]") }
     private val warn by lazy { TextColors.gray("[WARN]") }
@@ -142,14 +142,21 @@ class MinixLogger(
         throwable: Throwable?,
         colour: TextColors,
     ) {
-        var message = ""
-        msg?.let { message += "$it${if (throwable != null) " -> " else ""}" }
-        throwable?.let { t ->
-            t.message?.let { message += "$it: " }
-            t.cause?.let { message += "$it" }
-            if (debugEnabled) message += t.stackTraceToString()
+        val builder = StringBuilder("$prefix $type ${TextColors.brightWhite("->")} ")
+        msg?.let { builder.append(colour(it)) }
+        throwable?.let { thrower ->
+            builder.append(TextColors.yellow(thrower::class.qualifiedName ?: "null") + TextColors.brightWhite(" -> "))
+            builder.append(thrower.message ?: thrower.cause?.message ?: thrower.cause?.cause?.message ?: "No message.") // Support two layers or suppressed exceptions
+            if (debugEnabled) { // Only print the stack trace if debug is enabled
+                thrower.stackTrace.forEach {
+                    builder.append(TextColors.gray("\n\t\tat "))
+                    builder.append(TextColors.white("${it.className}.${it.methodName}"))
+                    builder.append(TextColors.yellow("(${it.fileName}:${it.lineNumber})"))
+                }
+                builder.append(TextColors.gray(thrower.stackTrace.joinToString("\n\t\tat ", "\n\t\tat ")))
+            }
         }
-        terminal.println("$prefix$type ${TextColors.brightWhite("->")} ${colour(message)}")
+        terminal.println(builder)
     }
 
     private inline fun (() -> Any?).toStringSafe(): String {

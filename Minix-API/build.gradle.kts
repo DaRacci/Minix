@@ -27,6 +27,8 @@ dependencies {
     lib(rootProject.libs.caffeine)
     lib(rootProject.libs.kotlinx.serialization.kaml)
     lib(rootProject.libs.minecraft.bstats)
+    lib(rootProject.libs.ktor.client.core)
+    lib(rootProject.libs.ktor.client.cio)
 }
 
 java.withSourcesJar()

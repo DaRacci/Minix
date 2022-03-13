@@ -18,13 +18,11 @@ plugins {
 repositories {
     mavenCentral()
     maven("https://jitpack.io")
-    maven("https://oss.sonatype.org/content/repositories/snapshots/")
 }
 
 dependencies {
     implementation(project("Minix-Core"))
     implementation(project("Minix-API"))
-    implementation(libs.adventure.kotlin)
     implementation("org.bstats:bstats-bukkit:3.0.0")
 }
 
@@ -54,7 +52,18 @@ bukkit {
         libs.mordant.get().toString(),
         libs.caffeine.get().toString(),
         libs.kotlinx.serialization.kaml.get().toString(),
-        "org.jetbrains.kotlinx:atomicfu-jvm:0.17.1"
+        "org.jetbrains.kotlinx:atomicfu-jvm:0.17.1",
+        libs.cloud.minecraft.paper.get().toString(),
+        libs.cloud.kotlin.coroutines.get().toString(),
+        libs.cloud.kotlin.extensions.get().toString(),
+        libs.cloud.minecraft.extras.get().toString(),
+        libs.adventure.kotlin.get().toString(),
+        libs.ktor.client.core.get().toString(),
+        libs.ktor.client.cio.get().toString(),
+        "net.kyori:adventure-serializer-configurate4:4.10.1",
+        "org.spongepowered:configurate-hocon:4.1.2",
+        "org.spongepowered:configurate-extra-kotlin:4.1.2",
+        "org.reflections:reflections:0.10.2"
     )
     website = "https://github.com/DaRacci/Minix"
 }
@@ -68,16 +77,6 @@ allprojects {
     apply(plugin = "org.jetbrains.dokka")
 
     dependencies {
-        compileOnly(rootProject.libs.kotlin.stdlib)
-        compileOnly(rootProject.libs.kotlin.reflect)
-        compileOnly(rootProject.libs.kotlinx.dateTime)
-        compileOnly(rootProject.libs.kotlinx.immutableCollections)
-        compileOnly(rootProject.libs.kotlinx.serialization.json)
-        compileOnly(rootProject.libs.kotlinx.coroutines)
-        compileOnly(rootProject.libs.koin.core)
-        compileOnly(rootProject.libs.caffeine)
-        compileOnly("org.jetbrains.kotlinx:atomicfu:0.17.1")
-
         testImplementation(rootProject.libs.bundles.kotlin)
         testImplementation(rootProject.libs.bundles.kotlinx)
         testImplementation(rootProject.libs.testing.strikt)
@@ -109,7 +108,22 @@ allprojects {
 
 subprojects {
     dependencies {
+        compileOnly(rootProject.libs.kotlin.stdlib)
+        compileOnly(rootProject.libs.kotlin.reflect)
+        compileOnly(rootProject.libs.kotlinx.dateTime)
+        compileOnly(rootProject.libs.kotlinx.immutableCollections)
+        compileOnly(rootProject.libs.kotlinx.serialization.json)
+        compileOnly(rootProject.libs.kotlinx.coroutines)
+        compileOnly(rootProject.libs.koin.core)
+        compileOnly(rootProject.libs.caffeine)
+        compileOnly("org.jetbrains.kotlinx:atomicfu:0.17.1")
+        compileOnly(rootProject.libs.cloud.minecraft.paper)
+        compileOnly(rootProject.libs.bundles.cloud.kotlin)
+        compileOnly(rootProject.libs.cloud.minecraft.extras)
         compileOnly(rootProject.libs.adventure.kotlin)
+        compileOnly("net.kyori:adventure-serializer-configurate4:4.10.1")
+        compileOnly("org.spongepowered:configurate-hocon:4.1.2")
+        compileOnly("org.spongepowered:configurate-extra-kotlin:4.1.2")
         compileOnly("org.bstats:bstats-bukkit:3.0.0")
     }
 }
@@ -124,18 +138,6 @@ tasks {
     shadowJar {
         val location = "dev.racci.minix.libs"
         relocate("org.bstats", "$location.bstats")
-        relocate("net.kyori.adventure.extra", "$location.adventure.extra")
-        dependencies {
-            exclude {
-                it.moduleName.startsWith("examination") ||
-                    it.moduleName.startsWith("kotlin") ||
-                    it.moduleName == "adventure-api" ||
-                    it.moduleName == "adventure-key" ||
-                    it.moduleName == "adventure-nbt" ||
-                    it.moduleName.startsWith("adventure-text-serializer") ||
-                    it.moduleName.contains("annotations")
-            }
-        }
     }
 
     ktlintFormat {

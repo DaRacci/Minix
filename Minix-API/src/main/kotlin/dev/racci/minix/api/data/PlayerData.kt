@@ -1,6 +1,6 @@
 @file:Suppress("UNUSED")
 
-package dev.racci.minix.core.data
+package dev.racci.minix.api.data
 
 import dev.racci.minix.api.events.PlayerUnloadEvent
 import dev.racci.minix.api.services.PlayerService

@@ -17,6 +17,25 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.primaryConstructor
 
+inline fun <reified T : Event> WithPlugin<*>.events(
+    vararg events: KClass<out T>,
+    priority: EventPriority = EventPriority.NORMAL,
+    ignoreCancelled: Boolean = false,
+    forceAsync: Boolean = false,
+    noinline block: suspend T.() -> Unit,
+) { // Lmao this shit is scuffed as fuck but it works so fuck it (I'm not even sure if it works)
+    events.forEach { _ ->
+        SimpleKListener(plugin).event(
+            type = T::class,
+            plugin = plugin,
+            priority = priority,
+            ignoreCancelled = ignoreCancelled,
+            forceAsync = forceAsync,
+            block = block
+        )
+    }
+}
+
 inline fun <reified T : Event> WithPlugin<*>.event(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,

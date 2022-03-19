@@ -34,6 +34,7 @@ import kotlin.time.Duration.Companion.seconds
 class MinixImpl : Minix() {
     private val config by lazy { get<DataService>().get<Config>() }
 
+    override val bindToKClass get() = Minix::class
     override val bStatsId by lazy { 13706 }
 
     override fun onLoad() {

@@ -13,8 +13,12 @@ import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.spongepowered.configurate.ConfigurationNode
+import org.spongepowered.configurate.kotlin.extensions.get
+import org.spongepowered.configurate.serialize.TypeSerializer
+import java.lang.reflect.Type
 
-object LocationSerializer : KSerializer<Location> {
+object LocationSerializer : KSerializer<Location>, TypeSerializer<Location> {
 
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Location") {
         element<Double>("x")
@@ -59,4 +63,18 @@ object LocationSerializer : KSerializer<Location> {
         }
         return Location(Bukkit.getWorld(world), x, y, z, yaw, pitch)
     }
+
+    override fun serialize(
+        type: Type,
+        obj: Location?,
+        node: ConfigurationNode,
+    ) {
+        if (obj == null) { node.raw(null); return }
+        node.set(obj.serialize())
+    }
+
+    override fun deserialize(
+        type: Type,
+        node: ConfigurationNode,
+    ): Location = node.get<Map<String, Any>>()?.let(Location::deserialize) ?: error("Could not deserialize location")
 }

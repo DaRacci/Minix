@@ -1,22 +1,16 @@
 package dev.racci.minix.api.updater
 
-enum class UpdateResult(val didUpdate: Boolean = false) {
+enum class UpdateResult(val isSuccessful: Boolean = false) {
 
     /**
-     * The update was successful.
+     * The update was successful, and as readied it to be loaded the next time the server restarts/reloads.
      */
     SUCCESS(true),
 
     /**
-     * The updater found an update, and has readied it to be loaded the next time the server restarts/reloads.
+     * The updater found an update.
      */
     UPDATE_FOUND(true),
-
-    /**
-     * The updater found a new version to update to.
-     */
-    NEW_VERSION_FOUND,
-
     /**
      * The updater didn't find a new version.
      */
@@ -80,5 +74,10 @@ enum class UpdateResult(val didUpdate: Boolean = false) {
     /**
      * The updater was able to download the file however the checksum did not match.
      */
-    FAILED_CHECKSUM
+    FAILED_CHECKSUM,
+
+    /**
+     * The updater was unable to backup the plugin folder.
+     */
+    FAILED_BACKUP
 }

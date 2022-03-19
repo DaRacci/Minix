@@ -7,7 +7,7 @@ import dev.racci.minix.api.extensions.WithPlugin
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.annotations.ApiStatus
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -29,7 +29,7 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin
 
     open val log get() = plugin.log
 
-    open val dependencies: ImmutableList<KClass<out Extension<*>>> get() = persistentListOf(*annotation?.dependencies.orEmpty()) // This will be worse for performance but save on memory
+    open val dependencies: ImmutableList<KClass<out Extension<*>>> get() = annotation?.dependencies?.filterIsInstance<KClass<Extension<*>>>().orEmpty().toImmutableList() // This will be worse for performance but save on memory
 
     open var state: ExtensionState = ExtensionState.UNLOADED
 

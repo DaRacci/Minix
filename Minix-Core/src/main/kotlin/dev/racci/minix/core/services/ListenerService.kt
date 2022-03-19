@@ -1,6 +1,7 @@
 package dev.racci.minix.core.services
 
 import dev.racci.minix.api.coroutine.launchAsync
+import dev.racci.minix.api.data.PlayerData
 import dev.racci.minix.api.events.AbstractComboEvent
 import dev.racci.minix.api.events.BlockData
 import dev.racci.minix.api.events.LiquidType
@@ -23,7 +24,6 @@ import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.classConstructor
 import dev.racci.minix.api.utils.kotlin.and
 import dev.racci.minix.api.utils.now
-import dev.racci.minix.core.data.PlayerData
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority

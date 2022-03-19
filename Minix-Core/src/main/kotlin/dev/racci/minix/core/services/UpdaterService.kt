@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services
 
+import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.data.UpdaterConfig
 import dev.racci.minix.api.extension.Extension
@@ -25,7 +26,6 @@ import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.client.statement.discardRemaining
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
@@ -46,14 +46,15 @@ import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 import kotlin.time.Duration.Companion.minutes
 
+@MappedExtension(
+    "Updater Service",
+    [DataService::class],
+)
 class UpdaterService(override val plugin: Minix) : Extension<Minix>() {
     private val updaterConfig by lazy { get<DataService>().get<UpdaterConfig>() }
     private val updateFolder by lazy { server.pluginsFolder.resolve(updaterConfig.updateFolder) }
     private val enabledUpdaters = mutableListOf<PluginUpdater>()
     private val disabledUpdaters = mutableListOf<PluginUpdater>()
-
-    override val name = "Updater Service"
-    override val dependencies = persistentListOf(DataService::class)
 
     override suspend fun handleEnable() {
         event<PluginEnableEvent> {

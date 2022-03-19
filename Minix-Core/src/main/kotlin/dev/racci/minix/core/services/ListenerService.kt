@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services
 
+import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.launchAsync
 import dev.racci.minix.api.data.PlayerData
 import dev.racci.minix.api.events.AbstractComboEvent
@@ -40,10 +41,9 @@ import org.bukkit.inventory.ItemStack
 import org.koin.core.component.get
 import org.koin.core.component.inject
 
+@MappedExtension("Listener Service")
 class ListenerService(override val plugin: Minix) : Extension<Minix>() {
     private val pluginService by inject<PluginService>()
-
-    override val name = "Listener Service"
 
     override suspend fun handleEnable() {
 

@@ -14,6 +14,7 @@ import dev.racci.minix.core.services.PlayerServiceImpl
 import dev.racci.minix.core.services.PluginServiceImpl
 import dev.racci.minix.core.services.TimeService
 import io.sentry.Sentry
+import io.sentry.protocol.User
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -69,22 +70,27 @@ class MinixImpl : Minix() {
 
     @Suppress("UnstableApiUsage")
     private fun startSentry() {
-        if (this.config.getBoolean("EnableSentry", true)) {
-            Sentry.init { options ->
-                options.dsn = "https://80dedb0e861949509a7ed845deaca185@o1112455.ingest.sentry.io/6147185"
-                options.release = description.version
-                options.setBeforeBreadcrumb { breadcrumb, _ -> //                    if (breadcrumb.message == null || breadcrumb.message!!.contains("Ignore", true)) {
-                    //                        return@setBeforeBreadcrumb null
-                    //                    }
-                    // Add some relevant information to the breadcrumb.
-                    breadcrumb.data["Minecraft Version"] = server.minecraftVersion
-                    breadcrumb.data["Server Version"] = server.version
-                    breadcrumb.data["Server Fork"] = server.name
-                    breadcrumb.data["TPS"] = server.tps
-                    breadcrumb
-                } // I only want my own errors not whatever else goes on
-//                options.inAppIncludes += "dev.racci"
+        if (!config.sentryEnabled) return
+
+        Sentry.init { options ->
+            options.dsn = "https://80dedb0e861949509a7ed845deaca185@o1112455.ingest.sentry.io/6147185"
+            options.release = description.version
+            options.isDebug = log.debugEnabled
+            options.setBeforeSend { event, _ ->
+                event.setTag("TPS", server.tps.toString())
+                event
             }
+            options.environment = "production"
+            options.inAppIncludes += "dev.racci"
+        }
+        Sentry.configureScope { scope ->
+            scope.user = User().apply {
+                ipAddress = server.ip
+                id = config.serverUUID.toString()
+            }
+            scope.setContexts("Minecraft Version", server.minecraftVersion)
+            scope.setContexts("Server Version", server.version)
+            scope.setContexts("Server Fork", server.name)
         }
     }
 }

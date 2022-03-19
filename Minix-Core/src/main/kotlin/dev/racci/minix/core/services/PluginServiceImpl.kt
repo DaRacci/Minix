@@ -65,6 +65,10 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
             plugin.invokeIfOverrides(SusPlugin::handleLoad.name) { plugin.handleLoad() }
             plugin.loadReflection()
             pluginCache[plugin].extensions.ifNotEmpty { plugin.loadInOrder() }
+            plugin.invokeIfOverrides(SusPlugin::handleAfterLoad.name) {
+                minix.log.debug { "Running handleAfterLoad for ${plugin.name}" }
+                plugin.handleAfterLoad()
+            }
         }
     }
 
@@ -90,9 +94,9 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
                 cache.metrics = Metrics(plugin, it)
             }
 
-            plugin.invokeIfOverrides(SusPlugin::handleAfterLoad.name) {
-                minix.log.debug { "Running handleAfterLoad for ${plugin.name}" }
-                plugin.handleAfterLoad()
+            plugin.invokeIfOverrides(SusPlugin::handleAfterEnable.name) {
+                minix.log.debug { "Running handleAfterEnable for ${plugin.name}" }
+                plugin.handleAfterEnable()
             }
 
             loadedPlugins += plugin::class to plugin

@@ -27,6 +27,12 @@ interface SusPlugin : Plugin, KoinComponent {
     suspend fun handleAfterLoad() {}
 
     /**
+     * This will be called after your Plugin is finished enabling,
+     * and Minix and finished all of the enable logic for your plugin.
+     */
+    suspend fun handleAfterEnable() {}
+
+    /**
      * This is triggered when your Plugin is being disabled by the Server,
      * Please use this to clean up your Plugin to not leak resources.
      */

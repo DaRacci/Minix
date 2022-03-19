@@ -4,8 +4,6 @@ import dev.racci.minix.api.updater.ChecksumType
 import dev.racci.minix.api.updater.ReleaseType
 import dev.racci.minix.api.updater.UpdateResult
 import dev.racci.minix.api.updater.Version
-import org.spongepowered.configurate.ConfigurationNode
-import java.lang.reflect.Type
 import java.net.URL
 
 class NullUpdateProvider : UpdateProvider() {

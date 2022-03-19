@@ -11,6 +11,7 @@ import kotlin.reflect.KClass
  * @property parent The parent class that your plugin is bound to.
  * @property file The name of the file excluding the extension.
  */
+@Target(AnnotationTarget.CLASS)
 annotation class MappedConfig(
 
     val parent: KClass<*>,

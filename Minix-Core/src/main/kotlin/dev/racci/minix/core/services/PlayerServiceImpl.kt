@@ -2,6 +2,8 @@
 
 package dev.racci.minix.core.services
 
+import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.data.PlayerData
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.cancel
 import dev.racci.minix.api.extensions.displaced
@@ -11,19 +13,16 @@ import dev.racci.minix.api.services.PlayerService
 import dev.racci.minix.api.utils.collections.onlinePlayerMapOf
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import dev.racci.minix.api.utils.minecraft.PlayerUtils
-import dev.racci.minix.api.data.PlayerData
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.UUID
-import kotlin.reflect.KClass
 
+@MappedExtension(
+    "Player Service",
+    bindToKClass = PlayerService::class
+)
 class PlayerServiceImpl(override val plugin: Minix) : Extension<Minix>(), PlayerService {
-
-    override val name = "Player Manager"
-
-    override val bindToKClass: KClass<*>
-        get() = PlayerService::class
 
     private val playerData = HashMap<UUID, PlayerData>()
     override val inputCallbacks by lazy { onlinePlayerMapOf<PlayerUtils.ChatInput>() }

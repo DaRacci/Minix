@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services
 
+import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.launch
 import dev.racci.minix.api.events.WorldDayEvent
 import dev.racci.minix.api.events.WorldNightEvent
@@ -18,9 +19,8 @@ import org.bukkit.event.world.WorldLoadEvent
 import org.bukkit.event.world.WorldUnloadEvent
 import kotlin.time.Duration.Companion.milliseconds
 
+@MappedExtension("Time Service")
 class TimeService(override val plugin: Minix) : Extension<Minix>() {
-
-    override val name = "Time Service"
 
     private val timeState = HashMap<String, Boolean>()
 

@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.LoadingCache
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.racci.minix.api.annotations.MappedConfig
+import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.UpdaterConfig
 import dev.racci.minix.api.extensions.pm
 import dev.racci.minix.api.extensions.server
@@ -46,11 +47,11 @@ import kotlin.io.path.name
 import kotlin.reflect.KClass
 
 @OptIn(ExperimentalStdlibApi::class)
+@MappedExtension(
+    "Data Service",
+    bindToKClass = DataService::class,
+)
 class DataServiceImpl(override val plugin: Minix) : DataService() {
-
-    override val name = "Data Service"
-
-    override val bindToKClass = DataService::class
 
     private val configClasses: LoadingCache<KClass<*>, Config> = Caffeine.newBuilder().build(::Config)
 

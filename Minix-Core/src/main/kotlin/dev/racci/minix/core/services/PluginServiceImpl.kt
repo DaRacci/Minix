@@ -2,6 +2,8 @@ package dev.racci.minix.core.services
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
+import dev.racci.minix.api.annotations.MappedConfig
+import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.coroutine.registerSuspendingEvents
@@ -12,6 +14,7 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.PluginData
 import dev.racci.minix.api.plugin.SusPlugin
 import dev.racci.minix.api.scheduler.CoroutineScheduler
+import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.kotlin.ifNotEmpty
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
@@ -27,7 +30,11 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import org.koin.ext.getFullName
+import org.reflections.Reflections
+import org.reflections.scanners.Scanners
 import kotlin.reflect.KClass
+import kotlin.reflect.full.primaryConstructor
 import kotlin.time.Duration.Companion.seconds
 
 class PluginServiceImpl(val minix: Minix) : PluginService {
@@ -49,18 +56,18 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
         CoroutineSessionImpl(plugin)
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST") // This should be safe i think
     override operator fun <P : MinixPlugin> get(plugin: P): PluginData<P> = pluginCache[plugin] as PluginData<P>
 
     override fun loadPlugin(plugin: MinixPlugin) {
         runBlocking {
             loadModule { single { plugin } bind (plugin.bindToKClass ?: plugin::class) }
             plugin.invokeIfOverrides(SusPlugin::handleLoad.name) { plugin.handleLoad() }
+            plugin.loadReflection()
             pluginCache[plugin].extensions.ifNotEmpty { plugin.loadInOrder() }
         }
     }
 
-    // Add Update checker back for Spigot as well as adding support for GitHub, mc-market and polymart
     override fun startPlugin(plugin: MinixPlugin) {
         coroutineService.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = true
         runBlocking {
@@ -114,6 +121,49 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
 
             loadedPlugins -= plugin::class
         }
+    }
+
+    private fun MinixPlugin.loadReflection() {
+        val reflections = Reflections(this::class.getFullName().split(".")[1], Scanners.TypesAnnotated)
+        reflections.getTypesAnnotatedWith(MappedConfig::class.java)
+            .filter {
+                if (it.classLoader != this::class.java.classLoader) {
+                    minix.log.debug { "Skipping ${it.name} because it's not loaded by ${this.name}." }
+                    false
+                } else true
+            }
+            .forEach {
+                minix.log.debug { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
+                dev.racci.minix.api.utils.getKoin().get<DataService>().configurations[it.kotlin] // Call the cache so we load can have it loaded.
+            }
+        reflections.getTypesAnnotatedWith(MappedExtension::class.java)
+            .filter { clazz ->
+                when {
+                    clazz.classLoader != this::class.java.classLoader -> {
+                        minix.log.debug { "Skipping ${clazz.name} because it's not loaded by ${this.name}." }
+                        false
+                    }
+                    clazz.isAssignableFrom(Extension::class.java) -> {
+                        minix.log.debug { "Found MappedExtension [${clazz.simpleName}] from ${this.name}" }
+                        true
+                    }
+                    else -> {
+                        minix.log.warn { "${clazz.name} is annotated with MappedExtension but isn't an extension!." }
+                        false
+                    }
+                }
+            }
+            .forEach { clazz ->
+                minix.log.debug { "Found MappedExtension [${clazz.simpleName}] from ${this.name}" }
+                pluginCache[this].extensions += { plugin: MinixPlugin ->
+                    try {
+                        clazz.kotlin.primaryConstructor!!.call(plugin) as Extension<*>
+                    } catch (e: Exception) {
+                        minix.log.error(e) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
+                        throw e
+                    }
+                }
+            }
     }
 
     private inline fun <reified P : MinixPlugin> P.getSortedExtensions(): MutableList<Extension<P>> {

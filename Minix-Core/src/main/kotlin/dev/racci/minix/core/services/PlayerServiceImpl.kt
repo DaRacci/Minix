@@ -11,7 +11,7 @@ import dev.racci.minix.api.services.PlayerService
 import dev.racci.minix.api.utils.collections.onlinePlayerMapOf
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import dev.racci.minix.api.utils.minecraft.PlayerUtils
-import dev.racci.minix.core.data.PlayerData
+import dev.racci.minix.api.data.PlayerData
 import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent

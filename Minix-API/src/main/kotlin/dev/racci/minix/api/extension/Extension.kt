@@ -1,5 +1,6 @@
 package dev.racci.minix.api.extension
 
+import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.launch
 import dev.racci.minix.api.coroutine.launchAsync
 import dev.racci.minix.api.extensions.WithPlugin
@@ -13,20 +14,22 @@ import org.koin.core.component.inject
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.QualifierValue
 import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
 
 abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin<P> {
+    private val annotation by lazy { this::class.findAnnotation<MappedExtension>() }
 
-    abstract val name: String
+    open val name: String get() = annotation?.name ?: this::class.simpleName ?: this::class.simpleName ?: throw RuntimeException("Extension name is not defined")
 
     override val value: QualifierValue by lazy { name }
 
-    open val bindToKClass: KClass<*>? = null
+    open val bindToKClass: KClass<*>? get() = annotation?.bindToKClass.takeIf { it != Extension::class }
 
     open val minix by inject<Minix>()
 
     open val log get() = plugin.log
 
-    open val dependencies: ImmutableList<KClass<out Extension<*>>> = persistentListOf()
+    open val dependencies: ImmutableList<KClass<out Extension<*>>> get() = persistentListOf(*annotation?.dependencies.orEmpty()) // This will be worse for performance but save on memory
 
     open var state: ExtensionState = ExtensionState.UNLOADED
 

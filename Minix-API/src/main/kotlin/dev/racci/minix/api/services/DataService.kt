@@ -30,9 +30,7 @@ abstract class DataService : Extension<Minix>() {
      */
     abstract val configurations: LoadingCache<KClass<*>, Any>
 
-    operator fun <T : Any> get(clazz: KClass<T>): T = configurations[clazz].unsafeCast()
-
-    inline fun <reified T : Any> get(): T = get(T::class)
+    inline operator fun <reified T : Any> get(clazz: KClass<T> = T::class): T = configurations[clazz].unsafeCast()
 
     inline fun <reified T : Any> getOrNull(): T? = configurations[T::class].safeCast()
 

@@ -153,7 +153,6 @@ class MinixLogger(
                     builder.append(TextColors.white("${it.className}.${it.methodName}"))
                     builder.append(TextColors.yellow("(${it.fileName}:${it.lineNumber})"))
                 }
-                builder.append(TextColors.gray(thrower.stackTrace.joinToString("\n\t\tat ", "\n\t\tat ")))
             }
         }
         terminal.println(builder)

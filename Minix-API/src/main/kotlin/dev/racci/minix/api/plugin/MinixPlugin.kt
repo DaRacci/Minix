@@ -1,12 +1,14 @@
 package dev.racci.minix.api.plugin
 
 import dev.racci.minix.api.annotations.MinixDsl
+import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionStateEvent
 import dev.racci.minix.api.services.PluginService
-import dev.racci.minix.api.utils.getKoin
+import kotlinx.coroutines.flow.filterIsInstance
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.ApiStatus
+import org.koin.core.component.get
 import kotlin.reflect.KClass
 
 /**
@@ -20,41 +22,48 @@ open class MinixPlugin : JavaPlugin(), SusPlugin {
     override val bStatsId: Int? = null
     override val bindToKClass: KClass<out MinixPlugin>? = null
 
-    val log: MinixLogger get() = getKoin().get<PluginService>()[this].log
-    val metrics: Metrics? get() = getKoin().get<PluginService>()[this].metrics
+    val log: MinixLogger get() = get<PluginService>()[this].log
+    val metrics: Metrics? get() = get<PluginService>()[this].metrics
 
     @ApiStatus.Internal
     @ApiStatus.NonExtendable
     override fun onEnable() {
-        getKoin().get<PluginService>().startPlugin(this)
+        get<PluginService>().startPlugin(this)
     }
 
     @ApiStatus.Internal
     @ApiStatus.NonExtendable
     override fun onDisable() {
-        getKoin().get<PluginService>().unloadPlugin(this)
+        get<PluginService>().unloadPlugin(this)
     }
 
     @ApiStatus.Internal
     @ApiStatus.NonExtendable
     override fun onLoad() {
-        getKoin().get<PluginService>().loadPlugin(this)
+        get<PluginService>().loadPlugin(this)
     }
 
     @ApiStatus.Internal
     @ApiStatus.NonExtendable
     suspend inline fun send(event: ExtensionStateEvent) {
-        getKoin().get<PluginService>()[this].extensionEvents.emit(event)
+        get<PluginService>()[this].extensionEvents.emit(event)
+    }
+
+    // TODO: Is this how this works?
+    suspend inline fun <reified T : Extension<P>, P : MinixPlugin> extensionEvent(crossinline block: suspend T.() -> Unit) {
+        get<PluginService>()[this].extensionEvents
+            .filterIsInstance<T>()
+            .collect { block.invoke(it) }
     }
 
     @MinixDsl
     protected suspend fun extensions(builder: suspend ExtensionsBuilder.() -> Unit) {
-        builder(getKoin().get<PluginService>()[this].extensionsBuilder)
+        builder(get<PluginService>()[this].extensionsBuilder)
     }
 
     @MinixDsl
     protected suspend fun listeners(builder: suspend ListenerBuilder.() -> Unit) {
-        builder(getKoin().get<PluginService>()[this].listenerBuilder)
+        builder(get<PluginService>()[this].listenerBuilder)
     }
 
     @MinixDsl
@@ -63,7 +72,7 @@ open class MinixPlugin : JavaPlugin(), SusPlugin {
         @MinixDsl
         @Suppress("UNCHECKED_CAST")
         inline infix fun <reified P : MinixPlugin> add(noinline builder: ExtensionUnit<P>) {
-            getKoin().get<PluginService>()[this@MinixPlugin].extensions.add(builder as ExtensionUnit<MinixPlugin>)
+            get<PluginService>()[this@MinixPlugin].extensions.add(builder as ExtensionUnit<MinixPlugin>)
         }
     }
 
@@ -72,7 +81,7 @@ open class MinixPlugin : JavaPlugin(), SusPlugin {
 
         @MinixDsl
         infix fun MinixPlugin.add(builder: ListenerUnit) {
-            getKoin().get<PluginService>()[this@MinixPlugin].listeners += builder()
+            get<PluginService>()[this@MinixPlugin].listeners += builder()
         }
     }
 }

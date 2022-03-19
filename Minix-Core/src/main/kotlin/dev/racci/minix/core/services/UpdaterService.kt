@@ -119,10 +119,6 @@ class UpdaterService(override val plugin: Minix) : Extension<Minix>() {
     }
 
     private suspend fun update(updater: PluginUpdater) = withContext(Dispatchers.IO) {
-        if (!updateFolder.exists() && !updateFolder.mkdirs()) {
-            return@withContext plugin.log.warn { "Could not create update folder!" }
-        }
-
         try {
             val hashGenerator = updater.provider.providesChecksum.instanceOrNull
             val downloadFile = updateFolder.resolve(updater.provider.latestFileName)

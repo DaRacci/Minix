@@ -76,7 +76,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
     // TODO: If this method is jank look into using the update folder from bukkit, note that the plugin must have the same name as the currently loaded one in that case.
     override suspend fun handleLoad() {
-        if (!plugin.dataFolder.exists() && plugin.dataFolder.mkdirs()) {
+        if (!plugin.dataFolder.exists() && !plugin.dataFolder.mkdirs()) {
             log.error { "Failed to create data folder!" }
         }
 

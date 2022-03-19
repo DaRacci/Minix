@@ -2,17 +2,21 @@ package dev.racci.minix.core
 
 import dev.racci.minix.api.builders.ItemBuilderDSL
 import dev.racci.minix.api.coroutine.contract.CoroutineService
+import dev.racci.minix.api.data.Config
 import dev.racci.minix.api.plugin.Minix
+import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.scheduler.CoroutineSchedulerImpl
-import dev.racci.minix.core.services.CommandServicesImpl
+import dev.racci.minix.core.services.CommandService
+import dev.racci.minix.core.services.DataServiceImpl
 import dev.racci.minix.core.services.ListenerService
 import dev.racci.minix.core.services.PlayerServiceImpl
 import dev.racci.minix.core.services.PluginServiceImpl
 import dev.racci.minix.core.services.TimeService
+import dev.racci.minix.core.services.UpdaterService
 import io.sentry.Sentry
 import io.sentry.protocol.User
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -21,20 +25,28 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.KoinApplication
 import org.koin.core.annotation.KoinReflectAPI
+import org.koin.core.component.get
 import org.koin.core.context.startKoin
 import org.koin.dsl.bind
 import org.koin.mp.KoinPlatformTools
-import java.util.logging.Level
 import kotlin.time.Duration.Companion.seconds
 
-@Suppress("unused")
 class MinixImpl : Minix() {
+    private val config by lazy { get<DataService>().get<Config>() }
 
     override val bStatsId by lazy { 13706 }
 
     override fun onLoad() {
         startKoin()
-        logger.level = Level.ALL
+        get<PluginService>().loadPlugin(this)
+    }
+
+    override suspend fun handleLoad() {
+        extensions {
+            add(::DataServiceImpl)
+            add(::UpdaterService)
+        }
+        logger.level = config.loggingLevel
     }
 
     @OptIn(KoinReflectAPI::class)
@@ -42,13 +54,11 @@ class MinixImpl : Minix() {
 
         startSentry()
 
-        loadModule { single { this@MinixImpl } bind Minix::class }
-
         loadModule { single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class }
 
         extensions {
             add(::CoroutineSchedulerImpl)
-            add(::CommandServicesImpl)
+            add(::CommandService)
             add(::PlayerServiceImpl)
             add(::ListenerService)
             add(::TimeService)
@@ -60,11 +70,12 @@ class MinixImpl : Minix() {
         GlobalScope.launch { delay(1.seconds); KoinPlatformTools.defaultContext().getOrNull()?.close() }
     }
 
+    @OptIn(KoinReflectAPI::class)
     private fun startKoin() {
         startKoin(KoinApplication.init())
         loadModule {
-            single { PluginServiceImpl(this@MinixImpl) } bind PluginService::class
-            single { CoroutineServiceImpl() } bind CoroutineService::class
+            single { ::PluginServiceImpl } bind PluginService::class
+            single { ::CoroutineServiceImpl } bind CoroutineService::class
         }
     }
 

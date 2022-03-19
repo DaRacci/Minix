@@ -47,6 +47,9 @@ class MinixImpl : Minix() {
             add(::DataServiceImpl)
             add(::UpdaterService)
         }
+    }
+
+    override suspend fun handleAfterLoad() {
         logger.level = config.loggingLevel
     }
 

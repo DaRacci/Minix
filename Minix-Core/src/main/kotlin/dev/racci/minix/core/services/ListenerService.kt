@@ -1,6 +1,7 @@
 package dev.racci.minix.core.services
 
 import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.coroutine.launchAsync
 import dev.racci.minix.api.data.PlayerData
 import dev.racci.minix.api.events.AbstractComboEvent
@@ -216,7 +217,7 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
         event<PluginDisableEvent> {
             val minixPlugin = this.plugin as? MinixPlugin ?: return@event
-            pluginService[minixPlugin].coroutine.disable(minixPlugin)
+            coroutineService.disable(minixPlugin)
         }
     }
 }

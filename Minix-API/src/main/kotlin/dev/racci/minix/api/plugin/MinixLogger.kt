@@ -145,11 +145,11 @@ class MinixLogger(
         val builder = StringBuilder("$prefix $type ${TextColors.brightWhite("->")} ")
         msg?.let { builder.append(colour(it)) }
         throwable?.let { thrower ->
-            builder.append(TextColors.yellow(thrower::class.qualifiedName ?: "null") + TextColors.brightWhite(" -> "))
-            builder.append(thrower.message ?: thrower.cause?.message ?: thrower.cause?.cause?.message ?: "No message.") // Support two layers or suppressed exceptions
+            builder.append("\n\t\t" + TextColors.yellow(thrower::class.qualifiedName ?: "null") + TextColors.brightWhite(" -> "))
+            builder.append(thrower.localizedMessage ?: thrower.cause?.localizedMessage ?: thrower.cause?.cause?.localizedMessage ?: "No message.") // Support two layers or suppressed exceptions
             if (debugEnabled) { // Only print the stack trace if debug is enabled
                 thrower.stackTrace.forEach {
-                    builder.append(TextColors.gray("\n\t\tat "))
+                    builder.append(TextColors.gray("\n\t\t\tat "))
                     builder.append(TextColors.white("${it.className}.${it.methodName}"))
                     builder.append(TextColors.yellow("(${it.fileName}:${it.lineNumber})"))
                 }

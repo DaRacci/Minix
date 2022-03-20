@@ -65,7 +65,6 @@ data class Data(val bytes: Long) : Comparable<Data> {
             node: ConfigurationNode,
         ): Data {
             val match = node.get<String>()?.let(regex::matchEntire)
-            logger.debug { "Deserializing data: ${match?.groupValues?.joinToString(", ")}" }
             return when (match?.groups?.get("identifier")?.value?.lowercase()) {
                 "b" -> Data(match.groups["size"]!!.value.toLong())
                 "kb" -> fromKilobytes(match.groups["size"]!!.value.toLong())

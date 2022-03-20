@@ -2,7 +2,6 @@
 
 package dev.racci.minix.api.serializables
 
-import java.lang.reflect.Type
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
@@ -14,8 +13,9 @@ import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.serialize.SerializationException
 import org.spongepowered.configurate.serialize.TypeSerializer
+import java.lang.reflect.Type
 
-object VectorSerializer : KSerializer<Vector>, TypeSerializer<Vector> {
+object VectorSerializer : KSerializer<Vector> {
 
     private val serializer = ListSerializer(Double.serializer())
     override val descriptor: SerialDescriptor = serializer.descriptor
@@ -32,17 +32,22 @@ object VectorSerializer : KSerializer<Vector>, TypeSerializer<Vector> {
         return Vector(x, y, z)
     }
 
-    override fun serialize(
-        type: Type,
-        obj: Vector?,
-        node: ConfigurationNode,
-    ) {
-        if (obj == null) { node.raw(null); return }
-        node.set(obj.serialize())
-    }
+    object Configurate : TypeSerializer<Vector> {
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): Vector = node.get<Map<String, Any>>()?.let(Vector::deserialize) ?: throw SerializationException(type, "Cannot deserialize null")
+        override fun serialize(
+            type: Type,
+            obj: Vector?,
+            node: ConfigurationNode,
+        ) {
+            if (obj == null) {
+                node.raw(null); return
+            }
+            node.set(obj.serialize())
+        }
+
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): Vector = node.get<Map<String, Any>>()?.let(Vector::deserialize) ?: throw SerializationException(type, "Cannot deserialize null")
+    }
 }

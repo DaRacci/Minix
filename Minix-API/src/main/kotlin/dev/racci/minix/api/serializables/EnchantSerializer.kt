@@ -9,11 +9,11 @@ import kotlinx.serialization.encoding.Encoder
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.spongepowered.configurate.ConfigurationNode
+import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
-import org.spongepowered.configurate.kotlin.extensions.get
 
-object EnchantSerializer : KSerializer<Enchantment>, TypeSerializer<Enchantment> {
+object EnchantSerializer : KSerializer<Enchantment> {
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Enchantment", PrimitiveKind.STRING)
 
@@ -29,19 +29,24 @@ object EnchantSerializer : KSerializer<Enchantment>, TypeSerializer<Enchantment>
             ?: error("NamespacedKey must be a valid enchantment key.")
     }
 
-    override fun serialize(
-        type: Type,
-        obj: Enchantment?,
-        node: ConfigurationNode,
-    ) {
-        if (obj == null) { node.raw(null); return }
-        node.set(obj.key.toString())
-    }
+    object Configurate : TypeSerializer<Enchantment> {
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): Enchantment = node.get<String>()?.let(::fromString) ?: error("Cannot deserialize null.")
+        override fun serialize(
+            type: Type,
+            obj: Enchantment?,
+            node: ConfigurationNode,
+        ) {
+            if (obj == null) {
+                node.raw(null); return
+            }
+            node.set(obj.key.toString())
+        }
+
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): Enchantment = node.get<String>()?.let(::fromString) ?: error("Cannot deserialize null.")
+    }
 
     // TODO: Support EcoEnchants
     private fun fromString(value: String): Enchantment {

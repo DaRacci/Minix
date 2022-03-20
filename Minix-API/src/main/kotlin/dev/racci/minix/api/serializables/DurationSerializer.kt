@@ -21,7 +21,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-object DurationSerializer : KSerializer<Duration>, TypeSerializer<Duration> {
+object DurationSerializer : KSerializer<Duration> {
     private val regex: Regex = Regex("(?<value>[0-9]+.[0-9]+)(?<unit>[a-zA-Z]+)") // Dot between numbers so we can't match 1.1.1.1s for example
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Time", PrimitiveKind.STRING)
@@ -61,17 +61,19 @@ object DurationSerializer : KSerializer<Duration>, TypeSerializer<Duration> {
         }
     }
 
-    override fun serialize(
-        type: Type,
-        obj: Duration?,
-        node: ConfigurationNode,
-    ) {
-        if (obj == null) { node.raw(null); return }
-        node.set(toString(obj))
-    }
+    object Configurate : TypeSerializer<Duration> {
+        override fun serialize(
+            type: Type,
+            obj: Duration?,
+            node: ConfigurationNode,
+        ) {
+            if (obj == null) { node.raw(null); return }
+            node.set(toString(obj))
+        }
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): Duration = node.get<String>()?.let(::fromString) ?: error("Invalid Duration: ${node.get<String>()}")
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): Duration = node.get<String>()?.let(::fromString) ?: error("Invalid Duration: ${node.get<String>()}")
+    }
 }

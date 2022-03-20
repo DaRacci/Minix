@@ -14,6 +14,7 @@ import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import net.kyori.adventure.text.Component
@@ -96,7 +97,7 @@ class SerializableItemMeta(
     var unbreakable: Boolean = false,
     @SerialName("AttributeModifiers")
     var attributeModifiers: MultiMap<Attribute,
-        @Serializable(with = AttributeModifierSerializer::class) AttributeModifier>? = null,
+        /*@Serializable(with = AttributeModifierSerializer::class)*/ @Contextual AttributeModifier>? = null,
     @SerialName("Damage")
     var damage: Int? = null,
 )

@@ -18,7 +18,7 @@ import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
 
-object LocationSerializer : KSerializer<Location>, TypeSerializer<Location> {
+object LocationSerializer : KSerializer<Location> {
 
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("Location") {
         element<Double>("x")
@@ -64,17 +64,22 @@ object LocationSerializer : KSerializer<Location>, TypeSerializer<Location> {
         return Location(Bukkit.getWorld(world), x, y, z, yaw, pitch)
     }
 
-    override fun serialize(
-        type: Type,
-        obj: Location?,
-        node: ConfigurationNode,
-    ) {
-        if (obj == null) { node.raw(null); return }
-        node.set(obj.serialize())
-    }
+    object Configurate : TypeSerializer<Location> {
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): Location = node.get<Map<String, Any>>()?.let(Location::deserialize) ?: error("Could not deserialize location")
+        override fun serialize(
+            type: Type,
+            obj: Location?,
+            node: ConfigurationNode,
+        ) {
+            if (obj == null) {
+                node.raw(null); return
+            }
+            node.set(obj.serialize())
+        }
+
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): Location = node.get<Map<String, Any>>()?.let(Location::deserialize) ?: error("Could not deserialize location")
+    }
 }

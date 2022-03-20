@@ -10,8 +10,10 @@ import org.bukkit.inventory.BlastingRecipe
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.RecipeChoice
+import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 @Serializable
+@ConfigSerializable
 @SerialName("blasting")
 class BlastingRecipeIngredients(
     val input: SerializableItemStack,

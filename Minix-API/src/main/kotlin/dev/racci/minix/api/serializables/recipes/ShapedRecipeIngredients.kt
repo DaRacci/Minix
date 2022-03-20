@@ -13,8 +13,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.RecipeChoice
 import org.bukkit.inventory.ShapedRecipe
+import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 @Serializable
+@ConfigSerializable
 @SerialName("shaped")
 class ShapedRecipeIngredients(
     val items: Map<String, SerializableItemStack>,

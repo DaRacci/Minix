@@ -10,8 +10,10 @@ import org.bukkit.inventory.FurnaceRecipe
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.RecipeChoice
+import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 @Serializable
+@ConfigSerializable
 @SerialName("furnace")
 class FurnaceRecipeIngredients(
     val input: SerializableItemStack,

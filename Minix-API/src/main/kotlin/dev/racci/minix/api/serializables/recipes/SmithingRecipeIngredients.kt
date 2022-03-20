@@ -10,8 +10,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.RecipeChoice
 import org.bukkit.inventory.SmithingRecipe
+import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 @Serializable
+@ConfigSerializable
 @SerialName("smithing")
 class SmithingRecipeIngredients(
     val input: SerializableItemStack,

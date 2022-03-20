@@ -10,16 +10,29 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import org.spongepowered.configurate.ConfigurationNode
+import org.spongepowered.configurate.kotlin.extensions.get
+import org.spongepowered.configurate.serialize.SerializationException
+import org.spongepowered.configurate.serialize.TypeSerializer
+import java.lang.reflect.Type
 
-abstract class RangeSerializer<T : ClosedRange<*>> : KSerializer<T> {
+abstract class RangeSerializer<T : ClosedRange<*>> : KSerializer<T>, TypeSerializer<T> {
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("range", PrimitiveKind.STRING)
 
     override fun serialize(
         encoder: Encoder,
         value: T,
-    ) =
-        encoder.encodeString(value.toStringWithSingleDigit())
+    ) = encoder.encodeString(value.toStringWithSingleDigit())
+
+    override fun serialize(
+        type: Type,
+        obj: T?,
+        node: ConfigurationNode,
+    ) {
+        if (obj == null) { node.raw(null); return }
+        node.set(obj.toStringWithSingleDigit())
+    }
 }
 
 /**
@@ -29,6 +42,14 @@ object IntRangeSerializer : RangeSerializer<IntRange>() {
 
     override fun deserialize(decoder: Decoder): IntRange {
         val (min, max) = valuesForRange(decoder.decodeString()) { toInt() }
+        return min..max
+    }
+
+    override fun deserialize(
+        type: Type,
+        node: ConfigurationNode,
+    ): IntRange {
+        val (min, max) = node.get<String>()?.let { valuesForRange(it) { toInt() } } ?: throw SerializationException(type, "Could not parse range: ${node.get<String>()}")
         return min..max
     }
 }
@@ -42,6 +63,14 @@ object LongRangeSerializer : RangeSerializer<LongRange>() {
         val (min, max) = valuesForRange(decoder.decodeString()) { toLong() }
         return min..max
     }
+
+    override fun deserialize(
+        type: Type,
+        node: ConfigurationNode,
+    ): LongRange {
+        val (min, max) = node.get<String>()?.let { valuesForRange(it) { toLong() } } ?: throw SerializationException(type, "Could not parse range: ${node.get<String>()}")
+        return min..max
+    }
 }
 
 /**
@@ -51,6 +80,14 @@ object CharRangeSerializer : RangeSerializer<CharRange>() {
 
     override fun deserialize(decoder: Decoder): CharRange {
         val (min, max) = valuesForRange(decoder.decodeString()) { get(0) }
+        return min..max
+    }
+
+    override fun deserialize(
+        type: Type,
+        node: ConfigurationNode,
+    ): CharRange {
+        val (min, max) = node.get<String>()?.let { valuesForRange(it) { get(0) } } ?: throw SerializationException(type, "Could not parse range: ${node.get<String>()}")
         return min..max
     }
 }
@@ -64,6 +101,14 @@ object DoubleRangeSerializer : RangeSerializer<DoubleRange>() {
         val (min, max) = valuesForRange(decoder.decodeString()) { toDouble() }
         return min..max
     }
+
+    override fun deserialize(
+        type: Type,
+        node: ConfigurationNode,
+    ): DoubleRange {
+        val (min, max) = node.get<String>()?.let { valuesForRange(it) { toDouble() } } ?: throw SerializationException(type, "Could not parse range: ${node.get<String>()}")
+        return min..max
+    }
 }
 
 /**
@@ -73,6 +118,14 @@ object FloatRangeSerializer : RangeSerializer<FloatRange>() {
 
     override fun deserialize(decoder: Decoder): FloatRange {
         val (min, max) = valuesForRange(decoder.decodeString()) { toFloat() }
+        return min..max
+    }
+
+    override fun deserialize(
+        type: Type,
+        node: ConfigurationNode,
+    ): FloatRange {
+        val (min, max) = node.get<String>()?.let { valuesForRange(it) { toFloat() } } ?: throw SerializationException(type, "Could not parse range: ${node.get<String>()}")
         return min..max
     }
 }
@@ -91,7 +144,6 @@ private inline fun <T> valuesForRange(
     return range.first() to range.last()
 }
 
-private fun ClosedRange<*>.toStringWithSingleDigit() =
-    if (start == endInclusive) {
-        start.toString()
-    } else "$start..$endInclusive"
+private fun ClosedRange<*>.toStringWithSingleDigit() = if (start == endInclusive) {
+    start.toString()
+} else "$start..$endInclusive"

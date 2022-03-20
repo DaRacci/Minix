@@ -5,8 +5,10 @@ package dev.racci.minix.api.serializables.recipes
 import dev.racci.minix.api.extensions.toNamespacedKey
 import dev.racci.minix.api.serializables.SerializableItemStack
 import kotlinx.serialization.Serializable
+import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 @Serializable
+@ConfigSerializable
 class SerializableRecipe(
     val key: String,
     val ingredients: SerializableRecipeIngredients,

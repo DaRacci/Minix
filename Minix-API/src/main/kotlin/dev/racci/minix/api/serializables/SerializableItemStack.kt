@@ -26,6 +26,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.SkullMeta
+import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import java.util.UUID
 
 /**
@@ -35,6 +36,7 @@ import java.util.UUID
  * Currently missing many things spigot's item serialization contains, but way cleaner to use!
  */
 @Serializable
+@ConfigSerializable
 class SerializableItemStack(
     @SerialName("Type") var type: Material? = null,
     @SerialName("Amount") var amount: Int = 1,
@@ -76,6 +78,7 @@ fun SerializableItemStack.Companion.dsl(block: SerializableItemStack.() -> Unit)
 }
 
 @Serializable
+@ConfigSerializable
 class SerializableItemMeta(
     @SerialName("DisplayName")
     var displayName: Component? = null,
@@ -105,6 +108,7 @@ fun SerializableItemMeta.Companion.dsl(block: SerializableItemMeta.() -> Unit): 
 }
 
 @Serializable
+@ConfigSerializable
 class SerializableSkullMeta {
 
     @SerialName("Owner")

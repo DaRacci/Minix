@@ -10,8 +10,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.RecipeChoice
 import org.bukkit.inventory.StonecuttingRecipe
+import org.spongepowered.configurate.objectmapping.ConfigSerializable
 
 @Serializable
+@ConfigSerializable
 @SerialName("stonecutting")
 class StoneCuttingRecipeIngredients(
     val input: SerializableItemStack,

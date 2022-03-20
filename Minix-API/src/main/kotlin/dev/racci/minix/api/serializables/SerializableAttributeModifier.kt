@@ -4,9 +4,11 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.bukkit.attribute.AttributeModifier
 import org.bukkit.inventory.EquipmentSlot
+import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import java.util.UUID
 
 @Serializable
+@ConfigSerializable
 class SerializableAttributeModifier {
 
     @SerialName("UUID")

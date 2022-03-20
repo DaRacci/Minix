@@ -20,7 +20,7 @@ Minix is library written for purpur based plugins, providing full integration wi
 
 ## Plugin Information
 
-- Supports 1.18.1+
+- Supports 1.18.2
 
 ## Docs
 
@@ -29,8 +29,6 @@ Minix is library written for purpur based plugins, providing full integration wi
 ## Plugin Information
 
 Minix is a standalone plugin, so it can provide all of its features, this means you will have to install it on the server with your plugin, to depend on Minix add it as a dependency in your plugin.yml:
-
-#### Note: Minix currently will only run on [my purpur fork](https://github.com/DaRacci/Tentacles) due to pending prs and waiting on adventure 4.10.0 Release. This is a simple drop in jar and all changes are viewable in the patches on the github page.
 
 ```yaml
 depend:

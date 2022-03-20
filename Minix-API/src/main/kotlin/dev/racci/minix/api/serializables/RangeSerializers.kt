@@ -16,7 +16,7 @@ import org.spongepowered.configurate.serialize.SerializationException
 import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
 
-abstract class RangeSerializer<T : ClosedRange<*>> : KSerializer<T>, TypeSerializer<T> {
+abstract class RangeSerializer<T : ClosedRange<*>> : KSerializer<T> {
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("range", PrimitiveKind.STRING)
 
@@ -25,13 +25,18 @@ abstract class RangeSerializer<T : ClosedRange<*>> : KSerializer<T>, TypeSeriali
         value: T,
     ) = encoder.encodeString(value.toStringWithSingleDigit())
 
-    override fun serialize(
-        type: Type,
-        obj: T?,
-        node: ConfigurationNode,
-    ) {
-        if (obj == null) { node.raw(null); return }
-        node.set(obj.toStringWithSingleDigit())
+    abstract class Configurate<T : ClosedRange<*>> : TypeSerializer<T> {
+
+        override fun serialize(
+            type: Type,
+            obj: T?,
+            node: ConfigurationNode,
+        ) {
+            if (obj == null) {
+                node.raw(null); return
+            }
+            node.set(obj.toStringWithSingleDigit())
+        }
     }
 }
 
@@ -45,12 +50,18 @@ object IntRangeSerializer : RangeSerializer<IntRange>() {
         return min..max
     }
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): IntRange {
-        val (min, max) = node.get<String>()?.let { valuesForRange(it) { toInt() } } ?: throw SerializationException(type, "Could not parse range: ${node.get<String>()}")
-        return min..max
+    object Configurate : RangeSerializer.Configurate<IntRange>() {
+
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): IntRange {
+            val (min, max) = node.get<String>()?.let { valuesForRange(it) { toInt() } } ?: throw SerializationException(
+                type,
+                "Could not parse range: ${node.get<String>()}"
+            )
+            return min..max
+        }
     }
 }
 
@@ -64,12 +75,18 @@ object LongRangeSerializer : RangeSerializer<LongRange>() {
         return min..max
     }
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): LongRange {
-        val (min, max) = node.get<String>()?.let { valuesForRange(it) { toLong() } } ?: throw SerializationException(type, "Could not parse range: ${node.get<String>()}")
-        return min..max
+    object Configurate : RangeSerializer.Configurate<LongRange>() {
+
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): LongRange {
+            val (min, max) = node.get<String>()?.let { valuesForRange(it) { toLong() } } ?: throw SerializationException(
+                type,
+                "Could not parse range: ${node.get<String>()}"
+            )
+            return min..max
+        }
     }
 }
 
@@ -83,12 +100,18 @@ object CharRangeSerializer : RangeSerializer<CharRange>() {
         return min..max
     }
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): CharRange {
-        val (min, max) = node.get<String>()?.let { valuesForRange(it) { get(0) } } ?: throw SerializationException(type, "Could not parse range: ${node.get<String>()}")
-        return min..max
+    object Configurate : RangeSerializer.Configurate<CharRange>() {
+
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): CharRange {
+            val (min, max) = node.get<String>()?.let { valuesForRange(it) { get(0) } } ?: throw SerializationException(
+                type,
+                "Could not parse range: ${node.get<String>()}"
+            )
+            return min..max
+        }
     }
 }
 
@@ -102,12 +125,18 @@ object DoubleRangeSerializer : RangeSerializer<DoubleRange>() {
         return min..max
     }
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): DoubleRange {
-        val (min, max) = node.get<String>()?.let { valuesForRange(it) { toDouble() } } ?: throw SerializationException(type, "Could not parse range: ${node.get<String>()}")
-        return min..max
+    object Configurate : RangeSerializer.Configurate<DoubleRange>() {
+
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): DoubleRange {
+            val (min, max) = node.get<String>()?.let { valuesForRange(it) { toDouble() } } ?: throw SerializationException(
+                type,
+                "Could not parse range: ${node.get<String>()}"
+            )
+            return min..max
+        }
     }
 }
 
@@ -121,12 +150,18 @@ object FloatRangeSerializer : RangeSerializer<FloatRange>() {
         return min..max
     }
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): FloatRange {
-        val (min, max) = node.get<String>()?.let { valuesForRange(it) { toFloat() } } ?: throw SerializationException(type, "Could not parse range: ${node.get<String>()}")
-        return min..max
+    object Configurate : RangeSerializer.Configurate<FloatRange>() {
+
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): FloatRange {
+            val (min, max) = node.get<String>()?.let { valuesForRange(it) { toFloat() } } ?: throw SerializationException(
+                type,
+                "Could not parse range: ${node.get<String>()}"
+            )
+            return min..max
+        }
     }
 }
 

@@ -15,7 +15,7 @@ import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
 
-object WorldSerializer : KSerializer<World>, TypeSerializer<World> {
+object WorldSerializer : KSerializer<World> {
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("World", PrimitiveKind.STRING)
 
@@ -29,17 +29,22 @@ object WorldSerializer : KSerializer<World>, TypeSerializer<World> {
         return Bukkit.getWorld(name) ?: error("No world $name found")
     }
 
-    override fun serialize(
-        type: Type,
-        obj: World?,
-        node: ConfigurationNode,
-    ) {
-        if (obj == null) { node.raw(null); return }
-        node.set(obj.name)
-    }
+    object Configurate : TypeSerializer<World> {
 
-    override fun deserialize(
-        type: Type?,
-        node: ConfigurationNode?,
-    ): World = node?.get<String>()?.let(Bukkit::getWorld) ?: error("No world found")
+        override fun serialize(
+            type: Type,
+            obj: World?,
+            node: ConfigurationNode,
+        ) {
+            if (obj == null) {
+                node.raw(null); return
+            }
+            node.set(obj.name)
+        }
+
+        override fun deserialize(
+            type: Type?,
+            node: ConfigurationNode?,
+        ): World = node?.get<String>()?.let(Bukkit::getWorld) ?: error("No world found")
+    }
 }

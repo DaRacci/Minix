@@ -12,7 +12,7 @@ import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
 
-object NamespacedKeySerializer : KSerializer<NamespacedKey>, TypeSerializer<NamespacedKey> {
+object NamespacedKeySerializer : KSerializer<NamespacedKey> {
 
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("NamespacedKey", PrimitiveKind.STRING)
 
@@ -23,17 +23,22 @@ object NamespacedKeySerializer : KSerializer<NamespacedKey>, TypeSerializer<Name
 
     override fun deserialize(decoder: Decoder): NamespacedKey = NamespacedKey.fromString(decoder.decodeString())!!
 
-    override fun serialize(
-        type: Type,
-        obj: NamespacedKey?,
-        node: ConfigurationNode,
-    ) {
-        if (obj == null) { node.raw(null); return }
-        node.set(obj.toString())
-    }
+    object Configurate : TypeSerializer<NamespacedKey> {
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): NamespacedKey = node.get<String>()?.let(NamespacedKey::fromString) ?: error("Null or invalid NamespacedKey: ${node.get<String>()}")
+        override fun serialize(
+            type: Type,
+            obj: NamespacedKey?,
+            node: ConfigurationNode,
+        ) {
+            if (obj == null) {
+                node.raw(null); return
+            }
+            node.set(obj.toString())
+        }
+
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): NamespacedKey = node.get<String>()?.let(NamespacedKey::fromString) ?: error("Null or invalid NamespacedKey: ${node.get<String>()}")
+    }
 }

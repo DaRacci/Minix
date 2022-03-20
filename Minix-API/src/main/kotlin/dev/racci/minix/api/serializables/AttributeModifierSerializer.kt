@@ -1,6 +1,5 @@
 package dev.racci.minix.api.serializables
 
-import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.nonVirtualNode
 import dev.racci.minix.api.utils.primitive.EnumUtils
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
@@ -15,11 +14,12 @@ import org.bukkit.attribute.AttributeModifier
 import org.bukkit.inventory.EquipmentSlot
 import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.kotlin.extensions.get
+import org.spongepowered.configurate.serialize.SerializationException
 import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
 import java.util.UUID
 
-object AttributeModifierSerializer : KSerializer<AttributeModifier>, TypeSerializer<AttributeModifier> {
+object AttributeModifierSerializer : KSerializer<AttributeModifier> {
 
     override val descriptor = buildClassSerialDescriptor("AttributeModifier") {
         element<UUID>("UUID")
@@ -71,30 +71,19 @@ object AttributeModifierSerializer : KSerializer<AttributeModifier>, TypeSeriali
         )
     }
 
-    override fun serialize(
-        type: Type,
-        obj: AttributeModifier?,
-        node: ConfigurationNode,
-    ) {
-        if (obj == null) { node.raw(null); return }
-        node.node("UUID").set(obj.uniqueId)
-        node.node("Name").set(obj.name)
-        node.node("Amount").set(obj.amount)
-        node.node("Operation").set(obj.operation.name)
-        if (obj.slot != null) {
-            node.node("Slot").set(obj.slot!!.name)
+    object Configurate : TypeSerializer<AttributeModifier> {
+        override fun serialize(
+            type: Type,
+            obj: AttributeModifier?,
+            node: ConfigurationNode,
+        ) {
+            if (obj == null) { node.raw(null); return }
+            node.set(obj.serialize())
         }
-    }
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): AttributeModifier = AttributeModifier(
-        node.nonVirtualNode("UUID")?.get() ?: UUID.randomUUID(),
-        node.nonVirtualNode("Name")?.get() ?: error("Name cannot be null for AttributeModifier"),
-        node.nonVirtualNode("Amount")?.get() ?: error("Amount cannot be null for AttributeModifier"),
-        EnumUtils.getByName<AttributeModifier.Operation>(node.nonVirtualNode("Operation")?.get())
-            ?: error("Operation cannot be null for AttributeModifier"),
-        EnumUtils.getByName<EquipmentSlot>(node.nonVirtualNode("Slot")?.get()),
-    )
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): AttributeModifier = node.get<Map<String, Any>>()?.let(AttributeModifier::deserialize) ?: throw SerializationException(type, "AttributeModifier cannot be null")
+    }
 }

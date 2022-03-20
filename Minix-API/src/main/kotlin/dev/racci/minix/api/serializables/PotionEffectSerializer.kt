@@ -26,7 +26,7 @@ import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
 import java.time.Duration
 
-object PotionEffectSerializer : KSerializer<PotionEffect>, TypeSerializer<PotionEffect> {
+object PotionEffectSerializer : KSerializer<PotionEffect> {
 
     override val descriptor: SerialDescriptor = buildClassSerialDescriptor("PotionEffect") {
         element<String>("type")
@@ -91,27 +91,41 @@ object PotionEffectSerializer : KSerializer<PotionEffect>, TypeSerializer<Potion
         )
     }
 
-    override fun serialize(
-        type: Type,
-        obj: PotionEffect?,
-        node: ConfigurationNode,
-    ) {
-        if (obj == null) { node.raw(null); return }
-        node.set(obj.serialize())
-    }
+    object Configurate : TypeSerializer<PotionEffect> {
 
-    override fun deserialize(
-        type: Type,
-        node: ConfigurationNode,
-    ): PotionEffect = node.get<Map<String, Any>>()?.let {
-        PotionEffect(
-            PotionEffectType.getByName(it["type"].unsafeCast()) ?: throw SerializationException("Invalid \"type\" while deserializing: ${it["type"]}."),
-            it["duration"].safeCast() ?: it["duration"].toString().toIntOrNull() ?: throw SerializationException("Invalid \"duration\" while deserializing: ${it["duration"]}"),
-            it["amplifier"].safeCast() ?: it["amplifier"].toString().toIntOrNull() ?: throw SerializationException("Invalid \"amplifier\" while deserializing: ${it["amplifier"]}"),
-            it["ambient"].safeCast() ?: it["ambient"].toString().toBooleanStrictOrNull() ?: throw SerializationException("Invalid \"ambient\" while deserializing: ${it["ambient"]}"),
-            it["has-particles"].safeCast() ?: it["has-particles"].toString().toBooleanStrictOrNull() ?: throw SerializationException(type, "Invalid \"has-particles\" while deserializing: ${it["hasParticles"]}"),
-            it["hasIcon"].safeCast() ?: it["hasIcon"].toString().toBooleanStrictOrNull() ?: throw SerializationException(type, "Invalid \"hasIcon\" while deserializing: ${it["hasIcon"]}"),
-            it["key"]?.let { str -> NamespacedKey.fromString(str.toString()) },
-        )
-    } ?: error("Cannot deserialize null")
+        override fun serialize(
+            type: Type,
+            obj: PotionEffect?,
+            node: ConfigurationNode,
+        ) {
+            if (obj == null) {
+                node.raw(null); return
+            }
+            node.set(obj.serialize())
+        }
+
+        override fun deserialize(
+            type: Type,
+            node: ConfigurationNode,
+        ): PotionEffect = node.get<Map<String, Any>>()?.let {
+            PotionEffect(
+                PotionEffectType.getByName(it["type"].unsafeCast()) ?: throw SerializationException("Invalid \"type\" while deserializing: ${it["type"]}."),
+                it["duration"].safeCast() ?: it["duration"].toString().toIntOrNull()
+                    ?: throw SerializationException("Invalid \"duration\" while deserializing: ${it["duration"]}"),
+                it["amplifier"].safeCast() ?: it["amplifier"].toString().toIntOrNull()
+                    ?: throw SerializationException("Invalid \"amplifier\" while deserializing: ${it["amplifier"]}"),
+                it["ambient"].safeCast() ?: it["ambient"].toString().toBooleanStrictOrNull()
+                    ?: throw SerializationException("Invalid \"ambient\" while deserializing: ${it["ambient"]}"),
+                it["has-particles"].safeCast() ?: it["has-particles"].toString().toBooleanStrictOrNull() ?: throw SerializationException(
+                    type,
+                    "Invalid \"has-particles\" while deserializing: ${it["hasParticles"]}"
+                ),
+                it["hasIcon"].safeCast() ?: it["hasIcon"].toString().toBooleanStrictOrNull() ?: throw SerializationException(
+                    type,
+                    "Invalid \"hasIcon\" while deserializing: ${it["hasIcon"]}"
+                ),
+                it["key"]?.let { str -> NamespacedKey.fromString(str.toString()) },
+            )
+        } ?: error("Cannot deserialize null")
+    }
 }

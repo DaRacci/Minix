@@ -4,6 +4,7 @@ import dev.racci.minix.api.builders.ItemBuilderDSL
 import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.data.Config
 import dev.racci.minix.api.plugin.Minix
+import dev.racci.minix.api.plugin.MinixLogger
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.loadModule
@@ -78,6 +79,7 @@ class MinixImpl : Minix() {
     private fun startKoin() {
         startKoin(KoinApplication.init())
         loadModule {
+            single { log } bind MinixLogger::class
             single { PluginServiceImpl(this@MinixImpl) } bind PluginService::class
             single { CoroutineServiceImpl() } bind CoroutineService::class
         }

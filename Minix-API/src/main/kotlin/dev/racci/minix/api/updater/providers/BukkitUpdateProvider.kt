@@ -4,12 +4,11 @@ import com.google.gson.JsonParser
 import dev.racci.minix.api.updater.ChecksumType
 import dev.racci.minix.api.updater.UpdateResult
 import dev.racci.minix.api.updater.Version
-import io.ktor.client.call.body
+import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.Companion.getBuffered
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.utils.io.errors.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.BufferedReader
 import java.net.MalformedURLException
 import java.net.URL
 
@@ -45,7 +44,7 @@ class BukkitUpdateProvider(
             }
         }
 
-        val jsonObj = response.body<BufferedReader>().use { JsonParser.parseReader(it).asJsonArray }
+        val jsonObj = response.getBuffered().use { JsonParser.parseReader(it).asJsonArray }
         if (jsonObj.size() == 0) {
             logger.warn {
                 "The updater couldn't find any files for the project with ID $projectID!" +

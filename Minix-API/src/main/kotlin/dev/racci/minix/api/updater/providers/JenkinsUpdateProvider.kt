@@ -4,11 +4,10 @@ import com.google.gson.JsonParser
 import dev.racci.minix.api.updater.ChecksumType
 import dev.racci.minix.api.updater.UpdateResult
 import dev.racci.minix.api.updater.Version
-import io.ktor.client.call.body
+import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.Companion.getBuffered
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.intellij.lang.annotations.Language
-import java.io.BufferedReader
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -50,7 +49,7 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
             }
         }
         try {
-            val jsonObj = response.body<BufferedReader>().use(JsonParser::parseReader).asJsonObject
+            val jsonObj = response.getBuffered().use(JsonParser::parseReader).asJsonObject
             val artifacts = jsonObj["artifacts"].asJsonArray
 
             var fileName = ""

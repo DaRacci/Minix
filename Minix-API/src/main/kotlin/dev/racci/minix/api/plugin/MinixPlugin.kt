@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
  * systems of Minix.
  */
 @Suppress("LeakingThis")
-open class MinixPlugin : JavaPlugin(), SusPlugin {
+abstract class MinixPlugin : JavaPlugin(), SusPlugin {
 
     override val bStatsId: Int? = null
     override val bindToKClass: KClass<out MinixPlugin>? = null

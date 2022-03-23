@@ -46,10 +46,7 @@ import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 import kotlin.time.Duration.Companion.minutes
 
-@MappedExtension(
-    "Updater Service",
-    [DataService::class],
-)
+@MappedExtension("Updater Service", [DataService::class])
 class UpdaterService(override val plugin: Minix) : Extension<Minix>() {
     private val updaterConfig by lazy { get<DataService>().get<UpdaterConfig>() }
     private val updateFolder by lazy { server.pluginsFolder.resolve(updaterConfig.updateFolder) }
@@ -92,14 +89,14 @@ class UpdaterService(override val plugin: Minix) : Extension<Minix>() {
             log.debug {
                 "Found ${enabledUpdaters.size} updaters" +
                     "\n\t\tUpdaters:" + enabledUpdaters.joinToString(separator = "\n\t\t\t") { updater ->
-                    "${updater.name} - ${updater.providers.joinToString(separator = ", ") { it.second.name }}"
+                    "${updater.name} - ${updater.providers.joinToString(separator = ", ") { it.name }}"
                 }
             }
         }
 
         taskAsync(repeatDelay = 15.minutes) {
             for (updater in enabledUpdaters) {
-                if (updater.lastRun == null || now() < (updater.lastRun!! + updater.interval)) continue
+                if (updater.lastRun == null || now() < (updater.lastRun!! + updaterConfig.interval)) continue
 
                 if (updater.updateMode == UpdateMode.DISABLED) {
                     enabledUpdaters -= updater

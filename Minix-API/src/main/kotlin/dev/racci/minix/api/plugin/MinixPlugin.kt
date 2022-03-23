@@ -1,15 +1,19 @@
 package dev.racci.minix.api.plugin
 
+import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.annotations.MinixDsl
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionStateEvent
 import dev.racci.minix.api.services.PluginService
+import dev.racci.minix.api.utils.safeCast
 import kotlinx.coroutines.flow.filterIsInstance
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.ApiStatus
 import org.koin.core.component.get
 import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * The superclass replacing [JavaPlugin],
@@ -18,9 +22,10 @@ import kotlin.reflect.KClass
  */
 @Suppress("LeakingThis")
 abstract class MinixPlugin : JavaPlugin(), SusPlugin {
+    private val annotation by lazy { this::class.findAnnotation<MappedPlugin>() }
 
-    override val bStatsId: Int? = null
-    override val bindToKClass: KClass<out MinixPlugin>? = null
+    override val bStatsId: Int? by lazy { annotation?.bStatsId.takeIf { it != -1 } }
+    override val bindToKClass: KClass<out MinixPlugin>? by lazy { annotation?.bindToKClass.takeIf { it?.isSubclassOf(MinixPlugin::class) == true }.safeCast() }
 
     val log: MinixLogger get() = get<PluginService>()[this].log
     val metrics: Metrics? get() = get<PluginService>()[this].metrics

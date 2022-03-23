@@ -4,6 +4,7 @@ import com.google.gson.JsonParser
 import dev.racci.minix.api.updater.ChecksumType
 import dev.racci.minix.api.updater.UpdateResult
 import dev.racci.minix.api.updater.Version
+import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.Companion.getBuffered
 import io.ktor.client.call.body
 import io.ktor.client.statement.discardRemaining
 import io.ktor.utils.io.errors.IOException
@@ -17,7 +18,7 @@ import java.net.URL
 /**
  * This update provider allows to check github for new releases.
  */
-class GitHubUpdateProvider(
+class GithubUpdateProvider(
     internal val projectOwner: String,
     internal val projectRepo: String,
     internal val userAgent: String = projectRepo,
@@ -50,7 +51,7 @@ class GitHubUpdateProvider(
         }
     }
 
-    override val name: String = "GitHub"
+    override val name: String = "Github"
 
     override suspend fun query(): UpdateResult = withContext(Dispatchers.IO) {
         val response = try {
@@ -70,11 +71,12 @@ class GitHubUpdateProvider(
 
         try {
             val result = UpdateFile(name = projectRepo)
-            val jsonObj = response.body<BufferedReader>().use { JsonParser.parseReader(it).asJsonObject }
+            val jsonObj = response.getBuffered().use { JsonParser.parseReader(it).asJsonObject }
             val assets = jsonObj["assets"].asJsonArray
             var foundDL = false
-            repeat(assets.size()) {
-                val asset = assets[it].asJsonObject
+            val i = assets.iterator()
+            while (!foundDL && i.hasNext()) {
+                val asset = i.next().asJsonObject
                 val name = asset["name"].asString
                 val url = asset["browser_download_url"].asString
                 when {
@@ -119,8 +121,8 @@ class GitHubUpdateProvider(
     @get:Throws(RequestTypeNotAvailableException::class, NotSuccessfullyQueriedException::class)
     override val latestChecksum: String
         get() {
-            if (lastResult == null || lastResult?.checksum.isNullOrEmpty()) throw NotSuccessfullyQueriedException()
-            return lastResult!!.checksum!!
+            if (lastResult == null) throw NotSuccessfullyQueriedException()
+            return lastResult!!.checksum.orEmpty()
         }
 
     override val providesMinecraftVersions get() = false // TODO: I think this is possible, but I don't know how to do it.

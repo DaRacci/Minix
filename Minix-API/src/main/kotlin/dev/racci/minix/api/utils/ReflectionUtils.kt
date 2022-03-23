@@ -4,6 +4,7 @@ package dev.racci.minix.api.utils
 
 import dev.racci.minix.api.utils.kotlin.catchAndReturn
 import java.lang.reflect.Constructor
+import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty1
@@ -63,12 +64,53 @@ fun <R> readInstanceProperty(
 fun <T> Any?.safeCast(): T? = this as? T
 
 /**
- * Makes a unsafe cast of a property to a different type.
+ * Makes a safe cast using reflection
+ *
+ * @param T The type to cast to.
+ * @param type The type to cast to.
+ * @return The casted property.
+ */
+fun <T> Any?.safeCast(type: Class<T>): T? = catchAndReturn<ClassCastException, T>({}) { type.cast(this) }
+
+/**
+ * Makes a safe cast from an inline type to a different type.
+ *
+ * @param T The type to cast to.
+ * @param type The type to cast to.
+ * @return The casted property.
+ */
+inline fun <reified T : Any> Any?.safeCast(type: KClass<T> = T::class): T? = this.safeCast(type.java)
+
+/**
+ * Makes an unsafe cast of a property to a different type.
  *
  * @param T The type to cast to.
  * @return The casted property.
+ * @throws ClassCastException If the property is not of the correct type.
  */
+@Throws(ClassCastException::class)
 fun <T> Any?.unsafeCast(): T = this as T
+
+/**
+ * Makes an unsafe cast of a property to a different type using reflection.
+ *
+ * @param T The type to cast to.
+ * @param type The type to cast to.
+ * @return The casted property.
+ * @throws ClassCastException If the property is not of the correct type.
+ */
+@Throws(ClassCastException::class)
+fun <T> Any?.unsafeCast(type: Class<T>): T = type.cast(this)
+
+/**
+ * Makes an unsafe cast from an inline type to a different type using reflection.
+ *
+ * @param T The type to cast to.
+ * @param type The type to cast to.
+ * @return The casted property.
+ * @throws ClassCastException If the property is not of the correct type.
+ */
+inline fun <reified T : Any> Any?.unsafeCast(type: KClass<T> = T::class): T = this.unsafeCast(type.java)
 
 /**
  * Makes a safe cast and invokes the function if successful.

@@ -1,7 +1,7 @@
 package dev.racci.minix.api.utils.kotlin
 
-import org.junit.jupiter.api.Test
 import strikt.api.expectThat
+import kotlin.test.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 

@@ -1,21 +1,29 @@
 package dev.racci.minix.api.updater.providers
 
 import dev.racci.minix.api.plugin.Minix
+import dev.racci.minix.api.serializables.Serializer.register
 import dev.racci.minix.api.updater.ChecksumType
 import dev.racci.minix.api.updater.ReleaseType
 import dev.racci.minix.api.updater.UpdateResult
 import dev.racci.minix.api.updater.Version
+import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.unsafeCast
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsChannel
+import io.ktor.utils.io.jvm.javaio.toInputStream
+import kotlinx.collections.immutable.persistentMapOf
 import org.koin.core.component.KoinComponent
+import org.koin.ext.getFullName
 import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.serialize.SerializationException
 import org.spongepowered.configurate.serialize.TypeSerializer
 import org.spongepowered.configurate.serialize.TypeSerializerCollection
+import java.io.BufferedReader
 import java.io.IOException
 import java.lang.reflect.Type
 import java.net.URL
+import kotlin.reflect.KClass
 
 abstract class UpdateProvider : KoinComponent {
 
@@ -209,15 +217,21 @@ abstract class UpdateProvider : KoinComponent {
         }
     }
 
-    object UpdateProviderSerializer : TypeSerializer<UpdateProvider> {
+    class UpdateProviderSerializer : TypeSerializer<UpdateProvider> {
+        private val logger get() = getKoin().get<Minix>().log
+        private val regexKey by lazy { Regex("(?<provider>[A-Z][a-z]+)(UpdateProvider)") }
+        private val packagePath by lazy { UpdateProvider::class.getFullName().let { it.substring(0, it.lastIndexOf('.')) } }
 
         override fun deserialize(
             type: Type,
             node: ConfigurationNode,
         ): UpdateProvider = try {
-            deserializerMap[type.typeName]!!.invoke(node).unsafeCast()
+            val key = regexKey.find(node.toString())?.value ?: throw InvalidUpdateProviderException("No provider key found, regex should be ${regexKey.pattern}")
+            val map = node.childrenMap()[key]!!
+            deserializerMap[Class.forName("$packagePath.$key").kotlin]!!.invoke(map).unsafeCast()
         } catch (e: Exception) {
-            throw SerializationException(type, "Failed to deserialize update provider", e)
+            logger.error(e) { "Failed to deserialize update provider." }
+            NullUpdateProvider()
         }
 
         override fun serialize(
@@ -225,100 +239,94 @@ abstract class UpdateProvider : KoinComponent {
             obj: UpdateProvider?,
             node: ConfigurationNode,
         ) {
-            if (obj == null || obj is NullUpdateProvider) {
-                node.raw(null)
-                return
-            }
-            serializerMap[type.typeName]!!.invoke(node, obj)
+            if (obj == null || obj is NullUpdateProvider) return
+            val key = obj::class.simpleName!!
+            val innerNode = node.node(key)
+            serializerMap[obj::class]?.invoke(innerNode, obj.unsafeCast())
         }
 
-        val serializers: TypeSerializerCollection by lazy {
-            TypeSerializerCollection.builder()
-                .register(AlwaysUpdateProvider::class.java, this)
-                .register(BukkitUpdateProvider::class.java, this)
-                .register(GitHubUpdateProvider::class.java, this)
-                .register(JenkinsUpdateProvider::class.java, this)
-                .register(NullUpdateProvider::class.java, this)
-                .register(SpigotUpdateProvider::class.java, this)
-                .build()
-        }
+        companion object {
+            val serializers: TypeSerializerCollection = TypeSerializerCollection.builder().register(UpdateProviderSerializer()).build()
 
-        private val serializerMap = mutableMapOf<String, (ConfigurationNode, UpdateProvider) -> Unit>().apply {
-            this["AlwaysUpdateProvider"] = { node, obj ->
-                node.node("downloadUrl").set(obj.latestFileURL)
-                obj.latestFileName.takeUnless { it == "file.jar" }?.let { node.node("fileName").set(it) }
-                obj.latestReleaseType.takeUnless { it != ReleaseType.RELEASE }?.let { node.node("releaseType").set(it) }
-            }
-            this["BukkitUpdateProvider"] = { node, obj ->
-                obj as BukkitUpdateProvider
-                node.node("projectID").set(obj.projectID)
-                obj.apiKey?.let { node.node("apiKey").set(it) }
-            }
-            this["GitHubUpdateProvider"] = { node, obj ->
-                obj as GitHubUpdateProvider
-                node.node("projectOwner").set(obj.projectOwner)
-                node.node("projectRepo").set(obj.projectRepo)
-                obj.userAgent.takeUnless { it == obj.projectRepo }?.let { node.node("userAgent").set(it) }
-                obj.jarSearchRegex.takeUnless { it == ".*\\.jar$" }?.let { node.node("jarSearchRegex").set(it) }
-                obj.md5SearchRegex.takeUnless { it == ".*\\.md5$" }?.let { node.node("md5SearchRegex").set(it) }
-            }
-            this["JenkinsUpdateProvider"] = { node, obj ->
-                obj as JenkinsUpdateProvider
-                node.node("host").set(obj.host)
-                node.node("job").set(obj.job)
-                obj.token?.let { node.node("token").set(it) }
-                obj.artifactSearchRegex?.let { node.node("artifactSearchRegex").set(it) }
-            }
-            this["SpigotUpdateProvider"] = { node, obj ->
-                obj as SpigotUpdateProvider
-                node.node("projectID").set(obj.projectID)
-                obj.fileName.takeUnless { it == "${obj.projectID}.jar" }?.let { node.node("fileName").set(it) }
-            }
-        }
-        private val deserializerMap = mutableMapOf<String, (ConfigurationNode) -> UpdateProvider>().apply {
-            this["AlwaysUpdateProvider"] = { node ->
-                AlwaysUpdateProvider(
-                    node.nonVirtualNode("downloadURL")!!.string!!,
-                    node.nonVirtualNode("fileName")?.get("file.jar")!!,
-                    node.nonVirtualNode("releaseType")?.get(ReleaseType.RELEASE)!!
-                )
-            }
-            this["BukkitUpdateProvider"] = { node ->
-                BukkitUpdateProvider(node.nonVirtualNode("projectID")!!.int, node.nonVirtualNode("apiKey")?.string)
-            }
-            this["GithubUpdateProvider"] = { node ->
-                val projectRepo = node.nonVirtualNode("projectRepo")!!.string!!
-                GitHubUpdateProvider(
-                    node.nonVirtualNode("projectOwner")!!.string!!,
-                    projectRepo,
-                    node.nonVirtualNode("userAgent")?.string ?: projectRepo,
-                    node.nonVirtualNode("jarSearchRegex")?.string ?: ".*\\.jar$",
-                    node.nonVirtualNode("md5SearchRegex")?.string ?: ".*\\.md5$",
-                )
-            }
-            this["JenkinsUpdateProvider"] = { node ->
-                JenkinsUpdateProvider(
-                    node.nonVirtualNode("host")!!.string!!,
-                    node.nonVirtualNode("job")!!.string!!,
-                    node.nonVirtualNode("token")?.string,
-                    node.nonVirtualNode("artifactSearchRegex")?.string
-                )
-            }
-            this["NullUpdateProvider"] = { NullUpdateProvider() }
-            this["SpigotUpdateProvider"] = { node ->
-                val projectID = node.nonVirtualNode("projectID")!!.int
-                SpigotUpdateProvider(projectID, node.nonVirtualNode("fileName")?.string ?: "$projectID.jar")
-            }
-        }
+            suspend fun HttpResponse.getBuffered(): BufferedReader = bodyAsChannel().toInputStream().bufferedReader()
 
-        @Throws(SerializationException::class)
-        fun ConfigurationNode.nonVirtualNode(
-            vararg path: Any,
-        ): ConfigurationNode? {
-            if (!this.hasChild(*path)) {
-                throw SerializationException("Required field " + path.joinToString("") + " was not present in node")
-            }
-            return this.node(*path)
+            private val serializerMap = persistentMapOf<KClass<out UpdateProvider>, (ConfigurationNode, UpdateProvider) -> Unit>(
+                AlwaysUpdateProvider::class to { node, obj ->
+                    node.node("downloadUrl").set(obj.latestFileURL)
+                    obj.latestFileName.takeUnless { it == "file.jar" }?.let { node.node("fileName").set(it) }
+                    obj.latestReleaseType.takeUnless { it != ReleaseType.RELEASE }?.let { node.node("releaseType").set(it) }
+                },
+                BukkitUpdateProvider::class to { node, obj ->
+                    obj as BukkitUpdateProvider
+                    node.node("projectID").set(obj.projectID)
+                    obj.apiKey?.let { node.node("apiKey").set(it) }
+                },
+                GithubUpdateProvider::class to { node, obj ->
+                    obj as GithubUpdateProvider
+                    node.node("projectOwner").set(obj.projectOwner)
+                    node.node("projectRepo").set(obj.projectRepo)
+                    obj.userAgent.takeUnless { it == obj.projectRepo }?.let { node.node("userAgent").set(it) }
+                    obj.jarSearchRegex.takeUnless { it == ".*\\.jar$" }?.let { node.node("jarSearchRegex").set(it) }
+                    obj.md5SearchRegex.takeUnless { it == ".*\\.md5$" }?.let { node.node("md5SearchRegex").set(it) }
+                },
+                JenkinsUpdateProvider::class to { node, obj ->
+                    obj as JenkinsUpdateProvider
+                    node.node("host").set(obj.host)
+                    node.node("job").set(obj.job)
+                    obj.token?.let { node.node("token").set(it) }
+                    obj.artifactSearchRegex?.let { node.node("artifactSearchRegex").set(it) }
+                },
+                NullUpdateProvider::class to { node, _ -> node.raw(null) },
+                SpigotUpdateProvider::class to { node, obj ->
+                    obj as SpigotUpdateProvider
+                    node.node("projectID").set(obj.projectID)
+                    obj.fileName.takeUnless { it == "${obj.projectID}.jar" }?.let { node.node("fileName").set(it) }
+                }
+            )
+            private val deserializerMap = persistentMapOf<KClass<out UpdateProvider>, (ConfigurationNode) -> UpdateProvider>(
+                AlwaysUpdateProvider::class to { node ->
+                    AlwaysUpdateProvider(
+                        node.nonVirtualNode("downloadURL").getOrThrow().get<String>()!!,
+                        node.nonVirtualNode("fileName").getOrNull()?.get() ?: "file.jar",
+                        node.nonVirtualNode("releaseType").getOrNull()?.get() ?: ReleaseType.RELEASE
+                    )
+                },
+                BukkitUpdateProvider::class to { node ->
+                    BukkitUpdateProvider(
+                        node.nonVirtualNode("projectID").getOrThrow().int,
+                        node.nonVirtualNode("apiKey").getOrNull()?.get()
+                    )
+                },
+                GithubUpdateProvider::class to { node ->
+                    val projectRepo = node.nonVirtualNode("projectRepo").getOrThrow().get<String>()!!
+                    GithubUpdateProvider(
+                        node.nonVirtualNode("projectOwner").getOrThrow().get<String>()!!,
+                        projectRepo,
+                        node.nonVirtualNode("userAgent").getOrNull()?.get() ?: projectRepo,
+                        node.nonVirtualNode("jarSearchRegex").getOrNull()?.get() ?: ".*\\.jar$",
+                        node.nonVirtualNode("md5SearchRegex").getOrNull()?.get() ?: ".*\\.md5$",
+                    )
+                },
+                JenkinsUpdateProvider::class to { node ->
+                    JenkinsUpdateProvider(
+                        node.nonVirtualNode("host").getOrThrow().get()!!,
+                        node.nonVirtualNode("job").getOrThrow().get()!!,
+                        node.nonVirtualNode("token").getOrNull()?.get(),
+                        node.nonVirtualNode("artifactSearchRegex").getOrNull()?.get()
+                    )
+                },
+                NullUpdateProvider::class to { NullUpdateProvider() },
+                SpigotUpdateProvider::class to { node ->
+                    val projectID = node.nonVirtualNode("projectID").getOrThrow().get<Int>()!!
+                    SpigotUpdateProvider(projectID, node.nonVirtualNode("fileName").getOrNull()?.string ?: "$projectID.jar")
+                }
+            )
+
+            fun ConfigurationNode.nonVirtualNode(
+                vararg path: Any,
+            ): Result<ConfigurationNode> = if (!this.hasChild(*path)) {
+                Result.failure(SerializationException("Field " + path.joinToString("") + " was not present in node"))
+            } else Result.success(this.node(*path))
         }
     }
 }

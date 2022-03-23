@@ -224,6 +224,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
                 sortedExtensions.add(next)
             } else log.debug { "Extension ${next.name} is already in sorted, skipping." }
         }
+        pluginCache[this].loadedExtensions.clear()
         return sortedExtensions
     }
 
@@ -311,22 +312,26 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
 
     private suspend inline fun <reified P : MinixPlugin> P.shutdownInOrder() {
         val cache = pluginCache[this]
-        for (ex in cache.loadedExtensions.asReversed()) {
-            ex.setState(ExtensionState.UNLOADING)
-            try {
-                withTimeout(5.seconds) {
-                    ex.invokeIfOverrides(Extension<*>::handleUnload.name) { ex.handleUnload() }
+        cache.loadedExtensions.reverse()
+        cache.loadedExtensions.removeAll { ex ->
+            log.debug { "Unloading extension ${ex.name}" }
+            runBlocking {
+                ex.setState(ExtensionState.UNLOADING)
+                try {
+                    withTimeout(5.seconds) {
+                        ex.invokeIfOverrides(Extension<*>::handleUnload.name) { ex.handleUnload() }
+                    }
+                } catch (e: Throwable) {
+                    if (e is TimeoutCancellationException) {
+                        log.warn { "Extension ${ex.name} took too longer than 5 seconds to unload!" }
+                    } else log.error(e) { "Extension ${ex.name} through an error while unloading!" }
+                    ex.setState(ExtensionState.FAILED_UNLOADING)
                 }
-            } catch (e: Throwable) {
-                if (e is TimeoutCancellationException) {
-                    log.warn { "Extension ${ex.name} took too longer than 5 seconds to unload!" }
-                } else log.error(e) { "Extension ${ex.name} through an error while unloading!" }
-                ex.setState(ExtensionState.FAILED_UNLOADING)
+                unloadKoinModules(module { single { ex } bind (ex.bindToKClass ?: ex::class) }) // TODO: This is a bit of a hack, but it works for now.
+                ex.setState(ExtensionState.UNLOADED)
+                cache.unloadedExtensions += ex
             }
-            unloadKoinModules(module { single { ex } bind (ex.bindToKClass ?: ex::class) }) // TODO: This is a bit of a hack, but it works for now.
-            ex.setState(ExtensionState.UNLOADED)
-            cache.loadedExtensions -= ex
-            cache.unloadedExtensions += ex
+            true
         }
     }
 }

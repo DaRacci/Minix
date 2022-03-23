@@ -23,7 +23,12 @@ repositories {
 dependencies {
     implementation(project("Minix-Core"))
     implementation(project("Minix-API"))
-    implementation("org.bstats:bstats-bukkit:3.0.0")
+    implementation(libs.minecraft.bstats)
+    implementation(libs.logging.sentry)
+}
+
+kotlin {
+    kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
 }
 
 bukkit {
@@ -48,7 +53,6 @@ bukkit {
         libs.exposed.dateTime.get().toString(),
         libs.hikariCP.get().toString(),
         libs.koin.core.get().toString(),
-        libs.logging.sentry.get().toString(),
         libs.mordant.get().toString(),
         libs.caffeine.get().toString(),
         libs.kotlinx.serialization.kaml.get().toString(),
@@ -138,6 +142,7 @@ tasks {
     shadowJar {
         val location = "dev.racci.minix.libs"
         relocate("org.bstats", "$location.bstats")
+        relocate("io.sentry", "$location.sentry")
     }
 
     ktlintFormat {

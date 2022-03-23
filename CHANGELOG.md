@@ -2,6 +2,87 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.4.0](https://github.com/DaRacci/Minix/compare/v2.3.1..v2.4.0) - 2022-03-23
+#### Bug Fixes
+- **(deps)** Fix sentry version mismatch due to pufferfish version being outdated - ([4bceb68](https://github.com/DaRacci/Minix/commit/4bceb68a9e5823db8a2cb5201f23857cd5f028f6)) - [@DaRacci](https://github.com/DaRacci)
+- **(gradle)** Fix dependency sharing between modules - ([b805dc0](https://github.com/DaRacci/Minix/commit/b805dc0c1e149cddb2c814899bea8e1c12821361)) - [@DaRacci](https://github.com/DaRacci)
+- Fix extensions duplicating and outofbounds exceptions - ([470495c](https://github.com/DaRacci/Minix/commit/470495cab436f1aed890855f24acb6e324ac9956)) - [@DaRacci](https://github.com/DaRacci)
+- Not sure why i called simplename with an elvis twice - ([7ac8d42](https://github.com/DaRacci/Minix/commit/7ac8d42497ad75cbf8cc544acc48563870066d5c)) - [@DaRacci](https://github.com/DaRacci)
+- Fix buffered reader - ([9e85d54](https://github.com/DaRacci/Minix/commit/9e85d549e9774932d1e1f68b5d3ad80271652afc)) - [@DaRacci](https://github.com/DaRacci)
+- Configurate doesn't support lazy delegates :( - ([e112416](https://github.com/DaRacci/Minix/commit/e112416e2374f1d50c4b6946a49fe27625140790)) - [@DaRacci](https://github.com/DaRacci)
+- Fix spacing in the uuid key - ([7f048b5](https://github.com/DaRacci/Minix/commit/7f048b5588b437f4d47164e89df0b8fe931e0bd9)) - [@DaRacci](https://github.com/DaRacci)
+- Catch all exceptions not only Cancellations - ([102c22b](https://github.com/DaRacci/Minix/commit/102c22b5a2f64e29f064a2514cb5552df00bf108)) - [@DaRacci](https://github.com/DaRacci)
+- Fix incorrect import - ([c82472f](https://github.com/DaRacci/Minix/commit/c82472f084c739d31b29b8f7bd7c9e6bb8f3268a)) - [@DaRacci](https://github.com/DaRacci)
+- Remove useless and error causing field - ([6b976d1](https://github.com/DaRacci/Minix/commit/6b976d17af1ec7d37a5f8c9dd1cb989cfe647d70)) - [@DaRacci](https://github.com/DaRacci)
+- Fix fake coroutineService in PluginData.kt - ([32c828f](https://github.com/DaRacci/Minix/commit/32c828faafbbceb02ddb131d422f36c95d416bce)) - [@DaRacci](https://github.com/DaRacci)
+- Fix serialization for data and add some methods - ([20e046d](https://github.com/DaRacci/Minix/commit/20e046d636decc55438c1a83be8db749c2ef3c40)) - [@DaRacci](https://github.com/DaRacci)
+- Fix serializers i guess they need their own object lol - ([9be02c6](https://github.com/DaRacci/Minix/commit/9be02c6ac2e260e86b856abf8919b1699fc9718e)) - [@DaRacci](https://github.com/DaRacci)
+- Fix indents and new line on error logging - ([988a9fb](https://github.com/DaRacci/Minix/commit/988a9fb5f357fa24212b061ec501cc5bf54b6931)) - [@DaRacci](https://github.com/DaRacci)
+- Fix double stacktrace printing - ([a196d5c](https://github.com/DaRacci/Minix/commit/a196d5c3782be482bb44975d2a8371e1e2b384a4)) - [@DaRacci](https://github.com/DaRacci)
+- Forget to flip the bool - ([f07c95e](https://github.com/DaRacci/Minix/commit/f07c95e3a2d67940dd93a0e00560c9d59a3a3843)) - [@DaRacci](https://github.com/DaRacci)
+- set logger level in handleAfterLoad so the DataService can be loaded - ([32d9705](https://github.com/DaRacci/Minix/commit/32d9705bf4812bcdce74915f9e6d404897aa50e2)) - [@DaRacci](https://github.com/DaRacci)
+- Fix MinixImpl not binding to Minix - ([e6ee4ba](https://github.com/DaRacci/Minix/commit/e6ee4bae26cbee22c5204e807de32e756bf4b775)) - [@DaRacci](https://github.com/DaRacci)
+- Fix initial bind services for koin - ([887cd71](https://github.com/DaRacci/Minix/commit/887cd716172522f426c219263ea3bb9ff0a72508)) - [@DaRacci](https://github.com/DaRacci)
+- Fix plugins folder not existing - ([7e33311](https://github.com/DaRacci/Minix/commit/7e33311ab73492e40f3134f5684596074f665e40)) - [@DaRacci](https://github.com/DaRacci)
+- Fix dependencies due to annotation change - ([72c860c](https://github.com/DaRacci/Minix/commit/72c860c5b4399730d8d153328452fe6e11511598)) - [@DaRacci](https://github.com/DaRacci)
+- Fix dependencies for MappedExtension - ([7bb80a3](https://github.com/DaRacci/Minix/commit/7bb80a33c8a40839f61ff25a0eac4c6e6b1711ca)) - [@DaRacci](https://github.com/DaRacci)
+- Fix sentry data tagging - ([d91d706](https://github.com/DaRacci/Minix/commit/d91d7064e029b9c33d743b77d0b8e4143c64c122)) - [@DaRacci](https://github.com/DaRacci)
+- Fix ListenerService import - ([c8b8748](https://github.com/DaRacci/Minix/commit/c8b8748dbfb4aa5379c2d4b55b23b636de9f56e3)) - [@DaRacci](https://github.com/DaRacci)
+- Fix PlayerServiceImpl import - ([5f6692e](https://github.com/DaRacci/Minix/commit/5f6692e4bd2d24fcc8ac75276cc324d11a922b03)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- Add MappedPlugin annotation for defining plugins - ([116a874](https://github.com/DaRacci/Minix/commit/116a87486915278271fedc25ae64635353d851ad)) - [@DaRacci](https://github.com/DaRacci)
+- Add inline safecast and unsafecast methods better casting - ([8c1e42f](https://github.com/DaRacci/Minix/commit/8c1e42ff1add3b4742376a65c7abe9c3ad167fca)) - [@DaRacci](https://github.com/DaRacci)
+- Add PairSerializer.kt for Configurate - ([904a545](https://github.com/DaRacci/Minix/commit/904a545b19b63bb0de2eed642ec18d181c996e31)) - [@DaRacci](https://github.com/DaRacci)
+- Add support for ignored, completable future, and completable deferred sync and async blocks in Extensions - ([44517a4](https://github.com/DaRacci/Minix/commit/44517a432913215443eaca3b0c524847eb3286b0)) - [@DaRacci](https://github.com/DaRacci)
+- Ability to grab the base minix plugins logger with koin by fetching the MinixLogger class - ([e398460](https://github.com/DaRacci/Minix/commit/e3984607608b76bce8d6ccf01bb7bee82459181e)) - [@DaRacci](https://github.com/DaRacci)
+- Finish adding serializers for Configurate - ([b20f0ea](https://github.com/DaRacci/Minix/commit/b20f0eaf653a75c5827ccedf490a2e15eb2c269a)) - [@DaRacci](https://github.com/DaRacci)
+- Add Configurate TypeSerializer for some Serializers, will finish up another day - ([8b1dd10](https://github.com/DaRacci/Minix/commit/8b1dd1018002ee4f2da4d013b491eec27a19f968)) - [@DaRacci](https://github.com/DaRacci)
+- Add handleAfterEnable and move handleAfterLoad to actually being after load on enable - ([1142ea7](https://github.com/DaRacci/Minix/commit/1142ea742d0388fb1e19416b55265ccb0efecea7)) - [@DaRacci](https://github.com/DaRacci)
+- Add Version class for version comparisons in the auto updater - ([c1e5d1b](https://github.com/DaRacci/Minix/commit/c1e5d1bc4627dc2a8c76d732ee893649d599edc9)) - [@DaRacci](https://github.com/DaRacci)
+- Add providers for auto-updater, All are untested but should work - ([d50cb11](https://github.com/DaRacci/Minix/commit/d50cb115a2df6bd788ba2f7afd7581240abc290d)) - [@DaRacci](https://github.com/DaRacci)
+- Add UpdaterService, still WIP and completely untested for now - ([167c736](https://github.com/DaRacci/Minix/commit/167c736766c4f89a0622642ac4ffd3aa77e19ab9)) - [@DaRacci](https://github.com/DaRacci)
+- Add data utils and new way to inject minix for util files - ([6536ee4](https://github.com/DaRacci/Minix/commit/6536ee486605aeeab629f1d5066249655f707d34)) - [@DaRacci](https://github.com/DaRacci)
+- Add a way of registering a listener for multiple events with the invocation block - ([6b2b669](https://github.com/DaRacci/Minix/commit/6b2b669f90d15334a858c72721653e8b05abe32f)) - [@DaRacci](https://github.com/DaRacci)
+- MCVersion util - ([c030ae9](https://github.com/DaRacci/Minix/commit/c030ae9ae5ad42fadf5b188290f82b2080fbf367)) - [@DaRacci](https://github.com/DaRacci)
+- booleanCatch util - ([c15223c](https://github.com/DaRacci/Minix/commit/c15223c3230fde20160f88907f80da5ddcdc2f77)) - [@DaRacci](https://github.com/DaRacci)
+- Refactor and now support onLoad for extensions when they are declared in a plugins handleLoad function - ([193f792](https://github.com/DaRacci/Minix/commit/193f792ef1b7fc9da74f6ad7cdf8abc2698abc47)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(deps)** Update conventions version - ([13fc1f0](https://github.com/DaRacci/Minix/commit/13fc1f0442e0540c512c673bf32db46ca292b19d)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** Update Minix Conventions - ([43181d8](https://github.com/DaRacci/Minix/commit/43181d8398ed4960954ae5f66e5ea836de98d7a2)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** Add new build deps - ([8a853e7](https://github.com/DaRacci/Minix/commit/8a853e7e7cf98b5f8b37f48ea0b39ac5d7050ff1)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** Update Minix-Conventions - ([f5c8854](https://github.com/DaRacci/Minix/commit/f5c8854ff2f2d9d65de52b284ceb883741d04ab2)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** Update minix conventions version - ([eb93302](https://github.com/DaRacci/Minix/commit/eb933025b97c14f573143ec5a1966d0edac3dd17)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** update dependency gradle to v7.4.1 - ([5e2541f](https://github.com/DaRacci/Minix/commit/5e2541fcd23ee1eb72bef2a37892a8524f39d405)) - Renovate Bot
+- **(deps)** update actions/upload-artifact action to v3 - ([c82996c](https://github.com/DaRacci/Minix/commit/c82996c6d9dc84932dccd7ab5441335fdd9873f5)) - Renovate Bot
+- **(deps)** update actions/checkout action to v3 - ([2ae373f](https://github.com/DaRacci/Minix/commit/2ae373fe75ede171b63fb5d085aaf4c62b536ea1)) - Renovate Bot
+- **(deps)** update actions/setup-java action to v3 - ([3cb58b5](https://github.com/DaRacci/Minix/commit/3cb58b5fe443c6ea6c8d7e7429f4a9d25a560135)) - Renovate Bot
+- **(version)** v2.3.1 - ([7ae6abc](https://github.com/DaRacci/Minix/commit/7ae6abcf9e16172d58710f874dacd06477c31b1f)) - [@DaRacci](https://github.com/DaRacci)
+- Update README.md - ([c9532f2](https://github.com/DaRacci/Minix/commit/c9532f29a7f64a4672a0b66d6b0030f9d60c654c)) - [@DaRacci](https://github.com/DaRacci)
+- Add base CommandService class to finish up at some point - ([97c698a](https://github.com/DaRacci/Minix/commit/97c698a3f4e1ecde0b0a0bc4d638b4b617e47a2c)) - [@DaRacci](https://github.com/DaRacci)
+- Add database for tracking plugins which need updating on start - ([3e557bd](https://github.com/DaRacci/Minix/commit/3e557bda5296b5ab2713aca8cc7165348307b0e2)) - [@DaRacci](https://github.com/DaRacci)
+- Add more result types - ([2e84086](https://github.com/DaRacci/Minix/commit/2e840861a1a35258caa438c47f24b2fdd19bdc27)) - [@DaRacci](https://github.com/DaRacci)
+- Add Config and UpdaterConfig files - ([b7db5bc](https://github.com/DaRacci/Minix/commit/b7db5bcee2182bd5c47f83548cea401f578bc544)) - [@DaRacci](https://github.com/DaRacci)
+- Begin auto updater - ([68362e1](https://github.com/DaRacci/Minix/commit/68362e16694d3a575e28bf7d7c5ce3b8df7771ad)) - [@DaRacci](https://github.com/DaRacci)
+- Prepare for automagic data files - ([20c96b0](https://github.com/DaRacci/Minix/commit/20c96b0b8d1d05a278d5030bdfac4552b3e0b0a7)) - [@DaRacci](https://github.com/DaRacci)
+- Delete CommandServices.kt as it is unused and i don't currently plan on expanding on it - ([8c0b39f](https://github.com/DaRacci/Minix/commit/8c0b39f891fd7a1bf028a03d0d1a107ec38a40be)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Better dependency fail handling - ([be7ba91](https://github.com/DaRacci/Minix/commit/be7ba91f70207c9269a49fac1a9450c482928a11)) - [@DaRacci](https://github.com/DaRacci)
+- Did stuff i guess - ([85984ca](https://github.com/DaRacci/Minix/commit/85984ca7ca5628224b40151044cd7675c5363654)) - [@DaRacci](https://github.com/DaRacci)
+- Final serializers and stuffs for update providers - ([173a955](https://github.com/DaRacci/Minix/commit/173a9553537eab3311fd69166eda8e6e3ac5dba3)) - [@DaRacci](https://github.com/DaRacci)
+- Rename to match regex rules, and fix checksum errors since not all repos will support a checksum - ([7a35e68](https://github.com/DaRacci/Minix/commit/7a35e6821b33358daf4ab08965a8c47f1455c6c5)) - [@DaRacci](https://github.com/DaRacci)
+- Fix and complete DataServiceImpl.kt - ([8678676](https://github.com/DaRacci/Minix/commit/867867684f6b03a05ae5c9e3b074fa998d66f343)) - [@DaRacci](https://github.com/DaRacci)
+- Add finally block to UnsafeUtil.kt - ([5098e0f](https://github.com/DaRacci/Minix/commit/5098e0f13633b85c97fbf9d66da9e37e3ab7acb4)) - [@DaRacci](https://github.com/DaRacci)
+- Make MinixPlugin.kt an abstract class since it should never be instanced - ([25b35dd](https://github.com/DaRacci/Minix/commit/25b35dd266792de7c654c66b99d1d5bdf31c3db8)) - [@DaRacci](https://github.com/DaRacci)
+- Remove debugging point in data class - ([3cbfa89](https://github.com/DaRacci/Minix/commit/3cbfa89fc0cef5bdaea604d98fc4d7d66deb4462)) - [@DaRacci](https://github.com/DaRacci)
+- Refactor all Extensions to use MappedExtension Annotation - ([6ae8f23](https://github.com/DaRacci/Minix/commit/6ae8f23bd61af5af46979ad9f877f30928d13e60)) - [@DaRacci](https://github.com/DaRacci)
+- Fix up some stuff and cleanup the main class - ([94eb5fc](https://github.com/DaRacci/Minix/commit/94eb5fc87d25993aa27bb080d82e96fa2c19909a)) - [@DaRacci](https://github.com/DaRacci)
+- Merge inline and operator - ([d90cab1](https://github.com/DaRacci/Minix/commit/d90cab184f124f2d026a606fbde8397f7320f23e)) - [@DaRacci](https://github.com/DaRacci)
+- get KoinComponent's get instead of getKoin() - ([0337bce](https://github.com/DaRacci/Minix/commit/0337bce0056da2ed2bac2b64e81bbdfb261d915e)) - [@DaRacci](https://github.com/DaRacci)
+- Only allows MappedConfig annotation on classes - ([def0b15](https://github.com/DaRacci/Minix/commit/def0b151b6744555021db96e51793a2c72e22619)) - [@DaRacci](https://github.com/DaRacci)
+- Expose playerdata to the public api - ([f2890b2](https://github.com/DaRacci/Minix/commit/f2890b2bd94269a2235e67262b1bb09118a9a3af)) - [@DaRacci](https://github.com/DaRacci)
+- Cleaner exception printing and using String builder instead of just making new string after string with += - ([162afa2](https://github.com/DaRacci/Minix/commit/162afa28f18bbb6719509f1e58ab228feeeafd54)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.3.1](https://github.com/DaRacci/Minix/compare/v2.3.0..v2.3.1) - 2022-03-09
 #### Bug Fixes
 - Update NMS to proper version - ([a1a54b3](https://github.com/DaRacci/Minix/commit/a1a54b314c392d1175274a8a74da3d7eebf533e0)) - [@DaRacci](https://github.com/DaRacci)

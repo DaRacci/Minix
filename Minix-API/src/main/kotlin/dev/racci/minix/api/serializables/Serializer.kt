@@ -8,20 +8,26 @@ object Serializer {
 
     val serializers: TypeSerializerCollection by lazy {
         TypeSerializerCollection.builder()
-            .register(AttributeModifierSerializer.Configurate)
-            .register(DurationSerializer.Configurate)
-            .register(EnchantSerializer.Configurate)
-            .register(LocationSerializer.Configurate)
-            .register(NamespacedKeySerializer.Configurate)
-            .register(PatternSerializer.Configurate)
-            .register(PotionEffectSerializer.Configurate)
-            .register(IntRangeSerializer.Configurate)
-            .register(LongRangeSerializer.Configurate)
-            .register(CharRangeSerializer.Configurate)
-            .register(DoubleRangeSerializer.Configurate)
-            .register(FloatRangeSerializer.Configurate)
-            .register(Data.Serializer)
+            .registerExact(AttributeModifierSerializer.Configurate)
+            .registerExact(DurationSerializer.Configurate)
+            .registerExact(EnchantSerializer.Configurate)
+            .registerExact(LocationSerializer.Configurate)
+            .registerExact(NamespacedKeySerializer.Configurate)
+            .registerExact(PatternSerializer.Configurate)
+            .registerExact(PotionEffectSerializer.Configurate)
+            .registerExact(IntRangeSerializer.Configurate)
+            .registerExact(LongRangeSerializer.Configurate)
+            .registerExact(CharRangeSerializer.Configurate)
+            .registerExact(DoubleRangeSerializer.Configurate)
+            .registerExact(FloatRangeSerializer.Configurate)
+            .registerExact(Data.Serializer)
+            .registerExact(LoggingLevelSerializer)
+            .register(PairSerializer)
             .build()
+    }
+
+    inline fun <reified T> TypeSerializerCollection.Builder.registerExact(serializer: TypeSerializer<T>): TypeSerializerCollection.Builder {
+        return this.registerExact(T::class.java, serializer)
     }
 
     inline fun <reified T> TypeSerializerCollection.Builder.register(serializer: TypeSerializer<T>): TypeSerializerCollection.Builder {

@@ -23,7 +23,7 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin
     private val annotation by lazy { this::class.findAnnotation<MappedExtension>() }
     private val pluginService by inject<PluginService>()
 
-    open val name: String get() = annotation?.name ?: this::class.simpleName ?: this::class.simpleName ?: throw RuntimeException("Extension name is not defined")
+    open val name: String get() = annotation?.name ?: this::class.simpleName ?: throw RuntimeException("Extension name is not defined")
 
     override val value: QualifierValue by lazy { name }
 

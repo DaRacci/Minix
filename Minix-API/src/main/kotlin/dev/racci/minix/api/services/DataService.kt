@@ -8,6 +8,7 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.MissingAnnotationException
 import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
+import org.spongepowered.configurate.CommentedConfigurationNode
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import java.io.File
@@ -28,11 +29,13 @@ abstract class DataService : Extension<Minix>() {
     /**
      * Holds and loads the configurations for Classes annotated with [MappedConfig].
      */
-    abstract val configurations: LoadingCache<KClass<*>, Any>
+    abstract val configurations: LoadingCache<KClass<*>, Pair<Any, CommentedConfigurationNode>>
 
-    inline operator fun <reified T : Any> get(clazz: KClass<T> = T::class): T = configurations[clazz].unsafeCast()
+    inline fun <reified T> get(): T = configurations[T::class].first.unsafeCast()
 
-    inline fun <reified T : Any> getOrNull(): T? = configurations[T::class].safeCast()
+    inline fun <reified T : Any> getOrNull(): T? = configurations[T::class].first.safeCast()
 
-    abstract suspend fun getConfigurateLoader(file: File): HoconConfigurationLoader
+    inline fun <reified T : Any> inject(): Lazy<T> = lazy() { get() }
+
+    abstract suspend fun <T : Any> getConfigurateLoader(clazz: KClass<T>, file: File): HoconConfigurationLoader
 }

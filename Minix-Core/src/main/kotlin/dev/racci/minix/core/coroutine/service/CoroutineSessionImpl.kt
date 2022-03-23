@@ -49,14 +49,16 @@ internal class CoroutineSessionImpl(private val plugin: MinixPlugin) : Coroutine
         coroutineStart: CoroutineStart,
         f: suspend CoroutineScope.() -> Unit,
     ): Job = scope.launch(dispatcher, coroutineStart) {
-        try {
-            // The user may or may not launch multiple sub suspension operations. If
+        try { // The user may or may not launch multiple sub suspension operations. If
             // one of those fails, only this scope should fail instead of the plugin scope.
             coroutineScope {
                 f.invoke(this)
             }
-        } catch (e: CancellationException) {
-            plugin.log.info { "Coroutine has been cancelled." }
+        } catch (e: Throwable) {
+            when (e) {
+                is CancellationException -> plugin.log.info { "Coroutine cancelled: ${e.message}" }
+                else -> plugin.log.error(e) { "Unhandled Exception from coroutine." }
+            }
         }
     }
 }

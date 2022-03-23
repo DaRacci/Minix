@@ -5,6 +5,7 @@ import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.utils.getKoin
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
+import org.spongepowered.configurate.objectmapping.meta.Setting
 import java.util.UUID
 import java.util.logging.Level
 
@@ -12,6 +13,7 @@ import java.util.logging.Level
 @MappedConfig(Minix::class, "config.conf")
 class Config {
 
+    @Setting("server-uuid")
     @Comment("This server unique uuid (Please don't change this)")
     var serverUUID: UUID = UUID.randomUUID()
 

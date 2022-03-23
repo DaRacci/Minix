@@ -7,12 +7,11 @@ import com.google.gson.JsonParser
 import dev.racci.minix.api.updater.ChecksumType
 import dev.racci.minix.api.updater.UpdateResult
 import dev.racci.minix.api.updater.Version
-import io.ktor.client.call.body
+import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.Companion.getBuffered
 import io.ktor.client.statement.discardRemaining
 import io.ktor.utils.io.errors.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.BufferedReader
 import java.net.URL
 
 /**
@@ -64,7 +63,7 @@ class SpigotUpdateProvider(
             logger.warn(e) { "Failed to connect to the spiget API!" }
             return@withContext UpdateResult.FAILED_CONNECTION
         }
-        val jsonObj: JsonObject = response.body<BufferedReader>().use { JsonParser.parseReader(it).asJsonObject }
+        val jsonObj: JsonObject = response.getBuffered().use { JsonParser.parseReader(it).asJsonObject }
 
         result.name = jsonObj["name"].asString
         downloadable = !jsonObj["external"].asBoolean.also { bool ->
@@ -80,7 +79,7 @@ class SpigotUpdateProvider(
 
         response.discardRemaining()
 
-        val latestReader = latestResponse.body<BufferedReader>()
+        val latestReader = latestResponse.getBuffered()
         val latestJsonObj = JsonParser.parseReader(latestReader).asJsonObject
 
         result.version = Version(latestJsonObj["name"].asString)

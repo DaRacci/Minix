@@ -56,8 +56,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
         CoroutineSessionImpl(plugin)
     }
 
-    @Suppress("UNCHECKED_CAST") // This should be safe i think
-    override operator fun <P : MinixPlugin> get(plugin: P): PluginData<P> = pluginCache[plugin] as PluginData<P>
+    override operator fun <P : MinixPlugin> get(plugin: P): PluginData<P> = pluginCache[plugin].unsafeCast()
 
     override fun loadPlugin(plugin: MinixPlugin) {
         runBlocking {
@@ -123,21 +122,23 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
                 plugin.handleDisable()
             }
 
+            minix.log.debug { "Disabling the coroutine session for ${plugin.name}" }
+            coroutineService.disable(plugin)
             loadedPlugins -= plugin::class
         }
     }
 
     private fun MinixPlugin.loadReflection() {
-        val reflections = Reflections(this::class.getFullName().split(".")[1], Scanners.TypesAnnotated)
+        val reflections = Reflections(this::class.getFullName().split(".")[1], Scanners.values())
         reflections.getTypesAnnotatedWith(MappedConfig::class.java)
             .filter {
                 if (it.classLoader != this::class.java.classLoader) {
-                    minix.log.debug { "Skipping ${it.name} because it's not loaded by ${this.name}." }
+                    log.debug { "Skipping ${it.name} because it's not loaded by ${this.name}." }
                     false
                 } else true
             }
             .forEach {
-                minix.log.debug { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
+                log.debug { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
                 dev.racci.minix.api.utils.getKoin().get<DataService>().configurations[it.kotlin] // Call the cache so we load can have it loaded.
             }
         reflections.getTypesAnnotatedWith(MappedExtension::class.java)
@@ -253,29 +254,44 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
     private suspend fun MinixPlugin.startInOrder() {
         val cache = pluginCache[this]
         val sorted = getSortedExtensions()
-        sorted.forEach { ex ->
-            val module = module { single { ex } bind (ex.bindToKClass ?: ex::class) }
-            if (!ex.bound) { loadKoinModules(module) }
-            ex.setState(ExtensionState.ENABLING)
-            try {
-                withTimeout(5.seconds) {
-                    ex.invokeIfOverrides(Extension<*>::handleEnable.name) { ex.handleEnable() }
+        sorted
+            .filter {
+                var load = false
+                when (it.state) {
+                    ExtensionState.FAILED_DEPENDENCIES -> log.warn { "Extension ${it.name} had one or more dependencies fail to load, Skipping." }
+                    ExtensionState.FAILED_LOADING -> log.warn { "Extension ${it.name} had previously failed to load, Skipping." }
+                    ExtensionState.FAILED_UNLOADING -> log.warn { "Extension ${it.name} had previously failed to unload, Skipping." }
+                    ExtensionState.LOADING, ExtensionState.ENABLING, ExtensionState.UNLOADING -> log.warn { "Extension ${it.name} is still ${it.state.name.lowercase()}, Skipping." }
+                    else -> load = true
                 }
-            } catch (e: Throwable) {
-                if (e is TimeoutCancellationException) { log.warn { "Extension ${ex.name} took too longer than 5 seconds to enable!" } }
-                ex.setState(ExtensionState.FAILED_ENABLING)
-                ex.errorDependents(sorted, e)
-                unloadKoinModules(module)
+                if (!load) {
+                    it.errorDependents(sorted)
+                }
+                load
             }
-            ex.setState(ExtensionState.ENABLED)
-            cache.loadedExtensions += ex
-        }
+            .forEach { ex ->
+                val module = module { single { ex } bind (ex.bindToKClass ?: ex::class) }
+                if (!ex.bound) { loadKoinModules(module) }
+                ex.setState(ExtensionState.ENABLING)
+                try {
+                    withTimeout(5.seconds) {
+                        ex.invokeIfOverrides(Extension<*>::handleEnable.name) { ex.handleEnable() }
+                    }
+                } catch (e: Throwable) {
+                    if (e is TimeoutCancellationException) { log.warn { "Extension ${ex.name} took too longer than 5 seconds to enable!" } }
+                    ex.setState(ExtensionState.FAILED_ENABLING)
+                    ex.errorDependents(sorted, e)
+                    unloadKoinModules(module)
+                }
+                ex.setState(ExtensionState.ENABLED)
+                cache.loadedExtensions += ex
+            }
         cache.extensions.clear()
     }
 
     private suspend fun Extension<MinixPlugin>.errorDependents(
         extensions: MutableList<Extension<MinixPlugin>>,
-        error: Throwable
+        error: Throwable? = null
     ) {
         val deps = extensions.filter { this::class in it.dependencies }
         log.error(error) {

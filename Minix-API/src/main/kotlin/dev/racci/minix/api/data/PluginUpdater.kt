@@ -11,18 +11,21 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
+import org.spongepowered.configurate.objectmapping.meta.Required
 
 @ConfigSerializable
 class PluginUpdater {
 
     @Comment("The name of the plugin")
-    var name: String? = null
+    @Required
+    lateinit var name: String
 
     @Comment("Which update type to use")
     var updateMode: UpdateMode = UpdateMode.UPDATE
 
     @Comment("What providers are supported by this plugin")
-    var providers: MutableList<UpdateProvider> = mutableListOf()
+    @Required
+    lateinit var providers: MutableList<UpdateProvider>
 
     @Comment("What release channels should be updated to")
     var channels: Array<String> = arrayOf("release")

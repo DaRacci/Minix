@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.4.1](https://github.com/DaRacci/Minix/compare/v2.4.0..v2.4.1) - 2022-03-24
+#### Bug Fixes
+- Fix some errors and do some refactoring in the auto updater - ([d009c00](https://github.com/DaRacci/Minix/commit/d009c00dabb85859154ea9126667952e04420246)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.4.0 - ([00f763f](https://github.com/DaRacci/Minix/commit/00f763f6f27afb54bc189b9666c8adeca10eeca2)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.4.0](https://github.com/DaRacci/Minix/compare/v2.3.1..v2.4.0) - 2022-03-23
 #### Bug Fixes
 - **(deps)** Fix sentry version mismatch due to pufferfish version being outdated - ([4bceb68](https://github.com/DaRacci/Minix/commit/4bceb68a9e5823db8a2cb5201f23857cd5f028f6)) - [@DaRacci](https://github.com/DaRacci)

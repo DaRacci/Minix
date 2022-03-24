@@ -1,27 +1,14 @@
 pre_bump_hooks = [
-    "if ! ./gradlew test --info; then exit 1; fi",
-    "echo 'Bumping from v{{latest}} to v{{version}}!'",
+    """
+        sh -c "chmod u+x scripts/pre_bump.sh"
+        sh -c "scripts/pre-bump.sh {{latest}} {{version}}"
+    """,
 ]
 post_bump_hooks = [
-    # Update the version in gradle properties and amend last commit
-    "sed -i 's/version=.*/version={{version}}/' ./gradle.properties",
-    "git add ./gradle.properties",
-    "git commit --amend -C HEAD",
-    # Push to github with new tag
-    "git push",
-    "git push origin v{{version}}",
-    # Build gradle
-    "./gradlew clean build -Pversion=\"{{version}}\"",
-    # Create changelog and make new release
-    "grep -Poz \"(?s)(?<=## \\[v{{version}}\\]\\(https:\\/\\/github\\.com\\/DaRacci\\/Minix\\/compare\\/v{{latest}}.\\.v{{version}}) - ....-..-..\n).*?(?=- - -)\" CHANGELOG.md >> ./.templog.md", # TODO: This is really fucking ugly
-    "gh release create \"v{{version}}\" -F ./.templog.md -t 'Minix release {{version}}' build/libs/Minix-{{version}}.jar Minix-API/build/libs/Minix-API-{{version}}-sources.jar",
-    "rm ./.templog.md",
-    # Trigger the docs workflow
-    "gh workflow run docs.yml",
-    # Publish to repo
-    "./gradlew :Minix-API:publish -Pversion=\"{{version}}\"",
-    # Update tags
-    "git fetch --tags origin",
+    """
+        sh -c "chmod u+x scripts/post_bump.sh"
+        sh -c "scripts/post-bump.sh {{latest}} {{version}}"
+    """,
 ]
 
 tag_prefix = "v"

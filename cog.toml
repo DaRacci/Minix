@@ -13,7 +13,7 @@ post_bump_hooks = [
     # Build gradle
     "./gradlew clean build -Pversion=\"{{version}}\"",
     # Create changelog and make new release
-    "grep -Poz '(?s)(?<=## \\[v{{version}}]\\(https:\\/\\/github\\.com\\/DaRacci\\/Minix\\/compare\\/v{{latest}}.\\.v{{version}}) - ....-..-..\n).*?(?=- - -)' CHANGELOG.md >> ./.templog.md", # TODO: This is really fucking ugly
+    "grep -Poz '(?s)(?<=## \\[v{{version}}\\]\\(https:\\/\\/github\\.com\\/DaRacci\\/Minix\\/compare\\/v{{latest}}.\\.v{{version}}) - ....-..-..\n).*?(?=- - -)' CHANGELOG.md >> ./.templog.md", # TODO: This is really fucking ugly
     "gh release create \"v{{version}}\" -F ./.templog.md -t 'Minix release {{version}}' build/libs/Minix-{{version}}.jar Minix-API/build/libs/Minix-API-{{version}}-sources.jar",
     "rm ./.templog.md",
     # Trigger the docs workflow

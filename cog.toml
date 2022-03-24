@@ -1,12 +1,8 @@
 pre_bump_hooks = [
-    """
-        sh -c scripts/pre-bump.sh {{latest}} {{version}}
-    """,
+    "sh -c \"scripts/pre-bump.sh {{latest}} {{version}} true\"",
 ]
 post_bump_hooks = [
-    """
-        sh -c scripts/post-bump.sh {{latest}} {{version}}
-    """,
+    "sh -c \"scripts/post-bump.sh {{latest}} {{version}}\"",
 ]
 
 tag_prefix = "v"

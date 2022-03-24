@@ -10,6 +10,7 @@ import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.jvm.isAccessible
 
 /**
  * Checks if a class exists.
@@ -53,7 +54,7 @@ fun <R> readInstanceProperty(
     ignoreCase: Boolean = false,
 ): R? = instance::class.members.firstOrNull {
     it.name.equals(propertyName, ignoreCase)
-}.safeCast<KProperty1<Any, *>>()?.get(instance) as? R
+}?.also { it.isAccessible = true }.safeCast<KProperty1<Any, *>>()?.get(instance) as? R
 
 /**
  * Makes a safe cast of a property to a different type.

@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.4.5](https://github.com/DaRacci/Minix/compare/v2.4.4..v2.4.5) - 2022-03-24
+#### Bug Fixes
+- **(cog)** Fix grep command again maybe? - ([195764a](https://github.com/DaRacci/Minix/commit/195764a84c6f838cee74246f9325bbc767059583)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.4.4 - ([1f61b1b](https://github.com/DaRacci/Minix/commit/1f61b1b790ecedd575524ae1a9882a356d9bc357)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.4.4](https://github.com/DaRacci/Minix/compare/v2.4.3..v2.4.4) - 2022-03-24
 #### Bug Fixes
 - **(cog)** Fix grep command - ([310f7bc](https://github.com/DaRacci/Minix/commit/310f7bca833a4c9bcdec63eb461ca6c6d97fa15c)) - [@DaRacci](https://github.com/DaRacci)

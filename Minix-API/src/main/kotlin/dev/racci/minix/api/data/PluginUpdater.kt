@@ -1,6 +1,7 @@
 package dev.racci.minix.api.data
 
 import dev.racci.minix.api.services.DataService
+import dev.racci.minix.api.services.UpdaterService
 import dev.racci.minix.api.updater.UpdateMode
 import dev.racci.minix.api.updater.UpdateResult
 import dev.racci.minix.api.updater.Version
@@ -16,15 +17,15 @@ import org.spongepowered.configurate.objectmapping.meta.Required
 @ConfigSerializable
 class PluginUpdater {
 
-    @Comment("The name of the plugin")
     @Required
+    @Comment("The name of the plugin")
     lateinit var name: String
 
     @Comment("Which update type to use")
     var updateMode: UpdateMode = UpdateMode.UPDATE
 
-    @Comment("What providers are supported by this plugin")
     @Required
+    @Comment("What providers are supported by this plugin")
     lateinit var providers: MutableList<UpdateProvider>
 
     @Comment("What release channels should be updated to")
@@ -33,12 +34,29 @@ class PluginUpdater {
     @Comment("Should we ignore any folders, or files when backing up this plugin?")
     var ignored: Array<String> = emptyArray()
 
+    @Transient var sentInfo: Boolean = false
+    @Transient var sentAvailable: Boolean = false
     @Transient var failedAttempts: Int = 0
+        set(value) {
+            if (value > 4) {
+                if (providers.size >= activeProvider + 1) {
+                    activeProvider++
+                    field = 0
+                    sentInfo = false
+                    sentAvailable = false
+                } else {
+                    get<UpdaterService>().apply {
+                        enabledUpdaters -= this@PluginUpdater
+                        disabledUpdaters += this@PluginUpdater
+                    }
+                }
+            }
+        }
     @Transient var pluginInstance: Plugin? = null
     @Transient var lastRun: Instant? = null
     @Transient var remoteVersion: Version? = null
     val localVersion: Version get() = Version(pluginInstance!!.description.version) // By the time these are called the instance should be set.
-    val localFile: String get() = pluginInstance!!.description.version
+    val localFile: String get() = pluginInstance!!::class.java.protectionDomain.codeSource.location.file
     @Transient var result: UpdateResult? = null
     @Transient var activeProvider: Int = 0
     val provider: UpdateProvider get() = providers[activeProvider]

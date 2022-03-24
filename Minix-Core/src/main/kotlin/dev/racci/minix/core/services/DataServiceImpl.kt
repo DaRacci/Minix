@@ -16,6 +16,7 @@ import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.utils.MissingAnnotationException
 import dev.racci.minix.api.utils.getKoin
+import dev.racci.minix.api.utils.kotlin.ifFalse
 import dev.racci.minix.api.utils.kotlin.ifInitialized
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import io.leangen.geantyref.TypeToken
@@ -44,7 +45,6 @@ import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.copyTo
-import kotlin.io.path.createFile
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.name
 import kotlin.reflect.KClass
@@ -99,24 +99,35 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         transaction {
             SchemaUtils.createMissingTablesAndColumns(DataHolder.table)
             DataHolder.all().forEach { holder ->
-                if (holder.id.value !in plugins.map { it.name }) {
+                val func = {
                     val path = server.pluginsFolder.resolve(holder.loadNext.name)
+                    log.debug { "Moving ${holder.loadNext} to path ${path.name}." }
                     holder.loadNext.copyTo(path.toPath())
-                    pm.loadPlugin(path)
-                    log.info { "Loaded ${holder.loadNext.name} from the update queue!" }
-                } else {
-                    val instance = plugins.first { it.name == holder.id.value }
-                    pm.disablePlugin(instance)
-                    log.info { "Disabled ${holder.loadNext.name} from the update queue." }
-                    val path = Path(instance::class.java.protectionDomain.codeSource.location.file)
-                    path.createFile()
-                    updateFolder.resolve(instance.name).toPath().copyTo(path)
-                    path.deleteIfExists().ifTrue { log.info { "Moved ${instance.name}'s jar file to $updateFolder to be updated." } }
-                    val newPath = server.pluginsFolder.resolve(holder.loadNext.name)
-                    newPath.createNewFile()
-                    holder.loadNext.copyTo(newPath.toPath())
-                    pm.loadPlugin(newPath)
-                    log.info { "Loaded ${holder.loadNext.name} from the update queue!" }
+                    log.info { "Moved ${holder.id.value}'s new jar file to the plugins folder!." }
+                    path
+                }
+                when (holder.id.value) {
+                    "Minix" -> func()
+                    !in plugins.map { it.name } -> {
+                        func().also(pm::loadPlugin)
+                        log.info { "Loaded ${holder.loadNext.name} from the update queue!" }
+                    }
+                    else -> {
+                        val instance = plugins.first { it.name == holder.id.value }.also(pm::disablePlugin)
+                        log.info { "Disabled ${holder.loadNext.name} from the update queue." }
+                        val path = Path(instance::class.java.protectionDomain.codeSource.location.file)
+                        updateFolder.resolve("old-versions").also { folder ->
+                            folder.mkdirs().ifFalse { return@forEach log.error { "Failed to create old-versions folder!" } }
+                            folder.resolve(path.name).also { file ->
+                                file.createNewFile().ifFalse { return@forEach log.error { "Failed to create old-versions/${path.name}!" } }
+                                path.copyTo(file.toPath())
+                                path.deleteIfExists()
+                                log.debug { "Moved ${path.name} to old-versions/${file.name}." }
+                            }
+                        }
+                        func().also(pm::loadPlugin)
+                        log.info { "Loaded ${holder.loadNext.name} from the update queue!" }
+                    }
                 }
                 holder.delete()
             }

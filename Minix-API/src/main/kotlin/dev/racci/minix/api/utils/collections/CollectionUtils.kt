@@ -98,9 +98,11 @@ object CollectionUtils {
         default: V,
     ) = getOrDefault(key, default)
 
-    fun <T> Map<*, *>.getAs(key: Any) = this[key] as T
-    fun <T> Map<*, *>.getAsOrNull(key: Any) = this[key] as? T
-    fun <T> Map<*, *>.getAsOr(
+    inline fun <reified T> Map<*, *>.getAs(key: Any): T = this[key] as T
+
+    inline fun <reified T> Map<*, *>.getAsOrNull(key: Any): T? = with(this[key]) { if (this is T) this else null }
+
+    inline fun <reified T> Map<*, *>.getAsOr(
         key: Any,
         def: T,
     ) = this[key] as? T ?: def

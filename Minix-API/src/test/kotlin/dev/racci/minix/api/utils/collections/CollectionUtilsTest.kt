@@ -6,15 +6,14 @@ import dev.racci.minix.api.utils.collections.CollectionUtils.containsKeyIgnoreCa
 import dev.racci.minix.api.utils.collections.CollectionUtils.getAs
 import dev.racci.minix.api.utils.collections.CollectionUtils.getAsOrNull
 import dev.racci.minix.api.utils.collections.CollectionUtils.getIgnoreCase
+import strikt.api.expectCatching
+import strikt.api.expectThrows
 import java.util.logging.Logger
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import strikt.api.expectThat
-import strikt.api.expectThrows
-import strikt.assertions.isEqualTo
 
 internal class CollectionUtilsTest {
 
@@ -41,11 +40,15 @@ internal class CollectionUtilsTest {
 
     @Test
     fun mapTest() {
-        assertTrue(map.containsKeyIgnoreCase("ONE"))
-        assertFalse(map.containsKeyIgnoreCase("SIX"))
-        assertEquals(1, map.getIgnoreCase("ONE"))
-        expectThrows<ClassCastException> { map.getAs<Logger>("one") }
-        assertEquals(1, map.getAs("one"))
-        assertNull(map.getAsOrNull<Logger>("one"))
+        assertTrue("Map contains key ONE ignoring case") { map.containsKeyIgnoreCase("ONE") }
+        assertFalse("Map doesn't contains key SIX ignoring case") { map.containsKeyIgnoreCase("SIX") }
+        assertEquals(1, map.getIgnoreCase("ONE"), "Map key ONE's value is 1 ignoring case")
+        assertEquals(1 as Number, map.getAs<Number>("one"), "Getting the key as a number will succeed")
+        assertNull(map.getAsOrNull<Logger>("one"), "Getting the key as a logger will fail")
+        expectCatching {
+            expectThrows<ClassCastException> {
+                map.getAs<Logger>("ONE")
+            }
+        }
     }
 }

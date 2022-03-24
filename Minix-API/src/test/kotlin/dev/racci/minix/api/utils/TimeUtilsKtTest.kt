@@ -4,14 +4,14 @@ import kotlinx.datetime.Clock
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlin.test.expect
 import kotlin.time.Duration.Companion.milliseconds
 
 internal class TimeUtilsKtTest {
 
     @Test
     fun `now returns the same as normal getter`() {
-        assertTrue { now() == Clock.System.now() }
+        expect(now().toEpochMilliseconds()) { Clock.System.now().toEpochMilliseconds() } // We cannot match the exact nano second so this is the best we can do
     }
 
     @Test

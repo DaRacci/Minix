@@ -19,11 +19,9 @@ import kotlin.reflect.jvm.isAccessible
  * @return True the class exists.
  */
 fun exists(className: String): Boolean {
-    catchAndReturn<ClassNotFoundException, Boolean>({ return false }) {
-        Class.forName(className)
-        true
-    }
-    return false
+    return try {
+        Class.forName(className); true
+    } catch (e: ClassNotFoundException) { false }
 }
 
 /**

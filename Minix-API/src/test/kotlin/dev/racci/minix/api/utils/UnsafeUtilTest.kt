@@ -1,6 +1,7 @@
 package dev.racci.minix.api.utils
 
 import dev.racci.minix.api.utils.UnsafeUtil.Companion.unsafe
+import strikt.api.expectCatching
 import strikt.api.expectThrows
 import kotlin.test.Test
 import kotlin.test.assertSame
@@ -21,12 +22,14 @@ internal class UnsafeUtilTest {
         }
         assertSame(message, "Danger!")
 
-        expectThrows<RuntimeException> {
-            unsafe {
-                danger {
-                    throw RuntimeException("Danger!")
+        expectCatching {
+            expectThrows<RuntimeException> {
+                unsafe {
+                    danger {
+                        throw RuntimeException("Danger!")
+                    }
+                    catch(ClassCastException::class) {}
                 }
-                catch(ClassCastException::class) {}
             }
         }
     }

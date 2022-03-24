@@ -85,6 +85,8 @@ allprojects {
         testImplementation(rootProject.libs.bundles.kotlinx)
         testImplementation(rootProject.libs.testing.strikt)
         testImplementation(rootProject.libs.testing.junit5)
+        testImplementation(rootProject.libs.koin.test) { exclude("org.jetbrains.kotlin") }
+        testImplementation("net.kyori:adventure-serializer-configurate4:4.10.1")
         testImplementation(kotlin("test"))
     }
 

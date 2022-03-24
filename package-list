@@ -7,6 +7,7 @@ dev.racci.minix.api.annotations
 dev.racci.minix.api.builders
 dev.racci.minix.api.coroutine
 dev.racci.minix.api.coroutine.contract
+dev.racci.minix.api.data
 dev.racci.minix.api.destructors
 dev.racci.minix.api.events
 dev.racci.minix.api.extension
@@ -17,8 +18,11 @@ dev.racci.minix.api.scheduler
 dev.racci.minix.api.serializables
 dev.racci.minix.api.serializables.recipes
 dev.racci.minix.api.services
+dev.racci.minix.api.updater
+dev.racci.minix.api.updater.providers
 dev.racci.minix.api.utils
 dev.racci.minix.api.utils.collections
+dev.racci.minix.api.utils.data
 dev.racci.minix.api.utils.exposed
 dev.racci.minix.api.utils.kotlin
 dev.racci.minix.api.utils.minecraft
@@ -28,6 +32,5 @@ dev.racci.minix.core
 dev.racci.minix.core.builders
 dev.racci.minix.core.coroutine.impl
 dev.racci.minix.core.coroutine.service
-dev.racci.minix.core.data
 dev.racci.minix.core.scheduler
 dev.racci.minix.core.services

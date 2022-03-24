@@ -1,7 +1,15 @@
-#!/usr/bin
+#!/usr/bin/env bash
 
 PREVIOUS=$1
 VERSION=$2
+TEST=$3
+
+if [ "$TEST" == "true" ]; then
+  echo "TESTING"
+  echo "PREVIOUS: $PREVIOUS"
+  echo "VERSION: $VERSION"
+  exit 0
+fi
 
 sed -i "s/version=.*/version=${VERSION}/" ./gradle.properties
 

@@ -1,13 +1,11 @@
 pre_bump_hooks = [
     """
-        sh -c "chmod u+x scripts/pre_bump.sh"
-        sh -c "scripts/pre-bump.sh {{latest}} {{version}}"
+        sh -c scripts/pre-bump.sh {{latest}} {{version}}
     """,
 ]
 post_bump_hooks = [
     """
-        sh -c "chmod u+x scripts/post_bump.sh"
-        sh -c "scripts/post-bump.sh {{latest}} {{version}}"
+        sh -c scripts/post-bump.sh {{latest}} {{version}}
     """,
 ]
 

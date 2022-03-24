@@ -17,7 +17,7 @@ import dev.racci.minix.core.services.ListenerService
 import dev.racci.minix.core.services.PlayerServiceImpl
 import dev.racci.minix.core.services.PluginServiceImpl
 import dev.racci.minix.core.services.TimeService
-import dev.racci.minix.core.services.UpdaterService
+import dev.racci.minix.core.services.UpdaterServiceImpl
 import io.sentry.Sentry
 import io.sentry.protocol.User
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -46,7 +46,7 @@ class MinixImpl : Minix() {
     override suspend fun handleLoad() {
         extensions {
             add(::DataServiceImpl)
-            add(::UpdaterService)
+            add(::UpdaterServiceImpl)
         }
     }
 

@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
 
-PREVIOUS=$1
-CURRENT=$2
-TEST=$3
-
-if [ "$TEST" = "true" ]; then
-  echo "Cancelling pre-bump"
-  exit 0
-fi
+PREVIOUS=$(grep -o '^[0-9]\+\.[0-9]\+\.[0-9]\+' temp | head -n 1)
+CURRENT=$(grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' temp | tail -n 1)
 
 if ! ./gradlew test --info;
  then exit 1;

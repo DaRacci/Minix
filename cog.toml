@@ -1,5 +1,7 @@
 pre_bump_hooks = [
-    "sh -c \"scripts/pre-bump.sh {{latest}} {{version}} true\"",
+    "sh -c \"echo '{{latest}}:{{version}} >> .temp'\"",
+    "exit 1",
+#    "sh -c \"scripts/pre-bump.sh",
 ]
 post_bump_hooks = [
     "sh -c \"scripts/post-bump.sh {{latest}} {{version}}\"",

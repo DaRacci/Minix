@@ -1,15 +1,7 @@
 #!/usr/bin/env bash
 
-PREVIOUS=$1
-VERSION=$2
-TEST=$3
-
-if [ "$TEST" == "true" ]; then
-  echo "TESTING"
-  echo "PREVIOUS: $PREVIOUS"
-  echo "VERSION: $VERSION"
-  exit 0
-fi
+PREVIOUS=$(grep -o '^[0-9]\+\.[0-9]\+\.[0-9]\+' temp | head -n 1)
+VERSION=$(grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' temp | tail -n 1)
 
 sed -i "s/version=.*/version=${VERSION}/" ./gradle.properties
 

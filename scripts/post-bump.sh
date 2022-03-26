@@ -48,7 +48,7 @@ sed -i "s/version=.*/version=$VERSION-SNAPSHOT/" ./gradle.properties # We now in
 cd ../Minix-Conventions || exit 1
 git checkout main || exit 1
 git pull || exit 1
-sed -i "s/minecraft-minix = .*/minecraft-minix = \"dev.racci:Minix:2.4.10\"/" ./gradle/libs.versions.toml
+sed -i "s/minix = .*/minix = \"$VERSION\"/" ./gradle/libs.versions.toml
 git add ./gradle/libs.versions.toml
 cog commit chore "Update Minix version from $PREVIOUS to $VERSION" deps
 git push || exit 1

@@ -34,7 +34,10 @@ import org.koin.ext.getFullName
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.full.starProjectedType
 import kotlin.time.Duration.Companion.seconds
 
 class PluginServiceImpl(val minix: Minix) : PluginService {
@@ -60,6 +63,27 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
 
     override fun loadPlugin(plugin: MinixPlugin) {
         runBlocking {
+            if (!plugin.annotation?.extensions.isNullOrEmpty()) {
+                for (clazz in plugin.annotation!!.extensions) {
+                    pluginCache[plugin].extensions += { plugin: MinixPlugin ->
+                        try {
+                            if (clazz.isSubclassOf(Extension::class)) error("Extension class must be a subclass of Extension")
+                            val const = clazz.constructors.firstOrNull {
+                                println("Size: " + it.parameters.size)
+                                println("Name: " + it.name)
+                                println("Nullable: " + it.parameters.getOrNull(0)?.type?.isMarkedNullable)
+                                println("Subtype: " + it.parameters.getOrNull(0)?.type?.isSubtypeOf(MinixPlugin::class.starProjectedType))
+                                it.parameters.size == 1 && it.name == "plugin" && !it.parameters[0].type.isMarkedNullable && it.parameters[0].type.isSubtypeOf(MinixPlugin::class.starProjectedType)
+                            } ?: throw IllegalArgumentException("Extension class $clazz does not have a constructor with one parameter of type MinixPlugin!")
+                            const.call(plugin) as Extension<*>
+                        } catch (e: Exception) {
+                            minix.log.error(e) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
+                            throw e
+                        }
+                    }
+                }
+            }
+
             loadModule { single { plugin } bind (plugin.bindToKClass ?: plugin::class) }
             plugin.invokeIfOverrides(SusPlugin::handleLoad.name) { plugin.handleLoad() }
             plugin.loadReflection()

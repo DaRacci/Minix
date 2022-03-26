@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.5.1](https://github.com/DaRacci/Minix/compare/v2.5.0..v2.5.1) - 2022-03-26
+#### Bug Fixes
+- Remove pulling - ([d7dbbd6](https://github.com/DaRacci/Minix/commit/d7dbbd66d5f1ad54ea0557a7d9b7dbf38148090c)) - [@DaRacci](https://github.com/DaRacci)
+- Push local commits before pulling - ([688b299](https://github.com/DaRacci/Minix/commit/688b2992d7798b460a6ee2b51eb826b912c36aae)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.5.0 - ([7ef5677](https://github.com/DaRacci/Minix/commit/7ef567781a5ba6a114e18ebca00e5011d4007cf2)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.5.0](https://github.com/DaRacci/Minix/compare/v2.4.10..v2.5.0) - 2022-03-26
 #### Bug Fixes
 - Remove pulling - ([f9abaa3](https://github.com/DaRacci/Minix/commit/f9abaa33fe91326f75f0afcbcdb9eb29c511b613)) - [@DaRacci](https://github.com/DaRacci)

@@ -2,6 +2,22 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.5.0](https://github.com/DaRacci/Minix/compare/v2.4.10..v2.5.0) - 2022-03-26
+#### Bug Fixes
+- Remove pulling - ([f9abaa3](https://github.com/DaRacci/Minix/commit/f9abaa33fe91326f75f0afcbcdb9eb29c511b613)) - [@DaRacci](https://github.com/DaRacci)
+- Fix test classes to not need extra dep on configurate - ([ad3c233](https://github.com/DaRacci/Minix/commit/ad3c233205ce4802abdcd54fc01d82f9a328ec88)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(cog)** Auto update Minix-Conventions with minix and pull any new commits from remote - ([0e418be](https://github.com/DaRacci/Minix/commit/0e418be4ec0c893907d5753fcd21db7736a55f99)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v2.4.10 - ([37431f3](https://github.com/DaRacci/Minix/commit/37431f37ed240c515bc79dc06db7a8ea0272376d)) - [@DaRacci](https://github.com/DaRacci)
+- Forgot to add this to the commit for publishing the core dep - ([bd3b993](https://github.com/DaRacci/Minix/commit/bd3b9939e3a44a18c3c4b7e1188a672938b324ff)) - [@DaRacci](https://github.com/DaRacci)
+- make annotation public and mark as for internal use - ([76f1549](https://github.com/DaRacci/Minix/commit/76f15499c2f75c6062ad2488bba509cfe76f8517)) - [@DaRacci](https://github.com/DaRacci)
+- Publish the Minix-Core dep as in rare cases you might need access to the internal classes - ([314232e](https://github.com/DaRacci/Minix/commit/314232e151263f0112c51b9e7103adb8fc1f5c14)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(gradle)** Cleanup and simplify the gradle build - ([fa35e50](https://github.com/DaRacci/Minix/commit/fa35e500c2eb9f49a3b149de8536fc1ab445f640)) - [@DaRacci](https://github.com/DaRacci)
+- Add the code to register the extensions in the MappedPlugin annotation - ([34dd6dd](https://github.com/DaRacci/Minix/commit/34dd6dddb34d7c8176039a990a443bb792f8b7e7)) - [@DaRacci](https://github.com/DaRacci)
+- Remove listeners from annotation, they shouldnt be used and i dont want to write the code to support it there - ([fdec3ff](https://github.com/DaRacci/Minix/commit/fdec3ff253af21adef3cc956c3a75a437a72596f)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.4.10](https://github.com/DaRacci/Minix/compare/v2.4.9..v2.4.10) - 2022-03-26
 #### Bug Fixes
 - **(cog)** Remove weird last line from file and fix grep command - ([28b2075](https://github.com/DaRacci/Minix/commit/28b2075599fe59087cfbd2840eafd4280995d7c9)) - [@DaRacci](https://github.com/DaRacci)

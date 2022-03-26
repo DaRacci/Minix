@@ -1,9 +1,8 @@
 pre_bump_hooks = [
-    "sh -c \"echo '{{latest}}:{{version}} >> .temp'\"",
-    "exit 1",
-#    "sh -c \"scripts/pre-bump.sh",
+    "sh -c \"echo '{{latest}}:{{version}} >> temp'\"",
 ]
 post_bump_hooks = [
+    "sh -c \"echo '{{latest}}:{{version}} >> temp'\"", # Create it again since we delete it in pre_bump_hooks so it doesnt stay if it fails
     "sh -c \"scripts/post-bump.sh {{latest}} {{version}}\"",
 ]
 

@@ -1,8 +1,6 @@
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 import org.jetbrains.dokka.utilities.cast
 
-plugins {
-    `maven-publish`
-}
 val lib: Configuration by configurations.creating
 extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME) {
     configurations.getByName(compileClasspathConfigurationName).extendsFrom(lib)
@@ -11,26 +9,41 @@ extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME)
 }
 
 dependencies {
-    lib(rootProject.libs.kotlin.stdlib)
-    lib(rootProject.libs.kotlin.reflect)
-    lib(rootProject.libs.kotlinx.dateTime)
-    lib(rootProject.libs.kotlinx.coroutines)
-    lib(rootProject.libs.kotlinx.immutableCollections)
-    lib(rootProject.libs.kotlinx.serialization.json)
-    lib(rootProject.libs.exposed.core)
-    lib(rootProject.libs.exposed.dao)
-    lib(rootProject.libs.exposed.jdbc)
-    lib(rootProject.libs.exposed.dateTime)
-    lib(rootProject.libs.hikariCP)
+    // We Shade these two due to the puffer fish conflict
+    implementation(libs.sentry.core)
+    implementation(libs.sentry.kotlin)
+
+    lib(rootProject.libs.bundles.kyori)
+    lib(rootProject.libs.bundles.kotlin)
+    lib(rootProject.libs.bundles.kotlinx)
+    lib(rootProject.libs.kotlinx.serialization.core)
+    lib(rootProject.libs.bundles.exposed)
+
     lib(rootProject.libs.koin.core)
-    lib(rootProject.libs.logging.sentry)
-    lib(rootProject.libs.mordant)
-    lib(rootProject.libs.caffeine)
-    lib(rootProject.libs.kotlinx.serialization.kaml)
-    lib(rootProject.libs.minecraft.bstats)
+    lib(rootProject.libs.koin.ktor)
     lib(rootProject.libs.ktor.client.core)
     lib(rootProject.libs.ktor.client.cio)
+
+    lib(rootProject.libs.cloud.core)
+    lib(rootProject.libs.cloud.minecraft.paper)
+    lib(rootProject.libs.cloud.minecraft.extras)
+    lib(rootProject.libs.cloud.kotlin.extensions)
+    lib(rootProject.libs.cloud.kotlin.coroutines)
+
+    lib(rootProject.libs.configurate.hocon)
+    lib(rootProject.libs.adventure.configurate)
+    lib(rootProject.libs.configurate.extra.kotlin)
+
+    lib(rootProject.libs.sentry.core)
+    lib(rootProject.libs.sentry.kotlin)
+    lib(rootProject.libs.mordant)
+    lib(rootProject.libs.caffeine)
+    lib(rootProject.libs.reflections)
+    lib(rootProject.libs.minecraft.bstats)
 }
+
+// Lmao this works well as compared to what I was doing before
+rootProject.extensions.getByName("bukkit").cast<BukkitPluginDescription>().libraries = lib.dependencies.map { "${it.group}:${it.name}:${it.version}" }
 
 java.withSourcesJar()
 
@@ -66,15 +79,13 @@ publishing {
                     node["groupId"] == dep.moduleGroup &&
                         node["artifactId"] == dep.moduleName &&
                         node["version"] == dep.moduleVersion &&
-                        node["optional"] == "true" &&
-                        node["scope"] == "provided"
+                        node["scope"] == "compile"
                 } ?: run {
                     val node = groovy.util.Node(depNode, "dependency")
                     node.appendNode("groupId", dep.moduleGroup)
                     node.appendNode("artifactId", dep.moduleName)
                     node.appendNode("version", dep.moduleVersion)
-                    node.appendNode("optional", "true")
-                    node.appendNode("scope", "provided")
+                    node.appendNode("scope", "compile")
                 }
             }
         }

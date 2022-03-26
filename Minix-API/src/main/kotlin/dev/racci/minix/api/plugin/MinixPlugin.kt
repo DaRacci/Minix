@@ -22,7 +22,8 @@ import kotlin.reflect.full.isSubclassOf
  */
 @Suppress("LeakingThis")
 abstract class MinixPlugin : JavaPlugin(), SusPlugin {
-    private val annotation by lazy { this::class.findAnnotation<MappedPlugin>() }
+    @get:ApiStatus.Internal // Public to be used within the plugin service impl
+    val annotation by lazy { this::class.findAnnotation<MappedPlugin>() }
 
     override val bStatsId: Int? by lazy { annotation?.bStatsId.takeIf { it != -1 } }
     override val bindToKClass: KClass<out MinixPlugin>? by lazy { annotation?.bindToKClass.takeIf { it?.isSubclassOf(MinixPlugin::class) == true }.safeCast() }

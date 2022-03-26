@@ -23,7 +23,7 @@ sed -i "s/version=.*/version=${VERSION}/" ./gradle.properties
 git add ./gradle.properties
 git commit --amend -C HEAD
 
-git push
+git push || exit 1 # There were remote changes not present in the local repo
 git push origin v"${VERSION}" # Push the new version tag
 
 ./gradlew clean build
@@ -42,3 +42,9 @@ gh workflow run "docs.yml" # Generate the documentation
 
 git fetch --tags origin # Fetch the tags from the origin
 
+# Update Minix-Conventions
+cd ../Minix-Conventions || exit 1
+git checkout main || exit 1
+git pull || exit 1
+sed -i "s/minecraft-minix = .*/minecraft-minix = \"dev.racci:Minix:2.4.10\"/" ./gradle/libs.versions.toml
+git push || exit 1

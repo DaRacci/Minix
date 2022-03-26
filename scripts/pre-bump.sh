@@ -1,8 +1,5 @@
 #!/usr/bin/env bash
 
-git push || exit 1
-git pull || exit 1 # There were commits unable to be auto rebased due to conflicts
-
 # Check if the temp file exists
 if [ ! -f temp ]; then
   echo "Temp file does not exist. Exiting..."

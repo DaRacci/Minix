@@ -1,10 +1,10 @@
 package dev.racci.minix.api.utils
 
-import dev.racci.minix.api.utils.data.Data
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo
+import java.util.UUID
 import kotlin.reflect.jvm.javaConstructor
 import kotlin.test.Test
 import kotlin.test.assertNotNull
@@ -21,18 +21,20 @@ internal class ReflectionUtilsKtTest {
 
     @Test
     fun classConstructor() {
-        val constructor = Data::class.constructors.first().javaConstructor
-        val clazz = classConstructor(constructor!!, 1024)
+        val constructor = TestClass::class.constructors.first().javaConstructor
+        val uuid = UUID.randomUUID()
+        val clazz = classConstructor(constructor!!, uuid)
         expectThat(clazz)
-            .isA<Data>()
-            .isEqualTo(Data(1024))
+            .isA<TestClass>()
+            .isEqualTo(TestClass(uuid))
     }
 
     @Test
     fun readInstanceProperty() {
-        val instance = Data(1024)
-        val value = readInstanceProperty<Long>(instance, "bytes")
-        expectThat(value).isEqualTo(1024)
+        val uuid = UUID.randomUUID()
+        val instance = TestClass(uuid)
+        val value = readInstanceProperty<UUID>(instance, "uuid")
+        expectThat(value).isEqualTo(uuid)
     }
 
     @Test
@@ -53,4 +55,6 @@ internal class ReflectionUtilsKtTest {
     @Test
     fun testClone() {
     }
+
+    private data class TestClass(private var uuid: UUID)
 }

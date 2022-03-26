@@ -1,10 +1,10 @@
 pre_bump_hooks = [
-    "sh -c \"echo '{{latest}}:{{version}} >> .temp'\"",
-    "exit 1",
-#    "sh -c \"scripts/pre-bump.sh",
+    "echo '{{latest}}:{{version}} >> temp'",
+    "bash -c \"scripts/pre-bump.sh\"",
 ]
 post_bump_hooks = [
-    "sh -c \"scripts/post-bump.sh {{latest}} {{version}}\"",
+    "echo '{{latest}}:{{version}} >> temp'", # Create it again since we delete it in pre_bump_hooks so it doesnt stay if it fails
+    "bash -c \"scripts/post-bump.sh\"",
 ]
 
 tag_prefix = "v"

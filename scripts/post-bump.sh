@@ -1,7 +1,21 @@
 #!/usr/bin/env bash
 
+# Check if the temp file exists
+if [ ! -f temp ]; then
+  echo "Temp file does not exist. Exiting..."
+  exit 1
+fi
+
 PREVIOUS=$(grep -o '^[0-9]\+\.[0-9]\+\.[0-9]\+' temp | head -n 1)
 VERSION=$(grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+' temp | tail -n 1)
+
+# If previous version and version arent set then exit
+if [ -z "$PREVIOUS" ] || [ -z "$VERSION" ]; then
+  echo "Previous version or version not set"
+  exit 1
+fi
+
+rm temp # remove temp file
 
 sed -i "s/version=.*/version=${VERSION}/" ./gradle.properties
 

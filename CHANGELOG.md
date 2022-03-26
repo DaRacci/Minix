@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.4.9](https://github.com/DaRacci/Minix/compare/v2.4.8..v2.4.9) - 2022-03-26
+#### Bug Fixes
+- **(cog)** Should be fixed i think - ([0afd4df](https://github.com/DaRacci/Minix/commit/0afd4df1694662a426cbf1f25baa8860d699920e)) - [@DaRacci](https://github.com/DaRacci)
+- **(cog)** im gonna go cry - ([63e6135](https://github.com/DaRacci/Minix/commit/63e613588e537acc396aea1b5ef1c05cfff72cdf)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.4.8 - ([1f51b9e](https://github.com/DaRacci/Minix/commit/1f51b9e1f8fb560b438f47008d8b3ea83ad41359)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.4.8](https://github.com/DaRacci/Minix/compare/v2.4.7..v2.4.8) - 2022-03-24
 #### Bug Fixes
 - **(cog)** yes please maybe? - ([b74d6ee](https://github.com/DaRacci/Minix/commit/b74d6eea659353ae0483db97af71326c7c19f2e0)) - [@DaRacci](https://github.com/DaRacci)

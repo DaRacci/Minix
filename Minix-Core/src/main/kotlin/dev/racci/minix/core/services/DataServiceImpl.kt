@@ -50,7 +50,6 @@ import kotlin.io.path.name
 import kotlin.reflect.KClass
 import kotlin.reflect.full.superclasses
 
-@OptIn(ExperimentalStdlibApi::class)
 @MappedExtension("Data Service", bindToKClass = DataService::class)
 class DataServiceImpl(override val plugin: Minix) : DataService() {
     private val config by inject<UpdaterConfig>()

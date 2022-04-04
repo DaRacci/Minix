@@ -9,7 +9,7 @@ plugins {
     id("dev.racci.minix.copyjar")
     id("dev.racci.minix.purpurmc")
     id("dev.racci.minix.nms")
-    id("org.jetbrains.dokka")
+    id("org.jetbrains.dokka") version "1.6.10"
     kotlin("plugin.atomicfu") version "1.6.20-RC"
     kotlin("plugin.serialization")
     id("net.minecrell.plugin-yml.bukkit") version "0.5.1"

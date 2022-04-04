@@ -1,13 +1,15 @@
 pre_bump_hooks = [
-    "echo '{{latest}}:{{version}} >> temp'",
-    "bash -c \"scripts/pre-bump.sh\"",
+    "bash -c \"scripts/pre-bump.sh {{latest}} {{version}}\"",
 ]
 post_bump_hooks = [
-    "echo '{{latest}}:{{version}} >> temp'", # Create it again since we delete it in pre_bump_hooks so it doesnt stay if it fails
-    "bash -c \"scripts/post-bump.sh\"",
+    "bash -c \"scripts/post-bump.sh {{latest}} {{version}}\"",
 ]
 
 tag_prefix = "v"
+
+[commit_types]
+gradle = { changelog_title = "Build" }
+
 
 [changelog]
 path = "CHANGELOG.md"

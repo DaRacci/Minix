@@ -2,6 +2,23 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.6.0](https://github.com/DaRacci/Minix/compare/v2.5.1..v2.6.0) - 2022-04-04
+#### Bug Fixes
+- Fix auto update for minix conventions - ([c50ccc0](https://github.com/DaRacci/Minix/commit/c50ccc0a54ea22e4902b046c984342a5571d910f)) - [@DaRacci](https://github.com/DaRacci)
+#### Build
+- Update to 7.4.2 - ([2a30a90](https://github.com/DaRacci/Minix/commit/2a30a90b3c741ccba170c2c692f6c758e768becb)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- Add support for adding serializers per MappedConfig.kt - ([e7dc444](https://github.com/DaRacci/Minix/commit/e7dc4448d18b786695032886a1bee55bd409d13a)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(deps)** Update atomicfu plugin version - ([41dda33](https://github.com/DaRacci/Minix/commit/41dda338f53eb636132469e8e37f317ff3ae79ea)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** Update minix conventions and kotlin - ([6fda82f](https://github.com/DaRacci/Minix/commit/6fda82f99d3a870ed65a0bc9f11455814ce273b7)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v2.5.1 - ([f5ef68f](https://github.com/DaRacci/Minix/commit/f5ef68f1affa59e82e21ee99a200839cef9ef671)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- cleanup scripts, not sure why i was using a temp file - ([fe100fa](https://github.com/DaRacci/Minix/commit/fe100fa08f737bb2c0c4ea72b212ca3ed14853a7)) - [@DaRacci](https://github.com/DaRacci)
+- No longer using experimental! - ([19a47c2](https://github.com/DaRacci/Minix/commit/19a47c2112baa540dcbaf908b5aee5e57fbda602)) - [@DaRacci](https://github.com/DaRacci)
+- Finally switch back to standard purpur instead of using my fork - ([9ad5ffc](https://github.com/DaRacci/Minix/commit/9ad5ffc89c17d0a3d7151e2ca6550d9a674db294)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.5.1](https://github.com/DaRacci/Minix/compare/v2.5.0..v2.5.1) - 2022-03-26
 #### Bug Fixes
 - Remove pulling - ([d7dbbd6](https://github.com/DaRacci/Minix/commit/d7dbbd66d5f1ad54ea0557a7d9b7dbf38148090c)) - [@DaRacci](https://github.com/DaRacci)

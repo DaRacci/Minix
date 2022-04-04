@@ -19,6 +19,8 @@ import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.ifFalse
 import dev.racci.minix.api.utils.kotlin.ifInitialized
 import dev.racci.minix.api.utils.kotlin.ifTrue
+import dev.racci.minix.api.utils.safeCast
+import dev.racci.minix.api.utils.unsafeCast
 import io.leangen.geantyref.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -39,6 +41,7 @@ import org.spongepowered.configurate.ConfigurateException
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
+import org.spongepowered.configurate.serialize.TypeSerializer
 import org.spongepowered.configurate.serialize.TypeSerializerCollection
 import java.io.File
 import java.io.IOException
@@ -48,6 +51,8 @@ import kotlin.io.path.copyTo
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.name
 import kotlin.reflect.KClass
+import kotlin.reflect.full.createInstance
+import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.superclasses
 
 @MappedExtension("Data Service", bindToKClass = DataService::class)
@@ -184,6 +189,22 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         clazz: KClass<T>,
         file: File
     ): HoconConfigurationLoader {
+        val annotation = clazz.findAnnotation<MappedConfig>()
+        val serializers = if (annotation != null) {
+            val extraSerializers = annotation.serializers.asList().listIterator()
+            val collection = TypeSerializerCollection.builder()
+            while (extraSerializers.hasNext()) {
+                val nextClazz = extraSerializers.next()
+                val serializer = extraSerializers.runCatching {
+                    next().unsafeCast<KClass<TypeSerializer<*>>>().let {
+                        it.objectInstance ?: it.createInstance()
+                    }
+                }.getOrNull() ?: continue
+                collection.register(nextClazz.java, serializer.safeCast())
+            }
+            collection.build()
+        } else null
+
         return HoconConfigurationLoader.builder()
             .file(file)
             .prettyPrinting(true)
@@ -196,6 +217,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
                         .registerAll(ConfigurateComponentSerializer.builder().build().serializers())
                         .registerAll(UpdateProvider.UpdateProviderSerializer.serializers)
                         .registerAll(Serializer.serializers)
+                        .also { serializers?.let(it::registerAll) } // User defined serializers
                 }
             }
             .build()

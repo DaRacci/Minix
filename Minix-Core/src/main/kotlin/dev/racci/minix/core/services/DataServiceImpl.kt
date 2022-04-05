@@ -196,9 +196,25 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
     override suspend fun <T : Any> getConfigurateLoader(
         clazz: KClass<T>,
         file: File
-    ): HoconConfigurationLoader {
+    ): HoconConfigurationLoader = HoconConfigurationLoader.builder()
+        .file(file)
+        .prettyPrinting(true)
+        .defaultOptions { options ->
+            options.acceptsType(clazz.java)
+            options.shouldCopyDefaults(true)
+            options.serializers { serializerBuilder ->
+                serializerBuilder.registerAnnotatedObjects(objectMapperFactory())
+                    .registerAll(TypeSerializerCollection.defaults())
+                    .registerAll(ConfigurateComponentSerializer.builder().build().serializers())
+                    .registerAll(UpdateProvider.UpdateProviderSerializer.serializers)
+                    .registerAll(Serializer.serializers)
+                    .also { getSerializerCollection(clazz)?.let(it::registerAll) } // User defined serializers
+            }
+        }.build()
+
+    private fun getSerializerCollection(clazz: KClass<*>): TypeSerializerCollection? {
         val annotation = clazz.findAnnotation<MappedConfig>()
-        val serializers = if (annotation != null) {
+        return if (annotation != null) {
             val extraSerializers = annotation.serializers.asList().listIterator()
             val collection = TypeSerializerCollection.builder()
             while (extraSerializers.hasNext()) {
@@ -212,23 +228,6 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
             }
             collection.build()
         } else null
-
-        return HoconConfigurationLoader.builder()
-            .file(file)
-            .prettyPrinting(true)
-            .defaultOptions { options ->
-                options.acceptsType(clazz.java)
-                options.shouldCopyDefaults(true)
-                options.serializers { serializerBuilder ->
-                    serializerBuilder.registerAnnotatedObjects(objectMapperFactory())
-                        .registerAll(TypeSerializerCollection.defaults())
-                        .registerAll(ConfigurateComponentSerializer.builder().build().serializers())
-                        .registerAll(UpdateProvider.UpdateProviderSerializer.serializers)
-                        .registerAll(Serializer.serializers)
-                        .also { serializers?.let(it::registerAll) } // User defined serializers
-                }
-            }
-            .build()
     }
 
     @Suppress("kotlin:S6307")

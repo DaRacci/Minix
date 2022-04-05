@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.6.2](https://github.com/DaRacci/Minix/compare/v2.6.1..v2.6.2) - 2022-04-05
+#### Bug Fixes
+- Fix replacing both mentions of minix in the libs file - ([5694f40](https://github.com/DaRacci/Minix/commit/5694f4011dcffc6463687d94d6a028bbcbf9013c)) - [@DaRacci](https://github.com/DaRacci)
+- Fix tag pushing - ([9564fb8](https://github.com/DaRacci/Minix/commit/9564fb82d6a33c3bf91683161369b681f45febcb)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.6.1 - ([a394333](https://github.com/DaRacci/Minix/commit/a394333fab1a18c7165a39b342617e5a6d6ab36b)) - [@DaRacci](https://github.com/DaRacci)
+- Update conventions version - ([dadcf03](https://github.com/DaRacci/Minix/commit/dadcf03c82ee8e2031b449774a7fd881890dfab0)) - [@DaRacci](https://github.com/DaRacci)
+- Mark listenerbuilder as deprecated for removal in 3.0.0 - ([c2825a4](https://github.com/DaRacci/Minix/commit/c2825a4d427134ccfb4d107659fecd2328a40532)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.6.1](https://github.com/DaRacci/Minix/compare/v2.6.0..v2.6.1) - 2022-04-05
 #### Bug Fixes
 - Forgot to remove a duplicate mkdirs check - ([62df233](https://github.com/DaRacci/Minix/commit/62df233b96f15f59ecb0b42f8a4153f3203a4b58)) - [@DaRacci](https://github.com/DaRacci)

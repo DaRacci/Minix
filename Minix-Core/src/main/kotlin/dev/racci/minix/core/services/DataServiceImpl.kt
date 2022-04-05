@@ -16,7 +16,6 @@ import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.utils.MissingAnnotationException
 import dev.racci.minix.api.utils.getKoin
-import dev.racci.minix.api.utils.kotlin.ifFalse
 import dev.racci.minix.api.utils.kotlin.ifInitialized
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.safeCast
@@ -99,10 +98,9 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
         Database.connect(dataSource.value)
         val plugins = pm.plugins
-        val updateFolder = minix.dataFolder.resolve(config.updateFolder)
         transaction {
             SchemaUtils.createMissingTablesAndColumns(DataHolder.table)
-            DataHolder.all().forEach { holder ->
+            for (holder in DataHolder.all()) {
                 val func = {
                     val path = server.pluginsFolder.resolve(holder.loadNext.name)
                     log.debug { "Moving ${holder.loadNext} to path ${path.name}." }
@@ -117,18 +115,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
                         log.info { "Loaded ${holder.loadNext.name} from the update queue!" }
                     }
                     else -> {
-                        val instance = plugins.first { it.name == holder.id.value }.also(pm::disablePlugin)
-                        log.info { "Disabled ${holder.loadNext.name} from the update queue." }
-                        val path = Path(instance::class.java.protectionDomain.codeSource.location.file)
-                        updateFolder.resolve("old-versions").also { folder ->
-                            folder.mkdirs().ifFalse { return@forEach log.error { "Failed to create old-versions folder!" } }
-                            folder.resolve(path.name).also { file ->
-                                file.createNewFile().ifFalse { return@forEach log.error { "Failed to create old-versions/${path.name}!" } }
-                                path.copyTo(file.toPath())
-                                path.deleteIfExists()
-                                log.debug { "Moved ${path.name} to old-versions/${file.name}." }
-                            }
-                        }
+                        if (!disablePlugin(plugins, holder)) break
                         func().also(pm::loadPlugin)
                         log.info { "Loaded ${holder.loadNext.name} from the update queue!" }
                     }
@@ -136,6 +123,28 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
                 holder.delete()
             }
         }
+    }
+
+    private fun disablePlugin(
+        plugins: Array<out Plugin>,
+        holder: DataHolder
+    ): Boolean {
+        val folder = minix.dataFolder.resolve("${config.updateFolder}/old-versions")
+
+        if (!folder.mkdirs()) { log.error { "Failed to create old-versions folder!" }; return false }
+
+        val instance = plugins.first { it.name == holder.id.value }.also(pm::disablePlugin)
+        log.info { "Disabled ${holder.loadNext.name} from the update queue." }
+        val path = Path(instance::class.java.protectionDomain.codeSource.location.file)
+
+        folder.resolve(path.name).also { file ->
+            if (!file.createNewFile()) { return@also log.error { "Failed to create old-versions/${path.name}!" } }
+            path.copyTo(file.toPath())
+            path.deleteIfExists()
+            log.debug { "Moved ${path.name} to old-versions/${file.name}." }
+        }
+
+        return true
     }
 
     override suspend fun handleUnload() {

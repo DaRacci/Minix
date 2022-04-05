@@ -16,6 +16,7 @@ git commit --amend -C HEAD
 
 git push || exit 1 # There were remote changes not present in the local repo
 git push origin v"${VERSION}" # Push the new version tag
+git push --tags
 
 ./gradlew clean build
 

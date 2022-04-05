@@ -22,10 +22,10 @@ import dev.racci.minix.api.utils.minecraft.MCVersion
 import dev.racci.minix.api.utils.minecraft.MCVersion.Companion.sameMajor
 import dev.racci.minix.api.utils.now
 import dev.racci.minix.api.utils.size
-import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.client.statement.discardRemaining
+import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.TimeZone
@@ -39,8 +39,10 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.math.RoundingMode
 import java.security.DigestInputStream
 import java.security.MessageDigest
+import java.text.DecimalFormat
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
@@ -207,54 +209,19 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         var inputStream: InputStream? = null
         var outputStream: OutputStream? = null
         return@withContext try {
-            val tempConnection = provider.connect(url)
-            if (tempConnection == null) {
-                throw IOException("Could not connect to $url!")
-            } else connection = tempConnection
-
+            connection = provider.connect(url) ?: throw IOException("Could not connect to $url!")
+            inputStream = hashGenerator?.let {
+                DigestInputStream(connection.bodyAsChannel().toInputStream().buffered(), it)
+            } ?: url.openStream().buffered()
             val fileLength = connection.bodyAsChannel().readLong()
-            inputStream = if (hashGenerator != null) {
-                DigestInputStream(connection.body<BufferedInputStream>(), hashGenerator)
-            } else url.openStream().buffered()
 
             downloadFile.createNewFile()
             outputStream = downloadFile.outputStream()
 
             if (updaterConfig.announceDownloadProgress) { log.info { "Started downloading update: ${provider.latestVersion}" } }
-            var count: Int
-            var downloaded = 0
-            var progress: Int
-            var lastProgress = 1
-            val percentPerByte = 100f / fileLength
-            val buffer = ByteArray(BUFFER_SIZE)
-            val size = if (updaterConfig.announceDownloadProgress && fileLength > 0) {
-                when {
-                    fileLength == 1L -> "1 byte"
-                    fileLength < 1024L -> "$fileLength bytes"
-                    else -> {
-                        var doubleBytes = fileLength.toDouble()
-                        var i = 1
-                        while (doubleBytes >= 1024 && i < BYTE_NAMES.size) {
-                            doubleBytes /= 1024.0
-                            i++
-                        }
-                        String.format(if (doubleBytes >= 100) "%.1f %s" else "%.2f %s", doubleBytes, BYTE_NAMES[i])
-                    }
-                }
-            } else ""
 
-            while (inputStream.read(buffer, 0, BUFFER_SIZE).also { count = it } != -1) {
-                downloaded += count
-                outputStream.write(buffer, 0, count)
+            downloadWriter(inputStream, outputStream, fileLength)
 
-                if (updaterConfig.announceDownloadProgress && fileLength > 0) {
-                    progress = (downloaded * percentPerByte).toInt()
-                    if (progress % 10 == 0 && progress > lastProgress) {
-                        lastProgress = progress
-                        log.info { "Downloading update: $progress% ($size)" }
-                    }
-                }
-            }
             UpdateResult.UPDATE_FOUND
         } catch (e: Exception) {
             return@withContext when (e) {
@@ -279,6 +246,63 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
             connection?.discardRemaining()
         }
     }
+
+    private fun downloadWriter(
+        inputStream: InputStream,
+        outputStream: OutputStream,
+        fileLength: Long,
+    ) {
+        var count: Int
+        var downloaded = 0
+        var progress: Int
+        var lastProgress = 1
+        val percentPerByte = 100f / fileLength
+        val buffer = ByteArray(BUFFER_SIZE)
+        val size = getSize(fileLength)
+
+        while (inputStream.read(buffer, 0, BUFFER_SIZE).also { count = it } != -1) {
+            downloaded += count
+            outputStream.write(buffer, 0, count)
+
+            if (!updaterConfig.announceDownloadProgress || fileLength <= 0) continue
+
+            progress = (downloaded * percentPerByte).toInt()
+            if (progress % 10 == 0 && progress > lastProgress) {
+                lastProgress = progress
+                log.info { "Downloading update: $progress% ($size)" }
+            }
+        }
+    }
+
+    private fun getSize(
+        fileLength: Long,
+    ): String {
+        if (!updaterConfig.announceDownloadProgress || fileLength <= 0) return ""
+        return when {
+            fileLength == 1L -> "1 byte"
+            fileLength < 1024L -> "$fileLength bytes"
+            else -> {
+                var (doubleBytes, i) = byteType(fileLength)
+                doubleBytes = roundByte(doubleBytes)
+
+                "$doubleBytes ${BYTE_NAMES[i]}"
+            }
+        }
+    }
+
+    private fun byteType(length: Long): Pair<Double, Int> {
+        var bytes = length.toDouble()
+        var i = 1
+        while (bytes >= 1024 && i < BYTE_NAMES.size) {
+            bytes /= 1024.0
+            i++
+        }
+        return bytes to i
+    }
+
+    private fun roundByte(bytes: Double) = DecimalFormat(if (bytes >= 100) "#.#" else "#.##").apply {
+        roundingMode = RoundingMode.CEILING
+    }.format(bytes).toDouble()
 
     private suspend fun hashCheck(
         hashGenerator: MessageDigest?,
@@ -323,15 +347,9 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
                     val zipEntry = zipEntries.nextElement()
                     if (zipEntry.isDirectory || !zipEntry.name.matches(pattern)) continue
 
-                    val tempFile = File.createTempFile(plugin.name, null)
-                    zipFile.getInputStream(zipEntry).buffered().use { inputStream ->
-                        tempFile.outputStream().buffered(BUFFER_SIZE).use { outputStream ->
-                            inputStream.copyTo(outputStream)
-                            outputStream.flush()
-                        }
-                    }
-                    zipFile.close()
-                    file.delete().ifFalse { plugin.log.warn { "Couldn't delete old download file: ${file.absolutePath}" } }
+                    val tempFile = extractEntry(zipFile, zipEntry)
+
+                    if (!file.delete()) plugin.log.warn { "Couldn't delete old download file: ${file.absolutePath}" }
                     newFile = file.parentFile.resolve(zipEntry.name)
                     tempFile.renameTo(newFile)
                     gotFile = true
@@ -350,6 +368,21 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
             }
         }
         null to UpdateResult.FAILED_EXTRACTION
+    }
+
+    private fun extractEntry(
+        zipFile: ZipFile,
+        zipEntry: ZipEntry
+    ): File {
+        val tempFile = File.createTempFile(plugin.name, null)
+        val input = zipFile.getInputStream(zipEntry).buffered()
+
+        tempFile.outputStream().buffered(BUFFER_SIZE).use(input::copyTo)
+
+        input.close()
+        zipFile.close()
+
+        return tempFile
     }
 
     private suspend fun readyPlugin(

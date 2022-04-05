@@ -39,7 +39,7 @@ sed -i "s/version=.*/version=$2-SNAPSHOT/" ./gradle.properties # We now in snaps
 cd ../Minix-Conventions || exit 1
 git checkout main || exit 1
 git pull || exit 1
-sed -i "s/minix = .*/minix = \"$2\"/" ./gradle/libs.versions.toml
+sed -i "s/^minix = .*/minix = \"$2\"/" ./gradle/libs.versions.toml
 git add ./gradle/libs.versions.toml
 cog commit chore "Update Minix version from $PREVIOUS to $2" deps
 git push || exit 1

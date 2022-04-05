@@ -232,11 +232,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
     @Suppress("kotlin:S6307")
     @Throws(IOException::class, MissingAnnotationException::class, IllegalArgumentException::class) // uwu dangerous
-    suspend inline fun <reified T : Any> loadFrom(): T? = loadFrom(ConfigClass(T::class))
-
-    @Suppress("kotlin:S6307")
-    @Throws(IOException::class, MissingAnnotationException::class, IllegalArgumentException::class) // uwu dangerous
-    suspend inline fun <reified T : Any> loadFrom(config: ConfigClass): T? = loadFrom<T>(config, T::class)?.first
+    suspend inline fun <reified T : Any> loadFrom(config: ConfigClass = ConfigClass(T::class)): T? = loadFrom<T>(config, T::class)?.first
 
     @Throws(IOException::class, MissingAnnotationException::class, IllegalArgumentException::class) // uwu dangerous
     suspend fun <T> loadFrom(config: ConfigClass, clazz: KClass<*>): Pair<T, CommentedConfigurationNode>? = withContext(Dispatchers.IO) {

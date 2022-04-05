@@ -138,7 +138,6 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         val path = Path(instance::class.java.protectionDomain.codeSource.location.file)
 
         folder.resolve(path.name).also { file ->
-            if (!file.createNewFile()) { return@also log.error { "Failed to create old-versions/${path.name}!" } }
             path.copyTo(file.toPath())
             path.deleteIfExists()
             log.debug { "Moved ${path.name} to old-versions/${file.name}." }

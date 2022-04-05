@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import org.koin.core.component.get
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
@@ -68,6 +69,8 @@ abstract class MinixPlugin : JavaPlugin(), SusPlugin {
     }
 
     @MinixDsl
+    @Deprecated("Use extensions() instead", ReplaceWith("extensions(builder)"))
+    @ScheduledForRemoval(inVersion = "3.0.0")
     protected suspend fun listeners(builder: suspend ListenerBuilder.() -> Unit) {
         builder(get<PluginService>()[this].listenerBuilder)
     }
@@ -83,9 +86,13 @@ abstract class MinixPlugin : JavaPlugin(), SusPlugin {
     }
 
     @MinixDsl
+    @Deprecated("Use ExtensionBuilder() instead", ReplaceWith("ExtensionBuilder()"))
+    @ScheduledForRemoval(inVersion = "3.0.0")
     inner class ListenerBuilder {
 
         @MinixDsl
+        @Deprecated("Use extensions instead", ReplaceWith("extensions(builder)"))
+        @ScheduledForRemoval(inVersion = "3.0.0")
         infix fun MinixPlugin.add(builder: ListenerUnit) {
             get<PluginService>()[this@MinixPlugin].listeners += builder()
         }

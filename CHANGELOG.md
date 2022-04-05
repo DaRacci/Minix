@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.6.1](https://github.com/DaRacci/Minix/compare/v2.6.0..v2.6.1) - 2022-04-05
+#### Bug Fixes
+- Forgot to remove a duplicate mkdirs check - ([62df233](https://github.com/DaRacci/Minix/commit/62df233b96f15f59ecb0b42f8a4153f3203a4b58)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.6.0 - ([dfa6318](https://github.com/DaRacci/Minix/commit/dfa631851fc7a6e75c60455a63cd386d7d6f7afb)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Remove dupe method - ([6b9f43d](https://github.com/DaRacci/Minix/commit/6b9f43ddc1ffc23f04aff3ddaff057433c50d081)) - [@DaRacci](https://github.com/DaRacci)
+- Split methods - ([e9c5baa](https://github.com/DaRacci/Minix/commit/e9c5baa24a8649fe439d877f5fa504086c333890)) - [@DaRacci](https://github.com/DaRacci)
+- Refactor the updater service stuff a bit - ([cc30647](https://github.com/DaRacci/Minix/commit/cc30647469d4643d621e21b284e4a993563a9d9f)) - [@DaRacci](https://github.com/DaRacci)
+- - -
+
 ## [v2.6.0](https://github.com/DaRacci/Minix/compare/v2.5.1..v2.6.0) - 2022-04-04
 #### Bug Fixes
 - Fix auto update for minix conventions - ([c50ccc0](https://github.com/DaRacci/Minix/commit/c50ccc0a54ea22e4902b046c984342a5571d910f)) - [@DaRacci](https://github.com/DaRacci)

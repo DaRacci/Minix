@@ -40,8 +40,8 @@ abstract class UpdateProvider : KoinComponent {
      * @return The latest version.
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
-    @get:Throws(NotSuccessfullyQueriedException::class)
-    abstract val latestVersion: Version
+//    @get:Throws(NotSuccessfullyQueriedException::class)
+    abstract val latestVersion: Version?
 
     /**
      * Get the latest version's direct download url.
@@ -50,8 +50,8 @@ abstract class UpdateProvider : KoinComponent {
      * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
-    @get:Throws(RequestTypeNotAvailableException::class, NotSuccessfullyQueriedException::class)
-    open val latestFileURL: URL get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a file url!")
+    @get:Throws(RequestTypeNotAvailableException::class, /*NotSuccessfullyQueriedException::class*/)
+    open val latestFileURL: URL? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a file url!")
 
     /**
      * Get the latest version's file name.
@@ -59,8 +59,8 @@ abstract class UpdateProvider : KoinComponent {
      * @return latest version's file name.
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
-    @get:Throws(NotSuccessfullyQueriedException::class)
-    abstract val latestFileName: String
+//    @get:Throws(NotSuccessfullyQueriedException::class)
+    abstract val latestFileName: String?
 
     /**
      * Get the latest version's name (such as "Project v1.0").
@@ -69,8 +69,8 @@ abstract class UpdateProvider : KoinComponent {
      * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
-    @get:Throws(RequestTypeNotAvailableException::class, NotSuccessfullyQueriedException::class)
-    open val latestName: String get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a name!")
+    @get:Throws(RequestTypeNotAvailableException::class, /*NotSuccessfullyQueriedException::class*/)
+    open val latestName: String? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a name!")
 
     /**
      * Get the latest version's game version (such as "CB 1.7.2-R0.3" or "1.9").
@@ -80,7 +80,7 @@ abstract class UpdateProvider : KoinComponent {
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
     @get:Throws(RequestTypeNotAvailableException::class, NotSuccessfullyQueriedException::class)
-    open val latestMinecraftVersion: String get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a minecraft version!")
+    open val latestMinecraftVersion: String? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a minecraft version!")
 
     /**
      * Get the latest version's compatible game versions as an string array (each element is a compatible version such as "CB 1.7.2-R0.3" or "1.9").
@@ -90,7 +90,7 @@ abstract class UpdateProvider : KoinComponent {
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
     @get:Throws(RequestTypeNotAvailableException::class, NotSuccessfullyQueriedException::class)
-    open val latestMinecraftVersions: Array<String> get() = throw RequestTypeNotAvailableException("The $name update provider does not provide any minecraft versions!")
+    open val latestMinecraftVersions: Array<String>? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide any minecraft versions!")
 
     /**
      * Get the latest version's release type.
@@ -100,7 +100,7 @@ abstract class UpdateProvider : KoinComponent {
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
     @get:Throws(NotSuccessfullyQueriedException::class)
-    abstract val latestReleaseType: ReleaseType
+    abstract val latestReleaseType: ReleaseType?
 
     /**
      * Get the latest version's checksum (md5).
@@ -110,7 +110,7 @@ abstract class UpdateProvider : KoinComponent {
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
     @get:Throws(RequestTypeNotAvailableException::class, NotSuccessfullyQueriedException::class)
-    open val latestChecksum: String get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a checksum!")
+    open val latestChecksum: String? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a checksum!")
 
     /**
      * Get the latest version's changelog.
@@ -120,7 +120,7 @@ abstract class UpdateProvider : KoinComponent {
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
     @get:Throws(RequestTypeNotAvailableException::class, NotSuccessfullyQueriedException::class)
-    open val latestChangelog: String get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a changelog!")
+    open val latestChangelog: String? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a changelog!")
 
     /**
      * Get the latest version's dependencies.
@@ -130,7 +130,7 @@ abstract class UpdateProvider : KoinComponent {
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
     @get:Throws(RequestTypeNotAvailableException::class, NotSuccessfullyQueriedException::class)
-    open val latestDependencies: Array<UpdateFile> get() = throw RequestTypeNotAvailableException("The $name update provider does not provide any dependencies!")
+    open val latestDependencies: Array<UpdateFile>? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide any dependencies!")
 
     /**
      * Get a collection of the latest versions.
@@ -140,7 +140,7 @@ abstract class UpdateProvider : KoinComponent {
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
     @get:Throws(RequestTypeNotAvailableException::class, NotSuccessfullyQueriedException::class)
-    open val updateHistory: Array<UpdateFile> get() = throw RequestTypeNotAvailableException("The $name update provider does not provide an update history!")
+    open val updateHistory: Array<UpdateFile>? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide an update history!")
 
     open val providesDownloadURL: Boolean get() = false
     open val providesMinecraftVersion: Boolean get() = false

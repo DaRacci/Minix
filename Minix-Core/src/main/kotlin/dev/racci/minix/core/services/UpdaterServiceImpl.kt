@@ -17,7 +17,6 @@ import dev.racci.minix.api.updater.providers.NotSuccessfullyQueriedException
 import dev.racci.minix.api.updater.providers.RequestTypeNotAvailableException
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.utils.data.Data
-import dev.racci.minix.api.utils.kotlin.ifFalse
 import dev.racci.minix.api.utils.minecraft.MCVersion
 import dev.racci.minix.api.utils.minecraft.MCVersion.Companion.sameMajor
 import dev.racci.minix.api.utils.now
@@ -53,7 +52,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
     private val updaterConfig by lazy { get<DataService>().get<UpdaterConfig>() }
     private val updateFolder by lazy { // Ensure the update folder exists whenever we first get its location
         val folder = server.pluginsFolder.resolve(updaterConfig.updateFolder)
-        if (!folder.exists()) folder.mkdirs().ifFalse { log.error { "Could not create update folder!" } }
+        if (!folder.mkdirs()) { log.error { "Could not create update folder!" } }
         folder
     }
     override val enabledUpdaters = mutableListOf<PluginUpdater>()
@@ -102,6 +101,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
 
         taskAsync(repeatDelay = 5.minutes) {
             for (updater in enabledUpdaters) {
+                log.debug { "Checking ${updater.name} for updates" }
                 if (updater.lastRun != null && now() < (updater.lastRun!! + updaterConfig.interval)) continue
 
                 if (updater.updateMode == UpdateMode.DISABLED) {
@@ -136,7 +136,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
 
     override fun checkForUpdate(updater: PluginUpdater): Boolean {
         updater.result = when {
-            updater.remoteVersion == null -> {
+            updater.provider.latestVersion == null -> {
                 plugin.log.warn {
                     "No remote version found for plugin ${updater.name}" +
                         "\n\t\tYou should contact the plugin author [${updater.pluginInstance?.description?.authors?.firstOrNull()}] about this!"
@@ -144,12 +144,12 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
                 updater.failedAttempts++
                 UpdateResult.FAILED_NO_VERSION
             }
-            updater.localVersion >= updater.remoteVersion!! -> {
+            updater.localVersion >= updater.provider.latestVersion!! -> {
                 if (updaterConfig.announceDownloadProgress && !updater.sentInfo) {
                     plugin.log.info {
                         "The plugin ${updater.name} is up to date." +
                             "\n\t\tLocal version: ${updater.localVersion}" +
-                            "\n\t\tRemote version: ${updater.remoteVersion}"
+                            "\n\t\tRemote version: ${updater.provider.latestVersion}"
                     }
                     updater.sentInfo = true // Ensure we only send this once instead of spamming the console every time we check.
                 }
@@ -175,7 +175,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         try {
             log.debug { "Updating ${updater.name} with ${updater.provider.name}" }
             val hashGenerator = updater.provider.providesChecksum.instanceOrNull
-            val downloadFile = updateFolder.resolve(updater.provider.latestFileName)
+            val downloadFile = updateFolder.resolve(updater.provider.latestFileName ?: error("No latest file name found!"))
             updater.result = downloadFile(updater.provider, downloadFile, hashGenerator)
 
             hashCheck(hashGenerator, downloadFile, updater.provider).takeIf { it.name.startsWith("FAILED") }?.let { updater.result = it }
@@ -204,7 +204,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
             return@withContext UpdateResult.SUCCESS
         }
 
-        val url = provider.latestFileURL
+        val url = provider.latestFileURL ?: return@withContext UpdateResult.FAILED_NO_FILE
         var connection: HttpResponse? = null
         var inputStream: InputStream? = null
         var outputStream: OutputStream? = null
@@ -318,7 +318,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
                     }
                 }.toString().lowercase()
             } else ""
-            val targetMD5 = updateProvider.latestChecksum.lowercase()
+            val targetMD5 = updateProvider.latestChecksum?.lowercase()
 
             if (downloadMD5 != targetMD5) {
                 plugin.log.warn {
@@ -434,13 +434,13 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
     }
 
     private fun isCompatible(updater: PluginUpdater): Boolean = try {
-        val versions = updater.provider.latestMinecraftVersions.map { MCVersion[it] }
-        val supported = versions.any { MCVersion.currentVersion sameMajor it }
+        val versions = updater.provider.latestMinecraftVersions?.map { MCVersion[it] }
+        val supported = versions?.any { MCVersion.currentVersion sameMajor it } ?: false
         if (!supported) {
             log.info {
                 "Update found but it isn't compatible with the current Minecraft version." +
                     "\n\t\tCurrent version: ${MCVersion.currentVersion.majorMinecraftVersion}" +
-                    "\n\t\tSupported versions: ${versions.joinToString(", ")}"
+                    "\n\t\tSupported versions: ${versions?.joinToString(", ")}"
             }
         }
         supported
@@ -455,7 +455,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
             plugin.log.info {
                 "The plugin ${updater.name} has a new version." +
                     "\n\t\tLocal version: ${updater.localVersion}" +
-                    "\n\t\tRemote version: ${updater.remoteVersion}"
+                    "\n\t\tRemote version: ${updater.provider.latestVersion}"
             }
             updater.sentAvailable = true
         }

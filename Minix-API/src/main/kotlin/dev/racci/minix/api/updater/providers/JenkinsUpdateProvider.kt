@@ -26,8 +26,8 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
     private val url: URL
 
     override val name = "Jenkins"
-    override val latestChecksum: String get() = lastResult?.checksum ?: throw NotSuccessfullyQueriedException()
-    override val latestChangelog: String get() = lastResult?.changelog ?: throw NotSuccessfullyQueriedException()
+    override val latestChecksum get() = lastResult?.checksum // ?: throw NotSuccessfullyQueriedException()
+    override val latestChangelog get() = lastResult?.changelog // ?: throw NotSuccessfullyQueriedException()
     override val providesChangelog get() = true
     override val providesChecksum get() = ChecksumType.MD5
     override val providesUpdateHistory get() = false // TODO

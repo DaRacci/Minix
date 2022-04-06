@@ -19,7 +19,8 @@ abstract class BaseOnlineProvider protected constructor(
 
     override val latestReleaseType: ReleaseType
         get() {
-            val version = latestVersion
+            if (latestVersion == null) return ReleaseType.UNKNOWN
+            val version = latestVersion!!
             if (!version.isPreRelease) return ReleaseType.RELEASE
             val sVersion = version.toString().lowercase()
             return when {
@@ -30,7 +31,6 @@ abstract class BaseOnlineProvider protected constructor(
                 else -> ReleaseType.UNKNOWN
             }
         }
-
     override val providesDownloadURL get() = true
 
     protected fun logErrorOffline(

@@ -99,9 +99,9 @@ class BukkitUpdateProvider(
     override val providesMinecraftVersion get() = true
     override val providesChecksum get() = ChecksumType.MD5
     override val providesUpdateHistory get() = true
-    override val latestMinecraftVersion get() = lastResult?.gameVersion ?: throw NotSuccessfullyQueriedException()
-    override val latestChecksum get() = lastResult?.checksum ?: throw NotSuccessfullyQueriedException()
-    override val updateHistory get() = lastHistory ?: throw NotSuccessfullyQueriedException()
+    override val latestMinecraftVersion get() = lastResult?.gameVersion // ?: throw NotSuccessfullyQueriedException()
+    override val latestChecksum get() = lastResult?.checksum // ?: throw NotSuccessfullyQueriedException()
+    override val updateHistory get() = lastHistory // ?: throw NotSuccessfullyQueriedException()
 
     private data class BukkitJsonResponse(
         val dateReleased: String,

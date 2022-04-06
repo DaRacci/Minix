@@ -46,13 +46,18 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
 
     override operator fun compareTo(other: Version): Int {
         val c = version.size.coerceAtMost(other.version.size)
+        println("Comparing versions: ${this.version.joinToString(", ")} and ${other.version.joinToString(", ")}")
 
         repeat(c) {
+            println("Repeat: $it")
+            println("Numbers: ${version[it]} and ${other.version[it]}")
             when { // Compare each digit and find a difference
                 other.version[it] > version[it] -> return -1
-                other.version[it] < version[it] -> return 1
+                version[it] > other.version[it] -> return 1
             }
         }
+
+        println("Both versions numbers by size are the same")
 
         if (version.size != other.version.size) { // If both version are the same for the length, the version that has more digits (>0) probably is the newer one.
             val otherLonger = other.version.size > version.size
@@ -119,6 +124,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
 
             this.rawVersion = rawVersion.takeUnless { it.startsWith("v", true) } ?: rawVersion.substring(1)
             this.version = IntArray(comps.size.takeUnless { finalVersion } ?: (comps.size + 1))
+            println("Version: " + this.version.joinToString(", "))
             this.buildNumber = getBuildParameter(tags, "(b|build(number)?)")
             this.timestamp = getBuildParameter(tags, "(t|ts|time(stamp)?)")
             this.tags = tags
@@ -152,13 +158,13 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
 
     companion object {
 
-        private val unimportantVersionRegex by lazy { Regex("(\\.0)*$") }
-        private val preReleaseTagResolution: MutableMap<String, Int> = ConcurrentHashMap()
-        private val preReleaseTagRegex by lazy { Regex("(?<tag>\\w+)\\.?(?<number>\\d+)") }
-        private val preReleaseTags by lazy { arrayOf("alpha", "a", "beta", "b", "pre", "rc", "snapshot") }
-        internal val versionStringRegex by lazy { Regex("[vV]?(?<version>\\d+(\\.\\d+)*)-?(?<tags>([^-\\s]+)*)") }
+        val unimportantVersionRegex by lazy { Regex("(\\.0)*$") }
+        val preReleaseTagResolution: MutableMap<String, Int> = ConcurrentHashMap()
+        val preReleaseTagRegex by lazy { Regex("(?<tag>\\w+)\\.?(?<number>\\d+)") }
+        val preReleaseTags by lazy { arrayOf("alpha", "a", "beta", "b", "pre", "rc", "snapshot") }
+        val versionStringRegex by lazy { Regex("[vV]?(?<version>\\d+(\\.\\d+)*)-?(?<tags>([^-\\s]+)*)") }
 
-        private fun getBuildParameter(
+        fun getBuildParameter(
             tags: Array<String>,
             parameter: String
         ): Long {
@@ -172,7 +178,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
             return -1
         }
 
-        private fun getAll(
+        fun getAll(
             source: Array<String>,
             searchForArray: Array<String>
         ): ArrayList<String> {

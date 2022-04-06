@@ -49,6 +49,7 @@ class GithubUpdateProvider(
             logger.throwing(throwable)
             throw throwable
         }
+        logger.debug { "Github URL: $url" }
     }
 
     override val name: String = "Github"
@@ -72,6 +73,7 @@ class GithubUpdateProvider(
         try {
             val result = UpdateFile(name = projectRepo)
             val jsonObj = response.getBuffered().use { JsonParser.parseReader(it).asJsonObject }
+            logger.debug { "Github response: \n\t\t$jsonObj" }
             val assets = jsonObj["assets"].asJsonArray
             var foundDL = false
             val i = assets.iterator()
@@ -117,13 +119,7 @@ class GithubUpdateProvider(
         } catch (ignored: Exception) {}
         return ""
     }
-
-    @get:Throws(RequestTypeNotAvailableException::class, NotSuccessfullyQueriedException::class)
-    override val latestChecksum: String
-        get() {
-            if (lastResult == null) throw NotSuccessfullyQueriedException()
-            return lastResult!!.checksum.orEmpty()
-        }
+    override val latestChecksum: String? get() = lastResult?.checksum?.orEmpty()
 
     override val providesMinecraftVersions get() = false // TODO: I think this is possible, but I don't know how to do it.
 

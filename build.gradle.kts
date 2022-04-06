@@ -97,6 +97,12 @@ tasks {
 
     shadowJar {
         val location = "dev.racci.minix.libs"
+        this.dependencyFilter.include {
+            it.moduleGroup == "org.bstats" ||
+                it.moduleGroup == "io.sentry" ||
+                it.moduleName == "Minix-Core" ||
+                it.moduleName == "Minix-API"
+        }
         relocate("org.bstats", "$location.bstats")
         relocate("io.sentry", "$location.sentry")
     }

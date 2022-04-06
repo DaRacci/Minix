@@ -33,7 +33,7 @@ gh workflow run "docs.yml" # Generate the documentation
 ./gradlew :Minix-Core:publish # Public from the Core module
 
 git fetch --tags origin # Fetch the tags from the origin
-sed -i "s/version=.*/version=$2-SNAPSHOT/" ./gradle.properties # We now in snapshot
+sed -i "s/version=.*/version=$3/" ./gradle.properties # We now in snapshot
 
 # Update Minix-Conventions
 cd ../Minix-Conventions || exit 1

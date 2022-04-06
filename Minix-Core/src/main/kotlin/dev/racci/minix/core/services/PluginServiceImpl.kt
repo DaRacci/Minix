@@ -34,8 +34,8 @@ import org.koin.ext.getFullName
 import org.reflections.Reflections
 import org.reflections.scanners.Scanners
 import kotlin.reflect.KClass
-import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.isSuperclassOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
 import kotlin.time.Duration.Companion.seconds
@@ -65,15 +65,19 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
         runBlocking {
             if (!plugin.annotation?.extensions.isNullOrEmpty()) {
                 for (clazz in plugin.annotation!!.extensions) {
+
+                    if (!Extension::class.isSuperclassOf(clazz)) {
+                        minix.log.error { "$clazz isn't an extension.. Skipping." }
+                        continue
+                    }
+
                     pluginCache[plugin].extensions += { plugin: MinixPlugin ->
                         try {
-                            if (clazz.isSubclassOf(Extension::class)) error("Extension class must be a subclass of Extension")
                             val const = clazz.constructors.firstOrNull {
-                                println("Size: " + it.parameters.size)
-                                println("Name: " + it.name)
-                                println("Nullable: " + it.parameters.getOrNull(0)?.type?.isMarkedNullable)
-                                println("Subtype: " + it.parameters.getOrNull(0)?.type?.isSubtypeOf(MinixPlugin::class.starProjectedType))
-                                it.parameters.size == 1 && it.name == "plugin" && !it.parameters[0].type.isMarkedNullable && it.parameters[0].type.isSubtypeOf(MinixPlugin::class.starProjectedType)
+                                it.parameters.size == 1 &&
+                                    it.parameters[0].name == "plugin" &&
+                                    !it.parameters[0].type.isMarkedNullable &&
+                                    it.parameters[0].type.isSubtypeOf(MinixPlugin::class.starProjectedType)
                             } ?: throw IllegalArgumentException("Extension class $clazz does not have a constructor with one parameter of type MinixPlugin!")
                             const.call(plugin) as Extension<*>
                         } catch (e: Exception) {
@@ -276,6 +280,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
         cache.extensions.clear()
     }
 
+    // TODO: Look into failed dependencies not being respected
     private suspend fun MinixPlugin.startInOrder() {
         val cache = pluginCache[this]
         val sorted = getSortedExtensions()

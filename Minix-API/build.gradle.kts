@@ -21,7 +21,6 @@ dependencies {
     lib(rootProject.libs.bundles.exposed)
 
     lib(rootProject.libs.koin.core)
-    lib(rootProject.libs.koin.ktor)
     lib(rootProject.libs.ktor.client.core)
     lib(rootProject.libs.ktor.client.cio)
 

@@ -9,6 +9,7 @@ extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME)
 }
 
 dependencies {
+    api(libs.minecraft.bstats)
     // We Shade these two due to the puffer fish conflict
     implementation(libs.sentry.core)
     implementation(libs.sentry.kotlin)
@@ -39,7 +40,6 @@ dependencies {
     lib(rootProject.libs.mordant)
     lib(rootProject.libs.caffeine)
     lib(rootProject.libs.reflections)
-    lib(rootProject.libs.minecraft.bstats)
 }
 
 // Lmao this works well as compared to what I was doing before

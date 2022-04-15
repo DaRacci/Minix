@@ -117,33 +117,34 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
         try {
             val matcher = versionStringRegex.matchEntire(rawVersion) ?: throw InvalidVersionStringException()
             val version = matcher.groups["version"]!!.value.replace(unimportantVersionRegex, "")
-            val comps = version.split(".").toTypedArray()
+
             val tags = matcher.groups["tags"]!!.value.split("-").toTypedArray()
-            val tagsList = if (!ignoreTags) getAll(tags, preReleaseTags) else null
-            val finalVersion = tagsList.isNullOrEmpty()
+            val comps = version.split(".").toTypedArray()
+            val tagsList = if (ignoreTags) emptyList() else getAll(tags, preReleaseTags)
+            val notFinalVersion = tagsList.isNotEmpty()
 
             this.rawVersion = rawVersion.takeUnless { it.startsWith("v", true) } ?: rawVersion.substring(1)
-            this.version = IntArray(comps.size.takeUnless { finalVersion } ?: (comps.size + 1))
-            println("Version: " + this.version.joinToString(", "))
+            this.version = IntArray(comps.size.takeUnless { notFinalVersion } ?: (comps.size + 1))
             this.buildNumber = getBuildParameter(tags, "(b|build(number)?)")
             this.timestamp = getBuildParameter(tags, "(t|ts|time(stamp)?)")
             this.tags = tags
 
-            for (i in comps.indices) { this.version[i] = comps[i].toInt() }
-            if (!finalVersion) {
+            comps.indices.forEach { this.version[it] = comps[it].toInt() }
+
+            if (notFinalVersion) {
                 isPreRelease = true
                 var last = 0
-                for (string in tagsList!!) {
+                for (string in tagsList) {
                     if (last == 0) last = Int.MAX_VALUE
                     var tagNumber = 0
                     var tag = string.lowercase()
-                    preReleaseTagRegex.matchEntire(tag).invokeIfNotNull { result ->
+                    preReleaseTagRegex.find(tag).invokeIfNotNull { result ->
                         tagNumber = result.groups["number"]!!.value.toInt()
                         tag = result.groups["tag"]!!.value
                     }
                     last = last - preReleaseTagResolution[tag]!! + tagNumber
                 }
-                this.version[this.version.lastIndex] = last
+                this.version[version.lastIndex - 1] = last
                 if (last > 0) {
                     for (i in this.version.size - 2 downTo 0) {
                         if (this.version[i] > 0 || i == 0) {

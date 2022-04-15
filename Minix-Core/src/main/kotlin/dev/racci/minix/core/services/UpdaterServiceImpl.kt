@@ -93,7 +93,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         if (enabledUpdaters.isNotEmpty()) { // Only debug if we found updater, but we always want to start the task
             log.debug {
                 "Found ${enabledUpdaters.size} updaters" +
-                    "\n\t\tUpdaters:" + enabledUpdaters.joinToString(separator = "\n\t\t\t") { updater ->
+                    "\n\t\tUpdaters:\n\t\t\t" + enabledUpdaters.joinToString(separator = "\n\t\t\t") { updater ->
                     "${updater.name} - ${updater.providers.joinToString(separator = ", ") { it.name }}"
                 }
             }

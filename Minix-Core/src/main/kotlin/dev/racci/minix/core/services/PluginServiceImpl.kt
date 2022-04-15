@@ -67,7 +67,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
                 for (clazz in plugin.annotation!!.extensions) {
 
                     if (!Extension::class.isSuperclassOf(clazz)) {
-                        minix.log.error { "$clazz isn't an extension.. Skipping." }
+                        plugin.log.error { "$clazz isn't an extension.. Skipping." }
                         continue
                     }
 
@@ -81,7 +81,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
                             } ?: throw IllegalArgumentException("Extension class $clazz does not have a constructor with one parameter of type MinixPlugin!")
                             const.call(plugin) as Extension<*>
                         } catch (e: Exception) {
-                            minix.log.error(e) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
+                            plugin.log.error(e) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
                             throw e
                         }
                     }
@@ -93,7 +93,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
             plugin.loadReflection()
             pluginCache[plugin].extensions.ifNotEmpty { plugin.loadInOrder() }
             plugin.invokeIfOverrides(SusPlugin::handleAfterLoad.name) {
-                minix.log.debug { "Running handleAfterLoad for ${plugin.name}" }
+                plugin.log.debug { "Running handleAfterLoad for ${plugin.name}" }
                 plugin.handleAfterLoad()
             }
         }
@@ -105,24 +105,24 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
             val cache = pluginCache[plugin]
 
             plugin.invokeIfOverrides(SusPlugin::handleEnable.name) {
-                minix.log.debug { "Running handleEnable for ${plugin.name}" }
+                plugin.log.debug { "Running handleEnable for ${plugin.name}" }
                 plugin.handleEnable()
             }
 
             cache.extensions.ifNotEmpty { plugin.startInOrder() }
 
             cache.listeners.ifNotEmpty { collection ->
-                minix.log.debug { "Registering ${collection.size} listeners for ${plugin.name}" }
+                plugin.log.debug { "Registering ${collection.size} listeners for ${plugin.name}" }
                 collection.forEach(plugin::registerSuspendingEvents)
             }
 
             plugin.bStatsId.invokeIfNotNull {
-                minix.log.debug { "Registering bStats for ${plugin.name}" }
+                plugin.log.debug { "Registering bStats for ${plugin.name}" }
                 cache.metrics = Metrics(plugin, it)
             }
 
             plugin.invokeIfOverrides(SusPlugin::handleAfterEnable.name) {
-                minix.log.debug { "Running handleAfterEnable for ${plugin.name}" }
+                plugin.log.debug { "Running handleAfterEnable for ${plugin.name}" }
                 plugin.handleAfterEnable()
             }
 
@@ -134,23 +134,23 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
     override fun unloadPlugin(plugin: MinixPlugin) {
         runBlocking {
             CoroutineScheduler.activateTasks(plugin)?.takeIf(IntArray::isNotEmpty)?.let {
-                minix.log.debug { "Cancelling ${it.size} tasks for ${plugin.name}" }
+                plugin.log.debug { "Cancelling ${it.size} tasks for ${plugin.name}" }
                 it.forEach { id -> CoroutineScheduler.cancelTask(id) }
             }
 
             val cache = pluginCache.getIfPresent(plugin)
 
             cache?.loadedExtensions?.takeIf(MutableList<*>::isNotEmpty)?.let { ex ->
-                minix.log.debug { "Unloading ${ex.size} extensions for ${plugin.name}" }
+                plugin.log.debug { "Unloading ${ex.size} extensions for ${plugin.name}" }
                 plugin.shutdownInOrder()
             }
 
             plugin.invokeIfOverrides(SusPlugin::handleDisable.name) {
-                minix.log.debug { "Running handleDisable for ${plugin.name}" }
+                plugin.log.debug { "Running handleDisable for ${plugin.name}" }
                 plugin.handleDisable()
             }
 
-            minix.log.debug { "Disabling the coroutine session for ${plugin.name}" }
+            plugin.log.debug { "Disabling the coroutine session for ${plugin.name}" }
             coroutineService.disable(plugin)
             loadedPlugins -= plugin::class
         }
@@ -167,32 +167,32 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
             }
             .forEach {
                 log.debug { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
-                dev.racci.minix.api.utils.getKoin().get<DataService>().configurations[it.kotlin] // Call the cache so we load can have it loaded.
+                getKoin().get<DataService>().configurations[it.kotlin] // Call the cache so we load can have it loaded.
             }
         reflections.getTypesAnnotatedWith(MappedExtension::class.java)
             .filter { clazz ->
                 when {
                     clazz.classLoader != this::class.java.classLoader -> {
-                        minix.log.debug { "Skipping ${clazz.name} because it's not loaded by ${this.name}." }
+                        log.debug { "Skipping ${clazz.name} because it's not loaded by ${this.name}." }
                         false
                     }
                     clazz.isAssignableFrom(Extension::class.java) -> {
-                        minix.log.debug { "Found MappedExtension [${clazz.simpleName}] from ${this.name}" }
+                        log.debug { "Found MappedExtension [${clazz.simpleName}] from ${this.name}" }
                         true
                     }
                     else -> {
-                        minix.log.warn { "${clazz.name} is annotated with MappedExtension but isn't an extension!." }
+                        log.warn { "${clazz.name} is annotated with MappedExtension but isn't an extension!." }
                         false
                     }
                 }
             }
             .forEach { clazz ->
-                minix.log.debug { "Found MappedExtension [${clazz.simpleName}] from ${this.name}" }
+                log.debug { "Found MappedExtension [${clazz.simpleName}] from ${this.name}" }
                 pluginCache[this].extensions += { plugin: MinixPlugin ->
                     try {
                         clazz.kotlin.primaryConstructor!!.call(plugin) as Extension<*>
                     } catch (e: Exception) {
-                        minix.log.error(e) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
+                        log.error(e) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
                         throw e
                     }
                 }

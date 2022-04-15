@@ -422,13 +422,22 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         val zipFile = updateFolder.resolve("${updater.name}_backup_${now().toLocalDateTime(TimeZone.UTC)}.zip")
         zipFile.createNewFile() // Shouldn't be a feasible way that this fails due to the name containing the current time
         val out = ZipOutputStream(zipFile.outputStream().buffered())
-        println(folder.absolutePath)
-        folder.listFiles()?.forEach { file ->
-            file.inputStream().buffered().use {
-                out.putNextEntry(ZipEntry(file.name))
-                BufferedInputStream(it).use { s -> s.copyTo(out, BUFFER_SIZE) }
+
+        fun traverseDir(directory: File) {
+            directory.listFiles()?.forEach { file ->
+                if (file.isDirectory) {
+                    traverseDir(file)
+                } else {
+                    file.inputStream().buffered().use {
+                        out.putNextEntry(ZipEntry(file.name))
+                        BufferedInputStream(it).use { s -> s.copyTo(out, BUFFER_SIZE) }
+                    }
+                }
             }
         }
+
+        traverseDir(folder)
+
         out.close()
         UpdateResult.SUCCESS
     }

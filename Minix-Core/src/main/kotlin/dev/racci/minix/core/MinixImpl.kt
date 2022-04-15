@@ -1,5 +1,6 @@
 package dev.racci.minix.core
 
+import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.builders.ItemBuilderDSL
 import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.data.Config
@@ -32,22 +33,25 @@ import org.koin.mp.KoinPlatformTools
 import kotlin.time.Duration.Companion.seconds
 
 @Suppress("unused")
+@MappedPlugin(
+    13706,
+    Minix::class,
+    [
+        DataServiceImpl::class,
+        UpdaterServiceImpl::class,
+        CoroutineSchedulerImpl::class,
+        CommandService::class,
+        PlayerServiceImpl::class,
+        ListenerService::class,
+        TimeService::class,
+    ]
+)
 class MinixImpl : Minix() {
     private val config by lazy { get<DataService>().get<Config>() }
-
-    override val bindToKClass get() = Minix::class
-    override val bStatsId by lazy { 13706 }
 
     override fun onLoad() {
         startKoin()
         get<PluginService>().loadPlugin(this)
-    }
-
-    override suspend fun handleLoad() {
-        extensions {
-            add(::DataServiceImpl)
-            add(::UpdaterServiceImpl)
-        }
     }
 
     override suspend fun handleAfterLoad() {
@@ -59,14 +63,6 @@ class MinixImpl : Minix() {
         startSentry()
 
         loadModule { single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class }
-
-        extensions {
-            add(::CoroutineSchedulerImpl)
-            add(::CommandService)
-            add(::PlayerServiceImpl)
-            add(::ListenerService)
-            add(::TimeService)
-        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)

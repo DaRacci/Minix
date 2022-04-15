@@ -109,7 +109,9 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
                 plugin.handleEnable()
             }
 
-            cache.extensions.ifNotEmpty { plugin.startInOrder() }
+            if (cache.extensions.isNotEmpty() || cache.loadedExtensions.isNotEmpty()) {
+                plugin.startInOrder()
+            }
 
             cache.listeners.ifNotEmpty { collection ->
                 plugin.log.debug { "Registering ${collection.size} listeners for ${plugin.name}" }
@@ -266,7 +268,10 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
             ex.setState(ExtensionState.LOADING)
             try {
                 withTimeout(5.seconds) {
-                    ex.invokeIfOverrides(Extension<*>::handleLoad.name) { ex.handleLoad() }
+                    ex.invokeIfOverrides(Extension<*>::handleLoad.name) {
+                        log.info { "Loading extension ${ex.name}" }
+                        ex.handleLoad()
+                    }
                 }
             } catch (e: Throwable) {
                 if (e is TimeoutCancellationException) { log.warn { "Extension ${ex.name} took too longer than 5 seconds to load!" } }
@@ -305,7 +310,10 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
                 ex.setState(ExtensionState.ENABLING)
                 try {
                     withTimeout(5.seconds) {
-                        ex.invokeIfOverrides(Extension<*>::handleEnable.name) { ex.handleEnable() }
+                        ex.invokeIfOverrides(Extension<*>::handleEnable.name) {
+                            log.info { "Enabling extension ${ex.name}" }
+                            ex.handleEnable()
+                        }
                     }
                 } catch (e: Throwable) {
                     if (e is TimeoutCancellationException) { log.warn { "Extension ${ex.name} took too longer than 5 seconds to enable!" } }

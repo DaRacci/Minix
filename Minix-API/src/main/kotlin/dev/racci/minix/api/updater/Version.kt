@@ -46,11 +46,8 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
 
     override operator fun compareTo(other: Version): Int {
         val c = version.size.coerceAtMost(other.version.size)
-        println("Comparing versions: ${this.version.joinToString(", ")} and ${other.version.joinToString(", ")}")
 
         repeat(c) {
-            println("Repeat: $it")
-            println("Numbers: ${version[it]} and ${other.version[it]}")
             when { // Compare each digit and find a difference
                 other.version[it] > version[it] -> return -1
                 version[it] > other.version[it] -> return 1
@@ -192,14 +189,6 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
             }
             return result
         }
-
-        /**
-         * Checks if the given version string matches the required format.
-         *
-         * @param version The String to check.
-         * @return True if the string matches the format. False if not.
-         */
-        fun isValidVersionString(version: String): Boolean = versionStringRegex.matches(version)
 
         init {
             repeat(preReleaseTags.size) {

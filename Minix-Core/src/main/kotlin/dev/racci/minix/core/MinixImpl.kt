@@ -25,13 +25,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.core.KoinApplication
-import org.koin.core.annotation.KoinReflectAPI
 import org.koin.core.component.get
 import org.koin.core.context.startKoin
 import org.koin.dsl.bind
 import org.koin.mp.KoinPlatformTools
 import kotlin.time.Duration.Companion.seconds
 
+@Suppress("unused")
 class MinixImpl : Minix() {
     private val config by lazy { get<DataService>().get<Config>() }
 
@@ -54,7 +54,6 @@ class MinixImpl : Minix() {
         logger.level = config.loggingLevel
     }
 
-    @OptIn(KoinReflectAPI::class)
     override suspend fun handleEnable() {
 
         startSentry()
@@ -75,7 +74,6 @@ class MinixImpl : Minix() {
         GlobalScope.launch { delay(1.seconds); KoinPlatformTools.defaultContext().getOrNull()?.close() }
     }
 
-    @OptIn(KoinReflectAPI::class)
     private fun startKoin() {
         startKoin(KoinApplication.init())
         loadModule {

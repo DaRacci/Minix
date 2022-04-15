@@ -49,7 +49,6 @@ class GithubUpdateProvider(
             logger.throwing(throwable)
             throw throwable
         }
-        logger.debug { "Github URL: $url" }
     }
 
     override val name: String = "Github"
@@ -73,7 +72,6 @@ class GithubUpdateProvider(
         try {
             val result = UpdateFile(name = projectRepo)
             val jsonObj = response.getBuffered().use { JsonParser.parseReader(it).asJsonObject }
-            logger.debug { "Github response: \n\t\t$jsonObj" }
             val assets = jsonObj["assets"].asJsonArray
             var foundDL = false
             val i = assets.iterator()

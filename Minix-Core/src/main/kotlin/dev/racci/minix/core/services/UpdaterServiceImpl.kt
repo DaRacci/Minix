@@ -406,8 +406,8 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         val folder = updater.pluginInstance!!.dataFolder
 
         if (!folder.exists()) {
-            plugin.log.warn { "The plugin data folder does not exist: ${folder.absolutePath}" }
-            return@withContext UpdateResult.FAILED_BACKUP
+            plugin.log.debug { "The plugin data folder does not exist: ${folder.absolutePath}" }
+            return@withContext UpdateResult.SUCCESS
         }
 
         val data = Data(folder.size())

@@ -21,6 +21,7 @@ import dev.racci.minix.api.utils.minecraft.MCVersion
 import dev.racci.minix.api.utils.minecraft.MCVersion.Companion.sameMajor
 import dev.racci.minix.api.utils.now
 import dev.racci.minix.api.utils.size
+import dev.racci.minix.api.utils.unsafeCast
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.client.statement.discardRemaining
@@ -33,6 +34,7 @@ import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.event.server.PluginEnableEvent
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.component.get
+import org.koin.core.component.inject
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.IOException
@@ -42,6 +44,7 @@ import java.math.RoundingMode
 import java.security.DigestInputStream
 import java.security.MessageDigest
 import java.text.DecimalFormat
+import java.util.Collections
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
@@ -49,6 +52,7 @@ import kotlin.time.Duration.Companion.minutes
 
 @MappedExtension("Updater Service", [DataService::class], UpdaterService::class)
 class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
+    private val dataService by inject<DataService>()
     private val updaterConfig by lazy { get<DataService>().get<UpdaterConfig>() }
     private val updateFolder by lazy { // Ensure the update folder exists whenever we first get its location
         val folder = plugin.dataFolder.resolve(updaterConfig.updateFolder)
@@ -421,27 +425,26 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
             return@withContext UpdateResult.FAILED_BACKUP
         }
 
-        val zipFile = updateFolder.resolve("${updater.name}_backup_${now().toLocalDateTime(TimeZone.UTC)}.zip")
+        val zipFile = updateFolder.resolve("${updater.name}-${updater.localVersion}_backup_${now().toLocalDateTime(TimeZone.UTC)}.zip")
         zipFile.createNewFile() // Shouldn't be a feasible way that this fails due to the name containing the current time
-        val out = ZipOutputStream(zipFile.outputStream().buffered())
+        ZipOutputStream(zipFile.outputStream().buffered()).use() {
+            traverseDir(it, folder)
+        }
 
-        fun traverseDir(directory: File) {
-            directory.listFiles()?.forEach { file ->
-                if (file.isDirectory) {
-                    traverseDir(file)
-                } else {
-                    file.inputStream().buffered().use {
-                        out.putNextEntry(ZipEntry(file.name))
-                        BufferedInputStream(it).use { s -> s.copyTo(out, BUFFER_SIZE) }
-                    }
+        UpdateResult.SUCCESS
+    }
+
+    private fun traverseDir(out: ZipOutputStream, directory: File, level: Int = 0) {
+        directory.listFiles()?.forEach { file ->
+            if (file.isDirectory || level < 3) { // Don't go deeper than 3 levels
+                traverseDir(out, file, level + 1)
+            } else {
+                file.inputStream().buffered().use {
+                    out.putNextEntry(ZipEntry(file.name))
+                    BufferedInputStream(it).use { s -> s.copyTo(out, BUFFER_SIZE) }
                 }
             }
         }
-
-        traverseDir(folder)
-
-        out.close()
-        UpdateResult.SUCCESS
     }
 
     private fun isCompatible(updater: PluginUpdater): Boolean = try {

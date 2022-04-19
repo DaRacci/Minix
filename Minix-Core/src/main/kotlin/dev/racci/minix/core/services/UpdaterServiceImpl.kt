@@ -5,7 +5,6 @@ import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.data.UpdaterConfig
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.pm
-import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.extensions.taskAsync
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.services.DataService
@@ -17,6 +16,7 @@ import dev.racci.minix.api.updater.providers.NotSuccessfullyQueriedException
 import dev.racci.minix.api.updater.providers.RequestTypeNotAvailableException
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.utils.data.Data
+import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.minecraft.MCVersion
 import dev.racci.minix.api.utils.minecraft.MCVersion.Companion.sameMajor
 import dev.racci.minix.api.utils.now
@@ -32,6 +32,7 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.event.server.PluginEnableEvent
+import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.component.get
 import org.koin.core.component.inject
@@ -48,28 +49,71 @@ import java.util.Collections
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
+import kotlin.io.path.Path
+import kotlin.io.path.exists
+import kotlin.io.path.moveTo
+import kotlin.io.path.nameWithoutExtension
 import kotlin.time.Duration.Companion.minutes
 
 @MappedExtension("Updater Service", [DataService::class], UpdaterService::class)
 class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
-    private val dataService by inject<DataService>()
+    private val dataService by inject<DataService>().unsafeCast<Lazy<DataServiceImpl>>()
     private val updaterConfig by lazy { get<DataService>().get<UpdaterConfig>() }
     private val updateFolder by lazy { // Ensure the update folder exists whenever we first get its location
         val folder = plugin.dataFolder.resolve(updaterConfig.updateFolder)
         if (!folder.exists() && !folder.mkdirs()) { log.error { "Could not create update folder!" } }
         folder
     }
-    override val enabledUpdaters = mutableListOf<PluginUpdater>()
-    override val disabledUpdaters = mutableListOf<PluginUpdater>()
+    private val updatingPlugins by lazy { mutableSetOf<String>() }
+    override val enabledUpdaters: MutableList<PluginUpdater> = Collections.synchronizedList(mutableListOf<PluginUpdater>())
+    override val disabledUpdaters: MutableList<PluginUpdater> = Collections.synchronizedList(mutableListOf<PluginUpdater>())
+
+    override suspend fun handleLoad() {
+        val plugins = pm.plugins
+        transaction(dataService.database) {
+            SchemaUtils.createMissingTablesAndColumns(DataServiceImpl.DataHolder.table)
+            for (holder in DataServiceImpl.DataHolder.all()) {
+                val plugin = plugins.find { it.name == holder.id.value } ?: continue
+                val currentPath = plugin::class.java.protectionDomain.codeSource.location.file
+                log.debug { "Found plugin ${plugin.name} at $currentPath" }
+
+                when (currentPath) {
+                    holder.newVersion.toString() -> {
+                        log.info { "Plugin ${plugin.name} successfully loaded the new version!" }
+                        holder.oldVersion.exists().ifTrue {
+                            log.debug { "Moving old version of ${plugin.name}." }
+                            holder.oldVersion.moveTo(updateFolder.resolve("old-versions/${holder.oldVersion.fileName}").toPath())
+                        }
+                    }
+                    holder.oldVersion.toString() -> {
+                        log.warn {
+                            """
+                            Plugin ${plugin.name} is out of date!
+                            Version ${plugin.description.version} has loaded instead of ${
+                            holder.newVersion.nameWithoutExtension.split("^${holder.id.value}-".toRegex()).first()
+                            }.
+                            Please manually update the plugin to the latest version.
+                            """.trimIndent()
+                        }
+                    }
+                    else -> {} // We can assume that the plugin was updated manually.
+                }
+
+                holder.delete()
+            }
+        }
+    }
 
     override suspend fun handleEnable() {
         event<PluginEnableEvent> {
+            if (plugin.name in updatingPlugins) return@event
             disabledUpdaters.firstOrNull { it.name == plugin.name }?.let {
                 disabledUpdaters -= it
                 enabledUpdaters += it
             }
         }
         event<PluginDisableEvent> {
+            if (plugin.name in updatingPlugins) return@event
             enabledUpdaters.firstOrNull { it.name == plugin.name }?.let {
                 enabledUpdaters -= it
                 disabledUpdaters += it
@@ -396,9 +440,10 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         file: File
     ): Unit = withContext(Dispatchers.IO) {
         try {
-            transaction(dataService.unsafeCast<DataServiceImpl>().database) {
+            transaction(dataService.database) {
                 DataServiceImpl.DataHolder.new(updater.pluginInstance!!.name) {
-                    loadNext = file.toPath()
+                    newVersion = file.toPath()
+                    oldVersion = Path(updater.localFile)
                 }
             }
         } catch (e: Exception) {

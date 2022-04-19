@@ -8,6 +8,7 @@ import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixLogger
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
+import dev.racci.minix.api.updater.Version
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
@@ -87,8 +88,10 @@ class MinixImpl : Minix() {
             options.dsn = "https://80dedb0e861949509a7ed845deaca185@o1112455.ingest.sentry.io/6147185"
             options.release = description.version
             options.isDebug = log.debugEnabled
+            options.environment = if (Version(this@MinixImpl.description.version).isPreRelease) "pre-release" else "release"
             options.setBeforeSend { event, _ ->
-                event.setTag("TPS", server.tps.toString())
+                event.setTag("TPS-AVG", server.tps.average().toString())
+                event.setTag("TPS-CUR", server.tps.last().toString())
                 event
             }
             options.environment = "production"

@@ -51,8 +51,8 @@ import kotlin.time.Duration.Companion.minutes
 class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
     private val updaterConfig by lazy { get<DataService>().get<UpdaterConfig>() }
     private val updateFolder by lazy { // Ensure the update folder exists whenever we first get its location
-        val folder = server.pluginsFolder.resolve(updaterConfig.updateFolder)
-        if (!folder.mkdirs()) { log.error { "Could not create update folder!" } }
+        val folder = plugin.dataFolder.resolve(updaterConfig.updateFolder)
+        if (!folder.exists() && !folder.mkdirs()) { log.error { "Could not create update folder!" } }
         folder
     }
     override val enabledUpdaters = mutableListOf<PluginUpdater>()

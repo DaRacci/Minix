@@ -57,6 +57,12 @@ class PluginUpdater {
     val localVersion: Version get() = Version(pluginInstance!!.description.version) // By the time these are called the instance should be set.
     val localFile: String get() = pluginInstance!!::class.java.protectionDomain.codeSource.location.file
     @Transient var result: UpdateResult? = null
+        set(value) {
+            if (value?.name?.startsWith("FAILED") == true) {
+                failedAttempts++
+            }
+            field = value
+        }
     @Transient var activeProvider: Int = 0
     val provider: UpdateProvider get() = providers[activeProvider]
 

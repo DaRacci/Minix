@@ -48,6 +48,7 @@ import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.copyTo
 import kotlin.io.path.deleteIfExists
+import kotlin.io.path.moveTo
 import kotlin.io.path.name
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
@@ -104,7 +105,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
                 val func = {
                     val path = server.pluginsFolder.resolve(holder.loadNext.name)
                     log.debug { "Moving ${holder.loadNext} to path ${path.name}." }
-                    holder.loadNext.copyTo(path.toPath())
+                    holder.loadNext.moveTo(path.toPath())
                     log.info { "Moved ${holder.id.value}'s new jar file to the plugins folder!." }
                     path
                 }

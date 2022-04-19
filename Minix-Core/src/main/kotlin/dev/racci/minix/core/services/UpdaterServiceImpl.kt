@@ -390,7 +390,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         file: File
     ): Unit = withContext(Dispatchers.IO) {
         try {
-            transaction {
+            transaction(dataService.unsafeCast<DataServiceImpl>().database) {
                 DataServiceImpl.DataHolder.new(updater.pluginInstance!!.name) {
                     loadNext = file.toPath()
                 }

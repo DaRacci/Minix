@@ -90,6 +90,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
             addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
         }.let(::HikariDataSource)
     }
+    val database by lazy { Database.connect(dataSource.value) }
 
     // TODO: If this method is jank look into using the update folder from bukkit, note that the plugin must have the same name as the currently loaded one in that case.
     override suspend fun handleLoad() {
@@ -97,9 +98,8 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
             log.error { "Failed to create data folder!" }
         }
 
-        Database.connect(dataSource.value)
         val plugins = pm.plugins
-        transaction {
+        transaction(database) {
             SchemaUtils.createMissingTablesAndColumns(DataHolder.table)
             for (holder in DataHolder.all()) {
                 val func = {

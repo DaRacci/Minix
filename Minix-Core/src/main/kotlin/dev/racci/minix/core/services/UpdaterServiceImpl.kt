@@ -185,6 +185,8 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
 
             if (updater.result?.name?.startsWith("FAILED") != true) {
                 updater.result = UpdateResult.SUCCESS
+                enabledUpdaters -= updater
+                disabledUpdaters += updater
                 if (updaterConfig.announceDownloadProgress) log.info { "${updater.name} has been updated and readied for the next restart / reload." }
             }
         } catch (e: Exception) {

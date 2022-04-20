@@ -1,25 +1,32 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.api.utils.primitive
 
 import net.md_5.bungee.api.ChatColor
+import org.jetbrains.annotations.ApiStatus
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
+@Deprecated("MiniMessage will be the only supported text format going forward", ReplaceWith("MiniMessage.miniMessage().deserialize(string)"))
+@ApiStatus.ScheduledForRemoval(inVersion = "3.0.0")
 object ColourUtils {
 
     private val hexPattern = Pattern.compile("(#[A-Fa-f0-9]{6})")
 
+    @Deprecated("MiniMessage will be the only supported text format going forward", ReplaceWith("MiniMessage.miniMessage().deserialize(string)"))
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.0.0")
     fun colour(
         string: String?,
         parseHex: Boolean = true,
     ): String = internalColour(string, parseHex)
 
+    @Deprecated("MiniMessage will be the only supported text format going forward", ReplaceWith("MiniMessage.miniMessage().deserialize(string)"))
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.0.0")
     fun colour(
         string: Any?,
         parseHex: Boolean = true,
     ): String = internalColour(string.toString(), parseHex)
 
+    @Deprecated("MiniMessage will be the only supported text format going forward", ReplaceWith("MiniMessage.miniMessage().deserialize(string)"))
+    @ApiStatus.ScheduledForRemoval(inVersion = "3.0.0")
     fun colour(
         list: List<String>,
         parseHex: Boolean = true,

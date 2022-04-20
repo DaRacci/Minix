@@ -1,8 +1,6 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.api.utils.primitive
 
-private val unicodeRegex = "((\\\\u)([0-9]{4}))".toRegex()
+private val unicodeRegex = "((\\\\u)(\\d{4}))".toRegex()
 
 fun String.javaUnicodeToCharacter(): String = unicodeRegex.replace(this) {
     String(charArrayOf(it.destructured.component3().toInt(16).toChar()))

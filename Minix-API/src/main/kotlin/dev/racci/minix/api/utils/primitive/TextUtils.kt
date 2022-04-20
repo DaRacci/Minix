@@ -1,36 +1,43 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.api.utils.primitive
 
 import dev.racci.minix.api.extensions.noItalic
 import dev.racci.minix.api.utils.primitive.ColourUtils.colour
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
-import java.util.regex.Pattern
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 
 private const val regex = "\\{(\\S+)}"
-private val pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE)
 
+@Deprecated("MiniMessage will be the only supported text format going forward", ReplaceWith("MiniMessage.miniMessage().deserialize(string)"))
+@ScheduledForRemoval(inVersion = "3.0.0")
 fun textOf(
     string: String,
     builder: TextComponent.() -> Unit = {},
 ) = LegacyComponentSerializer.legacySection().deserialize(string).noItalic().also(builder)
 
+@Deprecated("MiniMessage will be the only supported text format going forward", ReplaceWith("MiniMessage.miniMessage().deserialize(string)"))
+@ScheduledForRemoval(inVersion = "3.0.0")
 fun textOf(
     list: List<String>,
     builder: List<TextComponent>.() -> Unit = {},
 ) = list.map { LegacyComponentSerializer.legacySection().deserialize(it).noItalic() }.also(builder)
 
+@Deprecated("MiniMessage will be the only supported text format going forward", ReplaceWith("MiniMessage.miniMessage().deserialize(string)"))
+@ScheduledForRemoval(inVersion = "3.0.0")
 fun colouredTextOf(
     string: String,
     builder: TextComponent.() -> Unit = {},
 ) = LegacyComponentSerializer.legacySection().deserialize(colour(string)).noItalic().also(builder)
 
+@Deprecated("MiniMessage will be the only supported text format going forward", ReplaceWith("MiniMessage.miniMessage().deserialize(string)"))
+@ScheduledForRemoval(inVersion = "3.0.0")
 fun colouredTextOf(
     list: List<String>,
     builder: List<TextComponent>.() -> Unit = {},
 ) = list.map { LegacyComponentSerializer.legacySection().deserialize(colour(it)).noItalic() }.also(builder)
 
+@Deprecated("MiniMessage will be the only supported text format going forward", ReplaceWith("MiniMessage.miniMessage().deserialize(string)"))
+@ScheduledForRemoval(inVersion = "3.0.0")
 fun replace(
     source: String,
     vararg replace: String,

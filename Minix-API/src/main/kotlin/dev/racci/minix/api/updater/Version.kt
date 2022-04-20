@@ -54,8 +54,6 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
             }
         }
 
-        println("Both versions numbers by size are the same")
-
         if (version.size != other.version.size) { // If both version are the same for the length, the version that has more digits (>0) probably is the newer one.
             val otherLonger = other.version.size > version.size
             val longer = if (otherLonger) other.version else version

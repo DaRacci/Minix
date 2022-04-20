@@ -19,7 +19,7 @@ import org.bukkit.event.world.WorldLoadEvent
 import org.bukkit.event.world.WorldUnloadEvent
 import kotlin.time.Duration.Companion.milliseconds
 
-@MappedExtension("Time Service")
+@MappedExtension(Minix::class, "Time Service")
 class TimeService(override val plugin: Minix) : Extension<Minix>() {
 
     private val timeState = HashMap<String, Boolean>()

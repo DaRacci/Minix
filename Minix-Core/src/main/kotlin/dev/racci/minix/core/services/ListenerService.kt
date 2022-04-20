@@ -42,7 +42,7 @@ import org.bukkit.inventory.ItemStack
 import org.koin.core.component.get
 import org.koin.core.component.inject
 
-@MappedExtension("Listener Service")
+@MappedExtension(Minix::class, "Listener Service")
 class ListenerService(override val plugin: Minix) : Extension<Minix>() {
     private val pluginService by inject<PluginService>()
 

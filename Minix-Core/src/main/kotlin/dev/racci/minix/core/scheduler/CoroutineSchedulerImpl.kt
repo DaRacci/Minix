@@ -1,5 +1,6 @@
 package dev.racci.minix.core.scheduler
 
+import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.minecraftDispatcher
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.Minix
@@ -13,7 +14,6 @@ import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
@@ -21,15 +21,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
 import org.koin.core.component.get
 import java.lang.management.ManagementFactory
-import kotlin.reflect.KClass
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class, ExperimentalCoroutinesApi::class, DelicateCoroutinesApi::class)
+@OptIn(DelicateCoroutinesApi::class)
+@MappedExtension(Minix::class, "Coroutine Scheduler", bindToKClass = CoroutineScheduler::class)
 class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), CoroutineScheduler {
 
-    override val name = "Coroutine Scheduler"
-    override val bindToKClass: KClass<*> get() = CoroutineScheduler::class
     override val parentJob: CompletableJob by lazy { SupervisorJob() }
 
     private val threadContext = lazy {

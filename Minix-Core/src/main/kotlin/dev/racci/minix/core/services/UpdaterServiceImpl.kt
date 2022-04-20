@@ -55,7 +55,7 @@ import kotlin.io.path.moveTo
 import kotlin.io.path.nameWithoutExtension
 import kotlin.time.Duration.Companion.minutes
 
-@MappedExtension("Updater Service", [DataService::class], UpdaterService::class)
+@MappedExtension(Minix::class, "Updater Service", [DataService::class], UpdaterService::class)
 class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
     private val dataService by inject<DataService>().unsafeCast<Lazy<DataServiceImpl>>()
     private val updaterConfig by lazy { get<DataService>().get<UpdaterConfig>() }

@@ -18,10 +18,7 @@ import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.UUID
 
-@MappedExtension(
-    "Player Service",
-    bindToKClass = PlayerService::class
-)
+@MappedExtension(Minix::class, "Player Service", bindToKClass = PlayerService::class)
 class PlayerServiceImpl(override val plugin: Minix) : Extension<Minix>(), PlayerService {
 
     private val playerData = HashMap<UUID, PlayerData>()

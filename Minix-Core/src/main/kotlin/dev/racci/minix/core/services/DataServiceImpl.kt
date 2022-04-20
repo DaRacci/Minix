@@ -46,7 +46,7 @@ import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.superclasses
 
-@MappedExtension("Data Service", bindToKClass = DataService::class)
+@MappedExtension(Minix::class, "Data Service", bindToKClass = DataService::class)
 class DataServiceImpl(override val plugin: Minix) : DataService() {
     private val configClasses: LoadingCache<KClass<*>, ConfigClass> = Caffeine.newBuilder().build(::ConfigClass)
 

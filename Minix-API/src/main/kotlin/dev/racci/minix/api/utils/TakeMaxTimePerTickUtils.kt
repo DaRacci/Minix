@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.api.utils
 
 import dev.racci.minix.api.extensions.WithPlugin
@@ -12,7 +10,6 @@ import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.ExperimentalTime
 
 internal val coroutineContextTakes = ConcurrentHashMap<CoroutineContext, TakeValues>()
 
@@ -24,12 +21,10 @@ internal data class TakeValues(
     fun wasTimeExceeded() = System.currentTimeMillis() - startTimeMilliseconds - takeTimeMillisecond >= 0
 }
 
-@OptIn(ExperimentalTime::class)
 suspend fun WithPlugin<*>.takeMaxPerTick(
     time: Duration,
 ) = plugin.takeMaxPerTick(time)
 
-@OptIn(ExperimentalTime::class)
 suspend fun MinixPlugin.takeMaxPerTick(time: Duration) {
     val takeValues = getTakeValuesOrNull(coroutineContext)
 
@@ -53,7 +48,6 @@ internal fun getTakeValuesOrNull(
     coroutineContext: CoroutineContext,
 ): TakeValues? = coroutineContextTakes[coroutineContext]
 
-@OptIn(ExperimentalTime::class)
 internal fun registerCoroutineContextTakes(
     coroutineContext: CoroutineContext,
     time: Duration,

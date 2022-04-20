@@ -22,25 +22,29 @@ import dev.racci.minix.api.utils.kotlin.invokeIfOverrides
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.api.utils.unsafeCast
 import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
+import io.github.classgraph.ClassGraph
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.bstats.bukkit.Metrics
+import org.bukkit.plugin.java.JavaPlugin
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import org.koin.ext.getFullName
-import org.reflections.Reflections
-import org.reflections.scanners.Scanners
 import kotlin.reflect.KClass
+import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.isSuperclassOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
+import kotlin.reflect.jvm.isAccessible
 import kotlin.time.Duration.Companion.seconds
 
-class PluginServiceImpl(val minix: Minix) : PluginService {
+class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
+    private val dataService by inject<DataService>()
 
     override val loadedPlugins by lazy { mutableMapOf<KClass<out MinixPlugin>, MinixPlugin>() }
 
@@ -150,6 +154,11 @@ class PluginServiceImpl(val minix: Minix) : PluginService {
             plugin.invokeIfOverrides(SusPlugin::handleDisable.name) {
                 plugin.log.debug { "Running handleDisable for ${plugin.name}" }
                 plugin.handleDisable()
+            }
+
+            cache?.configurations?.takeIf(MutableList<*>::isNotEmpty)?.let { configs ->
+                plugin.log.debug { "Unloading ${configs.size} configurations for ${plugin.name}" }
+                dataService.configurations.invalidateAll(configs)
             }
 
             plugin.log.debug { "Disabling the coroutine session for ${plugin.name}" }

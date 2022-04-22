@@ -7,7 +7,6 @@ import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.coroutine.registerSuspendingEvents
-import dev.racci.minix.api.data.UpdaterConfig
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionState
 import dev.racci.minix.api.plugin.Minix
@@ -17,7 +16,6 @@ import dev.racci.minix.api.plugin.SusPlugin
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
-import dev.racci.minix.api.services.UpdaterService
 import dev.racci.minix.api.utils.kotlin.ifNotEmpty
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import dev.racci.minix.api.utils.kotlin.invokeIfOverrides
@@ -70,14 +68,6 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
 
     override fun loadPlugin(plugin: MinixPlugin) {
         runBlocking {
-            plugin.updater?.let { updater ->
-                val config = get<UpdaterConfig>()
-                if (config.pluginUpdaters.any { updater.name == it.name }) return@let
-                val service = get<UpdaterService>().unsafeCast<UpdaterServiceImpl>()
-                config.pluginUpdaters += updater
-                service.enabledUpdaters += updater
-            }
-
             if (!plugin.annotation?.extensions.isNullOrEmpty()) {
                 for (clazz in plugin.annotation!!.extensions) {
 

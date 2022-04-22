@@ -26,7 +26,7 @@ class PluginUpdater {
 
     @Required
     @Comment("What providers are supported by this plugin")
-    lateinit var providers: MutableList<UpdateProvider>
+    var providers: MutableList<UpdateProvider> = mutableListOf()
 
     @Comment("What release channels should be updated to")
     var channels: Array<String> = arrayOf("release")

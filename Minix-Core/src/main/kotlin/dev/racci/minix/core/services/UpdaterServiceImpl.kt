@@ -8,7 +8,9 @@ import dev.racci.minix.api.extensions.pm
 import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.extensions.taskAsync
 import dev.racci.minix.api.plugin.Minix
+import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.DataService
+import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.services.UpdaterService
 import dev.racci.minix.api.updater.ChecksumType
 import dev.racci.minix.api.updater.UpdateMode
@@ -27,8 +29,9 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.client.statement.discardRemaining
 import io.ktor.utils.io.jvm.javaio.toInputStream
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.bukkit.event.server.PluginDisableEvent
@@ -62,7 +65,6 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         if (!folder.exists() && !folder.mkdirs()) { log.error { "Could not create update folder!" } }
         folder
     }
-    private val updatingPlugins by lazy { mutableSetOf<String>() }
     override val enabledUpdaters: MutableList<PluginUpdater> = Collections.synchronizedList(mutableListOf<PluginUpdater>())
     override val disabledUpdaters: MutableList<PluginUpdater> = Collections.synchronizedList(mutableListOf<PluginUpdater>())
 
@@ -106,14 +108,12 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
 
     override suspend fun handleEnable() {
         event<PluginEnableEvent> {
-            if (plugin.name in updatingPlugins) return@event
             disabledUpdaters.firstOrNull { it.name == plugin.name }?.let {
                 disabledUpdaters -= it
                 enabledUpdaters += it
             }
         }
         event<PluginDisableEvent> {
-            if (plugin.name in updatingPlugins) return@event
             enabledUpdaters.firstOrNull { it.name == plugin.name }?.let {
                 enabledUpdaters -= it
                 disabledUpdaters += it
@@ -121,6 +121,14 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         }
 
         if (!updaterConfig.enabled || updaterConfig.pluginUpdaters.isEmpty()) return
+
+        val pluginService = get<PluginService>()
+        pluginService.loadedPlugins.values.mapNotNull(MinixPlugin::updater).forEach { updater ->
+            if (updaterConfig.pluginUpdaters.any { updater.name == it.name }) return@forEach
+            val service = get<UpdaterService>().unsafeCast<UpdaterServiceImpl>()
+            updaterConfig.pluginUpdaters += updater
+            service.enabledUpdaters += updater
+        }
 
         for (updater in updaterConfig.pluginUpdaters) {
             updater.pluginInstance = pm.getPlugin(updater.name)
@@ -148,19 +156,24 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         }
 
         taskAsync(repeatDelay = 5.minutes) {
-            for (updater in enabledUpdaters) {
-                log.debug { "Checking ${updater.name} for updates" }
-                if (updater.lastRun != null && now() < (updater.lastRun!! + updaterConfig.interval)) continue
+            try {
+                for (updater in enabledUpdaters.toImmutableList()) {
+                    log.debug { "Checking ${updater.name} for updates" }
+                    if (updater.lastRun != null && now() < (updater.lastRun!! + updaterConfig.interval)) continue
 
-                if (updater.updateMode == UpdateMode.DISABLED) {
-                    enabledUpdaters -= updater
-                    disabledUpdaters += updater
-                    continue
+                    if (updater.updateMode == UpdateMode.DISABLED) {
+                        enabledUpdaters -= updater
+                        disabledUpdaters += updater
+                        continue
+                    }
+
+                    updater.provider.query()
+                    updater.lastRun = now()
+                    checkForUpdate(updater).takeIf { it && updater.updateMode == UpdateMode.UPDATE }
+                        ?.let { update(updater) }
                 }
-
-                updater.provider.query()
-                updater.lastRun = now()
-                checkForUpdate(updater).takeIf { it && updater.updateMode == UpdateMode.UPDATE }?.let { update(updater) }
+            } catch (e: ConcurrentModificationException) {
+                log.error(e) { "Error while checking for updates on ${Thread.currentThread().name}" }
             }
         }
     }
@@ -189,7 +202,6 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
                     "No remote version found for plugin ${updater.name}" +
                         "\n\t\tYou should contact the plugin author [${updater.pluginInstance?.description?.authors?.firstOrNull()}] about this!"
                 }
-                updater.failedAttempts++
                 UpdateResult.FAILED_NO_VERSION
             }
             updater.localVersion >= updater.provider.latestVersion!! -> {
@@ -219,18 +231,21 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         return updater.result!!.isSuccessful
     }
 
-    private suspend fun update(updater: PluginUpdater): UpdateResult = withContext(Dispatchers.IO) {
+    private suspend fun update(updater: PluginUpdater): UpdateResult = coroutineScope {
         try {
             log.debug { "Updating ${updater.name} with ${updater.provider.name}" }
             val hashGenerator = updater.provider.providesChecksum.instanceOrNull
             val downloadFile = updateFolder.resolve(updater.provider.latestFileName ?: error("No latest file name found!"))
             updater.result = downloadFile(updater.provider, downloadFile, hashGenerator)
 
-            hashCheck(hashGenerator, downloadFile, updater.provider).takeIf { it.name.startsWith("FAILED") }?.let { updater.result = it }
+            val hashCheck = async { hashCheck(hashGenerator, downloadFile, updater.provider).takeIf { it.name.startsWith("FAILED") }?.let { updater.result = it } }
+            val backup = async { backupPlugin(updater).takeIf { it.name.startsWith("FAILED") }?.let { updater.result = it } }
+
             val (file, _) = unzip(downloadFile).also { if (it.second.name.startsWith("FAILED")) updater.result = it.second }
-            backupPlugin(updater).takeIf { it.name.startsWith("FAILED") }?.let { updater.result = it }
             readyPlugin(updater, file ?: downloadFile)
 
+            hashCheck.await()
+            backup.await()
             if (updater.result?.name?.startsWith("FAILED") != true) {
                 updater.result = UpdateResult.SUCCESS
                 enabledUpdaters -= updater
@@ -248,17 +263,17 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         provider: UpdateProvider,
         downloadFile: File,
         hashGenerator: MessageDigest?
-    ): UpdateResult = withContext(Dispatchers.IO) {
+    ): UpdateResult {
         if (downloadFile.exists()) {
             log.debug { "File ${downloadFile.name} already exists, skipping download" }
-            return@withContext UpdateResult.SUCCESS
+            return UpdateResult.SUCCESS
         }
 
-        val url = provider.latestFileURL ?: return@withContext UpdateResult.FAILED_NO_FILE
+        val url = provider.latestFileURL ?: return UpdateResult.FAILED_NO_FILE
         var connection: HttpResponse? = null
         var inputStream: InputStream? = null
         var outputStream: OutputStream? = null
-        return@withContext try {
+        return try {
             connection = provider.connect(url) ?: throw IOException("Could not connect to $url!")
             inputStream = hashGenerator?.let {
                 DigestInputStream(connection.bodyAsChannel().toInputStream().buffered(), it)
@@ -274,7 +289,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
 
             UpdateResult.UPDATE_FOUND
         } catch (e: Exception) {
-            return@withContext when (e) {
+            return when (e) {
                 is RequestTypeNotAvailableException -> {
                     log.error(e) { "The update provider supplied invalid capability data!" }
                     UpdateResult.FAILED_DOWNLOAD
@@ -297,6 +312,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         }
     }
 
+    // TODO: Fix this
     private fun downloadWriter(
         inputStream: InputStream,
         outputStream: OutputStream,
@@ -358,7 +374,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         hashGenerator: MessageDigest?,
         downloadFile: File,
         updateProvider: UpdateProvider
-    ): UpdateResult = withContext(Dispatchers.IO) {
+    ): UpdateResult {
         if (hashGenerator != null && updateProvider.providesChecksum == ChecksumType.MD5) {
             val digest = hashGenerator.digest()
             val downloadMD5 = if (digest.isNotEmpty()) {
@@ -378,17 +394,17 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
                 if (downloadFile.delete()) {
                     plugin.log.info { "Deleted corrupted file." }
                 } else { plugin.log.warn { "Could not delete corrupted file: ${downloadFile.absolutePath}" } }
-                return@withContext UpdateResult.FAILED_CHECKSUM
+                return UpdateResult.FAILED_CHECKSUM
             }
         }
-        UpdateResult.SUCCESS
+        return UpdateResult.SUCCESS
     }
 
-    private suspend fun unzip(file: File): Pair<File?, UpdateResult> = withContext(Dispatchers.IO) {
+    private fun unzip(file: File): Pair<File?, UpdateResult> {
         if (file.name.endsWith(".zip")) {
             // Search for a file matching this plugins name in the zip
             var newFile: File? = null
-            return@withContext try {
+            return try {
                 val zipFile = ZipFile(file)
                 val zipEntries = zipFile.entries()
                 val pattern = Regex("^(\\A${plugin.name})?.+\\.jar$")
@@ -417,7 +433,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
                 null to UpdateResult.FAILED_EXTRACTION
             }
         }
-        null to UpdateResult.SUCCESS
+        return null to UpdateResult.SUCCESS
     }
 
     private fun extractEntry(
@@ -435,10 +451,10 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         return tempFile
     }
 
-    private suspend fun readyPlugin(
+    private fun readyPlugin(
         updater: PluginUpdater,
         file: File
-    ): Unit = withContext(Dispatchers.IO) {
+    ) {
         try {
             val newPath = file.copyTo(server.pluginsFolder.resolve(file.name), false)
             if (newPath.exists() && newPath.size() == file.size()) file.delete()
@@ -454,12 +470,12 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         }
     }
 
-    private suspend fun backupPlugin(updater: PluginUpdater): UpdateResult = withContext(Dispatchers.IO) {
+    private fun backupPlugin(updater: PluginUpdater): UpdateResult {
         val folder = updater.pluginInstance!!.dataFolder
 
         if (!folder.exists()) {
             plugin.log.debug { "The plugin data folder does not exist: ${folder.absolutePath}" }
-            return@withContext UpdateResult.SUCCESS
+            return UpdateResult.SUCCESS
         }
 
         val data = Data(folder.size())
@@ -470,7 +486,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
                     "\n\t\tCurrent size: ${data.humanReadableSize()}" +
                     "\n\t\tMax size: ${updaterConfig.backups.maxSize.humanReadableSize()}"
             }
-            return@withContext UpdateResult.FAILED_BACKUP
+            return UpdateResult.FAILED_BACKUP
         }
 
         val zipFile = updateFolder.resolve("${updater.name}-${updater.localVersion}_backup_${now().toLocalDateTime(TimeZone.UTC)}.zip")
@@ -479,7 +495,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
             traverseDir(updater, it, folder)
         }
 
-        UpdateResult.SUCCESS
+        return UpdateResult.SUCCESS
     }
 
     private fun traverseDir(

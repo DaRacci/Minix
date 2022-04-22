@@ -5,6 +5,7 @@ import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.data.UpdaterConfig
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.pm
+import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.extensions.taskAsync
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.services.DataService
@@ -440,9 +441,12 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         file: File
     ): Unit = withContext(Dispatchers.IO) {
         try {
+            val newPath = file.copyTo(server.pluginsFolder.resolve(file.name), false)
+            if (newPath.exists() && newPath.size() == file.size()) file.delete()
+
             transaction(dataService.database) {
                 DataServiceImpl.DataHolder.new(updater.pluginInstance!!.name) {
-                    newVersion = file.toPath()
+                    newVersion = newPath.toPath()
                     oldVersion = Path(updater.localFile)
                 }
             }

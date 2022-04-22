@@ -473,16 +473,23 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
         val zipFile = updateFolder.resolve("${updater.name}-${updater.localVersion}_backup_${now().toLocalDateTime(TimeZone.UTC)}.zip")
         zipFile.createNewFile() // Shouldn't be a feasible way that this fails due to the name containing the current time
         ZipOutputStream(zipFile.outputStream().buffered()).use() {
-            traverseDir(it, folder)
+            traverseDir(updater, it, folder)
         }
 
         UpdateResult.SUCCESS
     }
 
-    private fun traverseDir(out: ZipOutputStream, directory: File, level: Int = 0) {
-        directory.listFiles()?.forEach { file ->
-            if (file.isDirectory || level < 3) { // Don't go deeper than 3 levels
-                traverseDir(out, file, level + 1)
+    private fun traverseDir(
+        updater: PluginUpdater,
+        out: ZipOutputStream,
+        directory: File,
+        level: Int = 0
+    ) {
+        for (file in directory.listFiles() ?: return) {
+            if (file.name in updater.ignored) continue
+
+            if (file.isDirectory && level < 3) { // Don't go deeper than 3 levels
+                traverseDir(updater, out, file, level + 1)
             } else {
                 file.inputStream().buffered().use {
                     out.putNextEntry(ZipEntry(file.name))

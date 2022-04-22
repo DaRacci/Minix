@@ -26,6 +26,7 @@ import org.koin.core.component.get
 import org.koin.core.context.startKoin
 import org.koin.dsl.bind
 import org.koin.mp.KoinPlatformTools
+import java.util.logging.Level
 import kotlin.time.Duration.Companion.seconds
 
 @Suppress("unused")
@@ -41,6 +42,7 @@ class MinixImpl : Minix() {
 
     override fun onLoad() {
         startKoin()
+        if (Version(description.version).isPreRelease) logger.level = Level.ALL
         get<PluginService>().loadPlugin(this)
     }
 

@@ -9,11 +9,14 @@ import dev.racci.minix.api.scheduler.CoroutineBlock
 import dev.racci.minix.api.scheduler.CoroutineRunnable
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.scheduler.CoroutineTask
+import dev.racci.minix.api.utils.Closeable
+import dev.racci.minix.api.utils.collections.CollectionUtils.clear
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
@@ -29,20 +32,30 @@ class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), C
 
     override val parentJob: CompletableJob by lazy { SupervisorJob() }
 
-    private val threadContext = lazy {
-        var threadCount = ManagementFactory.getThreadMXBean().threadCount / 4
-        threadCount = when {
-            threadCount < 1 -> 1
-            threadCount > 4 -> 4
-            else -> threadCount
-        }
-        newFixedThreadPoolContext(threadCount, "Coroutine Scheduler Threads")
-    }
     private val bukkitContext by lazy { get<Minix>().minecraftDispatcher }
     private val ids by lazy { atomic(-1) }
     private val tasks by lazy { mutableMapOf<Int, CoroutineTaskImpl>() }
+    private val threadContext = object : Closeable<ExecutorCoroutineDispatcher>() {
+        override fun create(): ExecutorCoroutineDispatcher {
+            val threadCount = (ManagementFactory.getThreadMXBean().threadCount / 4).coerceIn(1..4)
+            log.debug { "Creating new thread pool with $threadCount threads" }
+            return newFixedThreadPoolContext(threadCount, "Coroutine Scheduler Thread")
+        }
 
-    override suspend fun handleEnable() {}
+        override fun close() {
+            value?.close()
+        }
+    }
+
+    override suspend fun handleLoad() {
+        ids.getAndSet(-1)
+    }
+
+    override suspend fun handleUnload() {
+        tasks.clear(CoroutineTaskImpl::cancel)
+        parentJob.complete()
+        threadContext.close()
+    }
 
     @OptIn(InternalCoroutinesApi::class)
     private fun handleStart(
@@ -53,7 +66,7 @@ class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), C
         task.taskID = ids.incrementAndGet()
         task.period = period
 
-        val context = if (task.async) threadContext.value else bukkitContext
+        val context = if (task.async) threadContext.get() else bukkitContext
         val job = CoroutineScope(parentJob).launch(context, CoroutineStart.LAZY) {
             delay?.let { delay(it) }
 
@@ -95,7 +108,7 @@ class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), C
         val result = tasks.entries.removeIf { (_, task) ->
             task.taskID == taskID
         }
-        return if (result) task.cancel0() else false
+        return result.takeUnless { it } ?: task.cancel0()
     }
 
     override suspend fun shutdownTask(taskID: Int): Boolean {

@@ -4,11 +4,13 @@ import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.builders.ItemBuilderDSL
 import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.data.Config
+import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixLogger
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.Version
+import dev.racci.minix.api.updater.providers.GithubUpdateProvider
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
@@ -30,6 +32,12 @@ import kotlin.time.Duration.Companion.seconds
 @MappedPlugin(13706, Minix::class)
 class MinixImpl : Minix() {
     private val config by lazy { get<DataService>().get<Config>() }
+
+    override val updater: PluginUpdater = PluginUpdater().apply {
+        ignored += "MinixUpdater"
+        name = "Minix"
+        providers += GithubUpdateProvider("DaRacci", "Minix")
+    }
 
     override fun onLoad() {
         startKoin()

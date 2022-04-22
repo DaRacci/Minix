@@ -50,10 +50,7 @@ import java.util.Collections
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
-import kotlin.io.path.Path
-import kotlin.io.path.exists
 import kotlin.io.path.moveTo
-import kotlin.io.path.nameWithoutExtension
 import kotlin.time.Duration.Companion.minutes
 
 @MappedExtension(Minix::class, "Updater Service", [DataService::class], UpdaterService::class)
@@ -75,23 +72,25 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
             SchemaUtils.createMissingTablesAndColumns(DataServiceImpl.DataHolder.table)
             for (holder in DataServiceImpl.DataHolder.all()) {
                 val plugin = plugins.find { it.name == holder.id.value } ?: continue
-                val currentPath = plugin::class.java.protectionDomain.codeSource.location.file
-                log.debug { "Found plugin ${plugin.name} at $currentPath" }
+                val currentName = plugin::class.java.protectionDomain.codeSource.location.file.substringAfterLast("/")
+                val path = server.pluginsFolder.resolve(currentName)
+                log.debug { "Found plugin ${plugin.name} at $path" }
 
-                when (currentPath) {
-                    holder.newVersion.toString() -> {
+                when (currentName) {
+                    holder.newVersion -> {
                         log.info { "Plugin ${plugin.name} successfully loaded the new version!" }
-                        holder.oldVersion.exists().ifTrue {
+                        val oldFile = path.resolve(holder.oldVersion)
+                        oldFile.exists().ifTrue {
                             log.debug { "Moving old version of ${plugin.name}." }
-                            holder.oldVersion.moveTo(updateFolder.resolve("old-versions/${holder.oldVersion.fileName}").toPath())
+                            oldFile.toPath().moveTo(updateFolder.resolve("old-versions/${holder.oldVersion}").toPath())
                         }
                     }
-                    holder.oldVersion.toString() -> {
+                    holder.oldVersion -> {
                         log.warn {
                             """
                             Plugin ${plugin.name} is out of date!
                             Version ${plugin.description.version} has loaded instead of ${
-                            holder.newVersion.nameWithoutExtension.split("^${holder.id.value}-".toRegex()).first()
+                            holder.newVersion.split("^${holder.id.value}-?".toRegex()).first()
                             }.
                             Please manually update the plugin to the latest version.
                             """.trimIndent()
@@ -446,8 +445,8 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
 
             transaction(dataService.database) {
                 DataServiceImpl.DataHolder.new(updater.pluginInstance!!.name) {
-                    newVersion = newPath.toPath()
-                    oldVersion = Path(updater.localFile)
+                    newVersion = newPath.name
+                    oldVersion = updater.localFile.substringAfterLast("/")
                 }
             }
         } catch (e: Exception) {

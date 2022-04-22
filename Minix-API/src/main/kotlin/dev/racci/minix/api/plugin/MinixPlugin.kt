@@ -2,6 +2,7 @@ package dev.racci.minix.api.plugin
 
 import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.annotations.MinixDsl
+import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionStateEvent
 import dev.racci.minix.api.services.PluginService
@@ -31,6 +32,8 @@ abstract class MinixPlugin : JavaPlugin(), SusPlugin {
 
     val log: MinixLogger get() = get<PluginService>()[this].log
     val metrics: Metrics? get() = get<PluginService>()[this].metrics
+
+    open val updater: PluginUpdater? = null
 
     @ApiStatus.Internal
     @ApiStatus.NonExtendable

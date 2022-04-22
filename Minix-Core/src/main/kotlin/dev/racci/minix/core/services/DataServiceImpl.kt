@@ -39,8 +39,6 @@ import org.spongepowered.configurate.serialize.TypeSerializer
 import org.spongepowered.configurate.serialize.TypeSerializerCollection
 import java.io.File
 import java.io.IOException
-import java.nio.file.Path
-import kotlin.io.path.Path
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
@@ -129,16 +127,8 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
             operator fun get(plugin: Plugin): DataHolder = get(plugin.name)
         }
 
-        private var _newVersion: String by PluginData.newVersion
-        private var _oldVersion by PluginData.oldVersion
-
-        var newVersion: Path
-            get() = Path(_newVersion)
-            set(value) { _newVersion = value.toString() }
-
-        var oldVersion: Path
-            get() = Path(_oldVersion)
-            set(value) { _oldVersion = value.toString() }
+        var newVersion by PluginData.newVersion
+        var oldVersion by PluginData.oldVersion
     }
 
     override suspend fun <T : Any> getConfigurateLoader(

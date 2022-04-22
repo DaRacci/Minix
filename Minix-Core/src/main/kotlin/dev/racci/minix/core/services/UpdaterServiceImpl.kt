@@ -417,7 +417,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
                 null to UpdateResult.FAILED_EXTRACTION
             }
         }
-        null to UpdateResult.FAILED_EXTRACTION
+        null to UpdateResult.SUCCESS
     }
 
     private fun extractEntry(

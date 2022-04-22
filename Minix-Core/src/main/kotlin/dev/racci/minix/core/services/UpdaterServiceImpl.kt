@@ -81,7 +81,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
                 when (currentName) {
                     holder.newVersion -> {
                         log.info { "Plugin ${plugin.name} successfully loaded the new version!" }
-                        val oldFile = path.resolve(holder.oldVersion)
+                        val oldFile = path.parentFile.resolve(holder.oldVersion)
                         oldFile.exists().ifTrue {
                             log.debug { "Moving old version of ${plugin.name}." }
                             oldFile.toPath().moveTo(updateFolder.resolve("old-versions/${holder.oldVersion}").toPath())

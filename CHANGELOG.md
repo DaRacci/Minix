@@ -2,6 +2,22 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.7.1](https://github.com/DaRacci/Minix/compare/v2.7.0..v2.7.1) - 2022-04-22
+#### Bug Fixes
+- Fix concurrent modification + other updater service refactoring - ([263f7aa](https://github.com/DaRacci/Minix/commit/263f7aac554296e2b54d686f20aa60aff0e33224)) - [@DaRacci](https://github.com/DaRacci)
+- Move the plugin when readying it - ([d71364c](https://github.com/DaRacci/Minix/commit/d71364c3beba3ec8e991e658a58b4e0bb7931b42)) - [@DaRacci](https://github.com/DaRacci)
+- Extraction not happening doesn't mean it failed - ([42bda78](https://github.com/DaRacci/Minix/commit/42bda7818451e9b6cedd9b84a13d60568ae65f74)) - [@DaRacci](https://github.com/DaRacci)
+- Fix backup checking if its a directory or if level < 3 and not doing an and check, Also added the backup to actually check the plugins ignored files. - ([1c2b3bf](https://github.com/DaRacci/Minix/commit/1c2b3bfb6da6e9a229acb33e39308e8fb84f4d55)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- New closeable object + example on how to use in CoroutineSchedulerImpl.kt - ([0631b6a](https://github.com/DaRacci/Minix/commit/0631b6a4acbad3874f9fd099b4ad011a843dc961)) - [@DaRacci](https://github.com/DaRacci)
+- Add lazy injection for config files - ([aa0e5b3](https://github.com/DaRacci/Minix/commit/aa0e5b39d849c4412b9126392c251087dfe5638c)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.7.0 - ([592e4e0](https://github.com/DaRacci/Minix/commit/592e4e04a0a8e618a3c9cb36f2f2f757687ab8df)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Updater stuff - ([a0c5a32](https://github.com/DaRacci/Minix/commit/a0c5a32ea68d98340a61d6a4f8932a2225815e63)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v2.7.0](https://github.com/DaRacci/Minix/compare/v2.6.2..v2.7.0) - 2022-04-22
 #### Bug Fixes
 - **(cog)** Bump patch version for snapshot when running cog bump - ([34ab9f6](https://github.com/DaRacci/Minix/commit/34ab9f6a7760ba534853c43daa9b1d0f01a4fcdb)) - [@DaRacci](https://github.com/DaRacci)

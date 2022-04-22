@@ -2,6 +2,50 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.7.0](https://github.com/DaRacci/Minix/compare/v2.6.2..v2.7.0) - 2022-04-22
+#### Bug Fixes
+- **(cog)** Bump patch version for snapshot when running cog bump - ([34ab9f6](https://github.com/DaRacci/Minix/commit/34ab9f6a7760ba534853c43daa9b1d0f01a4fcdb)) - [@DaRacci](https://github.com/DaRacci)
+- Fix reflection for finding mappedExtensions and mappedConfig - ([890260c](https://github.com/DaRacci/Minix/commit/890260cf3c319d6a373f59970981073606afa45d)) - [@DaRacci](https://github.com/DaRacci)
+- Unload the plugins configurate files when the plugin unloads - ([06dc918](https://github.com/DaRacci/Minix/commit/06dc91895eaed70b56fdd9a43088715d289371aa)) - [@DaRacci](https://github.com/DaRacci)
+- If there isn't a folder this is still a backup success - ([76871e7](https://github.com/DaRacci/Minix/commit/76871e7a66965b5a39091e743f5a95833a71584b)) - [@DaRacci](https://github.com/DaRacci)
+- Use correct directory - ([0548f0e](https://github.com/DaRacci/Minix/commit/0548f0eaed495576e22e524f86b76a9356ac3698)) - [@DaRacci](https://github.com/DaRacci)
+- Fix database errors - ([73e5635](https://github.com/DaRacci/Minix/commit/73e56351668774c71c6444d8e3f19d6ca793a3f4)) - [@DaRacci](https://github.com/DaRacci)
+- We want to move not copy - ([72ac164](https://github.com/DaRacci/Minix/commit/72ac164d073327ac47323ae43e38e70acd3529ff)) - [@DaRacci](https://github.com/DaRacci)
+- Fix backup creation, now it should properly traverse sub directories - ([0525e9b](https://github.com/DaRacci/Minix/commit/0525e9b376d2f0e155e775764862c64e0f775be5)) - [@DaRacci](https://github.com/DaRacci)
+- Fix missing nl in log message - ([1396607](https://github.com/DaRacci/Minix/commit/139660793475303fe21e06544f27fbc4beab96d5)) - [@DaRacci](https://github.com/DaRacci)
+- Run startInOrder if there are previously loaded extensions - ([bb1f1b3](https://github.com/DaRacci/Minix/commit/bb1f1b3f5e92fc282b6cc1e381f2312d5e9c344c)) - [@DaRacci](https://github.com/DaRacci)
+- Fix version init - ([8b7f04d](https://github.com/DaRacci/Minix/commit/8b7f04d280320b1209906756922553f1c1e91021)) - [@DaRacci](https://github.com/DaRacci)
+- Fix extension check, had it reversed. - ([752c1bc](https://github.com/DaRacci/Minix/commit/752c1bc8c33f21d05b5a19f8036b9146100e19a0)) - [@DaRacci](https://github.com/DaRacci)
+- Remove koin ktor dep it was using ver 1.6.4 koin utils and blocking the proper version from loading - ([f589192](https://github.com/DaRacci/Minix/commit/f5891924aa9ff28d69ff43f0ff41f6bfb3b05525)) - [@DaRacci](https://github.com/DaRacci)
+- Fix kotlin and coroutines being shaded in on accident - ([0a52b3e](https://github.com/DaRacci/Minix/commit/0a52b3e7787470c9c4a43ce5ee6ff3e007bc45a8)) - [@DaRacci](https://github.com/DaRacci)
+- Shade in bstats due to it requiring shading - ([5a4b081](https://github.com/DaRacci/Minix/commit/5a4b08188773ca0d6eeb1b0d5fbf42babd3881e0)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- Implement auto increase for failed attempts - ([753ad16](https://github.com/DaRacci/Minix/commit/753ad16a8a096b7083097e2c5a5dc5848d9d3acd)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(deps)** Update Minix-Conventions to 148 - ([bd3c454](https://github.com/DaRacci/Minix/commit/bd3c454249cb2c4aee8929b35e3d40947d0df964)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** Dokka update time! - ([97d036a](https://github.com/DaRacci/Minix/commit/97d036aa0ba5e666fc08a12d6b976f0172d96377)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** Use json instead of core for serialization dep and add classgraph - ([bfeefce](https://github.com/DaRacci/Minix/commit/bfeefce4af6cb46c1878c917d3132ca37653ed5d)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** Update Minix-Conventions to 0.6.143 - ([a80e739](https://github.com/DaRacci/Minix/commit/a80e7399bca6ffee5196f7f57a4beac8ac403110)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v2.6.2 - ([fe2e17c](https://github.com/DaRacci/Minix/commit/fe2e17c9c09a7df1e06ef2c5098a66018b539641)) - [@DaRacci](https://github.com/DaRacci)
+- No longer Experimental - ([30694ba](https://github.com/DaRacci/Minix/commit/30694bad2b4877eeee30cbcae1d9f8aef770f9bd)) - [@DaRacci](https://github.com/DaRacci)
+- Deprecate legacy utils - ([97aa5c6](https://github.com/DaRacci/Minix/commit/97aa5c6d5d5fb79afe67905cef53bc1a613ee6f4)) - [@DaRacci](https://github.com/DaRacci)
+- Remove old Updater Checker - ([3788462](https://github.com/DaRacci/Minix/commit/37884626a8739e51ce1d67731c89917b902e0222)) - [@DaRacci](https://github.com/DaRacci)
+- Remove old debugging point - ([23237c5](https://github.com/DaRacci/Minix/commit/23237c5f706feebc6f66892d88fec5502b43ac70)) - [@DaRacci](https://github.com/DaRacci)
+- Removing debugging points for version comparing - ([7f66939](https://github.com/DaRacci/Minix/commit/7f66939f82c586eb7a5f00ef140e81cf16071f60)) - [@DaRacci](https://github.com/DaRacci)
+- Remove optin annotations as they are no longer needed - ([44daeef](https://github.com/DaRacci/Minix/commit/44daeefc74c74806d17e6782e9f224e8dacb6d23)) - [@DaRacci](https://github.com/DaRacci)
+- Remove two now unused debug points - ([a2a58b4](https://github.com/DaRacci/Minix/commit/a2a58b4f2b7e14a64a6b02c655ab55b1dc85724e)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- MappedExtensions need to know their owning plugin - ([6a48851](https://github.com/DaRacci/Minix/commit/6a48851cfa90b676637f2162ed6ccb540182d472)) - [@DaRacci](https://github.com/DaRacci)
+- Instead of disabling plugins and moving and stuff, Now we move the new jar and after a restart test if its running the correct jar and if so move the old one. - ([b847a1f](https://github.com/DaRacci/Minix/commit/b847a1f06ab353faced7e89d9e269fa3b25f439a)) - [@DaRacci](https://github.com/DaRacci)
+- Name backups with plugin version - ([08f9874](https://github.com/DaRacci/Minix/commit/08f9874641b50926d61094fffbe572a578e041d3)) - [@DaRacci](https://github.com/DaRacci)
+- Disable updater if the plugin has been readied to update on next restart - ([d1e9795](https://github.com/DaRacci/Minix/commit/d1e979512ae0ebd06ce91e18e8b3ea1572df49c5)) - [@DaRacci](https://github.com/DaRacci)
+- Small sentry changes - ([67d9ea0](https://github.com/DaRacci/Minix/commit/67d9ea0d6603e69e697d9194a2ba4dd3e82c2086)) - [@DaRacci](https://github.com/DaRacci)
+- Fix logging using minix logger instead of plugins own logger - ([42198f0](https://github.com/DaRacci/Minix/commit/42198f00d04bc90d355dbf2ecd24e2a7478665d2)) - [@DaRacci](https://github.com/DaRacci)
+- Convert to MappedPlugin - ([d8ce1c8](https://github.com/DaRacci/Minix/commit/d8ce1c866fee417e4bc37aed93804d25d2eeec11)) - [@DaRacci](https://github.com/DaRacci)
+- Refactor the update providers a bit and fix try start finding a fix to the version int max number issue - ([041450c](https://github.com/DaRacci/Minix/commit/041450cdea5d04cb0e573f443b7acab266b0ac34)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v2.6.2](https://github.com/DaRacci/Minix/compare/v2.6.1..v2.6.2) - 2022-04-05
 #### Bug Fixes
 - Fix replacing both mentions of minix in the libs file - ([5694f40](https://github.com/DaRacci/Minix/commit/5694f4011dcffc6463687d94d6a028bbcbf9013c)) - [@DaRacci](https://github.com/DaRacci)

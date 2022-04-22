@@ -12,14 +12,7 @@ import dev.racci.minix.api.updater.Version
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
-import dev.racci.minix.core.scheduler.CoroutineSchedulerImpl
-import dev.racci.minix.core.services.CommandService
-import dev.racci.minix.core.services.DataServiceImpl
-import dev.racci.minix.core.services.ListenerService
-import dev.racci.minix.core.services.PlayerServiceImpl
 import dev.racci.minix.core.services.PluginServiceImpl
-import dev.racci.minix.core.services.TimeService
-import dev.racci.minix.core.services.UpdaterServiceImpl
 import io.sentry.Sentry
 import io.sentry.protocol.User
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -34,19 +27,7 @@ import org.koin.mp.KoinPlatformTools
 import kotlin.time.Duration.Companion.seconds
 
 @Suppress("unused")
-@MappedPlugin(
-    13706,
-    Minix::class,
-    [
-        DataServiceImpl::class,
-        UpdaterServiceImpl::class,
-        CoroutineSchedulerImpl::class,
-        CommandService::class,
-        PlayerServiceImpl::class,
-        ListenerService::class,
-        TimeService::class,
-    ]
-)
+@MappedPlugin(13706, Minix::class)
 class MinixImpl : Minix() {
     private val config by lazy { get<DataService>().get<Config>() }
 

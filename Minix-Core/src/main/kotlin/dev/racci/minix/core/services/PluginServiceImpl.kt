@@ -168,26 +168,41 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
     }
 
     private fun MinixPlugin.loadReflection() {
-        val reflections = Reflections(this::class.getFullName().split(".")[1], Scanners.values())
-        reflections.getTypesAnnotatedWith(MappedConfig::class.java)
-            .filter {
-                if (it.classLoader != this::class.java.classLoader) {
-                    log.debug { "Skipping ${it.name} because it's not loaded by ${this.name}." }
+        val classGraph = ClassGraph()
+            .acceptPackages("dev.racci")
+            .addClassLoader(this::class.java.classLoader)
+            .addClassLoader(
+                JavaPlugin::class.declaredMemberProperties.first {
+                    it.name == "classLoader"
+                }.also { it.isAccessible = true }.getter.call(this) as ClassLoader
+            )
+            .enableClassInfo()
+            .enableAnnotationInfo()
+            .enableMethodInfo()
+            .scan()
+
+        classGraph.getClassesWithAnnotation(MappedConfig::class.java)
+            .filter { clazz ->
+                if (clazz.getAnnotationInfo(MappedConfig::class.java).parameterValues["parent"].value.let { it == this::class || it == this.bindToKClass }) {
+                    log.debug { "Found configuration ${clazz.name} for ${this.name}" }
+                    true
+                } else {
+                    log.debug { "Skipping configuration ${clazz.name} for ${this.name}" }
                     false
-                } else true
+                }
             }
             .forEach {
                 log.debug { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
-                getKoin().get<DataService>().configurations[it.kotlin] // Call the cache so we load can have it loaded.
+                getKoin().get<DataService>().configurations[it.loadClass().kotlin] // Call the cache so we load can have it loaded.
             }
-        reflections.getTypesAnnotatedWith(MappedExtension::class.java)
+        classGraph.getClassesWithAnnotation(MappedExtension::class.java)
             .filter { clazz ->
                 when {
-                    clazz.classLoader != this::class.java.classLoader -> {
+                    clazz.getAnnotationInfo(MappedExtension::class.java).parameterValues["parent"].value.let { it == this::class || it == this.bindToKClass } -> {
                         log.debug { "Skipping ${clazz.name} because it's not loaded by ${this.name}." }
                         false
                     }
-                    clazz.isAssignableFrom(Extension::class.java) -> {
+                    clazz.extendsSuperclass(Extension::class.java) -> {
                         log.debug { "Found MappedExtension [${clazz.simpleName}] from ${this.name}" }
                         true
                     }
@@ -198,10 +213,9 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                 }
             }
             .forEach { clazz ->
-                log.debug { "Found MappedExtension [${clazz.simpleName}] from ${this.name}" }
                 pluginCache[this].extensions += { plugin: MinixPlugin ->
                     try {
-                        clazz.kotlin.primaryConstructor!!.call(plugin) as Extension<*>
+                        clazz.loadClass().kotlin.primaryConstructor!!.call(plugin) as Extension<*>
                     } catch (e: Exception) {
                         log.error(e) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
                         throw e

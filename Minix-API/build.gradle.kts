@@ -17,7 +17,7 @@ dependencies {
     lib(rootProject.libs.bundles.kyori)
     lib(rootProject.libs.bundles.kotlin)
     lib(rootProject.libs.bundles.kotlinx)
-    lib(rootProject.libs.kotlinx.serialization.core)
+    lib(rootProject.libs.kotlinx.serialization.json)
     lib(rootProject.libs.bundles.exposed)
 
     lib(rootProject.libs.koin.core)
@@ -38,7 +38,7 @@ dependencies {
     lib(rootProject.libs.sentry.kotlin)
     lib(rootProject.libs.mordant)
     lib(rootProject.libs.caffeine)
-    lib(rootProject.libs.reflections)
+    lib("io.github.classgraph:classgraph:4.8.146")
 }
 
 // Lmao this works well as compared to what I was doing before

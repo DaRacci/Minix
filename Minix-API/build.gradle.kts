@@ -59,6 +59,10 @@ publishing {
         name = "RacciRepo"
         credentials(PasswordCredentials::class)
     }
+    repositories.maven("https://repo.racci.dev/snapshots") {
+        name = "RacciSnapshots"
+        credentials(PasswordCredentials::class)
+    }
 
     publications.register("maven", MavenPublication::class) {
         artifactId = rootProject.name

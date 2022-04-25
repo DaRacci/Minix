@@ -6,6 +6,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.data.IConfig
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.serializables.Serializer
@@ -56,14 +57,17 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
     override val configurations: LoadingCache<KClass<*>, Pair<Any, CommentedConfigurationNode>> = Caffeine.newBuilder()
         .removalListener<KClass<*>, Pair<Any, CommentedConfigurationNode>> { key, value, _ ->
-            key ?: return@removalListener
-            val (config, node) = value ?: return@removalListener
+            if (key == null || value == null) return@removalListener
             log.info { "Saving and disposing configurate class ${key.simpleName}" }
+
+            val (config, node) = value
             val loader = configurateLoaders[key]
+            config.safeCast<IConfig>()?.unloadCallback?.invoke()
             if (loader.canSave()) {
                 node.set(key.java, config)
                 loader.save(node)
             }
+
             configurateLoaders.invalidate(key)
             configClasses.invalidate(key)
         }
@@ -188,7 +192,8 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
                 node.set(clazz.java, configNode)
                 loader.save(node)
             }
-            configNode as T to node
+            configNode.safeCast<IConfig>()?.loadCallback?.invoke()
+            configNode.unsafeCast<T>() to node
         } catch (e: ConfigurateException) {
             config.plugin.log.error(e) { "Failed to load configurate file ${config.file.name}" }
             null

@@ -20,9 +20,12 @@ import dev.racci.minix.api.utils.kotlin.ifNotEmpty
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import dev.racci.minix.api.utils.kotlin.invokeIfOverrides
 import dev.racci.minix.api.utils.loadModule
+import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
 import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
+import io.github.classgraph.AnnotationClassRef
 import io.github.classgraph.ClassGraph
+import io.github.classgraph.ClassInfo
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
@@ -33,6 +36,7 @@ import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
+import org.koin.core.error.NoBeanDefFoundException
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import kotlin.reflect.KClass
@@ -182,36 +186,13 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             .enableMethodInfo()
             .scan()
 
-        classGraph.getClassesWithAnnotation(MappedConfig::class.java)
-            .filter { clazz ->
-                if (clazz.getAnnotationInfo(MappedConfig::class.java).parameterValues["parent"].value.let { it == this::class || it == this.bindToKClass }) {
-                    log.debug { "Found configuration ${clazz.name} for ${this.name}" }
-                    true
-                } else {
-                    log.debug { "Skipping configuration ${clazz.name} for ${this.name}" }
-                    false
-                }
-            }
-            .forEach {
-                log.debug { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
-                getKoin().get<DataService>().configurations[it.loadClass().kotlin] // Call the cache so we load can have it loaded.
-            }
         classGraph.getClassesWithAnnotation(MappedExtension::class.java)
             .filter { clazz ->
-                when {
-                    clazz.getAnnotationInfo(MappedExtension::class.java).parameterValues["parent"].value.let { it == this::class || it == this.bindToKClass } -> {
-                        log.debug { "Skipping ${clazz.name} because it's not loaded by ${this.name}." }
-                        false
-                    }
-                    clazz.extendsSuperclass(Extension::class.java) -> {
-                        log.debug { "Found MappedExtension [${clazz.simpleName}] from ${this.name}" }
-                        true
-                    }
-                    else -> {
+                matchingAnnotation<MappedExtension>(this, clazz, "extension") &&
+                    if (!clazz.extendsSuperclass(Extension::class.java)) {
                         log.warn { "${clazz.name} is annotated with MappedExtension but isn't an extension!." }
                         false
-                    }
-                }
+                    } else true
             }
             .forEach { clazz ->
                 pluginCache[this].extensions += { plugin: MinixPlugin ->
@@ -223,6 +204,33 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                     }
                 }
             }
+
+        classGraph.getClassesWithAnnotation(MappedConfig::class.java)
+            .filter { matchingAnnotation<MappedConfig>(this, it, "configuration") }
+            .forEach {
+                log.debug { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
+                try {
+                    get<DataService>().configurations[it.loadClass().kotlin] // Call the cache so we load can have it loaded.
+                } catch (ignored: NoBeanDefFoundException) {} // This is so i can auto-magic load the data service.
+            }
+    }
+
+    private inline fun <reified T : Annotation> matchingAnnotation(
+        plugin: MinixPlugin,
+        clazz: ClassInfo,
+        type: String
+    ): Boolean {
+        val annotation = clazz.getAnnotationInfo(T::class.java)
+        val classRef = annotation.parameterValues["parent"].value.safeCast<AnnotationClassRef>()?.loadClass()?.kotlin
+        return if (annotation.parameterValues["parent"].value is AnnotationClassRef &&
+            classRef == plugin::class || classRef == plugin.bindToKClass
+        ) {
+            plugin.log.debug { "Found $type ${clazz.name} from ${plugin.name}" }
+            true
+        } else {
+            plugin.log.debug { "Skipping $type ${clazz.name} because it isn't loaded by ${plugin.name}" }
+            false
+        }
     }
 
     private inline fun <reified P : MinixPlugin> P.getSortedExtensions(): MutableList<Extension<P>> {

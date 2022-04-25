@@ -60,7 +60,7 @@ fun <R> readInstanceProperty(
  * @param T The type to cast to.
  * @return The casted property.
  */
-fun <T> Any?.safeCast(): T? = this as? T
+// fun <T> Any?.safeCast(): T? = this as? T
 
 /**
  * Makes a safe cast using reflection

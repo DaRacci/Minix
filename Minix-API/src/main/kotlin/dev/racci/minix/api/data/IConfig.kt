@@ -5,12 +5,17 @@ import kotlin.reflect.KProperty
 abstract class IConfig {
 
     // TODO: Find a way to make this work
-    /** A unit that is called whenever a property is modified. */
-    @Transient open val updateCallback: ((KProperty<*>, Any?) -> Unit)? = null
+    /**
+     * Called when a value is updated.
+     *
+     * @param kPop The property that was updated.
+     * @param value The previous value.
+     */
+    open fun updateCallback(kPop: KProperty<*>, value: Any?) {}
 
-    /** A unit that is ran when this config is first loaded. */
-    @Transient open val loadCallback: (() -> Unit)? = null
+    /** A unit that is ran when this config is loaded. */
+    open fun loadCallback() {}
 
     /** A unit that is ran when this config is unloaded. */
-    @Transient open val unloadCallback: (() -> Unit)? = null
+    open fun unloadCallback() {}
 }

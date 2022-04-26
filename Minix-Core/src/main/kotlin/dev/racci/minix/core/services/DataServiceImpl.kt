@@ -62,7 +62,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
             val (config, node) = value
             val loader = configurateLoaders[key]
-            config.safeCast<IConfig>()?.unloadCallback?.invoke()
+            config.safeCast<IConfig>()?.unloadCallback()
             if (loader.canSave()) {
                 node.set(key.java, config)
                 loader.save(node)
@@ -192,7 +192,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
                 node.set(clazz.java, configNode)
                 loader.save(node)
             }
-            configNode.safeCast<IConfig>()?.loadCallback?.invoke()
+            configNode.safeCast<IConfig>()?.loadCallback()
             configNode.unsafeCast<T>() to node
         } catch (e: ConfigurateException) {
             config.plugin.log.error(e) { "Failed to load configurate file ${config.file.name}" }

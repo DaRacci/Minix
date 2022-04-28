@@ -20,7 +20,7 @@ git push origin v"${2}" # Push the new version tag
 ./gradlew clean build
 
 URL="https://github.com/DaRacci/Minix/compare/v$1..v$2"
-grep -Poz "(?s)(?<=## \\[v${VERSION}\\]\\(${URL}\\) - ....-..-..\n).*?(?=- - -)" CHANGELOG.md >> ./.templog.md
+grep -Poz "(?s)(?<=## \\[v$2\\]\\(${URL}\\) - ....-..-..\n).*?(?=- - -)" CHANGELOG.md >> ./.templog.md
 head -n -1 .templog.md > .temp ; mv .temp .templog.md # Remove that weird null line
 
 SEMIPATH=build/libs/Minix

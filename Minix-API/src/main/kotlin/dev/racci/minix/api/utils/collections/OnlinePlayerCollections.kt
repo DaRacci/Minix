@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED", "MemberVisibilityCanBePrivate")
-
 package dev.racci.minix.api.utils.collections
 
 import dev.racci.minix.api.extensions.KListener

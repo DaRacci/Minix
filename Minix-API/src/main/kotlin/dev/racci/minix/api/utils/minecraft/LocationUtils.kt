@@ -2,6 +2,7 @@
 
 package dev.racci.minix.api.utils.minecraft
 
+import net.minecraft.world.phys.Vec3
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.World
@@ -27,20 +28,13 @@ fun chunkPosOf(
     z: Int,
 ) = ChunkPos(x, z)
 
-fun Location.asPos() = LocationPos(x, y, z, yaw, pitch)
-fun LocationPos.asBukkitBlock(world: World) = world.getBlockAt(x.toInt(), y.toInt(), z.toInt())
-fun LocationPos.asBukkitLocation(world: World) = Location(world, x, y, z)
-fun LocationPos.asBlockPos() = BlockPos(x.toInt(), y.toInt(), z.toInt())
-
 fun Block.asPos() = BlockPos(x, y, z)
+
 fun Location.asBlockPos() = BlockPos(blockX, blockY, blockZ)
-fun BlockPos.asBukkitBlock(world: World) = world.getBlockAt(x, y, z)
-fun BlockPos.asBukkitLocation(world: World) = Location(world, x.toDouble(), y.toDouble(), z.toDouble())
-fun BlockPos.asLocationPos() = LocationPos(x.toDouble(), y.toDouble(), z.toDouble(), 0f, 0f)
-fun BlockPos.asChunkPos() = ChunkPos(x shr 4, z shr 4)
+
+fun Location.asPos() = LocationPos(x, y, z, yaw, pitch)
 
 fun Chunk.asPos() = ChunkPos(x, z)
-fun ChunkPos.asBukkitChunk(world: World) = world.getChunkAt(x, z)
 
 data class BlockPos(
     val x: Int,
@@ -50,6 +44,16 @@ data class BlockPos(
 
     override fun axis(): DoubleArray = doubleArrayOf(x.toDouble(), y.toDouble(), z.toDouble())
     override fun factor(axis: IntArray) = BlockPos(axis[0], axis[1], axis[2])
+
+    fun asBukkitBlock(world: World) = world.getBlockAt(x, y, z)
+
+    fun asBukkitLocation(world: World) = Location(world, x.toDouble(), y.toDouble(), z.toDouble())
+
+    fun asLocationPos() = LocationPos(x.toDouble(), y.toDouble(), z.toDouble(), 0f, 0f)
+
+    fun asChunkPos() = ChunkPos(x shr 4, z shr 4)
+
+    fun toVec3() = Vec3(x.toDouble(), y.toDouble(), z.toDouble())
 }
 
 data class LocationPos(
@@ -63,6 +67,12 @@ data class LocationPos(
     override fun axis(): DoubleArray = doubleArrayOf(x, y, z)
     override fun factor(axis: IntArray) =
         LocationPos(axis[0].toDouble(), axis[1].toDouble(), axis[2].toDouble(), yaw, pitch)
+
+    fun LocationPos.asBukkitBlock(world: World) = world.getBlockAt(x.toInt(), y.toInt(), z.toInt())
+
+    fun LocationPos.asBukkitLocation(world: World) = Location(world, x, y, z)
+
+    fun LocationPos.asBlockPos() = BlockPos(x.toInt(), y.toInt(), z.toInt())
 }
 
 data class ChunkPos(
@@ -72,6 +82,8 @@ data class ChunkPos(
 
     override fun axis(): DoubleArray = doubleArrayOf(x.toDouble(), z.toDouble())
     override fun factor(axis: IntArray) = ChunkPos(axis[0], axis[1])
+
+    fun asBukkitChunk(world: World) = world.getChunkAt(x, z)
 }
 
 interface VectorComparable<T : VectorComparable<T>> : Comparable<T> {
@@ -92,6 +104,7 @@ interface VectorComparable<T : VectorComparable<T>> : Comparable<T> {
 }
 
 fun Pair<Int, Int>.toDouble() = first.toDouble() to second.toDouble()
+
 fun Pair<Double, Double>.toInt() = first.toInt() to second.toInt()
 
 fun calculatePythagoras(vararg positions: Pair<Double, Double>): Pair<Double, Double> {

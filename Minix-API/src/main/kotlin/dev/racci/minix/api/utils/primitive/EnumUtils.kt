@@ -1,8 +1,8 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.api.utils.primitive
 
-object EnumUtils {
+import dev.racci.minix.api.utils.UtilObject
+
+object EnumUtils : UtilObject by UtilObject {
 
     /**
      * Returns `true` if enum T contains an entry with the specified name.

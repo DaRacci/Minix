@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.api.utils.collections
 
 import dev.racci.minix.api.utils.kotlin.ifTrue

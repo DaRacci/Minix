@@ -1,11 +1,11 @@
-@file:Suppress("UNUSED", "MemberVisibilityCanBePrivate", "UNCHECKED_CAST")
-
 package dev.racci.minix.api.utils.collections
+
+import dev.racci.minix.api.utils.UtilObject
 
 /**
  * Utilities for Generic Collections.
  */
-object CollectionUtils {
+object CollectionUtils : UtilObject by UtilObject {
 
     /**
      * Checks if the collection contains the [String] by IgnoreCase.

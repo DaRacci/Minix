@@ -4,12 +4,13 @@ package dev.racci.minix.api.utils.minecraft
 
 import dev.racci.minix.api.extensions.pm
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.utils.UtilObject
 import org.bukkit.plugin.Plugin
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
-object PluginUtils {
+object PluginUtils : UtilObject by UtilObject {
 
     /**
      * Delegate that returns the plugin dependency if the plugin is installed in the server

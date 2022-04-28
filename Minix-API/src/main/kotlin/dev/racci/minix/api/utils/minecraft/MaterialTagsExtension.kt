@@ -2,6 +2,7 @@ package dev.racci.minix.api.utils.minecraft
 
 import com.destroystokyo.paper.MaterialSetTag
 import com.destroystokyo.paper.MaterialTags
+import dev.racci.minix.api.utils.unsafeCast
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import kotlin.reflect.KFunction
@@ -15,9 +16,9 @@ object MaterialTagsExtension {
     private fun keyFor(key: String): NamespacedKey = internalKeyFor.call(key)
 
     init {
-        @Suppress("UNCHECKED_CAST") MaterialTags::class.staticFunctions.first { it.name == "keyFor" }.let {
+        MaterialTags::class.staticFunctions.first { it.name == "keyFor" }.let {
             it.isAccessible = true
-            internalKeyFor = it as KFunction<NamespacedKey>
+            internalKeyFor = it.unsafeCast()
         }
     }
 
@@ -70,5 +71,9 @@ object MaterialTagsExtension {
         Material.SWEET_BERRIES,
     )
 
-    val CARBS: MaterialSetTag = MaterialSetTag(keyFor("carbs")).add(Material.BREAD, Material.COOKIE, Material.HONEY_BOTTLE)
+    val CARBS: MaterialSetTag = MaterialSetTag(keyFor("carbs")).add(
+        Material.BREAD,
+        Material.COOKIE,
+        Material.HONEY_BOTTLE
+    )
 }

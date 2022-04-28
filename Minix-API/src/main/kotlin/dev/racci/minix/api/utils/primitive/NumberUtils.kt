@@ -1,12 +1,38 @@
-@file:Suppress("UNUSED", "MemberVisibilityCanBePrivate")
-
 package dev.racci.minix.api.utils.primitive
 
+import dev.racci.minix.api.utils.UtilObject
 import java.util.TreeMap
 
-object NumberUtils {
+object NumberUtils : UtilObject by UtilObject {
 
-    private val map = TreeMap<Int, String>()
+    private val map by lazy {
+        object : TreeMap<Int, String>() {
+            init {
+                this[1000000] = "M"
+                this[900000] = "CM"
+                this[500000] = "D"
+                this[100000] = "C"
+                this[90000] = "XC"
+                this[50000] = "L"
+                this[10000] = "X"
+                this[9000] = "MX"
+                this[5000] = "v"
+                this[1000] = "M"
+                this[900] = "CM"
+                this[500] = "D"
+                this[400] = "CD"
+                this[100] = "C"
+                this[90] = "XC"
+                this[50] = "L"
+                this[40] = "XL"
+                this[10] = "X"
+                this[9] = "IX"
+                this[5] = "V"
+                this[4] = "IV"
+                this[1] = "I"
+            }
+        }
+    }
 
     fun toRoman(number: Int): String? {
         return if (number > 0) {
@@ -18,30 +44,5 @@ object NumberUtils {
         } else {
             number.toString()
         }
-    }
-
-    init {
-        map[1000000] = "M"
-        map[900000] = "CM"
-        map[500000] = "D"
-        map[100000] = "C"
-        map[90000] = "XC"
-        map[50000] = "L"
-        map[10000] = "X"
-        map[9000] = "MX"
-        map[5000] = "v"
-        map[1000] = "M"
-        map[900] = "CM"
-        map[500] = "D"
-        map[400] = "CD"
-        map[100] = "C"
-        map[90] = "XC"
-        map[50] = "L"
-        map[40] = "XL"
-        map[10] = "X"
-        map[9] = "IX"
-        map[5] = "V"
-        map[4] = "IV"
-        map[1] = "I"
     }
 }

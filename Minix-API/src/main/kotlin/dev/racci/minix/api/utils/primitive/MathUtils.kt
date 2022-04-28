@@ -1,8 +1,8 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.api.utils.primitive
 
-object MathUtils {
+import dev.racci.minix.api.utils.UtilObject
+
+object MathUtils : UtilObject by UtilObject {
 
     fun multiplyByPercent(
         value: Double,

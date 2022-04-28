@@ -55,14 +55,6 @@ fun <R> readInstanceProperty(
 }?.also { it.isAccessible = true }.safeCast<KProperty1<Any, *>>()?.get(instance) as? R
 
 /**
- * Makes a safe cast of a property to a different type.
- *
- * @param T The type to cast to.
- * @return The casted property.
- */
-// fun <T> Any?.safeCast(): T? = this as? T
-
-/**
  * Makes a safe cast using reflection
  *
  * @param T The type to cast to.

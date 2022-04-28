@@ -144,7 +144,7 @@ class MCVersion private constructor(
          */
         infix fun MCVersion.sameMajor(other: MCVersion): Boolean = versionID / 10 == other.versionID / 10
 
-        private val versionRegex = Regex("MC_?(?<nms>NMS)?_(?<major>[0-9]+)_(?<minor>[0-9]+)_?(?<patch>[0-9]+)?_?(?<revision>R[0-9])?")
+        private val versionRegex = Regex("MC_?(?<nms>NMS)?_(?<major>\\d+)_(?<minor>\\d+)_?(?<patch>\\d+)?_?(?<revision>R\\d)?")
 
         val UNKNOWN by MCVersionDelegate(0, -1)
         val MC_1_7 by MCVersionDelegate(11, 3)

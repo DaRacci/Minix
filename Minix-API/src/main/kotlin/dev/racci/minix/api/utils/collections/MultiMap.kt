@@ -1,5 +1,3 @@
-@file:Suppress("Unused")
-
 package dev.racci.minix.api.utils.collections
 
 import com.google.common.collect.Multimap

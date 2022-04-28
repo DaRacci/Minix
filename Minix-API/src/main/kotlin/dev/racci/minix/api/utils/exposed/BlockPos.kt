@@ -8,6 +8,7 @@ import org.jetbrains.exposed.sql.Column
 import kotlin.reflect.KProperty
 
 fun Entity<*>.blockPos(column: Column<String>) = BlockPosExposedDelegate(column)
+
 fun Entity<*>.blockPos(column: Column<String?>) = BlockPosExposedDelegateNullable(column)
 
 fun Entity<*>.blockPos(

@@ -8,6 +8,8 @@ import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
 import kotlin.math.roundToLong
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
 data class Data(val bytes: Long) : Comparable<Data> {
 
@@ -35,13 +37,9 @@ data class Data(val bytes: Long) : Comparable<Data> {
         }
     }
 
-    override fun toString(): String {
-        return "${bytes}B"
-    }
+    override fun toString() = "${bytes}B"
 
-    override fun hashCode(): Int {
-        return bytes.hashCode()
-    }
+    override fun hashCode() = bytes.hashCode()
 
     override fun equals(other: Any?): Boolean {
         if (other is Data) {
@@ -50,9 +48,9 @@ data class Data(val bytes: Long) : Comparable<Data> {
         return false
     }
 
-    companion object {
-        private val regex = Regex("(?<size>[0-9]+(\\.)?([0-9]+)?)(?<identifier>[a-zA-Z]+)")
-        private val logger by lazy { getKoin().get<Minix>().log }
+    companion object : KoinComponent {
+        private val regex = Regex("(?<size>\\d+(\\.)?(\\d+)?)(?<identifier>[a-zA-Z]+)")
+        private val logger by lazy { get<Minix>().log }
 
         fun fromKilobytes(kilobytes: Long): Data = Data(kilobytes * 1024)
         fun fromMegabytes(megabytes: Long): Data = Data(megabytes * 1048576)

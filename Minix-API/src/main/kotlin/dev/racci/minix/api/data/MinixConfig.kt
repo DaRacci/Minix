@@ -11,7 +11,7 @@ import java.util.logging.Level
 
 @ConfigSerializable
 @MappedConfig(Minix::class, "config.conf")
-class Config {
+class MinixConfig {
 
     @Setting("server-uuid")
     @Comment("This server unique uuid (Please don't change this)")

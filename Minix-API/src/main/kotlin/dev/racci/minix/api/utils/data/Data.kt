@@ -1,15 +1,14 @@
 package dev.racci.minix.api.utils.data
 
 import dev.racci.minix.api.plugin.Minix
-import dev.racci.minix.api.utils.getKoin
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.spongepowered.configurate.ConfigurateException
 import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.serialize.TypeSerializer
 import java.lang.reflect.Type
 import kotlin.math.roundToLong
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 
 data class Data(val bytes: Long) : Comparable<Data> {
 

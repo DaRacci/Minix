@@ -2,6 +2,25 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.8.0](https://github.com/DaRacci/Minix/compare/v2.7.1..v2.8.0) - 2022-04-28
+#### Bug Fixes
+- These should just be functions lol - ([ca03689](https://github.com/DaRacci/Minix/commit/ca036899952e954e4ac032563ed064296d156a41)) - [@DaRacci](https://github.com/DaRacci)
+- Transient values so we dont break configs - ([f58f2e1](https://github.com/DaRacci/Minix/commit/f58f2e1abe2152ce945f20e7a3420b9c38947f58)) - [@DaRacci](https://github.com/DaRacci)
+- why does this break? idk but anyway i have another method that solves this. - ([eb5ab8a](https://github.com/DaRacci/Minix/commit/eb5ab8a3ee82456f9a4e274ad45aab35c1744ea6)) - [@DaRacci](https://github.com/DaRacci)
+- make the vals open - ([02e48df](https://github.com/DaRacci/Minix/commit/02e48dfdc0f907d877a515f5fd201bdde80667f2)) - [@DaRacci](https://github.com/DaRacci)
+- Fix all issues with the reflection loader - ([6de9166](https://github.com/DaRacci/Minix/commit/6de916671d43ce202b9cec7df1d03cd3ae7dc404)) - [@DaRacci](https://github.com/DaRacci)
+- Fix old version path for moving - ([76ded98](https://github.com/DaRacci/Minix/commit/76ded985f96a5c4421cd2f9a15f03d10f2deb60d)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- IConfig with callbacks - ([4307eea](https://github.com/DaRacci/Minix/commit/4307eea30d57d8ba85a8a77f4cf04a5099767695)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.7.1 - ([3aafb58](https://github.com/DaRacci/Minix/commit/3aafb5819d53c842d31a290d4ae7e37ca9bfe038)) - [@DaRacci](https://github.com/DaRacci)
+- Forcefully enable debugging if on pre-release - ([c3ca196](https://github.com/DaRacci/Minix/commit/c3ca196976c7f282f80ded115d51e1dddc43788a)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Refactor and cleanup some utils - ([50c40fc](https://github.com/DaRacci/Minix/commit/50c40fc723447b762662fe880a6b004c1b61f2f0)) - [@DaRacci](https://github.com/DaRacci)
+- Rename to MinixConfig so we dont pollute import suggestions - ([cdc1793](https://github.com/DaRacci/Minix/commit/cdc1793cc01c324d9a60a2fdcfbb226a786e11da)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v2.7.1](https://github.com/DaRacci/Minix/compare/v2.7.0..v2.7.1) - 2022-04-22
 #### Bug Fixes
 - Fix concurrent modification + other updater service refactoring - ([263f7aa](https://github.com/DaRacci/Minix/commit/263f7aac554296e2b54d686f20aa60aff0e33224)) - [@DaRacci](https://github.com/DaRacci)

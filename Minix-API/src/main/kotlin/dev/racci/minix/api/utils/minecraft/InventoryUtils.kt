@@ -1,7 +1,6 @@
 package dev.racci.minix.api.utils.minecraft
 
 import dev.racci.minix.api.utils.UtilObject
-import org.jetbrains.annotations.ApiStatus
 
 /**
  * Utilities for Inventories.

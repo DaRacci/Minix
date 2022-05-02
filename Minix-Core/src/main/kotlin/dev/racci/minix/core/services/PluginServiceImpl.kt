@@ -295,7 +295,12 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         val cache = pluginCache[this]
         val sorted = getSortedExtensions()
         sorted.forEach { ex ->
-            val module = module { single { ex } bind (ex.bindToKClass ?: ex::class) }
+            val module = module {
+                single { ex } bind (ex.bindToKClass ?: ex::class)
+                if (ex.bindToKClass != null) { // Bind to both types
+                    single { ex.bindToKClass } bind (ex::class)
+                }
+            }
             loadKoinModules(module)
             ex.setState(ExtensionState.LOADING)
             try {

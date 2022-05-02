@@ -93,6 +93,44 @@ object CollectionUtils : UtilObject by UtilObject {
         onRemove(remove(key)!!)
     }
 
+    /**
+     * Compute an action with the item at this index and remove it from the collection.
+     *
+     * @param K The key type.
+     * @param V The value type.
+     * @param key The items key.
+     * @param onRemove The action to perform.
+     */
+    inline fun <K, V> MutableMap<K, V>.computeAndRemove(
+        key: K,
+        onRemove: (K, V) -> Unit,
+    ) {
+        if (isEmpty() || key !in this) return
+
+        val value = this.getOrElse(key) { return }
+        onRemove(key, value)
+        remove(key)
+    }
+
+    /**
+     * Compute an action with the item at this index and remove it from the collection.
+     *
+     * @param K The key type.
+     * @param V The value type.
+     * @param key The items key.
+     * @param onRemove The action to perform.
+     */
+    inline fun <K, V> MutableMap<K, V>.computeAndRemove(
+        key: K,
+        onRemove: V.() -> Unit,
+    ) {
+        if (isEmpty() || key !in this) return
+
+        val value = this.getOrElse(key) { return }
+        onRemove(value)
+        remove(key)
+    }
+
     operator fun <K, V> Map<K, V>.get(
         key: K,
         default: V,

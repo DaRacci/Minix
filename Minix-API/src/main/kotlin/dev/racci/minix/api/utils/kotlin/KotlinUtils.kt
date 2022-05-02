@@ -136,3 +136,5 @@ inline fun <reified T : () -> R, R> T.ifFulfilled(
     boolean: Boolean? = null,
     block: () -> Boolean = { false },
 ) { if (boolean == true || block()) this() }
+
+infix fun <F, S, T> Pair<F, S>.to(other: T): Triple<F, S, T> = Triple(first, second, other)

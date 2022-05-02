@@ -3,8 +3,8 @@ package dev.racci.minix.api.utils.collections
 import dev.racci.minix.api.utils.collections.CollectionUtils.clear
 import dev.racci.minix.api.utils.collections.CollectionUtils.containsIgnoreCase
 import dev.racci.minix.api.utils.collections.CollectionUtils.containsKeyIgnoreCase
-import dev.racci.minix.api.utils.collections.CollectionUtils.getAs
-import dev.racci.minix.api.utils.collections.CollectionUtils.getAsOrNull
+import dev.racci.minix.api.utils.collections.CollectionUtils.getCast
+import dev.racci.minix.api.utils.collections.CollectionUtils.getCastOrNull
 import dev.racci.minix.api.utils.collections.CollectionUtils.getIgnoreCase
 import strikt.api.expectCatching
 import strikt.api.expectThrows
@@ -43,11 +43,11 @@ internal class CollectionUtilsTest {
         assertTrue("Map contains key ONE ignoring case") { map.containsKeyIgnoreCase("ONE") }
         assertFalse("Map doesn't contains key SIX ignoring case") { map.containsKeyIgnoreCase("SIX") }
         assertEquals(1, map.getIgnoreCase("ONE"), "Map key ONE's value is 1 ignoring case")
-        assertEquals(1 as Number, map.getAs<Number>("one"), "Getting the key as a number will succeed")
-        assertNull(map.getAsOrNull<Logger>("one"), "Getting the key as a logger will fail")
+        assertEquals(1 as Number, map.getCast<Number>("one"), "Getting the key as a number will succeed")
+        assertNull(map.getCastOrNull<Logger>("one"), "Getting the key as a logger will fail")
         expectCatching {
             expectThrows<ClassCastException> {
-                map.getAs<Logger>("ONE")
+                map.getCast<Logger>("ONE")
             }
         }
     }

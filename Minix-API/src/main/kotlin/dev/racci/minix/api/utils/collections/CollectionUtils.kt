@@ -1,6 +1,8 @@
 package dev.racci.minix.api.utils.collections
 
 import dev.racci.minix.api.utils.UtilObject
+import dev.racci.minix.api.utils.safeCast
+import dev.racci.minix.api.utils.unsafeCast
 
 /**
  * Utilities for Generic Collections.
@@ -18,6 +20,45 @@ object CollectionUtils : UtilObject by UtilObject {
     ): Boolean = any { it.equals(element, true) }
 
     /**
+     * Get the element at this index and unsafe cast it to the specified type.
+     *
+     * @param T the cast type.
+     * @param index the index of the element.
+     * @return the casted element at this index.
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(ClassCastException::class)
+    fun <T> Collection<*>.getCast(
+        index: Int
+    ): T = elementAtOrNull(index).unsafeCast()
+
+    /**
+     * Get the element at this index and safe cast it to the specified type.
+     *
+     * @param T the cast type.
+     * @param index the index of the element.
+     * @return the casted element at this index.
+     */
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T> Collection<*>.getCastOrNull(
+        index: Int
+    ): T? = elementAtOrNull(index).safeCast()
+
+    /**
+     * Get the element at this index and safe cast it to the specified type.
+     *
+     * @param T the cast type.
+     * @param index the index of the element.
+     * @param def the default value if the result is null.
+     * @return the casted element at this index or the default value.
+     */
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T> Collection<*>.getCastOrDef(
+        index: Int,
+        def: () -> T
+    ): T = elementAtOrNull(index).safeCast() ?: def()
+
+    /**
      * Checks if the array contains the [String] by IgnoreCase.
      *
      * @param element The [String] to look for.
@@ -26,6 +67,45 @@ object CollectionUtils : UtilObject by UtilObject {
     fun Array<String>.containsIgnoreCase(
         element: String,
     ): Boolean = any { it.equals(element, true) }
+
+    /**
+     * Get the element at this index and unsafe cast it to the specified type.
+     *
+     * @param T the cast type.
+     * @param index the index of the element.
+     * @return the casted element at this index.
+     */
+    @Suppress("UNCHECKED_CAST")
+    @Throws(ClassCastException::class)
+    fun <T> Array<*>.getCast(
+        index: Int
+    ): T = elementAtOrNull(index) as T
+
+    /**
+     * Get the element at this index and safe cast it to the specified type.
+     *
+     * @param T the cast type.
+     * @param index the index of the element.
+     * @return the casted element at this index.
+     */
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T> Array<*>.getCastOrNull(
+        index: Int
+    ): T? = elementAtOrNull(index).safeCast()
+
+    /**
+     * Get the element at this index and safe cast it to the specified type.
+     *
+     * @param T the cast type.
+     * @param index the index of the element.
+     * @param def the default value if the result is null.
+     * @return the casted element at this index or the default value.
+     */
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T> Array<*>.getCastOrDef(
+        index: Int,
+        def: () -> T
+    ): T = elementAtOrNull(index).safeCast() ?: def()
 
     /**
      * Checks if the map contains the [String] as a key by IgnoreCase.
@@ -106,7 +186,6 @@ object CollectionUtils : UtilObject by UtilObject {
         onRemove: (K, V) -> Unit,
     ) {
         if (isEmpty() || key !in this) return
-
         val value = this.getOrElse(key) { return }
         onRemove(key, value)
         remove(key)
@@ -125,7 +204,6 @@ object CollectionUtils : UtilObject by UtilObject {
         onRemove: V.() -> Unit,
     ) {
         if (isEmpty() || key !in this) return
-
         val value = this.getOrElse(key) { return }
         onRemove(value)
         remove(key)
@@ -136,12 +214,16 @@ object CollectionUtils : UtilObject by UtilObject {
         default: V,
     ) = getOrDefault(key, default)
 
-    inline fun <reified T> Map<*, *>.getAs(key: Any): T = this[key] as T
+    inline fun <reified T> Map<*, *>.getCast(
+        key: Any
+    ): T = this[key].unsafeCast()
 
-    inline fun <reified T> Map<*, *>.getAsOrNull(key: Any): T? = with(this[key]) { if (this is T) this else null }
+    inline fun <reified T> Map<*, *>.getCastOrNull(
+        key: Any
+    ): T? = this[key].safeCast()
 
-    inline fun <reified T> Map<*, *>.getAsOr(
+    inline fun <reified T> Map<*, *>.getCastOrDef(
         key: Any,
-        def: T,
-    ) = this[key] as? T ?: def
+        def: () -> T
+    ): T = this[key].safeCast() ?: def()
 }

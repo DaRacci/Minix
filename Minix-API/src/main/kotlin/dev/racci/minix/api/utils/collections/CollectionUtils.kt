@@ -1,5 +1,7 @@
 package dev.racci.minix.api.utils.collections
 
+import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.LoadingCache
 import dev.racci.minix.api.utils.UtilObject
 import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
@@ -212,7 +214,7 @@ object CollectionUtils : UtilObject by UtilObject {
     operator fun <K, V> Map<K, V>.get(
         key: K,
         default: V,
-    ) = getOrDefault(key, default)
+    ): V = getOrDefault(key, default)
 
     inline fun <reified T> Map<*, *>.getCast(
         key: Any
@@ -226,4 +228,16 @@ object CollectionUtils : UtilObject by UtilObject {
         key: Any,
         def: () -> T
     ): T = this[key].safeCast() ?: def()
+
+    fun <K, V> cacheOf(
+        build: K.() -> V,
+    ): LoadingCache<K, V> = cacheOf(build) {}
+
+    inline fun <K, V> cacheOf(
+        noinline build: K.() -> V,
+        builder: Caffeine<K, V>.() -> Unit
+    ): LoadingCache<K, V> = Caffeine.newBuilder()
+        .removalListener<K, V> { _, _, _ -> }
+        .apply(builder)
+        .build(build)
 }

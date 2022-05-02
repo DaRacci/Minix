@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.9.0](https://github.com/DaRacci/Minix/compare/v2.8.0..v2.9.0) - 2022-05-02
+#### Bug Fixes
+- Fix release change notes - ([caf71a7](https://github.com/DaRacci/Minix/commit/caf71a71b1e8952cc1942d0065c30d0da94a4432)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- Loadable class for loading and unload stuff. yeah.. - ([e47d88f](https://github.com/DaRacci/Minix/commit/e47d88fe403740f27b163a6221cc43f5b3c8debd)) - [@DaRacci](https://github.com/DaRacci)
+- computeAndRemove for mutable maps - ([5653e96](https://github.com/DaRacci/Minix/commit/5653e9686816229061306727d4c5618926eeb0d8)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(deps)** Update Minix-Conventions - ([19e6c79](https://github.com/DaRacci/Minix/commit/19e6c7989bcd265527abb1ab4ff67759c21f3131)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v2.8.0 - ([94bb675](https://github.com/DaRacci/Minix/commit/94bb675da6673a4f5d9872aa0db23e1d03ae2e97)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Bind the extension to both own class as well as the bindTo if present - ([ea635fd](https://github.com/DaRacci/Minix/commit/ea635fd99c3def5f9a636d59625e86d38098a67f)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v2.8.0](https://github.com/DaRacci/Minix/compare/v2.7.1..v2.8.0) - 2022-04-28
 #### Bug Fixes
 - These should just be functions lol - ([ca03689](https://github.com/DaRacci/Minix/commit/ca036899952e954e4ac032563ed064296d156a41)) - [@DaRacci](https://github.com/DaRacci)

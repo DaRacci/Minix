@@ -207,4 +207,6 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
             loader.save(node)
         }
     }
+
+    companion object : ExtensionCompanion<DataServiceImpl>()
 }

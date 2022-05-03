@@ -7,6 +7,9 @@ import dev.racci.minix.api.extensions.WithPlugin
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PluginService
+import dev.racci.minix.api.utils.getKoin
+import dev.racci.minix.api.utils.kotlin.companionParent
+import dev.racci.minix.api.utils.unsafeCast
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CompletableDeferred
@@ -17,6 +20,7 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.QualifierValue
 import java.util.concurrent.CompletableFuture
 import kotlin.reflect.KClass
+import kotlin.reflect.KProperty
 import kotlin.reflect.full.findAnnotation
 
 abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin<P> {
@@ -107,5 +111,20 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin
 
     final override fun toString(): String {
         return "${plugin.name}:$value"
+    }
+
+    abstract class ExtensionCompanion<E : Extension<*>> {
+
+        operator fun getValue(thisRef: ExtensionCompanion<E>, property: KProperty<*>): E = thisRef.getService()
+
+        fun getService(): E {
+            val parentClass = this::class.companionParent.unsafeCast<KClass<Extension<*>>>() // Will throw if implemented incorrectly
+            return getKoin().get(parentClass)
+        }
+
+        fun inject(): Lazy<E> = lazy {
+            val parentClass = this::class.companionParent.unsafeCast<KClass<Extension<*>>>() // Will throw if implemented incorrectly
+            getKoin().get(parentClass)
+        }
     }
 }

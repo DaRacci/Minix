@@ -3,6 +3,7 @@ package dev.racci.minix.core.services
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.data.UpdaterConfig
+import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.pm
 import dev.racci.minix.api.extensions.server
@@ -39,7 +40,6 @@ import org.bukkit.event.server.PluginEnableEvent
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.component.get
-import org.koin.core.component.inject
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.IOException
@@ -57,8 +57,7 @@ import kotlin.io.path.moveTo
 import kotlin.time.Duration.Companion.minutes
 
 @MappedExtension(Minix::class, "Updater Service", [DataService::class], UpdaterService::class)
-class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
-    private val dataService by inject<DataService>().unsafeCast<Lazy<DataServiceImpl>>()
+class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), UpdaterService {
     private val updaterConfig by lazy { get<DataService>().get<UpdaterConfig>() }
     private val updateFolder by lazy { // Ensure the update folder exists whenever we first get its location
         val folder = plugin.dataFolder.resolve(updaterConfig.updateFolder)
@@ -70,7 +69,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
 
     override suspend fun handleLoad() {
         val plugins = pm.plugins
-        transaction(dataService.database) {
+        transaction(DataService.getService().unsafeCast<DataServiceImpl>().database) {
             SchemaUtils.createMissingTablesAndColumns(DataServiceImpl.DataHolder.table)
             for (holder in DataServiceImpl.DataHolder.all()) {
                 val plugin = plugins.find { it.name == holder.id.value } ?: continue
@@ -459,7 +458,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : UpdaterService() {
             val newPath = file.copyTo(server.pluginsFolder.resolve(file.name), false)
             if (newPath.exists() && newPath.size() == file.size()) file.delete()
 
-            transaction(dataService.database) {
+            transaction(DataServiceImpl.getService().database) {
                 DataServiceImpl.DataHolder.new(updater.pluginInstance!!.name) {
                     newVersion = newPath.name
                     oldVersion = updater.localFile.substringAfterLast("/")

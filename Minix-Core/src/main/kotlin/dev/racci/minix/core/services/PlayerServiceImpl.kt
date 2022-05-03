@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.core.services
 
 import dev.racci.minix.api.annotations.MappedExtension

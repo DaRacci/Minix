@@ -39,7 +39,7 @@ abstract class DataService : Extension<Minix>() {
 
     abstract suspend fun <T : Any> getConfigurateLoader(clazz: KClass<T>, file: File): HoconConfigurationLoader
 
-    companion object {
+    companion object : ExtensionCompanion<DataService>() {
         inline fun <reified T> Lazy<DataService>.inject(): Lazy<T> = lazy(value::get)
     }
 }

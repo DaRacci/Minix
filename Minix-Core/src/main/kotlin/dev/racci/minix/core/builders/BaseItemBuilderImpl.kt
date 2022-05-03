@@ -5,10 +5,10 @@ package dev.racci.minix.core.builders
 import com.destroystokyo.paper.Namespaced
 import com.google.common.collect.Multimap
 import dev.racci.minix.api.builders.BaseItemBuilder
+import dev.racci.minix.api.exceptions.IncorrectItemTypeException
 import dev.racci.minix.api.extensions.PDC
 import dev.racci.minix.api.extensions.pdc
 import dev.racci.minix.api.extensions.toItemStack
-import dev.racci.minix.api.utils.IncorrectItemTypeException
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute

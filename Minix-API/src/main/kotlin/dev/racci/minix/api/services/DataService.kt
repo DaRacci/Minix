@@ -2,10 +2,10 @@ package dev.racci.minix.api.services
 
 import com.github.benmanes.caffeine.cache.LoadingCache
 import dev.racci.minix.api.annotations.MappedConfig
+import dev.racci.minix.api.exceptions.MissingAnnotationException
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.utils.MissingAnnotationException
 import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
 import org.spongepowered.configurate.CommentedConfigurationNode

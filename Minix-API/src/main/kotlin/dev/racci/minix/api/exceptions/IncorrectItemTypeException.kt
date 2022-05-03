@@ -1,4 +1,4 @@
-package dev.racci.minix.api.utils
+package dev.racci.minix.api.exceptions
 
 import org.jetbrains.annotations.ApiStatus
 

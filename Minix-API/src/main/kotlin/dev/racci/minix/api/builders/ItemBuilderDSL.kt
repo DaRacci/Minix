@@ -1,7 +1,7 @@
 package dev.racci.minix.api.builders
 
 import dev.racci.minix.api.annotations.MinixDsl
-import dev.racci.minix.api.utils.IncorrectItemTypeException
+import dev.racci.minix.api.exceptions.IncorrectItemTypeException
 import dev.racci.minix.api.utils.getKoin
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack

@@ -7,12 +7,12 @@ import com.zaxxer.hikari.HikariDataSource
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.IConfig
+import dev.racci.minix.api.exceptions.MissingAnnotationException
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.serializables.Serializer
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.updater.providers.UpdateProvider
-import dev.racci.minix.api.utils.MissingAnnotationException
 import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.ifInitialized
 import dev.racci.minix.api.utils.kotlin.ifTrue

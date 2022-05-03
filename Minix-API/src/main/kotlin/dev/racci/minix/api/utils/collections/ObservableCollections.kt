@@ -1,32 +1,40 @@
 package dev.racci.minix.api.utils.collections
 
+import dev.racci.minix.api.annotations.MinixExperimental
 import dev.racci.minix.api.utils.kotlin.ifTrue
-import kotlin.reflect.KFunction1
+import dev.racci.minix.api.utils.unsafeCast
 
 typealias ObservableListener<T> = (T, ObservableAction) -> Unit
+typealias ObservableListenerIndex<T> = (Int, T, ObservableAction) -> Unit
 
-enum class ObservableAction { ADD, SET, REPLACE, REMOVE, CLEAR }
+typealias ObservableListenerCollection<T> = (Collection<T>, ObservableAction) -> Unit
+typealias ObservableListenerCollectionIndex<T> = (Collection<T>, Int, ObservableAction) -> Unit
 
-fun <T> observableListOf(vararg items: T) = ObservableList(items.toMutableList())
-fun <T> observableSetOf(vararg items: T) = ObservableSet(items.toMutableSet())
-fun <K, V> observableMapOf(vararg items: Pair<K, V>) = ObservableMap(mutableMapOf(*items))
+typealias ObservableListenerEntry<K, V> = (K, V, ObservableAction) -> Unit
 
-fun <T> observableListOf(mutableList: MutableList<T>) = mutableList.asObservable()
-fun <T> observableSetOf(mutableSet: MutableSet<T>) = mutableSet.asObservable()
-fun <K, V> observableMapOf(mutableMap: MutableMap<K, V>) = mutableMap.asObservable()
+enum class ObservableAction { ADD, ADD_ALL, SET, REPLACE, REMOVE, REMOVE_ALL, CLEAR }
 
-fun <T> MutableList<T>.asObservable() = ObservableList(this)
-fun <T> MutableSet<T>.asObservable() = ObservableSet(this)
-fun <K, V> MutableMap<K, V>.asObservable() = ObservableMap(this)
+@MinixExperimental fun <T> observableListOf(vararg items: T) = ObservableList(items.toMutableList())
+@MinixExperimental fun <T> observableSetOf(vararg items: T) = ObservableSet(items.toMutableSet())
+@MinixExperimental fun <K, V> observableMapOf(vararg items: Pair<K, V>) = ObservableMap(mutableMapOf(*items))
 
+@MinixExperimental fun <T> observableListOf(mutableList: MutableList<T>) = mutableList.asObservable()
+@MinixExperimental fun <T> observableSetOf(mutableSet: MutableSet<T>) = mutableSet.asObservable()
+@MinixExperimental fun <K, V> observableMapOf(mutableMap: MutableMap<K, V>) = mutableMap.asObservable()
+
+@MinixExperimental fun <T> MutableList<T>.asObservable() = ObservableList(this)
+@MinixExperimental fun <T> MutableSet<T>.asObservable() = ObservableSet(this)
+@MinixExperimental fun <K, V> MutableMap<K, V>.asObservable() = ObservableMap(this)
+
+@MinixExperimental
 class ObservableList<T> internal constructor(
     private val list: MutableList<T>,
-) : MutableList<T> by list, ObservableCollection<T> {
+) : MutableList<T> by list, ObservableCollection<T>() {
 
-    override val listeners = multiMapOf<ObservableListener<T>, ObservableAction?>()
+    override val listeners = multiMapOf<Function<Unit>, ObservableAction?>()
 
     override fun add(element: T): Boolean {
-        runListeners { element to ObservableAction.ADD }
+        runListeners<ObservableListener<T>>(element, ObservableAction.ADD)
         return list.add(element)
     }
 
@@ -34,7 +42,7 @@ class ObservableList<T> internal constructor(
         index: Int,
         element: T,
     ) {
-        runListeners { element to ObservableAction.ADD }
+        runListeners<ObservableListenerIndex<T>>(element, index, ObservableAction.ADD)
         return list.add(index, element)
     }
 
@@ -42,139 +50,141 @@ class ObservableList<T> internal constructor(
         index: Int,
         elements: Collection<T>,
     ): Boolean {
-        elements.forEach { runListeners { it to ObservableAction.ADD } }
+        runListeners<ObservableListenerCollectionIndex<T>>(elements, index, ObservableAction.ADD_ALL)
         return list.addAll(index, elements)
     }
 
     override fun addAll(elements: Collection<T>): Boolean {
-        elements.forEach { runListeners { it to ObservableAction.ADD } }
+        runListeners<ObservableListenerCollection<T>>(elements, ObservableAction.ADD_ALL)
+        return list.addAll(elements)
+    }
+
+    fun addAll(vararg elements: T): Boolean {
+        runListeners<ObservableListenerCollection<T>>(elements.toSet(), ObservableAction.ADD_ALL)
         return list.addAll(elements)
     }
 
     override fun clear() {
-        list.forEach { runListeners { it to ObservableAction.CLEAR } }
+        runListeners<(ObservableAction) -> Unit>(ObservableAction.CLEAR)
         list.clear()
     }
 
     override fun listIterator(): MutableListIterator<T> = ObservableMutableListIterator(
-        list.listIterator(),
-        ::runListeners,
-    )
+        list.listIterator()
+    ) { value, action -> runListeners<ObservableListener<T>>(value, action) }
 
     override fun listIterator(index: Int): MutableListIterator<T> = ObservableMutableListIterator(
-        list.listIterator(index),
-        ::runListeners
-    )
+        list.listIterator(index)
+    ) { value, action -> runListeners<ObservableListener<T>>(value, action) }
 
     override fun remove(element: T): Boolean = list.remove(element).ifTrue {
-        runListeners { element to ObservableAction.REMOVE }
+        runListeners<ObservableListener<T>>(element, ObservableAction.REMOVE)
     }
 
     override fun removeAll(elements: Collection<T>): Boolean = list.removeAll(elements.toSet()).ifTrue {
-        elements.forEach { runListeners { it to ObservableAction.REMOVE } }
+        runListeners<ObservableListenerCollection<T>>(elements, ObservableAction.REMOVE_ALL)
     }
 
     override fun removeAt(index: Int): T = list.removeAt(index).apply {
-        runListeners { this to ObservableAction.REMOVE }
+        runListeners<ObservableListenerIndex<T>>(this, index, ObservableAction.REMOVE)
     }
 
     override fun retainAll(elements: Collection<T>): Boolean {
         val notIn = list.filter { it !in elements }
-        notIn.forEach {
-            runListeners { it to ObservableAction.REMOVE }
-        }
-        return notIn.isNotEmpty()
+        runListeners<ObservableListenerCollection<T>>(notIn, ObservableAction.REMOVE_ALL)
+        return list.retainAll(elements)
     }
 
     override fun set(
         index: Int,
         element: T,
     ): T = list.set(index, element).apply {
-        runListeners { this to ObservableAction.SET }
+        runListeners<ObservableListenerIndex<T>>(element, index, ObservableAction.SET)
     }
 }
 
+@MinixExperimental
 class ObservableMutableListIterator<T>(
     private val iterator: MutableListIterator<T>,
-    private val runListeners: KFunction1<() -> Pair<T, ObservableAction>, Unit>,
+    private val runListeners: ObservableListener<T>,
 ) : MutableListIterator<T> by iterator {
 
     override fun add(element: T) {
         iterator.add(element)
-        runListeners { element to ObservableAction.ADD }
+        runListeners(element, ObservableAction.ADD)
     }
 
     override fun remove() {
-        runListeners { iterator.next() to ObservableAction.REMOVE }
+        runListeners(iterator.next(), ObservableAction.REMOVE)
         iterator.remove()
     }
 
     override fun set(element: T) {
         iterator.set(element)
-        runListeners { element to ObservableAction.SET }
+        runListeners(element, ObservableAction.SET)
     }
 }
 
+@MinixExperimental
 class ObservableSet<T> internal constructor(
     private val set: MutableSet<T>,
-) : MutableSet<T> by set, ObservableCollection<T> {
+) : MutableSet<T> by set, ObservableCollection<T>() {
 
-    override val listeners = multiMapOf<ObservableListener<T>, ObservableAction?>()
+    override val listeners = multiMapOf<Function<Unit>, ObservableAction?>()
 
     override fun add(element: T): Boolean = set.add(element).ifTrue {
-        runListeners { element to ObservableAction.ADD }
+        runListeners<ObservableListener<T>>(element, ObservableAction.ADD)
     }
 
     override fun addAll(elements: Collection<T>): Boolean = set.addAll(elements).ifTrue {
-        elements.forEach { runListeners { it to ObservableAction.ADD } }
+        runListeners<ObservableListenerCollection<T>>(elements, ObservableAction.ADD_ALL)
     }
 
     override fun clear() {
-        set.forEach { runListeners { it to ObservableAction.CLEAR } }
+        runListeners<(ObservableAction) -> Unit>(ObservableAction.CLEAR)
         set.clear()
     }
 
     override fun iterator(): MutableIterator<T> = ObservableMutableIterator(
         set.iterator(),
-        ::runListeners
-    )
+    ) { value, action -> runListeners<ObservableListener<T>>(value, action) }
 
     override fun remove(element: T): Boolean = set.remove(element).ifTrue {
-        runListeners { element to ObservableAction.REMOVE }
+        runListeners<ObservableListener<T>>(element, ObservableAction.REMOVE)
     }
 
     override fun removeAll(elements: Collection<T>): Boolean = set.removeAll(elements.toSet()).ifTrue {
-        elements.forEach { runListeners { it to ObservableAction.REMOVE } }
+        runListeners<ObservableListenerCollection<T>>(elements, ObservableAction.REMOVE)
     }
 
     override fun retainAll(elements: Collection<T>): Boolean {
         val notIn = set.filter { it !in elements }
-        notIn.forEach {
-            runListeners { it to ObservableAction.REMOVE }
-        }
-        return notIn.isNotEmpty()
+        runListeners<ObservableListenerCollection<T>>(notIn, ObservableAction.REMOVE_ALL)
+        return set.retainAll(elements.toSet())
     }
 }
 
+@MinixExperimental
 class ObservableMutableIterator<T>(
     private val iterator: MutableIterator<T>,
-    private val runListeners: KFunction1<() -> Pair<T, ObservableAction>, Unit>,
+    private val runListeners: ObservableListener<T>,
 ) : MutableIterator<T> by iterator {
 
     override fun remove() {
-        runListeners { iterator.next() to ObservableAction.REMOVE }
+        runListeners(iterator.next(), ObservableAction.REMOVE)
         iterator.remove()
     }
 }
 
+@MinixExperimental
 class ObservableMap<K, V> internal constructor(
     private val map: MutableMap<K, V>,
-) : MutableMap<K, V> by map, ObservableHolder<Pair<K, V>> {
+) : MutableMap<K, V> by map, ObservableHolder<Pair<K, V>>() {
 
-    override val listeners = multiMapOf<ObservableListener<Pair<K, V>>, ObservableAction?>()
+    override val listeners = multiMapOf<Function<Unit>, ObservableAction?>()
 
     override fun clear() {
-        map.entries.forEach { runListeners { it.toPair() to ObservableAction.CLEAR } }
+        runListeners<(ObservableAction) -> Unit>(ObservableAction.CLEAR)
         map.clear()
     }
 
@@ -182,32 +192,30 @@ class ObservableMap<K, V> internal constructor(
         key: K,
         value: V,
     ): V? = map.put(key, value)?.apply {
-        runListeners { key to this to ObservableAction.REMOVE }
+        runListeners<ObservableListenerEntry<K, V>>(key, this, ObservableAction.REMOVE)
     }
 
     override fun putAll(from: Map<out K, V>) {
         map.putAll(from)
-        from.entries.forEach { runListeners { it.toPair() to ObservableAction.ADD } }
+        from.entries.forEach { runListeners<ObservableListenerEntry<K, V>>(it.key, it.value, ObservableAction.ADD) }
     }
 
     override fun putIfAbsent(
         key: K,
         value: V,
-    ): V? = map.putIfAbsent(key, value).also {
-        if (it == null) runListeners { key to value to ObservableAction.ADD }
+    ): V? = map.putIfAbsent(key, value)?.also {
+        runListeners<ObservableListenerEntry<K, V>>(key, value, ObservableAction.ADD)
     }
 
     override fun remove(key: K): V? = map.remove(key)?.also {
-        runListeners { key to it to ObservableAction.REMOVE }
+        runListeners<ObservableListenerEntry<K, V>>(key, it, ObservableAction.REMOVE)
     }
 
     override fun remove(
         key: K,
         value: V,
-    ): Boolean {
-        val v = map.replace(key, value)
-        v?.also { runListeners { key to it to ObservableAction.REMOVE } }
-        return v != null
+    ): Boolean = map.remove(key, value).ifTrue {
+        runListeners<ObservableListenerEntry<K, V>>(key, value, ObservableAction.REMOVE)
     }
 
     override fun replace(
@@ -215,40 +223,49 @@ class ObservableMap<K, V> internal constructor(
         first: V,
         second: V,
     ): Boolean = map.replace(key, first, second).ifTrue {
-        runListeners { key to second to ObservableAction.REPLACE }
+        runListeners<ObservableListenerEntry<K, V>>(key, second, ObservableAction.REPLACE)
     }
 
     override fun replace(
         key: K,
         value: V,
     ): V? = map.replace(key, value)?.also {
-        runListeners { key to it to ObservableAction.REPLACE }
+        runListeners<ObservableListenerEntry<K, V>>(key, it, ObservableAction.REPLACE)
     }
 }
 
-interface ObservableCollection<T> : MutableCollection<T>, ObservableHolder<T>
+@MinixExperimental
+abstract class ObservableCollection<T> : MutableCollection<T>, ObservableHolder<T>()
 
-interface ObservableHolder<T> {
+@MinixExperimental
+abstract class ObservableHolder<T> {
 
-    val listeners: MultiMap<ObservableListener<T>, ObservableAction?>
+    abstract val listeners: MultiMap<Function<Unit>, ObservableAction?>
 
-    fun observe(
+    inline fun <reified F : Function<Unit>> observe(
         vararg action: ObservableAction?,
-        listener: ObservableListener<T>,
-    ) {
-        listeners.addAll(listener, *action)
-    }
+        listener: F,
+    ) = listeners.addAll(listener, *action)
 
-    fun runListeners(action: () -> Pair<T, ObservableAction>) {
+    // TODO: Improve efficiency, this is currently current inefficient and with multiple listeners it builds up a lot of garbage
+    inline fun <reified F : Function<Unit>> runListeners(vararg params: Any?) {
         for ((listener, actions) in listeners.entries) {
-            val actionInv = action.invoke()
-            if (actions != null) {
-                if (actionInv.second in actions) {
-                    listener.invoke(actionInv.first, actionInv.second)
-                }
-            } else {
-                listener.invoke(actionInv.first, actionInv.second)
+            if (!actions.isNullOrEmpty() && params.last().unsafeCast() !in actions) continue
+
+            val clazz = listener::class.java
+            val types = clazz.methods.first().parameters.map { it.type }
+            val mut = params.filterNotNull().toMutableList()
+            val args = arrayListOf<Any?>()
+
+            // This should theoretically map values in the correct order for the function.
+            while (args.size != types.size) {
+                val type = types[args.size]
+                val value = mut.find { type.isAssignableFrom(it::class.java) }
+                args.add(value)
+                mut.remove(value)
             }
+
+            listener::class.java.methods.first().invoke(listener, *args.toTypedArray())
         }
     }
 }

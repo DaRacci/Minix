@@ -38,7 +38,9 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.dsl.bind
+import org.koin.dsl.binds
 import org.koin.dsl.module
+import org.koin.ext.getFullName
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.isSubtypeOf
@@ -244,144 +246,196 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         while (extensions.isNotEmpty()) {
             val next = extensions.first()
             extensions.remove(next)
-            if (next !in sortedExtensions &&
-                (
-                    next.dependencies.isEmpty() ||
-                        next.dependencies.all { dep -> sortedExtensions.find { it::class == dep } != null }
-                    )
-            ) {
-                log.debug { "All dependencies for ${next.name} are loaded, adding to sorted" }
-                sortedExtensions.add(next)
-                continue
-            }
 
-            if (next in sortedExtensions &&
-                next.dependencies.any { dep -> sortedExtensions.find { it::class == dep } == null }
-            ) {
-                log.debug { "Dependency for ${next.name} is not loaded, reordering needed deps." }
-                val index = sortedExtensions.indexOf(next)
-                log.debug { "Index of ${next.name} is $index" }
-                sortedExtensions.remove(next)
-                val neededDepends = next.dependencies.filter { dep -> sortedExtensions.find { it::class == dep } == null }.map { exKClass -> extensions.find { it::class == exKClass }!! }
-                log.debug { "Needed depends for ${next.name} are ${neededDepends.joinToString { it.name }}" }
-                sortedExtensions.addAll(index, neededDepends)
-                sortedExtensions.add(index + neededDepends.size + 1, next)
-                log.debug { "New index of ${next.name} is ${sortedExtensions.indexOf(next)}" }
-                continue
-            }
-
-            for (dependency in next.dependencies) {
-                if (sortedExtensions.find { it::class == dependency } != null) {
-                    log.debug { "Dependency $dependency for ${next.name} is in sorted, skipping." }
-                    continue
-                }
-                extensions.find { it::class == dependency }?.let {
-                    sortedExtensions.add(it)
-                    log.debug { "Adding ${it.name} to sorted before ${next.name}" }
-                }
-            }
-            // TODO: i shouldn't need another check here
-            if (next !in sortedExtensions) {
-                log.debug { "Adding ${next.name} to sorted" }
-                sortedExtensions.add(next)
-            } else log.debug { "Extension ${next.name} is already in sorted, skipping." }
+            if (checkNoDeps(next, sortedExtensions)) continue
+            if (checkAddedAndMissingDeps(next, sortedExtensions, extensions)) continue
+            checkOrder(next, sortedExtensions, extensions)
         }
         pluginCache[this].loadedExtensions.clear()
         return sortedExtensions
     }
 
+    private inline fun <reified P : MinixPlugin> MinixPlugin.checkOrder(
+        next: Extension<P>,
+        sortedExtensions: MutableList<Extension<P>>,
+        extensions: MutableList<Extension<P>>
+    ) {
+        val index = sortedExtensions.indexOf(next).takeUnless { it == -1 } ?: (sortedExtensions.lastIndex + 1)
+        if (next in sortedExtensions) {
+            sortedExtensions.removeAt(index)
+        }
+
+        val toAdd = mutableListOf<Extension<P>>()
+        for (dependency in next.dependencies) {
+            if (sortedExtensions.find { it::class == dependency } != null) continue // Already added
+
+            extensions.find { it::class == dependency }?.let {
+                toAdd += it
+                log.debug { "Adding required dependency ${it.name} before ${next.name}" }
+            }
+        }
+        toAdd += next
+        sortedExtensions.addAll(index, toAdd)
+    }
+
+    private inline fun <reified P : MinixPlugin> MinixPlugin.checkAddedAndMissingDeps(
+        next: Extension<P>,
+        sortedExtensions: MutableList<Extension<P>>,
+        extensions: MutableList<Extension<P>>
+    ): Boolean {
+        if (next !in sortedExtensions) return false
+
+        log.debug { "Missing dependency for ${next.name} in ${this.name}, Reordering required dependencies." }
+        val currentIndex = sortedExtensions.indexOf(next)
+        sortedExtensions.removeAt(currentIndex)
+
+        val needed = next.dependencies
+            .filterNot { sortedExtensions.any { ex -> ex::class == it } }
+            .mapNotNull { clazz -> extensions.find { it::class == clazz || it.bindToKClass == clazz } }
+
+        sortedExtensions.addAll(currentIndex, needed)
+        sortedExtensions.add(currentIndex + needed.size + 1, next)
+        return true
+    }
+
+    private inline fun <reified P : MinixPlugin> MinixPlugin.checkNoDeps(
+        next: Extension<P>,
+        sortedExtensions: MutableList<Extension<P>>
+    ): Boolean {
+        if (next in sortedExtensions ||
+            next.dependencies.isNotEmpty() &&
+            next.dependencies.all { dep -> sortedExtensions.find { it::class == dep } == null }
+        ) return false
+
+        log.debug { "All dependencies for ${next.name} are loaded, adding to sorted" }
+        return sortedExtensions.add(next)
+    }
+
     // TODO: Refactor the dependency system to be more efficient and less hacky maybe using a shared flow
     private suspend fun MinixPlugin.loadInOrder() {
-        val cache = pluginCache[this]
         val sorted = getSortedExtensions()
-        sorted.forEach { ex ->
-            val module = module {
-                single { ex } bind (ex.bindToKClass ?: ex::class)
-                if (ex.bindToKClass != null) { // Bind to both types
-                    single { ex.bindToKClass } bind (ex::class)
-                }
-            }
-            loadKoinModules(module)
-            ex.setState(ExtensionState.LOADING)
-            try {
-                withTimeout(5.seconds) {
-                    ex.invokeIfOverrides(Extension<*>::handleLoad.name) {
-                        log.info { "Loading extension ${ex.name}" }
-                        ex.handleLoad()
-                    }
-                }
-            } catch (e: Throwable) {
-                if (e is TimeoutCancellationException) { log.warn { "Extension ${ex.name} took too longer than 5 seconds to load!" } }
-                ex.setState(ExtensionState.FAILED_LOADING)
-                ex.errorDependents(sorted, e)
-                unloadKoinModules(module)
-            }
-            ex.setState(ExtensionState.LOADED)
-            cache.loadedExtensions += ex
-        }
-        cache.extensions.clear()
+        sorted.forEach { ex -> ex.start(ExtensionState.LOADING, sorted) }
+        pluginCache[this].extensions.clear()
     }
 
     // TODO: Look into failed dependencies not being respected
     private suspend fun MinixPlugin.startInOrder() {
-        val cache = pluginCache[this]
         val sorted = getSortedExtensions()
-        sorted
-            .filter {
-                var load = false
-                when (it.state) {
-                    ExtensionState.FAILED_DEPENDENCIES -> log.warn { "Extension ${it.name} had one or more dependencies fail to load, Skipping." }
-                    ExtensionState.FAILED_LOADING -> log.warn { "Extension ${it.name} had previously failed to load, Skipping." }
-                    ExtensionState.FAILED_UNLOADING -> log.warn { "Extension ${it.name} had previously failed to unload, Skipping." }
-                    ExtensionState.LOADING, ExtensionState.ENABLING, ExtensionState.UNLOADING -> log.warn { "Extension ${it.name} is still ${it.state.name.lowercase()}, Skipping." }
-                    else -> load = true
+        sorted.filter { it.checkFailed() }.forEach { ex -> ex.start(ExtensionState.ENABLING, sorted) }
+        pluginCache[this].extensions.clear()
+    }
+
+    private suspend fun Extension<MinixPlugin>.checkFailed(): Boolean {
+        when (this.state) {
+            ExtensionState.FAILED_DEPENDENCIES -> log.warn { "Extension $name had one or more dependencies fail to load, Skipping." }
+            ExtensionState.FAILED_LOADING -> log.warn { "Extension $name had previously failed to load, Skipping." }
+            ExtensionState.FAILED_UNLOADING -> log.warn { "Extension $name had previously failed to unload, Skipping." }
+            ExtensionState.LOADING, ExtensionState.ENABLING, ExtensionState.UNLOADING -> log.warn { "Extension $name is still ${state.name.lowercase()}, Skipping." }
+            else -> return true
+        }
+        return false
+    }
+
+    private suspend fun Extension<MinixPlugin>.start(
+        state: ExtensionState,
+        sorted: MutableList<Extension<MinixPlugin>>
+    ) {
+        if (this.state == ExtensionState.FAILED_DEPENDENCIES) {
+            return // Don't start failed dependencies, let them disappear into the void of the garbage collector
+        }
+
+        val module = getModule()
+        val (handle, invoke, log) = getTriple(state)
+        setState(state)
+
+        try {
+            module?.let(::loadKoinModules)
+            withTimeout(5.seconds) {
+                this@start.invokeIfOverrides(handle) {
+                    log()
+                    invoke()
                 }
-                if (!load) {
-                    it.errorDependents(sorted)
-                }
-                load
             }
-            .forEach { ex ->
-                val module = module { single { ex } bind (ex.bindToKClass ?: ex::class) }
-                if (!ex.bound) { loadKoinModules(module) }
-                ex.setState(ExtensionState.ENABLING)
-                try {
-                    withTimeout(5.seconds) {
-                        ex.invokeIfOverrides(Extension<*>::handleEnable.name) {
-                            log.info { "Enabling extension ${ex.name}" }
-                            ex.handleEnable()
-                        }
-                    }
-                } catch (e: Throwable) {
-                    if (e is TimeoutCancellationException) { log.warn { "Extension ${ex.name} took too longer than 5 seconds to enable!" } }
-                    ex.setState(ExtensionState.FAILED_ENABLING)
-                    ex.errorDependents(sorted, e)
-                    unloadKoinModules(module)
-                }
-                ex.setState(ExtensionState.ENABLED)
-                cache.loadedExtensions += ex
+        } catch (e: Throwable) {
+            if (e is TimeoutCancellationException) { this.log.warn { "Extension $name took too longer than 5 seconds to load!" } }
+
+            when (state) {
+                ExtensionState.LOADING -> setState(ExtensionState.FAILED_LOADING)
+                ExtensionState.ENABLING -> setState(ExtensionState.FAILED_ENABLING)
+                else -> {}
             }
-        cache.extensions.clear()
+            errorDependents(sorted, e)
+            module?.let(::unloadKoinModules)
+        }
+
+        when (state) {
+            ExtensionState.LOADING -> setState(ExtensionState.LOADED)
+            ExtensionState.ENABLING -> setState(ExtensionState.ENABLED)
+            else -> {}
+        }
+        bound = true
+        pluginCache[this@start.plugin].loadedExtensions += this
+    }
+
+    private fun Extension<MinixPlugin>.getTriple(state: ExtensionState) = when (state) {
+        ExtensionState.LOADING -> {
+            Triple(
+                Extension<MinixPlugin>::handleLoad.name,
+                suspend { this.handleLoad() }
+            ) { log.info { "Loading extension $name" } }
+        }
+        ExtensionState.ENABLING -> {
+            Triple(
+                Extension<MinixPlugin>::handleEnable.name,
+                suspend { this.handleEnable() }
+            ) { log.info { "Enabling extension $name" } }
+        }
+        else -> throw IllegalArgumentException("Cannot get triple for state $state")
+    }
+
+    private fun Extension<MinixPlugin>.getModule(): org.koin.core.module.Module? {
+        if (bound) return null
+
+        val module = module {
+            val binds = arrayListOf<KClass<*>>(this@getModule::class).also { if (bindToKClass != null) it.add(bindToKClass!!) }
+            single { this@getModule }.binds(binds.toTypedArray())
+        }
+
+        return module
     }
 
     private suspend fun Extension<MinixPlugin>.errorDependents(
         extensions: MutableList<Extension<MinixPlugin>>,
         error: Throwable? = null
     ) {
-        val deps = extensions.filter { this::class in it.dependencies }
+        val dependents = extensions(extensions, arrayListOf())
         log.error(error) {
             val builder = StringBuilder()
-            builder.append("There was an error while loading / enabling extension ${this.name}!")
+            builder.append("There was an error while loading / enabling extension ${this::class.getFullName()}!")
             builder.append("\n\t\tThis is not a fatal error, but it may cause other extensions to fail to load.")
-            if (deps.isNotEmpty()) {
+            if (dependents.isNotEmpty()) {
                 builder.append("\n\t\tThese extensions will not be loaded:")
-                deps.forEach { builder.append("\n\t\t\t${it.name}") }
+                dependents.forEach { builder.append("\n\t\t\t${it.name}") }
             }
             builder.toString()
         }
-        deps.forEach {
-            it.setState(ExtensionState.FAILED_DEPENDENCIES)
+    }
+
+    // TODO: Why oh why is this not working? Please somehow figure out how to get the dependencies of dependencies and so on.
+    private suspend fun Extension<MinixPlugin>.extensions(
+        extensions: MutableList<Extension<MinixPlugin>>,
+        dependents: MutableList<Extension<MinixPlugin>>
+    ): MutableList<Extension<MinixPlugin>> {
+        for (extension in extensions.reversed()) {
+            if (bindToKClass !in extension.dependencies &&
+                this::class !in extension.dependencies ||
+                extension.dependencies.all { clazz -> dependents.any { it.bindToKClass == clazz || it::class == clazz } }
+            ) continue
+
+            dependents.add(extension)
+            extension.setState(ExtensionState.FAILED_DEPENDENCIES)
         }
+        return dependents
     }
 
     private suspend inline fun <reified P : MinixPlugin> P.shutdownInOrder() {

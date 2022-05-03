@@ -191,8 +191,10 @@ class ObservableMap<K, V> internal constructor(
     override fun put(
         key: K,
         value: V,
-    ): V? = map.put(key, value)?.apply {
-        runListeners<ObservableListenerEntry<K, V>>(key, this, ObservableAction.REMOVE)
+    ): V? {
+        val old = map.put(key, value)
+        runListeners<ObservableListenerEntry<K, V>>(key, value, old, ObservableAction.ADD)
+        return old
     }
 
     override fun putAll(from: Map<out K, V>) {
@@ -203,34 +205,50 @@ class ObservableMap<K, V> internal constructor(
     override fun putIfAbsent(
         key: K,
         value: V,
-    ): V? = map.putIfAbsent(key, value)?.also {
-        runListeners<ObservableListenerEntry<K, V>>(key, value, ObservableAction.ADD)
+    ): V? {
+        var v = get(key)
+        if (v == null) {
+            v = put(key, value)
+            runListeners<ObservableListenerEntry<K, V>>(key, value, ObservableAction.ADD)
+        }
+        return v
     }
 
-    override fun remove(key: K): V? = map.remove(key)?.also {
-        runListeners<ObservableListenerEntry<K, V>>(key, it, ObservableAction.REMOVE)
+    override fun remove(key: K): V? {
+        val old = map.remove(key)
+        runListeners<ObservableListenerEntry<K, V>>(key, old, ObservableAction.REMOVE)
+        return old
     }
 
     override fun remove(
         key: K,
         value: V,
-    ): Boolean = map.remove(key, value).ifTrue {
-        runListeners<ObservableListenerEntry<K, V>>(key, value, ObservableAction.REMOVE)
+    ): Boolean {
+        val bool = map.remove(key, value)
+        bool.ifTrue { runListeners<ObservableListenerEntry<K, V>>(key, bool, ObservableAction.REMOVE) }
+        return bool
     }
 
     override fun replace(
         key: K,
         first: V,
         second: V,
-    ): Boolean = map.replace(key, first, second).ifTrue {
-        runListeners<ObservableListenerEntry<K, V>>(key, second, ObservableAction.REPLACE)
+    ): Boolean {
+        val bool = map.replace(key, first, second)
+        bool.ifTrue { runListeners<ObservableListenerEntry<K, V>>(key, bool, ObservableAction.REMOVE) }
+        return bool
     }
 
     override fun replace(
         key: K,
         value: V,
-    ): V? = map.replace(key, value)?.also {
-        runListeners<ObservableListenerEntry<K, V>>(key, it, ObservableAction.REPLACE)
+    ): V? {
+        var curValue: V?
+        if (get(key).also { curValue = it } != null || containsKey(key)) {
+            runListeners<ObservableListenerEntry<K, V>>(key, value, curValue, ObservableAction.REMOVE)
+            curValue = put(key, value)
+        }
+        return curValue
     }
 }
 
@@ -256,6 +274,14 @@ abstract class ObservableHolder<T> {
             val types = clazz.methods.first().parameters.map { it.type }
             val mut = params.filterNotNull().toMutableList()
             val args = arrayListOf<Any?>()
+
+            println(
+                """
+                | Parameters: ${params.joinToString(", ")}
+                | Actions: ${actions?.joinToString(", ")}
+                | Types: ${types.joinToString(", ")} 
+                """.trimIndent()
+            )
 
             // This should theoretically map values in the correct order for the function.
             while (args.size != types.size) {

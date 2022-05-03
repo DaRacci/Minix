@@ -138,3 +138,5 @@ inline fun <reified T : () -> R, R> T.ifFulfilled(
 ) { if (boolean == true || block()) this() }
 
 infix fun <F, S, T> Pair<F, S>.to(other: T): Triple<F, S, T> = Triple(first, second, other)
+
+val <T : Any> KClass<T>.companionParent get() = if (isCompanion) java.declaringClass.kotlin else null

@@ -59,10 +59,142 @@ sealed class AbstractComboEvent(
     operator fun component2(): ItemStack? = item
     operator fun component3(): BlockData? = blockData
     operator fun component4(): Entity? = entity
+}
+/**
+ * Called when the player left clicks.
+ */
+class PlayerLeftClickEvent(
+    player: Player,
+    item: ItemStack?,
+    blockData: BlockData?,
+    entity: Entity?
+) : AbstractComboEvent(player, item, blockData, entity) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerLeftClickEvent::class]
+    }
+}
+/**
+ * Called when the player right clicks.
+ * ## Note: Will not be called if the player clicks the air without an item in either hand due to the client not sending these packets.
+ */
+class PlayerRightClickEvent(
+    player: Player,
+    item: ItemStack?,
+    blockData: BlockData?,
+    entity: Entity?
+) : AbstractComboEvent(player, item, blockData, entity) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerRightClickEvent::class]
+    }
+}
+/**
+ * Called when the player uses the offhand key.
+ */
+class PlayerOffhandEvent(
+    player: Player,
+    item: ItemStack?,
+    /**
+     * The item present in the players offhand during the event.
+     */
+    val offHandItem: ItemStack?,
+    blockData: BlockData?,
+    entity: Entity?
+) : AbstractComboEvent(player, item, blockData, entity) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerOffhandEvent::class]
+    }
+}
+
+/**
+ * Called when the player double left clicks.
+ */
+class PlayerDoubleLeftClickEvent(
+    player: Player,
+    item: ItemStack?,
+    blockData: BlockData?,
+    entity: Entity?
+) : AbstractComboEvent(player, item, blockData, entity) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerDoubleLeftClickEvent::class]
+    }
+}
+
+/**
+ * Called when the player double right clicks.
+ * ## Note: Will not be called if the player clicks the air without an item in either hand due to the client not sending these packets.
+ */
+class PlayerDoubleRightClickEvent(
+    player: Player,
+    item: ItemStack?,
+    blockData: BlockData?,
+    entity: Entity?
+) : AbstractComboEvent(player, item, blockData, entity) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerDoubleRightClickEvent::class]
+    }
+}
+
+/**
+ * Called when the player uses offhand twice within 0.5 seconds.
+ */
+class PlayerDoubleOffhandEvent(
+    player: Player,
+    item: ItemStack?,
+    /**
+     * The item present in the players offhand during the event.
+     */
+    val offHandItem: ItemStack?,
+    blockData: BlockData? = null,
+    entity: Entity? = null
+) : AbstractComboEvent(player, item, blockData, entity) {
+
+    /**
+     * If true this means that either one hand or both hands have
+     * an item and are not null.
+     */
+    override val hasItem
+        get() = item != null || offHandItem != null
+
+    operator fun component5(): ItemStack? = offHandItem
 
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerDoubleOffhandEvent::class]
+    }
+}
+/**
+ * Called when the player double left clicks while holding shift.
+ */
+class PlayerShiftDoubleLeftClickEvent(
+    player: Player,
+    item: ItemStack?,
+    blockData: BlockData?,
+    entity: Entity?
+) : AbstractComboEvent(player, item, blockData, entity) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftDoubleLeftClickEvent::class]
+    }
+}
+
+/**
+ * Called when the player double right clicks while holding shift.
+ * ## Note: Will not be called if the player clicks the air without an item in either hand due to the client not sending these packets.
+ */
+class PlayerShiftDoubleRightClickEvent(
+    player: Player,
+    item: ItemStack?,
+    blockData: BlockData?,
+    entity: Entity?
+) : AbstractComboEvent(player, item, blockData, entity) {
+    companion object {
+        @JvmStatic
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftDoubleRightClickEvent::class]
     }
 }
 
@@ -83,6 +215,7 @@ class PlayerShiftLeftClickEvent(
 
 /**
  * Called when the player uses the combo of Shift + Right click.
+ * ## Note: Will not be called if the player clicks the air without an item in either hand due to the client not sending these packets.
  */
 class PlayerShiftRightClickEvent(
     player: Player,
@@ -92,7 +225,7 @@ class PlayerShiftRightClickEvent(
 ) : AbstractComboEvent(player, item, blockData, entity) {
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftRightClickEvent::class]
     }
 }
 
@@ -121,7 +254,7 @@ class PlayerShiftOffhandEvent(
 
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftOffhandEvent::class]
     }
 }
 
@@ -151,35 +284,6 @@ class PlayerShiftDoubleOffhandEvent(
 
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
-    }
-}
-
-/**
- * Called when the player uses offhand twice within 0.5 seconds.
- */
-class PlayerDoubleOffhandEvent(
-    player: Player,
-    item: ItemStack?,
-    /**
-     * The item present in the players offhand during the event.
-     */
-    val offHandItem: ItemStack?,
-    blockData: BlockData? = null,
-    entity: Entity? = null
-) : AbstractComboEvent(player, item, blockData, entity) {
-
-    /**
-     * If true this means that either one hand or both hands have
-     * an item and are not null.
-     */
-    override val hasItem
-        get() = item != null || offHandItem != null
-
-    operator fun component5(): ItemStack? = offHandItem
-
-    companion object {
-        @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftDoubleOffhandEvent::class]
     }
 }

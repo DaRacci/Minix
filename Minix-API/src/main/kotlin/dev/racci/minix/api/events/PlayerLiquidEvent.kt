@@ -16,11 +16,6 @@ sealed class PlayerLiquidEvent(
 
     operator fun component2(): LiquidType = previousType
     operator fun component3(): LiquidType = newType
-
-    companion object {
-        @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
-    }
 }
 
 class PlayerEnterLiquidEvent(
@@ -28,9 +23,10 @@ class PlayerEnterLiquidEvent(
     previousType: LiquidType,
     newType: LiquidType
 ) : PlayerLiquidEvent(player, previousType, newType) {
+
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerEnterLiquidEvent::class]
     }
 }
 
@@ -39,9 +35,10 @@ class PlayerExitLiquidEvent(
     previousType: LiquidType,
     newType: LiquidType
 ) : PlayerLiquidEvent(player, previousType, newType) {
+
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerExitLiquidEvent::class]
     }
 }
 

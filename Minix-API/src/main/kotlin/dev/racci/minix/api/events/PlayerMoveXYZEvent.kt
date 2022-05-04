@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED", "MemberVisibilityCanBePrivate")
-
 package dev.racci.minix.api.events
 
 import org.bukkit.Location
@@ -7,8 +5,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 
 /**
- * This event is fired only when the player moves, this means that unlike
- * the normal PlayerMoveEvent it does not fire when the player looks around.
+ * This event is fired only when the player moves, this means that unlike the normal PlayerMoveEvent it does not fire when the player looks around.
  *
  * ## This method is Fired Asynchronously
  *
@@ -30,13 +27,12 @@ class PlayerMoveXYZEvent(
 
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerMoveXYZEvent::class]
     }
 }
 
 /**
- * This event is fired when the player moves one full block,
- * So if the player moves +1 in any direction this will apply.
+ * This event is fired when the player moves one full block, So if the player moves +1 in any direction this will apply.
  *
  * ## This method is Fired Asynchronously
  *
@@ -55,6 +51,6 @@ class PlayerMoveFullXYZEvent(
 
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerMoveFullXYZEvent::class]
     }
 }

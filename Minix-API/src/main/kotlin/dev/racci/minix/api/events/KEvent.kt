@@ -1,9 +1,8 @@
-@file:Suppress("UNUSED", "MemberVisibilityCanBePrivate")
-
 package dev.racci.minix.api.events
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
+import dev.racci.minix.api.events.KEvent.Companion.handlerMap
 import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
@@ -60,7 +59,7 @@ abstract class KPlayerEvent(
 
     override fun setCancelled(cancel: Boolean) { cancelled = cancel }
 
-    override fun getHandlers(): HandlerList = KEvent.handlerMap[this::class]
+    override fun getHandlers(): HandlerList = handlerMap[this::class]
 }
 
 /**
@@ -91,5 +90,5 @@ abstract class KWorldEvent(
 
     override fun setCancelled(cancel: Boolean) { cancelled = cancel }
 
-    override fun getHandlers(): HandlerList = KEvent.handlerMap[this::class]
+    override fun getHandlers(): HandlerList = handlerMap[this::class]
 }

@@ -9,6 +9,6 @@ class PlayerLightEvent(
 ) : KPlayerEvent(player, true) {
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerLightEvent::class]
     }
 }

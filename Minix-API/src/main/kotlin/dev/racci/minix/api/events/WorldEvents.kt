@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.api.events
 
 import org.bukkit.World
@@ -15,7 +13,7 @@ class WorldNightEvent(
 ) : KWorldEvent(world) {
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[WorldNightEvent::class]
     }
 }
 
@@ -29,6 +27,6 @@ class WorldDayEvent(
 ) : KWorldEvent(world) {
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = KEvent.handlerMap[WorldDayEvent::class]
     }
 }

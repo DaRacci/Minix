@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED", "MemberVisibilityCanBePrivate")
-
 package dev.racci.minix.api.events
 
 import org.bukkit.entity.Player
@@ -24,6 +22,6 @@ class PlayerUnloadEvent(
 
     companion object {
         @JvmStatic
-        fun getHandlerList(): HandlerList = handlerMap[PlayerShiftLeftClickEvent::class]
+        fun getHandlerList(): HandlerList = handlerMap[PlayerUnloadEvent::class]
     }
 }

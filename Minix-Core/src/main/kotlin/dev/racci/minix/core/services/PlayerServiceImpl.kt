@@ -15,11 +15,12 @@ import io.papermc.paper.event.player.AsyncChatEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 @MappedExtension(Minix::class, "Player Service", bindToKClass = PlayerService::class)
 class PlayerServiceImpl(override val plugin: Minix) : Extension<Minix>(), PlayerService {
 
-    private val playerData = HashMap<UUID, PlayerData>()
+    private val playerData = ConcurrentHashMap<UUID, PlayerData>()
     override val inputCallbacks by lazy { onlinePlayerMapOf<PlayerUtils.ChatInput>() }
     override val functionsQuit by lazy { onlinePlayerMapOf<PlayerUtils.PlayerCallback<Unit>>() }
     override val functionsMove by lazy { onlinePlayerMapOf<PlayerUtils.PlayerCallback<Boolean>>() }
@@ -55,4 +56,6 @@ class PlayerServiceImpl(override val plugin: Minix) : Extension<Minix>(), Player
 
         playerData.clear()
     }
+
+    companion object : ExtensionCompanion<PlayerServiceImpl>()
 }

@@ -14,17 +14,19 @@ import org.bukkit.entity.Player
  * no actual effect on the block.
  *
  * @param material The new [Material].
- * @param blockData Block data dsl for modifying the new block.
+ * @param blockDataUnit Block data dsl for modifying the new block.
  * @param players The players to see this change.
  */
 @MinixDsl
 fun Block.sendBlockChange(
     material: Material,
-    blockData: BlockData.() -> Unit,
+    blockDataUnit: BlockData.() -> Unit,
     vararg players: Player
 ) {
-    players.filter { it.world.name == world.name }.forEach {
-        it.sendBlockChange(location, material.createBlockData(blockData))
+    val blockData = material.createBlockData(blockDataUnit)
+    for (player in players) {
+        if (player.world.name != world.name) continue
+        player.sendBlockChange(location, blockData)
     }
 }
 
@@ -40,7 +42,8 @@ fun Block.sendBlockChange(
     blockData: BlockData,
     vararg players: Player
 ) {
-    players.filter { it.world.name == world.name }.forEach {
-        it.sendBlockChange(location, blockData)
+    for (player in players) {
+        if (player.world.name != world.name) continue
+        player.sendBlockChange(location, blockData)
     }
 }

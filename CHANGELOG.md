@@ -2,6 +2,38 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.10.0](https://github.com/DaRacci/Minix/compare/v2.9.0..v2.10.0) - 2022-05-10
+#### Bug Fixes
+- I put that in the wrong event lol - ([3d4f4ef](https://github.com/DaRacci/Minix/commit/3d4f4ef097b9efc1858c334c283fda0551b93291)) - [@DaRacci](https://github.com/DaRacci)
+- Fix triggering entering water in nether and never exiting - ([518d0ae](https://github.com/DaRacci/Minix/commit/518d0ae42e320d4e3d715cc43e7c6a2a271c37ae)) - [@DaRacci](https://github.com/DaRacci)
+- Forgot to update this ones imports - ([27ab23c](https://github.com/DaRacci/Minix/commit/27ab23c8c0d72bc0c5a2c65c002016ac1febc442)) - [@DaRacci](https://github.com/DaRacci)
+- Fix registering multiple events with one lambda - ([3011857](https://github.com/DaRacci/Minix/commit/30118574a5e706ca0783ae3b858df41bd55353ee)) - [@DaRacci](https://github.com/DaRacci)
+- Fix events handlers - ([7c257ba](https://github.com/DaRacci/Minix/commit/7c257bad13fe1bae0e109384ed7336a83cbb0265)) - [@DaRacci](https://github.com/DaRacci)
+- Fix Observable Map - ([231fc63](https://github.com/DaRacci/Minix/commit/231fc63826dae8cbcb5f0601c80c4018a2b38c94)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- Get companion objects parent class util - ([cca645c](https://github.com/DaRacci/Minix/commit/cca645c04c2cca0c4df9b042a9617c39842a356b)) - [@DaRacci](https://github.com/DaRacci)
+- triple util for chaining to infix methods - ([65fe358](https://github.com/DaRacci/Minix/commit/65fe3584c22ebc05dd5f90df2d3957c50f9be770)) - [@DaRacci](https://github.com/DaRacci)
+- ExEnum for getting nicely formatting enum names - ([58b34fc](https://github.com/DaRacci/Minix/commit/58b34fce8c1bcb7bc6ac682495ae88dcba826af6)) - [@DaRacci](https://github.com/DaRacci)
+- ExBoolean to convert boolean to integers and reverse - ([97f0e2e](https://github.com/DaRacci/Minix/commit/97f0e2eae82fbfd74a63def185ceb526152d91ca)) - [@DaRacci](https://github.com/DaRacci)
+- cacheOf method for more kotlin like Caffeine cache creation - ([ac6136c](https://github.com/DaRacci/Minix/commit/ac6136c93123991ef1ba6fec71cd6aa6287fe55e)) - [@DaRacci](https://github.com/DaRacci)
+- Add collection, array and map get cast methods - ([da77dbf](https://github.com/DaRacci/Minix/commit/da77dbf2745272d67b505163a51455ee09a0719c)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v2.9.0 - ([a4695e0](https://github.com/DaRacci/Minix/commit/a4695e0c96582036e04d868531378047d782309a)) - [@DaRacci](https://github.com/DaRacci)
+- Add MinixInternal.kt annotation - ([609fcab](https://github.com/DaRacci/Minix/commit/609fcab2437f83b518cddf3293244583040bd95b)) - [@DaRacci](https://github.com/DaRacci)
+- Move MinixConfig and UpdaterConfig into core package - ([e792a7c](https://github.com/DaRacci/Minix/commit/e792a7cc0960f1c8a0cdc15413f565d1f0c72b13)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Small misc changes - ([f21fea8](https://github.com/DaRacci/Minix/commit/f21fea8b8138f036422ec63caac0b0a09dcedc91)) - [@DaRacci](https://github.com/DaRacci)
+- Move sync and async methods to ExPlugin.kt - ([3ffda75](https://github.com/DaRacci/Minix/commit/3ffda75fcf4ff61b6d492a7b8711acd894fb14d9)) - [@DaRacci](https://github.com/DaRacci)
+- slight performance improvement - ([544db72](https://github.com/DaRacci/Minix/commit/544db724689f7ef5485f4aa0b30a75ea9a265cca)) - [@DaRacci](https://github.com/DaRacci)
+- Cleanup and fix some issues in the ListenerService.kt, liquidEvents are now triggered properly for all conditions - ([6f40e6d](https://github.com/DaRacci/Minix/commit/6f40e6d7cf2ed02ad4e0ebbde369b7738643ccd5)) - [@DaRacci](https://github.com/DaRacci)
+- Refactor PlayerData.kt - ([02dfd96](https://github.com/DaRacci/Minix/commit/02dfd96d2431d7d37c7dbed37c7b9894ffe8b27e)) - [@DaRacci](https://github.com/DaRacci)
+- ExtensionCompanion stuff yeah - ([480ef9d](https://github.com/DaRacci/Minix/commit/480ef9d8e6d704fce008bb659f3a686529f06b61)) - [@DaRacci](https://github.com/DaRacci)
+- Improve and refactor Observable Collections and Maps, now marked experimental due to needing more testing - ([f5ea590](https://github.com/DaRacci/Minix/commit/f5ea590a2d970592eec4e04dc53ee06aad01fd8f)) - [@DaRacci](https://github.com/DaRacci)
+- Refactor and cleanup the extension starter and fix some bugs - ([ac8a794](https://github.com/DaRacci/Minix/commit/ac8a794540a1fd64d0a5f810bed78f0099788def)) - [@DaRacci](https://github.com/DaRacci)
+- Move exceptions to their own folder - ([66d9539](https://github.com/DaRacci/Minix/commit/66d953939ee92ed647592e8abf123b33db3e2f9d)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v2.9.0](https://github.com/DaRacci/Minix/compare/v2.8.0..v2.9.0) - 2022-05-02
 #### Bug Fixes
 - Fix release change notes - ([caf71a7](https://github.com/DaRacci/Minix/commit/caf71a71b1e8952cc1942d0065c30d0da94a4432)) - [@DaRacci](https://github.com/DaRacci)

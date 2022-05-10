@@ -76,11 +76,6 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
                 toLiquid == LiquidType.NON
             ) return@event
 
-            if (fromLiquid == LiquidType.NON &&
-                toLiquid == LiquidType.WATER &&
-                to.world.environment == World.Environment.NETHER
-            ) return@event
-
             val type = if (fromLiquid != LiquidType.NON && toLiquid == LiquidType.NON) {
                 PlayerExitLiquidEvent::class
             } else PlayerEnterLiquidEvent::class
@@ -98,6 +93,13 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
             EventPriority.HIGHEST,
             ignoreCancelled = true,
         ) {
+            val from = block.liquidType
+            val to = bucket.liquidType
+            if (from == LiquidType.NON &&
+                to == LiquidType.WATER &&
+                player.world.environment == World.Environment.NETHER
+            ) return@event
+
             liquidEvent(block, block.liquidType, bucket.liquidType, false)
         }
 

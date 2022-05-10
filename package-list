@@ -10,6 +10,7 @@ dev.racci.minix.api.coroutine.contract
 dev.racci.minix.api.data
 dev.racci.minix.api.destructors
 dev.racci.minix.api.events
+dev.racci.minix.api.exceptions
 dev.racci.minix.api.extension
 dev.racci.minix.api.extensions
 dev.racci.minix.api.flow
@@ -32,5 +33,6 @@ dev.racci.minix.core
 dev.racci.minix.core.builders
 dev.racci.minix.core.coroutine.impl
 dev.racci.minix.core.coroutine.service
+dev.racci.minix.core.data
 dev.racci.minix.core.scheduler
 dev.racci.minix.core.services

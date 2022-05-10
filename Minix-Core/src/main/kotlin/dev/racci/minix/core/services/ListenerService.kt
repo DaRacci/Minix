@@ -21,6 +21,7 @@ import dev.racci.minix.api.utils.classConstructor
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.unsafeCast
 import org.bukkit.Material
+import org.bukkit.World
 import org.bukkit.block.Block
 import org.bukkit.craftbukkit.v1_18_R2.block.impl.CraftFluids
 import org.bukkit.entity.Entity
@@ -75,18 +76,14 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
                 toLiquid == LiquidType.NON
             ) return@event
 
+            if (fromLiquid == LiquidType.NON &&
+                toLiquid == LiquidType.WATER &&
+                to.world.environment == World.Environment.NETHER
+            ) return@event
+
             val type = if (fromLiquid != LiquidType.NON && toLiquid == LiquidType.NON) {
                 PlayerExitLiquidEvent::class
             } else PlayerEnterLiquidEvent::class
-//
-//            val blocks: MutableList<LiquidType> = mutableListOf()
-//            for (block in from.block and to.block) {
-//                blocks.add(LiquidType.convert(block))
-//            }
-//            if (blocks.all { b -> b.ordinal == 2 } || blocks[0] == blocks[1]) return@event
-//            val type = if (blocks[0].ordinal != 2 && blocks[1] == LiquidType.NON) {
-//                PlayerExitLiquidEvent::class
-//            } else PlayerEnterLiquidEvent::class
 
             callEvent(type) {
                 mapOf(

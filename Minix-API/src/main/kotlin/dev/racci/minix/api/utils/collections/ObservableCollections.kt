@@ -271,17 +271,10 @@ abstract class ObservableHolder<T> {
             if (!actions.isNullOrEmpty() && params.last().unsafeCast() !in actions) continue
 
             val clazz = listener::class.java
-            val types = clazz.methods.first().parameters.map { it.type }
+            val method = clazz.methods.first()
+            val types = method.parameters.map { it.type }
             val mut = params.filterNotNull().toMutableList()
             val args = arrayListOf<Any?>()
-
-            println(
-                """
-                | Parameters: ${params.joinToString(", ")}
-                | Actions: ${actions?.joinToString(", ")}
-                | Types: ${types.joinToString(", ")} 
-                """.trimIndent()
-            )
 
             // This should theoretically map values in the correct order for the function.
             while (args.size != types.size) {
@@ -291,7 +284,8 @@ abstract class ObservableHolder<T> {
                 mut.remove(value)
             }
 
-            listener::class.java.methods.first().invoke(listener, *args.toTypedArray())
+            method.invoke(listener, *args.toTypedArray())
+            println(10)
         }
     }
 }

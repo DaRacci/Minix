@@ -1,15 +1,13 @@
 package dev.racci.minix.api.data
 
-import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.UpdaterService
 import dev.racci.minix.api.updater.UpdateMode
 import dev.racci.minix.api.updater.UpdateResult
 import dev.racci.minix.api.updater.Version
 import dev.racci.minix.api.updater.providers.UpdateProvider
+import dev.racci.minix.api.utils.getKoin
 import kotlinx.datetime.Instant
 import org.bukkit.plugin.Plugin
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Required
@@ -45,7 +43,7 @@ class PluginUpdater {
                     sentInfo = false
                     sentAvailable = false
                 } else {
-                    get<UpdaterService>().apply {
+                    getKoin().get<UpdaterService>().apply {
                         enabledUpdaters -= this@PluginUpdater
                         disabledUpdaters += this@PluginUpdater
                     }
@@ -90,9 +88,5 @@ class PluginUpdater {
 
     override fun toString(): String {
         return "PluginUpdater(name=$name:updateMode=$updateMode:providers=${providers.joinToString(":", "[", "]")}:ignored=${ignored.joinToString(":", "[", "]")})"
-    }
-
-    companion object : KoinComponent {
-        private val updaterConfig by lazy { get<DataService>().get<UpdaterConfig>() }
     }
 }

@@ -2,7 +2,6 @@ package dev.racci.minix.core.services
 
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.PluginUpdater
-import dev.racci.minix.api.data.UpdaterConfig
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.pm
@@ -26,6 +25,7 @@ import dev.racci.minix.api.utils.minecraft.MCVersion.Companion.sameMajor
 import dev.racci.minix.api.utils.now
 import dev.racci.minix.api.utils.size
 import dev.racci.minix.api.utils.unsafeCast
+import dev.racci.minix.core.data.UpdaterConfig
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.client.statement.discardRemaining

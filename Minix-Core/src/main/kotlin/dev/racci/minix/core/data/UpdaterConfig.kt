@@ -1,6 +1,7 @@
-package dev.racci.minix.api.data
+package dev.racci.minix.core.data
 
 import dev.racci.minix.api.annotations.MappedConfig
+import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.utils.data.Data
 import org.spongepowered.configurate.objectmapping.ConfigSerializable

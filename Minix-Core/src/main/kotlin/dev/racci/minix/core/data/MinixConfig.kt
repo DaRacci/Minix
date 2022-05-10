@@ -1,4 +1,4 @@
-package dev.racci.minix.api.data
+package dev.racci.minix.core.data
 
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.plugin.Minix

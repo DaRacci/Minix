@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v2.10.1](https://github.com/DaRacci/Minix/compare/v2.10.0..v2.10.1) - 2022-05-11
+#### Miscellaneous Chores
+- **(version)** v2.10.0 - ([144e0f2](https://github.com/DaRacci/Minix/commit/144e0f2808b9a980bf0fa16e14f277cc09013359)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Implement a short cache to reduce koin calls - ([6a90691](https://github.com/DaRacci/Minix/commit/6a90691b0ff8ab07c9ae408ebc0d1959bb2098a4)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v2.10.0](https://github.com/DaRacci/Minix/compare/v2.9.0..v2.10.0) - 2022-05-10
 #### Bug Fixes
 - I put that in the wrong event lol - ([3d4f4ef](https://github.com/DaRacci/Minix/commit/3d4f4ef097b9efc1858c334c283fda0551b93291)) - [@DaRacci](https://github.com/DaRacci)

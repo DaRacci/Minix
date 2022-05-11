@@ -5,6 +5,7 @@ import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.coroutine.launch
 import dev.racci.minix.api.coroutine.launchAsync
 import dev.racci.minix.api.extensions.WithPlugin
+import dev.racci.minix.api.extensions.inWholeTicks
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.DataService
@@ -15,6 +16,7 @@ import dev.racci.minix.api.utils.unsafeCast
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CompletableDeferred
+import net.minecraft.world.entity.ai.memory.ExpirableValue
 import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -23,6 +25,7 @@ import java.util.concurrent.CompletableFuture
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.findAnnotation
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * An Extension is a class which is designed to basically act like it's own mini plugin.
@@ -156,12 +159,16 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin
      * @see [DataService.Companion]
      */
     abstract class ExtensionCompanion<E : Extension<*>> {
+        private var cached: ExpirableValue<E>? = null
 
         operator fun getValue(thisRef: ExtensionCompanion<E>, property: KProperty<*>): E = thisRef.getService()
 
         fun getService(): E {
             val parentClass = this::class.companionParent.unsafeCast<KClass<Extension<*>>>() // Will throw if implemented incorrectly
-            return getKoin().get(parentClass)
+            if (cached == null || cached!!.hasExpired()) {
+                cached = ExpirableValue.of(getKoin().get<E>(parentClass), 15.seconds.inWholeTicks)
+            }
+            return cached!!.value
         }
 
         fun inject(): Lazy<E> = lazy {

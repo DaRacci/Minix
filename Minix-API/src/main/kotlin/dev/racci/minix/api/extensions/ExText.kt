@@ -1,9 +1,6 @@
 @file:Suppress("UNUSED", "UNCHECKED_CAST")
-
 package dev.racci.minix.api.extensions
 
-import dev.racci.minix.api.utils.primitive.ColourUtils.colour
-import dev.racci.minix.api.utils.primitive.LegacyUtils
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.ComponentLike
@@ -70,12 +67,6 @@ fun CommandSender.msg(message: ComponentLike) = sendMessage(message)
 fun String.parse() = miniMessage().parse(this)
 fun Array<String>.parse() = map { miniMessage().parse(it) }.toTypedArray()
 fun Collection<String>.parse() = map { miniMessage().parse(it) }
-
-fun String.parseLegacy() = LegacyUtils.parseLegacy(this)
-fun Array<String>.parseLegacy() = LegacyUtils.parseLegacy(this.toList()).toTypedArray()
-fun Collection<String>.parseLegacy() = LegacyUtils.parseLegacy(this.toList())
-
-fun String.coloured() = colour(this, true)
 
 /**
  * Sends this message as a chat message to the given [CommandSender].

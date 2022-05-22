@@ -1,5 +1,6 @@
 package dev.racci.minix.api.serializables
 
+import dev.racci.minix.api.utils.safeCast
 import org.spongepowered.configurate.BasicConfigurationNode
 import org.spongepowered.configurate.ConfigurationNode
 import org.spongepowered.configurate.kotlin.extensions.get
@@ -17,8 +18,8 @@ object PairSerializer : TypeSerializer<Pair<*, *>> {
         val param = type as ParameterizedType
         val key = param.actualTypeArguments[0]
         val value = param.actualTypeArguments[1]
-        val keyMapper = node.options().serializers().get(key) as? TypeSerializer<Any> ?: throw SerializationException("No serializer for key type $key")
-        val valueMapper = node.options().serializers().get(value) as? TypeSerializer<Any> ?: throw SerializationException("No serializer for value type $value")
+        val keyMapper = node.options().serializers().get(key).safeCast<TypeSerializer<Any>>() ?: throw SerializationException("No serializer for key type $key")
+        val valueMapper = node.options().serializers().get(value).safeCast<TypeSerializer<Any>>() ?: throw SerializationException("No serializer for value type $value")
         val keyNode = BasicConfigurationNode.root(node.options())
 
         val first = keyMapper.deserialize(key, keyNode.node("key")?.get())
@@ -38,8 +39,8 @@ object PairSerializer : TypeSerializer<Pair<*, *>> {
         val param = type as ParameterizedType
         val key = param.actualTypeArguments[0]
         val value = param.actualTypeArguments[1]
-        val keyMapper = node.options().serializers().get(key) as? TypeSerializer<Any> ?: throw SerializationException("No serializer for key type $key")
-        val valueMapper = node.options().serializers().get(value) as? TypeSerializer<Any> ?: throw SerializationException("No serializer for value type $value")
+        val keyMapper = node.options().serializers().get(key).safeCast<TypeSerializer<Any>>() ?: throw SerializationException("No serializer for key type $key")
+        val valueMapper = node.options().serializers().get(value).safeCast<TypeSerializer<Any>>() ?: throw SerializationException("No serializer for value type $value")
 
         keyMapper.serialize(key, obj.first, node.node("key"))
         valueMapper.serialize(value, obj.second, node.node("value"))

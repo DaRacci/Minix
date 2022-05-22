@@ -8,7 +8,6 @@ import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.coroutineService
-import dev.racci.minix.api.coroutine.registerSuspendingEvents
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionState
 import dev.racci.minix.api.plugin.Minix
@@ -124,11 +123,6 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
 
             if (cache.extensions.isNotEmpty() || cache.loadedExtensions.isNotEmpty()) {
                 plugin.startInOrder()
-            }
-
-            cache.listeners.ifNotEmpty { collection ->
-                plugin.log.debug { "Registering ${collection.size} listeners for ${plugin.name}" }
-                collection.forEach(plugin::registerSuspendingEvents)
             }
 
             plugin.bStatsId.invokeIfNotNull {

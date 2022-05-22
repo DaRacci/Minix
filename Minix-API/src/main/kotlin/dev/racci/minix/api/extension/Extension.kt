@@ -12,9 +12,8 @@ import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.companionParent
 import dev.racci.minix.api.utils.unsafeCast
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.SupervisorJob
 import net.minecraft.world.entity.ai.memory.ExpirableValue
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -23,6 +22,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.findAnnotation
 import kotlin.time.Duration.Companion.seconds
+import kotlinx.collections.immutable.ImmutableList
 
 /**
  * An Extension is a class which is designed to basically act like it's own mini plugin.
@@ -34,6 +34,8 @@ import kotlin.time.Duration.Companion.seconds
 abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin<P> {
     private val annotation by lazy { this::class.findAnnotation<MappedExtension>() }
     private val pluginService by inject<PluginService>()
+    @MinixInternal val eventListener by lazy { SimpleKListener(plugin) }
+    @MinixInternal val supervisor by lazy { SupervisorJob() }
 
     open val name: String get() = annotation?.name ?: this::class.simpleName ?: throw RuntimeException("Extension name is not defined")
 
@@ -43,7 +45,7 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin
 
     open val log get() = plugin.log
 
-    open val dependencies: ImmutableList<KClass<out Extension<*>>> get() = annotation?.dependencies?.filterIsInstance<KClass<Extension<*>>>().orEmpty().toImmutableList() // This will be worse for performance but save on memory
+    open val dependencies: ImmutableList<KClass<out Extension<*>>> get() = annotation?.dependencies?.filterIsInstance<KClass<Extension<*>>>().orEmpty().toImmutableList()
 
     open var state: ExtensionState = ExtensionState.UNLOADED
 

@@ -22,7 +22,6 @@ import kotlin.reflect.full.isSubclassOf
  * This class provides many more features and allows implementation into the
  * systems of Minix.
  */
-@Suppress("LeakingThis")
 abstract class MinixPlugin : JavaPlugin(), SusPlugin {
     @get:ApiStatus.Internal // Public to be used within the plugin service impl
     val annotation by lazy { this::class.findAnnotation<MappedPlugin>() }

@@ -71,32 +71,12 @@ abstract class MinixPlugin : JavaPlugin(), SusPlugin {
     }
 
     @MinixDsl
-    @Deprecated("Use extensions() instead", ReplaceWith("extensions(builder)"))
-    @ScheduledForRemoval(inVersion = "3.0.0")
-    protected suspend fun listeners(builder: suspend ListenerBuilder.() -> Unit) {
-        builder(get<PluginService>()[this].listenerBuilder)
-    }
-
-    @MinixDsl
     inner class ExtensionsBuilder {
 
         @MinixDsl
         @Suppress("UNCHECKED_CAST")
         inline infix fun <reified P : MinixPlugin> add(noinline builder: ExtensionUnit<P>) {
             get<PluginService>()[this@MinixPlugin].extensions.add(builder as ExtensionUnit<MinixPlugin>)
-        }
-    }
-
-    @MinixDsl
-    @Deprecated("Use ExtensionBuilder() instead", ReplaceWith("ExtensionBuilder()"))
-    @ScheduledForRemoval(inVersion = "3.0.0")
-    inner class ListenerBuilder {
-
-        @MinixDsl
-        @Deprecated("Use extensions instead", ReplaceWith("extensions(builder)"))
-        @ScheduledForRemoval(inVersion = "3.0.0")
-        infix fun MinixPlugin.add(builder: ListenerUnit) {
-            get<PluginService>()[this@MinixPlugin].listeners += builder()
         }
     }
 }

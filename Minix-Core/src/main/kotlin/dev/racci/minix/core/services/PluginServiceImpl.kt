@@ -1,3 +1,4 @@
+@file:OptIn(MinixInternal::class)
 package dev.racci.minix.core.services
 
 import com.github.benmanes.caffeine.cache.Caffeine
@@ -337,7 +338,6 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         return false
     }
 
-    @OptIn(MinixInternal::class)
     private suspend fun Extension<MinixPlugin>.start(
         state: ExtensionState,
         sorted: MutableList<Extension<MinixPlugin>>
@@ -395,7 +395,6 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         else -> throw IllegalArgumentException("Cannot get triple for state $state")
     }
 
-    @OptIn(MinixInternal::class)
     private fun Extension<MinixPlugin>.getModule(): org.koin.core.module.Module? {
         if (bound) return null
 

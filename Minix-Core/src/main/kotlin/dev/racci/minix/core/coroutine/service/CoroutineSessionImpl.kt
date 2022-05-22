@@ -5,6 +5,7 @@ import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.contract.EventService
 import dev.racci.minix.api.coroutine.contract.WakeUpBlockService
 import dev.racci.minix.api.coroutine.minecraftDispatcher
+import dev.racci.minix.api.extensions.WithPlugin
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.core.coroutine.dispatcher.AsyncCoroutineDispatcher
 import dev.racci.minix.core.coroutine.dispatcher.MinecraftCoroutineDispatcher
@@ -18,7 +19,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
-internal class CoroutineSessionImpl(private val plugin: MinixPlugin) : CoroutineSession {
+internal class CoroutineSessionImpl(override val plugin: MinixPlugin) : WithPlugin<MinixPlugin>, CoroutineSession {
 
     private var disposed = false
 

@@ -16,6 +16,7 @@ import dev.racci.minix.api.updater.ChecksumType
 import dev.racci.minix.api.updater.UpdateMode
 import dev.racci.minix.api.updater.UpdateResult
 import dev.racci.minix.api.updater.providers.NotSuccessfullyQueriedException
+import dev.racci.minix.api.updater.providers.NullUpdateProvider
 import dev.racci.minix.api.updater.providers.RequestTypeNotAvailableException
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.utils.data.Data
@@ -130,6 +131,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
 
         for (updater in updaterConfig.pluginUpdaters) {
             updater.pluginInstance = pm.getPlugin(updater.name)
+            updater.providers.retainAll { it !is NullUpdateProvider }
 
             when {
                 updater.pluginInstance == null -> {

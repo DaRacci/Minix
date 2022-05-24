@@ -124,9 +124,8 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         val pluginService = get<PluginService>()
         pluginService.loadedPlugins.values.mapNotNull(MinixPlugin::updater).forEach { updater ->
             if (updaterConfig.pluginUpdaters.any { updater.name == it.name }) return@forEach
-            val service = get<UpdaterService>().unsafeCast<UpdaterServiceImpl>()
             updaterConfig.pluginUpdaters += updater
-            service.enabledUpdaters += updater
+            enabledUpdaters += updater
         }
 
         for (updater in updaterConfig.pluginUpdaters) {

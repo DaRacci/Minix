@@ -212,9 +212,7 @@ abstract class UpdateProvider : KoinComponent {
             return result
         }
 
-        override fun toString(): String {
-            return "UpdateFile(downloadURL=$downloadURL, name=$name, fileName=$fileName, checksum=$checksum, changelog='$changelog', gameVersion=$gameVersion, version=$version, gameVersions=$gameVersions)"
-        }
+        override fun toString() = "UpdateFile(downloadURL=$downloadURL, name=$name, fileName=$fileName, checksum=$checksum, changelog='$changelog', gameVersion=$gameVersion, version=$version, gameVersions=$gameVersions)"
     }
 
     class UpdateProviderSerializer : TypeSerializer<UpdateProvider> {
@@ -226,11 +224,13 @@ abstract class UpdateProvider : KoinComponent {
             type: Type,
             node: ConfigurationNode,
         ): UpdateProvider = try {
-            val key = regexKey.find(node.toString())?.value ?: throw InvalidUpdateProviderException("No provider key found, regex should be ${regexKey.pattern}")
+            val key = regexKey.find(node.toString())?.value ?: throw UpdateProvider.InvalidUpdateProviderException(
+                "No provider key found, regex should be ${regexKey.pattern}"
+            )
             val map = node.childrenMap()[key]!!
             deserializerMap[Class.forName("$packagePath.$key").kotlin]!!.invoke(map).unsafeCast()
         } catch (e: Exception) {
-            logger.error(e) { "Failed to deserialize update provider." }
+            logger.warn(e) { "Failed to deserialize update provider." }
             NullUpdateProvider()
         }
 

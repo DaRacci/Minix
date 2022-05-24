@@ -1,10 +1,13 @@
 @file:Suppress("UNUSED", "UNCHECKED_CAST")
+@file:OptIn(MinixInternal::class)
 
 package dev.racci.minix.api.extensions
 
+import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.coroutine.asyncDispatcher
 import dev.racci.minix.api.coroutine.launch
 import dev.racci.minix.api.coroutine.minecraftDispatcher
+import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
@@ -45,6 +48,35 @@ fun <T : Event> WithPlugin<*>.events(
             ignoreCancelled
         )
     }
+}
+
+/**
+ * Registers an event with this extension.
+ * When this extension is unloaded the event will be unregistered.
+ *
+ * @param T The event type.
+ * @param priority The priority of the event.
+ * @param ignoreCancelled Whether the event should be ignored if it is cancelled.
+ * @param forceAsync Whether the event should be handled asynchronously.
+ * @param block The block to execute when the event is fired.
+ * @receiver The extension.
+ */
+inline fun <reified T : Event> Extension<*>.event(
+    priority: EventPriority = EventPriority.NORMAL,
+    ignoreCancelled: Boolean = false,
+    forceAsync: Boolean = false,
+    noinline block: suspend T.() -> Unit,
+) {
+    this.eventListener
+    val listener = SimpleKListener(plugin)
+    listener.event(
+        type = T::class,
+        plugin = plugin,
+        priority,
+        ignoreCancelled,
+        forceAsync,
+        block
+    )
 }
 
 inline fun <reified T : Event> WithPlugin<*>.event(

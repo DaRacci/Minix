@@ -224,7 +224,7 @@ abstract class UpdateProvider : KoinComponent {
             type: Type,
             node: ConfigurationNode,
         ): UpdateProvider = try {
-            val key = regexKey.find(node.toString())?.value ?: throw UpdateProvider.InvalidUpdateProviderException(
+            val key = regexKey.find(node.toString())?.value ?: throw InvalidUpdateProviderException(
                 "No provider key found, regex should be ${regexKey.pattern}"
             )
             val map = node.childrenMap()[key]!!
@@ -274,7 +274,7 @@ abstract class UpdateProvider : KoinComponent {
                     node.node("host").set(obj.host)
                     node.node("job").set(obj.job)
                     obj.token?.let { node.node("token").set(it) }
-                    obj.artifactSearchRegex?.let { node.node("artifactSearchRegex").set(it) }
+                    obj.artifactSearchRegex?.let { node.node("artifactSearchRegex").set(it.toString()) }
                 },
                 NullUpdateProvider::class to { node, _ -> node.raw(null) },
                 SpigotUpdateProvider::class to { node, obj ->

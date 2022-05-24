@@ -142,7 +142,7 @@ class MCVersion private constructor(
          * @param other The other MCVersion
          * @return True if both are from the same major version, false if not
          */
-        infix fun MCVersion.sameMajor(other: MCVersion): Boolean = versionID / 10 == other.versionID / 10
+        infix fun MCVersion.sameMajor(other: MCVersion): Boolean = this != UNKNOWN && versionID / 10 == other.versionID / 10
 
         private val versionRegex = Regex("MC_?(?<nms>NMS)?_(?<major>\\d+)_(?<minor>\\d+)_?(?<patch>\\d+)?_?(?<revision>R\\d)?")
 

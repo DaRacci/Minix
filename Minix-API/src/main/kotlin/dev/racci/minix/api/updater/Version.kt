@@ -1,5 +1,7 @@
 package dev.racci.minix.api.updater
 
+import dev.racci.minix.api.plugin.MinixLogger
+import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import java.util.concurrent.ConcurrentHashMap
@@ -124,6 +126,16 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
             this.timestamp = getBuildParameter(tags, "(t|ts|time(stamp)?)")
             this.tags = tags
 
+            getKoin().get<MinixLogger>().info {
+                """
+                    | Raw version: $rawVersion
+                    | Version: $version
+                    | Tags: ${tags.joinToString(", ")}
+                    | Build number: $buildNumber
+                    | Timestamp: $timestamp
+                """.trimIndent()
+            }
+
             comps.indices.forEach { this.version[it] = comps[it].toInt() }
 
             if (notFinalVersion) {
@@ -139,7 +151,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
                     }
                     last = last - preReleaseTagResolution[tag]!! + tagNumber
                 }
-                this.version[version.lastIndex - 1] = last
+                this.version[(version.lastIndex - 1).coerceAtLeast(0)] = last
                 if (last > 0) {
                     for (i in this.version.size - 2 downTo 0) {
                         if (this.version[i] > 0 || i == 0) {

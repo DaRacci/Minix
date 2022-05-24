@@ -77,7 +77,11 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
         result.fileName = fileName
         result.name = jsonObj["fullDisplayName"].asString
         result.downloadURL = URL("${jsonObj["url"].asJsonPrimitive.asString}artifact/$relativePath")
-        result.checksum = jsonObj["fingerprint"].asJsonArray[artifactId].asJsonObject["hash"].asString
+        val array = jsonObj["fingerprint"].asJsonArray
+        result.checksum = when {
+            !array.isEmpty -> array[artifactId]?.asJsonObject?.get("hash")?.asString
+            else -> null
+        }
 
         val items = jsonObj["changeSet"].asJsonObject["items"].asJsonArray
         result.changelog = StringBuilder().also { builder ->
@@ -111,6 +115,14 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
         jsonObj: JsonObject,
         result: UpdateFile
     ) {
+        logger.debug {
+            """
+                | Updater - ${result.name}
+                | Filename - ${result.fileName}
+                | Matches Regex - ${VERSION_PATTERN.matches(result.fileName!!)}
+            """.trimIndent()
+        }
+
         VERSION_PATTERN.matchEntire(result.fileName!!)?.let { matcher ->
             val versionBuilder = StringBuilder(matcher.groups["VersionString"]!!.value)
             versionBuilder.append("-T")
@@ -120,6 +132,7 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
                 .let(versionBuilder::append)
             versionBuilder.append("-b")
             versionBuilder.append(jsonObj["number"].asJsonPrimitive.asString)
+            logger.debug { "| Version - $versionBuilder" }
             result.version = Version(versionBuilder.toString())
         }
     }
@@ -133,6 +146,7 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
             builder.append("job/${job.replace(" ", "%20")}")
             builder.append("/lastSuccessfulBuild/api/json?$API_FILTER")
             token?.let { builder.append("&token=$it") }
+            logger.debug { "Built Jenkins URL - $builder" }
             URL(builder.toString())
         } catch (e: Exception) {
             val throwable = InvalidUpdateProviderException(

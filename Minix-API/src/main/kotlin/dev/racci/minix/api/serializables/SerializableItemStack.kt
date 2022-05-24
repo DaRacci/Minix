@@ -54,7 +54,6 @@ class SerializableItemStack(
             val meta = meta!!
             item.editItemMeta<ItemMeta> {
                 displayName(meta.displayName)
-                setLocalizedName(meta.localizedName)
                 lore(meta.lore)
                 setCustomModelData(meta.customModelData)
                 meta.enchants?.entries?.forEach { (enchant, level) ->

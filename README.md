@@ -162,23 +162,77 @@ Replace `tag` with a release tag, eg `1.0.0`.
     - [Projectile](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/minecraft/ProjectileUtils.kt)
     - [Range](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/minecraft/RangeUtils.kt)
     - [Tame](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/minecraft/TameUtils.kt)
-    - [World](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/minecraft/WorldUtils.kt)
   
   - Misc:
-    - [Colour](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/ColourUtils.kt)
     - [Enum](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/EnumUtils.kt)
     - [Legacy](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/LegacyUtils.kt)
     - [Math](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/MathUtils.kt)
     - [Number](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/NumberUtils.kt)
     - [String](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/StringUtils.kt)
-    - [Text](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/TextUtils.kt)
     - [Koin](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/Koin.kt)
     - [Reflection](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/ReflectionUtils.kt)
     - [TakeMaxTimePerTick](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/TakeMaxTimePerTickUtils.kt)
     - [Time](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/TimeUtils.kt)
     - [Unsafe](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/UnsafeUtil.kt)
-    - [UpdateChecker](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/UpdateChecker.kt)
 
+## Plugin Updater
+
+Using the minix-updater is very easy however it does need to be configured.
+Using the format below you can easily configure the updater.
+Note that when using more than one provider only the first one will be used unless it fails multiple times.
+In this case it will traverse down the list and if none of them work, disable that updater.
+
+When an update is found and is downloaded, a backup will be created of the current state and placed in plugins/Minix/MinixUpdater
+
+Format
+```
+plugin-updaters=[
+    {
+        channels=[release]  # What release channels to update to options: [release, alpha, beta, snapshot]
+        ignored=[]          # Any folders which should be ignored when backing up for an update
+        name=Minix          # The name of the plugin this must be the same as what is in the `/plugins` output
+        update-mode=UPDATE  # How to update the plugin options: [UPDATE, CHECK, DISABLED]
+        providers=[
+            {
+                AlwaysUpdateProvider {
+                    downloadUrl=api.example.com/download/
+                    fileName=file.jar
+                    releaseType=RELEASE
+                }
+            },
+            {
+                BukkitUpdateProvider {
+                    projectID=12345
+                    apiKey=12345 # Optional
+                }
+            },
+            {
+                GithubUpdateProvider {
+                    projectOwner=DaRacci
+                    projectRepo=Minix
+                    userAgent=AGENT # Optional
+                    jarSearchRegex=.*\.jar$ # Optional
+                    md5SearchRegex=.*\.md5$ # Optional
+                }
+            },
+            {
+                JenkinsUpdateProvider {
+                    host=jenkins.example.com
+                    job=Minix
+                    token=12345 # Optional
+                    artifactSearchRegex=.*\.jar$ # Optional
+                }
+            },
+            {
+                SpigotUpdateProvider {
+                    projectID=12345
+                    fileName=file.jar # Optional
+                }
+            }
+        ]
+    }
+]
+```
 
 ## Plans
 

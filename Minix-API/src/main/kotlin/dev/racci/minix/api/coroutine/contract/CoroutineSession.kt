@@ -42,6 +42,7 @@ interface CoroutineSession {
      */
     fun launch(
         dispatcher: CoroutineContext,
+        parentScope: CoroutineScope?,
         f: suspend CoroutineScope.() -> Unit
     ): Job
 

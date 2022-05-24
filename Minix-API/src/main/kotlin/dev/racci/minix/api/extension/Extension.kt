@@ -12,7 +12,9 @@ import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.companionParent
 import dev.racci.minix.api.utils.unsafeCast
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import net.minecraft.world.entity.ai.memory.ExpirableValue
 import org.koin.core.component.KoinComponent
@@ -22,7 +24,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.findAnnotation
 import kotlin.time.Duration.Companion.seconds
-import kotlinx.collections.immutable.ImmutableList
 
 /**
  * An Extension is a class which is designed to basically act like it's own mini plugin.
@@ -35,7 +36,7 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin
     private val annotation by lazy { this::class.findAnnotation<MappedExtension>() }
     private val pluginService by inject<PluginService>()
     @MinixInternal val eventListener by lazy { SimpleKListener(plugin) }
-    @MinixInternal val supervisor by lazy { SupervisorJob() }
+    @MinixInternal val supervisor by lazy { CoroutineScope(SupervisorJob()) }
 
     open val name: String get() = annotation?.name ?: this::class.simpleName ?: throw RuntimeException("Extension name is not defined")
 

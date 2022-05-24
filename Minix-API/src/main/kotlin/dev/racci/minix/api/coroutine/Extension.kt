@@ -58,24 +58,15 @@ val MinixPlugin.scope: CoroutineScope
  * calling this function Bukkit.isPrimaryThread() is true. This means
  * for example that event cancelling or modifying return values is still possible.
  * @param dispatcher Coroutine context. The default context is minecraft dispatcher.
+ * @param parentScope Parent job. The default is to just launch within the plugins scope.
  * @param f callback function inside a coroutine scope.
  * @return Cancelable coroutine job.
  */
 fun MinixPlugin.launch(
-    dispatcher: CoroutineContext,
+    dispatcher: CoroutineContext = minecraftDispatcher,
+    parentScope: CoroutineScope? = null,
     f: suspend CoroutineScope.() -> Unit
-): Job = coroutineService.getCoroutineSession(this).launch(dispatcher, f)
-
-/**
- * Launches the given function in the Coroutine Scope of the given plugin.
- * This function may be called immediately without any delay if the Thread
- * calling this function Bukkit.isPrimaryThread() is true. This means
- * for example that event cancelling or modifying return values is still possible.
- * @param f callback function inside a coroutine scope.
- * @return Cancelable coroutine job.
- */
-fun MinixPlugin.launch(f: suspend CoroutineScope.() -> Unit): Job =
-    coroutineService.getCoroutineSession(this).launch(minecraftDispatcher, f)
+): Job = coroutineService.getCoroutineSession(this).launch(dispatcher, parentScope, f)
 
 /**
  * Launches the given function in the Coroutine Scope of the given plugin async.
@@ -86,7 +77,7 @@ fun MinixPlugin.launch(f: suspend CoroutineScope.() -> Unit): Job =
  * @return Cancelable coroutine job.
  */
 fun MinixPlugin.launchAsync(f: suspend CoroutineScope.() -> Unit): Job =
-    coroutineService.getCoroutineSession(this).launch(this.asyncDispatcher, f)
+    coroutineService.getCoroutineSession(this).launch(this.asyncDispatcher, null, f)
 
 /**
  * Registers an event listener with suspending functions.
@@ -123,7 +114,6 @@ fun MinixPlugin.registerSuspendingEvents(
  * was called. Each job instance represents an available job for each method being called in each suspending listener.
  * For awaiting use callSuspendingEvent(..).joinAll().
  */
-@Suppress("unused")
 fun PluginManager.callSuspendingEvent(
     event: Event,
     plugin: MinixPlugin

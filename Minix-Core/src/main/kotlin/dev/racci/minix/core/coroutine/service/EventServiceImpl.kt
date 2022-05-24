@@ -162,7 +162,7 @@ internal class EventServiceImpl(
                             else -> coroutineSession.dispatcherMinecraft
                         }
                         Result.success(
-                            coroutineSession.launch(dispatcher) { // Try as both incase it's not a suspend function
+                            coroutineSession.launch(dispatcher, null) { // Try as both incase it's not a suspend function
                                 try {
                                     method.invokeSuspend(listener, event)
                                 } catch (e: IllegalArgumentException) {

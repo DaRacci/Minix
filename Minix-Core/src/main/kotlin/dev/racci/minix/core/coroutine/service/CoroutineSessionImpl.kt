@@ -38,23 +38,23 @@ internal class CoroutineSessionImpl(override val plugin: MinixPlugin) : WithPlug
 
     override fun launch(
         dispatcher: CoroutineContext,
+        parentScope: CoroutineScope?,
         f: suspend CoroutineScope.() -> Unit,
-    ) = when {
+    ): Job = when {
         disposed -> Job()
-        dispatcher == Dispatchers.Unconfined -> launchInternal(dispatcher, CoroutineStart.UNDISPATCHED, f) // If the dispatcher is unconfined. Always schedule immediately.
-        else -> launchInternal(dispatcher, CoroutineStart.DEFAULT, f)
+        dispatcher == Dispatchers.Unconfined -> launchInternal(parentScope, dispatcher, CoroutineStart.UNDISPATCHED, f) // If the dispatcher is unconfined. Always schedule immediately.
+        else -> launchInternal(parentScope, dispatcher, CoroutineStart.DEFAULT, f)
     }
 
     private fun launchInternal(
+        parentScope: CoroutineScope?,
         dispatcher: CoroutineContext,
         coroutineStart: CoroutineStart,
         f: suspend CoroutineScope.() -> Unit,
-    ): Job = scope.launch(dispatcher, coroutineStart) {
+    ): Job = (parentScope ?: scope).launch(dispatcher, coroutineStart) {
         try { // The user may or may not launch multiple sub suspension operations. If
-            // one of those fails, only this scope should fail instead of the plugin scope.
-            coroutineScope {
-                f.invoke(this)
-            }
+            // one of those fails, only this scope should fail instead of the parent scope.
+            coroutineScope(f)
         } catch (e: Throwable) {
             when (e) {
                 is CancellationException -> plugin.log.info { "Coroutine cancelled: ${e.message}" }

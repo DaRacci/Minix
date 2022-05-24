@@ -10,6 +10,7 @@ import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionState
+import dev.racci.minix.api.extensions.unregisterListener
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.PluginData
@@ -27,9 +28,13 @@ import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
 import io.github.classgraph.AnnotationClassRef
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
+import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.TimeoutCancellationException
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 import org.koin.core.component.KoinComponent
@@ -55,16 +60,16 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
     private val dataService by inject<DataService>()
 
     override val loadedPlugins by lazy { mutableMapOf<KClass<out MinixPlugin>, MinixPlugin>() }
-
     override val pluginCache: LoadingCache<MinixPlugin, PluginData<MinixPlugin>> = Caffeine.newBuilder().build(::PluginData)
-
     override val coroutineSession: LoadingCache<MinixPlugin, CoroutineSession> = Caffeine.newBuilder().build { plugin ->
         if (!plugin.isEnabled) {
             plugin.log.throwing(
                 RuntimeException(
-                    "Plugin ${plugin.name} attempt to start a new coroutine session while being disabled. " +
-                        "Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already " +
-                        "disposed at this point and cannot be used!"
+                    """
+                    Plugin ${plugin.name} attempted to start a new coroutine session while being disabled.
+                    Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already
+                    disposed of at this point and cannot be used.
+                    """.trimIndent()
                 )
             )
         }
@@ -314,14 +319,13 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         pluginCache[this].extensions.clear()
     }
 
-    // TODO: Look into failed dependencies not being respected
     private suspend fun MinixPlugin.startInOrder() {
         val sorted = getSortedExtensions()
         sorted.filter { it.checkFailed() }.forEach { ex -> ex.start(ExtensionState.ENABLING, sorted) }
         pluginCache[this].extensions.clear()
     }
 
-    private suspend fun Extension<MinixPlugin>.checkFailed(): Boolean {
+    private fun Extension<MinixPlugin>.checkFailed(): Boolean {
         when (this.state) {
             ExtensionState.FAILED_DEPENDENCIES -> log.warn { "Extension $name had one or more dependencies fail to load, Skipping." }
             ExtensionState.FAILED_LOADING -> log.warn { "Extension $name had previously failed to load, Skipping." }
@@ -443,6 +447,13 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                 ex.setState(ExtensionState.UNLOADING)
                 try {
                     withTimeout(5.seconds) {
+                        ex.eventListener.unregisterListener()
+                        // Give the jobs 2 seconds of grace time to unload then shutdown forcefully
+                        try {
+                            withTimeoutOrNull(2.seconds) {
+                                ex.supervisor.coroutineContext.job.unsafeCast<CompletableJob>().complete()
+                            }
+                        } catch (e: TimeoutCancellationException) { ex.supervisor.cancel(e) }
                         ex.invokeIfOverrides(Extension<*>::handleUnload.name) { ex.handleUnload() }
                     }
                 } catch (e: Throwable) {
@@ -451,7 +462,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                     } else log.error(e) { "Extension ${ex.name} through an error while unloading!" }
                     ex.setState(ExtensionState.FAILED_UNLOADING)
                 }
-                unloadKoinModules(module { single { ex } bind (ex.bindToKClass ?: ex::class) }) // TODO: This is a bit of a hack, but it works for now.
+                unloadKoinModules(module { single { ex } bind (ex.bindToKClass ?: ex::class) })
                 ex.setState(ExtensionState.UNLOADED)
                 cache.unloadedExtensions += ex
             }

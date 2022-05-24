@@ -20,7 +20,7 @@ internal class CommandServiceImpl(
             // If the result is delayed we can automatically assume it is true.
             var success = true
 
-            coroutineSession.launch(coroutineSession.dispatcherMinecraft) {
+            coroutineSession.launch(coroutineSession.dispatcherMinecraft, null) {
                 success = commandExecutor.onCommand(p0, p1, p2, p3)
             }
 
@@ -35,7 +35,7 @@ internal class CommandServiceImpl(
         pluginCommand.setTabCompleter { sender, command, alias, args ->
             var result = emptyList<String>()
 
-            coroutineSession.launch(coroutineSession.dispatcherMinecraft) {
+            coroutineSession.launch(coroutineSession.dispatcherMinecraft, null) {
                 result = tabCompleter.onTabComplete(sender, command, alias, args)
             }
 

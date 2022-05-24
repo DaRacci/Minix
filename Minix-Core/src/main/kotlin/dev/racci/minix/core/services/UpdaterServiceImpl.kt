@@ -3,6 +3,7 @@ package dev.racci.minix.core.services
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.extension.Extension
+import dev.racci.minix.api.extensions.async
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.pm
 import dev.racci.minix.api.extensions.server
@@ -19,6 +20,7 @@ import dev.racci.minix.api.updater.providers.NotSuccessfullyQueriedException
 import dev.racci.minix.api.updater.providers.NullUpdateProvider
 import dev.racci.minix.api.updater.providers.RequestTypeNotAvailableException
 import dev.racci.minix.api.updater.providers.UpdateProvider
+import dev.racci.minix.api.utils.Closeable
 import dev.racci.minix.api.utils.data.Data
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.minecraft.MCVersion
@@ -32,8 +34,11 @@ import io.ktor.client.statement.bodyAsChannel
 import io.ktor.client.statement.discardRemaining
 import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.bukkit.event.server.PluginDisableEvent
@@ -129,22 +134,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
             enabledUpdaters += updater
         }
 
-        for (updater in updaterConfig.pluginUpdaters) {
-            updater.pluginInstance = pm.getPlugin(updater.name)
-            updater.providers.retainAll { it !is NullUpdateProvider }
-
-            when {
-                updater.pluginInstance == null -> {
-                    plugin.log.warn { "Couldn't find plugin with the name ${updater.name}" }
-                    continue
-                }
-                updater.providers.isEmpty() -> {
-                    plugin.log.warn { "Updater ${updater.name} has no providers" }
-                    continue
-                }
-                else -> enabledUpdaters += updater
-            }
-        }
+        updaterConfig.pluginUpdaters.forEach(::initUpdater)
 
         if (enabledUpdaters.isNotEmpty()) { // Only debug if we found updater, but we always want to start the task
             log.debug {
@@ -155,37 +145,42 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
             }
         }
 
+        beginTask()
+    }
+
+    private fun initUpdater(updater: PluginUpdater) {
+        updater.pluginInstance = pm.getPlugin(updater.name)
+        updater.providers.retainAll { it !is NullUpdateProvider }
+
+        when {
+            updater.pluginInstance == null -> {
+                plugin.log.warn { "Couldn't find plugin with the name ${updater.name}" }
+            }
+            updater.providers.isEmpty() -> {
+                plugin.log.warn { "Updater ${updater.name} has no providers" }
+            }
+            else -> enabledUpdaters += updater
+        }
+    }
+
+    private fun beginTask() {
         taskAsync(repeatDelay = 5.minutes) {
             try {
                 for (updater in enabledUpdaters.toImmutableList()) {
-                    log.debug { "Checking ${updater.name} for updates" }
                     if (updater.lastRun != null && now() < (updater.lastRun!! + updaterConfig.interval)) continue
+                    log.debug { "Checking ${updater.name} for updates" }
 
-                    if (updater.updateMode == UpdateMode.DISABLED) {
-                        enabledUpdaters -= updater
-                        disabledUpdaters += updater
-                        continue
+                    async {
+                        updater.provider.query()
+                        updater.lastRun = now()
+                        checkForUpdate(updater).takeIf { it && updater.updateMode == UpdateMode.UPDATE }
+                            ?.let { update(updater) }
                     }
-
-                    updater.provider.query()
-                    updater.lastRun = now()
-                    checkForUpdate(updater).takeIf { it && updater.updateMode == UpdateMode.UPDATE }
-                        ?.let { update(updater) }
                 }
             } catch (e: ConcurrentModificationException) {
                 log.error(e) { "Error while checking for updates on ${Thread.currentThread().name}" }
             }
         }
-    }
-
-    override suspend fun updateAll(): Array<Pair<String, UpdateResult>> = Array(enabledUpdaters.size) {
-        val updater = enabledUpdaters[it]
-        updater.name to tryUpdate(updater)
-    }
-
-    override fun checkAll(): Array<Pair<String, Boolean>> = Array(enabledUpdaters.size) {
-        val updater = enabledUpdaters[it]
-        updater.name to checkForUpdate(updater)
     }
 
     override suspend fun tryUpdate(updater: PluginUpdater): UpdateResult {

@@ -9,20 +9,6 @@ interface UpdaterService {
     val disabledUpdaters: MutableList<PluginUpdater>
 
     /**
-     * Run an update check for all enabled updaters.
-     *
-     * @return An array of pairs of updater name and their update results.
-     */
-    suspend fun updateAll(): Array<Pair<String, UpdateResult>>
-
-    /**
-     * Check all the updaters for updates.
-     *
-     * @return A array of pairs of the updater name and the true if there is an update.
-     */
-    fun checkAll(): Array<Pair<String, Boolean>>
-
-    /**
      * Tries to update this updater.
      * This will not set the last time for the scheduled task.
      *

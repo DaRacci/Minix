@@ -86,7 +86,5 @@ abstract class BaseOnlineProvider protected constructor(
 
         @JvmStatic
         protected val GSON by lazy(::Gson)
-        private const val PROPERTY_USER_AGENT = "User-Agent"
-        private const val TIMEOUT = 5000
     }
 }

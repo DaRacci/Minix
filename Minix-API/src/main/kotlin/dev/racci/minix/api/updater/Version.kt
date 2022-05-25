@@ -134,7 +134,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
             val size = if (this.tags.isEmpty()) comps.size else comps.size + 1
             this.version = IntArray(size) { comps.getOrNull(it)?.toInt() ?: 0 }
 
-            doBlackMagic(version.lastIndex)
+            doBlackMagic()
         }
     }
 
@@ -193,7 +193,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
         return grouped.filterNotNull()
     }
 
-    private fun doBlackMagic(lastIndex: Int) {
+    private fun doBlackMagic() {
         if (!isPreRelease) return
         var last = 0
         for (tagStr in this.tags) {

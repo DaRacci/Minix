@@ -88,16 +88,14 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin
         operator fun getValue(thisRef: ExtensionCompanion<E>, property: KProperty<*>): E = thisRef.getService()
 
         fun getService(): E {
-            val parentClass = this::class.companionParent.unsafeCast<KClass<Extension<*>>>() // Will throw if implemented incorrectly
             if (cached == null || cached!!.hasExpired()) {
-                cached = ExpirableValue.of(getKoin().get<E>(parentClass), 15.seconds.inWholeTicks)
+                cached = ExpirableValue.of(getKoin().get<E>(getParent()), 15.seconds.inWholeTicks)
             }
             return cached!!.value
         }
 
-        fun inject(): Lazy<E> = lazy {
-            val parentClass = this::class.companionParent.unsafeCast<KClass<Extension<*>>>() // Will throw if implemented incorrectly
-            getKoin().get(parentClass)
-        }
+        fun inject(): Lazy<E> = lazy { getKoin().get(getParent()) }
+
+        private fun getParent() = this::class.companionParent.unsafeCast<KClass<Extension<*>>>()
     }
 }

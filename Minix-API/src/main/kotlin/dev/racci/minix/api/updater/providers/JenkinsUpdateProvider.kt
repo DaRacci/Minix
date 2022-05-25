@@ -41,6 +41,7 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
 
             setResult(jsonObj, result)
             setVersion(jsonObj, result)
+            lastResult = result
         } catch (e: Exception) {
             logger.error(e) { "Failed to parse the result from the server" }
             return@withContext UpdateResult.FAILED_NO_VERSION

@@ -99,6 +99,7 @@ class MCVersion private constructor(
         }
     }
 
+    @Suppress("UNUSED")
     companion object {
         private val ordinalInc = atomic(0)
         private val nameMap = mutableMapOf<String, MCVersion>()

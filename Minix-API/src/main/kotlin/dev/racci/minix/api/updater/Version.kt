@@ -1,9 +1,8 @@
 package dev.racci.minix.api.updater
 
-import dev.racci.minix.api.plugin.MinixLogger
-import dev.racci.minix.api.utils.getKoin
+import dev.racci.minix.api.utils.collections.CollectionUtils.containsIgnoreCase
 import dev.racci.minix.api.utils.kotlin.ifTrue
-import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
+import org.intellij.lang.annotations.Language
 import java.util.concurrent.ConcurrentHashMap
 
 class Version @Throws(InvalidVersionStringException::class) constructor(
@@ -12,10 +11,10 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
 ) : Comparable<Version> {
 
     private val rawVersion: String
-    private val tags: Array<String>
+    private val tags: List<String>
     private val version: IntArray
-    private val timestamp: Long // TODO: use a Date object instead
-    private val buildNumber: Long
+    val timestamp: Long // TODO: use a Date object instead
+    val buildNumber: Long
 
     var isPreRelease = false
     val major: Int get() = version.getOrElse(0) { 0 }
@@ -27,7 +26,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
      *
      * @return The string representing this version.
      */
-    override fun toString(): String = rawVersion
+    override fun toString(): String = "v$rawVersion (Tags: [ ${tags.joinToString(", ")} ], Timestamp: $timestamp, Build: $buildNumber, PreRelease: $isPreRelease, Major: $major, Minor: $minor, Patch: $patch)"
 
     /**
      * Checks if this version is equal to the given one.
@@ -47,6 +46,14 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
     override fun hashCode(): Int = version.hashCode()
 
     override operator fun compareTo(other: Version): Int {
+        if (other === ERROR) return 1
+        if (this === ERROR) return -1
+
+        when {
+            isPreRelease && !other.isPreRelease -> return -1
+            !isPreRelease && other.isPreRelease -> return 1
+        }
+
         val c = version.size.coerceAtMost(other.version.size)
 
         repeat(c) {
@@ -56,7 +63,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
             }
         }
 
-        if (version.size != other.version.size) { // If both version are the same for the length, the version that has more digits (>0) probably is the newer one.
+        if (version.size != other.version.size) { // If both version are the different length, the version that has more digits (>0) probably is the newer one.
             val otherLonger = other.version.size > version.size
             val longer = if (otherLonger) other.version else version
 
@@ -66,20 +73,12 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
             }
         }
 
-        (timestamp > 0 && other.timestamp > 0).ifTrue { // If both versions have the same length we still can compare the build timestamp (if available)
-            return when { // Return newer if the timestamp is larger
-                other.timestamp > timestamp -> -1
-                other.timestamp < timestamp -> 1
-                else -> return@ifTrue
-            }
+        if (timestamp > 0 && other.timestamp > 0) {
+            return timestamp.compareTo(other.timestamp)
         }
 
         (buildNumber > 0 && other.buildNumber > 0).ifTrue { // If both versions still can't be distinguished we can use the build number (if available)
-            return when { // Return newer if the build number is larger
-                other.buildNumber > buildNumber -> 1
-                other.buildNumber < buildNumber -> -1
-                else -> return@ifTrue
-            }
+            return buildNumber.compareTo(other.buildNumber)
         }
 
         return 0 // They are both the same
@@ -111,91 +110,134 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
     ) : this("$majorVersion.$minorVersion.$patchVersion")
 
     init {
-        if (rawVersion != "ERROR") {
+        if (rawVersion == "ERROR") {
             this.rawVersion = rawVersion
             this.version = IntArray(3) { 0 }
             this.buildNumber = -1
             this.timestamp = -1
-            this.tags = emptyArray()
+            this.tags = emptyList()
         } else {
-            try {
-                val matcher = versionStringRegex.matchEntire(rawVersion)
-                    ?: throw InvalidVersionStringException()
-                val version = matcher.groups["version"]!!.value.replace(unimportantVersionRegex, "")
-                val tags = matcher.groups["tags"]!!.value.split("-")
-                    .toTypedArray()
-                val comps = version.split(".")
-                    .toTypedArray()
-                val tagsList = if (ignoreTags) emptyList() else getAll(tags, preReleaseTags)
-                val notFinalVersion = tagsList.isNotEmpty()
+            val (version, length) = cutUnneeded(rawVersion)
+            val comps = getSplitVersion(version)
+            val tags = getTags(rawVersion, length)
+            val groupTagValues = getGroupTagValues(tags)
 
-                this.rawVersion = rawVersion.takeUnless { it.startsWith("v", true) }
-                    ?: rawVersion.substring(1)
-                this.version = IntArray(
-                    comps.size.takeUnless { notFinalVersion }
-                        ?: (comps.size + 1)
-                )
-                this.buildNumber = getBuildParameter(tags, "(b|build(number)?)")
-                this.timestamp = getBuildParameter(tags, "(t|ts|time(stamp)?)")
-                this.tags = tags
+            this.buildNumber = getBuildParameter(tags, "(^(\\s|build|b)?)")
+            this.timestamp = getBuildParameter(tags, "(t|ts|time(stamp)?)")
 
-                getKoin().get<MinixLogger>()
-                    .info {
-                        """
-                    | Raw version: $rawVersion
-                    | Version: $version
-                    | Tags: ${tags.joinToString(", ")}
-                    | Build number: $buildNumber
-                    | Timestamp: $timestamp
-                        """.trimIndent()
-                    }
+            // Only retain the valid snapshot tags or if ignoring tags keep none.
+            this.tags = tags.filter { !ignoreTags && it !in groupTagValues && preReleaseTags.containsIgnoreCase(it) }
+            this.isPreRelease = this.tags.isNotEmpty()
+            this.rawVersion = rawVersion.dropWhile { !it.isDigit() }
 
-                comps.indices.forEach { this.version[it] = comps[it].toInt() }
+            // Convert string to int array, if pre-release add an extra -1 to be defined later.
+            val size = if (this.tags.isEmpty()) comps.size else comps.size + 1
+            this.version = IntArray(size) { comps.getOrNull(it)?.toInt() ?: 0 }
 
-                if (notFinalVersion) {
-                    isPreRelease = true
-                    var last = 0
-                    for (string in tagsList) {
-                        if (last == 0) last = Int.MAX_VALUE
-                        var tagNumber = 0
-                        var tag = string.lowercase()
-                        preReleaseTagRegex.find(tag)
-                            .invokeIfNotNull { result ->
-                                tagNumber = result.groups["number"]!!.value.toInt()
-                                tag = result.groups["tag"]!!.value
-                            }
-                        last = last - preReleaseTagResolution[tag]!! + tagNumber
-                    }
-                    this.version[(version.lastIndex - 1).coerceAtLeast(0)] = last
-                    if (last > 0) {
-                        for (i in this.version.size - 2 downTo 0) {
-                            if (this.version[i] > 0 || i == 0) {
-                                this.version[i]--
-                                break
-                            }
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                throw InvalidVersionStringException("Couldn't create version from $rawVersion\n\t\t\t\t$e")
+            doBlackMagic(version.lastIndex)
+        }
+    }
+
+    /** Returns the string paired to its total length in characters from dropping unneeded beforehand. */
+    private fun cutUnneeded(rawVersion: String): Pair<String, Int> {
+        var length = 0
+        return rawVersion
+            .dropWhile {
+                if (!it.isDigit()) {
+                    length++
+                    true
+                } else false
+            }
+            .takeWhile {
+                if (it.isDigit() || it == '.') {
+                    length++
+                    true
+                } else false
+            } to length
+    }
+
+    private fun getSplitVersion(version: String): List<String> {
+        val split = version.split(".")
+        return when (split.size) {
+            0 -> listOf(version, "0", "0")
+            in 1..3 -> {
+                val mut = split.toMutableList()
+                while (mut.size < 3) mut.add("0")
+                mut
+            }
+            else -> split
+        }
+    }
+
+    private fun getTags(
+        rawVersion: String,
+        startingIndex: Int,
+    ) = tagRegex.findAll(rawVersion.substring(startingIndex))
+        .map { it.groups["grouped"]?.value?.replace("\\s|-".toRegex(), "") ?: it.value }
+        .toList()
+
+    private fun getGroupTagValues(tags: List<String>): List<String> {
+        val grouped by lazy { arrayOfNulls<String>(tags.size) } // This may be unused.
+        for (i in tags.indices) {
+            if (tags.lastIndex == i) break
+
+            val tag = tags[i]
+            val nextTag = tags[i + 1]
+
+            if (!groupTagRegex.matches(tag)) continue
+            if (!nextTag.any(Char::isDigit)) continue
+
+            grouped[i] = tag
+            grouped[i + 1] = nextTag
+        }
+        return grouped.filterNotNull()
+    }
+
+    private fun doBlackMagic(lastIndex: Int) {
+        if (!isPreRelease) return
+        var last = 0
+        for (tagStr in this.tags) {
+            if (last == 0) last = Int.MAX_VALUE
+
+            var tagNumber = 0
+            var tag = tagStr.lowercase()
+
+            preReleaseTagRegex.find(tag)?.apply {
+                tagNumber = groups["number"]?.value?.toInt() ?: 0
+                tag = groups["tag"]?.value?.lowercase() ?: ""
+            }
+
+            last -= (preReleaseTagResolution[tag]!! + tagNumber)
+        }
+
+        this.version[this.version.lastIndex] = last
+
+        if (last < 1) return
+
+        // I'll be honest, I don't know why this works. Hence the method name.
+        for (i in this.version.lastIndex downTo 0) {
+            if (this.version[i] > 0 || i == 0) {
+                this.version[i]--
+                break
             }
         }
     }
 
     companion object {
 
-        val ERROR = Version(0, 0, 0)
-        val unimportantVersionRegex by lazy { Regex("(\\.0)*$") }
+        val ERROR by lazy { Version("ERROR") }
+        val tagRegex by lazy { Regex("([^-\\s()]+)|\\((?<grouped>.+)\\)") }
+        val groupTagRegex by lazy { Regex("b|build|t|ts|time|d|date", RegexOption.IGNORE_CASE) }
         val preReleaseTagResolution: MutableMap<String, Int> = ConcurrentHashMap()
         val preReleaseTagRegex by lazy { Regex("(?<tag>\\w+)\\.?(?<number>\\d+)") }
         val preReleaseTags by lazy { arrayOf("alpha", "a", "beta", "b", "pre", "rc", "snapshot") }
-        val versionStringRegex by lazy { Regex("[vV]?(?<version>\\d+(\\.\\d+)*)-?(?<tags>([^-\\s]+)*)") }
+        val versionStringRegex by lazy { Regex("[vV]?(?<version>\\d+(\\.\\d+)*)-?(?<tags>([^-\\s]+[\\s-]*)*)") }
 
         fun getBuildParameter(
-            tags: Array<String>,
-            parameter: String
+            tags: List<String>,
+            @Language("RegExp") parameter: String
         ): Long {
-            val searchPattern = Regex("$parameter[=:_]?(?<number>\\d+)", RegexOption.IGNORE_CASE)
+            val searchPattern = Regex("$parameter[=:_\\s]?(?<number>\\d+)", RegexOption.IGNORE_CASE)
             for (tag in tags) {
                 val matcher = searchPattern.find(tag) ?: continue
                 try {
@@ -203,20 +245,6 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
                 } catch (ignored: NumberFormatException) { }
             }
             return -1
-        }
-
-        fun getAll(
-            source: Array<String>,
-            searchForArray: Array<String>
-        ): ArrayList<String> {
-            val result = ArrayList<String>()
-            for (searchFor in searchForArray) {
-                for (string in source) {
-                    if (!string.contains(searchFor, true)) continue
-                    result += string
-                }
-            }
-            return result
         }
 
         init {

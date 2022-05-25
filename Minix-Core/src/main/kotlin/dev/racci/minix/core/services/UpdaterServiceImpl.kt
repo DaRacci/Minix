@@ -4,6 +4,7 @@ import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.async
+import dev.racci.minix.api.extensions.deferredAsync
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.pm
 import dev.racci.minix.api.extensions.server
@@ -34,12 +35,15 @@ import io.ktor.client.statement.bodyAsChannel
 import io.ktor.client.statement.discardRemaining
 import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withTimeout
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.event.server.PluginEnableEvent
+import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.component.get
@@ -58,7 +62,9 @@ import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 import kotlin.io.path.moveTo
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
+// TODO: Refactor this class
 @MappedExtension(Minix::class, "Updater Service", [DataService::class], UpdaterService::class)
 class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), UpdaterService {
     private val updaterConfig by lazy { get<DataService>().get<UpdaterConfig>() }
@@ -136,7 +142,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         if (enabledUpdaters.isNotEmpty()) { // Only debug if we found updater, but we always want to start the task
             log.debug {
                 "Found ${enabledUpdaters.size} updaters" +
-                    "\n\t\tUpdaters:\n\t\t\t" + enabledUpdaters.joinToString(separator = "\n\t\t\t") { updater ->
+                    "\nUpdaters:\n\t" + enabledUpdaters.joinToString(separator = "\n\t") { updater ->
                     "${updater.name} - ${updater.providers.joinToString(separator = ", ") { it.name }}"
                 }
             }
@@ -191,64 +197,71 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         updater.result = when {
             updater.provider.latestVersion == null -> {
                 plugin.log.warn {
-                    "No remote version found for plugin ${updater.name}" +
-                        "\n\t\tYou should contact the plugin author [${updater.pluginInstance?.description?.authors?.firstOrNull()}] about this!"
+                    """
+                        No remote version found for ${updater.name}
+                        You should contact the plugin author [${updater.pluginInstance?.description?.authors?.firstOrNull()}] about this!
+                    """.trimIndent()
                 }
                 UpdateResult.FAILED_NO_VERSION
             }
             updater.localVersion == Version.ERROR -> {
-                plugin.log.warn {
-                    "Couldn't get local version for ${updater.name} - ${updater.pluginInstance?.description?.version}"
-                }
+                plugin.log.warn { "Couldn't get local version for ${updater.name} - ${updater.pluginInstance?.description?.version}" }
                 UpdateResult.FAILED_VERSION
             }
             updater.localVersion >= updater.provider.latestVersion!! -> {
-                if (updaterConfig.announceDownloadProgress && !updater.sentInfo) {
-                    plugin.log.info {
-                        "The plugin ${updater.name} is up to date." +
-                            "\n\t\tLocal version: ${updater.localVersion}" +
-                            "\n\t\tRemote version: ${updater.provider.latestVersion}"
-                    }
-                    updater.sentInfo = true // Ensure we only send this once instead of spamming the console every time we check.
-                }
+                versionAppend("${updater.name} is up to date or ahead of the latest remote version!", updater)
                 UpdateResult.NO_UPDATE
             }
             updater.provider.providesMinecraftVersion -> {
                 if (isCompatible(updater)) {
-                    newVersionBlock(updater)
+                    versionAppend("An update for ${updater.name} is available!", updater)
                     UpdateResult.UPDATE_FOUND
                 } else {
                     UpdateResult.FAILED_VERSION_INCOMPATIBLE
                 }
             }
             else -> {
-                newVersionBlock(updater)
+                versionAppend("An update for ${updater.name} is available!", updater)
                 UpdateResult.UPDATE_FOUND
             }
         }
         return updater.result!!.isSuccessful
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun update(updater: PluginUpdater): UpdateResult = coroutineScope {
         try {
             log.debug { "Updating ${updater.name} with ${updater.provider.name}" }
             val hashGenerator = updater.provider.providesChecksum.instanceOrNull
             val downloadFile = updateFolder.resolve(updater.provider.latestFileName ?: error("No latest file name found!"))
+
+            val backup = deferredAsync { backupPlugin(updater).takeIf { it.name.startsWith("FAILED") } }
             updater.result = downloadFile(updater.provider, downloadFile, hashGenerator)
+            val hashCheck = deferredAsync { hashCheck(hashGenerator, downloadFile, updater.provider).takeIf { it.name.startsWith("FAILED") } }
 
-            val hashCheck = async { hashCheck(hashGenerator, downloadFile, updater.provider).takeIf { it.name.startsWith("FAILED") }?.let { updater.result = it } }
-            val backup = async { backupPlugin(updater).takeIf { it.name.startsWith("FAILED") }?.let { updater.result = it } }
-
-            val (file, _) = unzip(downloadFile).also { if (it.second.name.startsWith("FAILED")) updater.result = it.second }
-            readyPlugin(updater, file ?: downloadFile)
-
-            hashCheck.await()
             backup.await()
-            if (updater.result?.name?.startsWith("FAILED") != true) {
-                updater.result = UpdateResult.SUCCESS
-                enabledUpdaters -= updater
-                disabledUpdaters += updater
-                if (updaterConfig.announceDownloadProgress) log.info { "${updater.name} has been updated and readied for the next restart / reload." }
+            hashCheck.await()
+
+            when {
+                backup.getCompleted() != null -> {
+                    log.debug { "Backup failed for ${updater.name} with ${updater.provider.name}" }
+                    updater.result = UpdateResult.FAILED_BACKUP
+                }
+                hashCheck.getCompleted() != null -> {
+                    log.debug { "Hash check failed for ${updater.name} with ${updater.provider.name}" }
+                    updater.result = UpdateResult.FAILED_CHECKSUM
+                }
+                updater.result?.name?.startsWith("FAILED") == true -> {
+                    log.warn { "Update failed for ${updater.name} with reason ${updater.provider.name}" }
+                }
+                else -> {
+                    val (file, _) = unzip(downloadFile).also { if (it.second.name.startsWith("FAILED")) updater.result = it.second }
+                    readyPlugin(updater, file ?: downloadFile)
+                    updater.result = UpdateResult.SUCCESS
+                    enabledUpdaters -= updater
+                    disabledUpdaters += updater
+                    if (updaterConfig.announceDownloadProgress) log.info { "${updater.name} has been updated and readied for the next restart / reload." }
+                }
             }
         } catch (e: Exception) {
             updater.result = UpdateResult.FAILED_NO_FILE
@@ -283,7 +296,9 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
 
             if (updaterConfig.announceDownloadProgress) { log.info { "Started downloading update: ${provider.latestVersion}" } }
 
-            downloadWriter(inputStream, outputStream, fileLength)
+            withTimeout(15.seconds) {
+                downloadWriter(inputStream, outputStream, fileLength)
+            }
 
             UpdateResult.UPDATE_FOUND
         } catch (e: Exception) {
@@ -326,12 +341,14 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
 
         while (inputStream.read(buffer, 0, BUFFER_SIZE).also { count = it } != -1) {
             downloaded += count
+            log.debug { "Downloading: $downloaded/$size" }
             outputStream.write(buffer, 0, count)
 
             if (!updaterConfig.announceDownloadProgress || fileLength <= 0) continue
 
             progress = (downloaded * percentPerByte).toInt()
-            if (progress % 10 == 0 && progress > lastProgress) {
+            log.debug { "Progress: $progress%" }
+            if (progress % 10 != 0 && progress > lastProgress) {
                 lastProgress = progress
                 log.info { "Downloading update: $progress% ($size)" }
             }
@@ -368,12 +385,12 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         roundingMode = RoundingMode.CEILING
     }.format(bytes).toDouble()
 
-    private suspend fun hashCheck(
+    private fun hashCheck(
         hashGenerator: MessageDigest?,
         downloadFile: File,
         updateProvider: UpdateProvider
     ): UpdateResult {
-        if (hashGenerator != null && updateProvider.providesChecksum == ChecksumType.MD5) {
+        if (updateProvider.latestChecksum != null && hashGenerator != null && updateProvider.providesChecksum == ChecksumType.MD5) {
             val digest = hashGenerator.digest()
             val downloadMD5 = if (digest.isNotEmpty()) {
                 StringBuilder(digest.size * 2).apply {
@@ -386,8 +403,11 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
 
             if (downloadMD5 != targetMD5) {
                 plugin.log.warn {
-                    "The auto-updater was able to download the file, however the MD5 checksum was incorrect! Deleting file." +
-                        "\n\t\tMD5 checksum mismatch! Expected: $targetMD5, got: $downloadMD5"
+                    """
+                    The downloaded file for ${updateProvider.name} didn't match the expected checksum.
+                    Expected: $targetMD5
+                    Actual: $downloadMD5
+                    """.trimIndent()
                 }
                 if (downloadFile.delete()) {
                     plugin.log.info { "Deleted corrupted file." }
@@ -420,9 +440,10 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                 }
                 if (!gotFile) {
                     plugin.log.warn {
-                        "The auto-updater was able to download the zip file," +
-                            "\n\t\thowever it did not contain file matching the plugin regex: ${pattern.pattern}" +
-                            "\n\t\tThe zip file has been left in ${file.parentFile.absolutePath} for manual extraction."
+                        """
+                        Couldn't find a jar file in the zip file.
+                        The zip file has been left in ${file.parentFile.absolutePath} for manual extraction.
+                        """.trimIndent()
                     }
                 }
                 newFile to UpdateResult.SUCCESS
@@ -445,7 +466,6 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
 
         input.close()
         zipFile.close()
-
         return tempFile
     }
 
@@ -463,8 +483,10 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                     oldVersion = updater.localFile.substringAfterLast("/")
                 }
             }
-        } catch (e: Exception) {
-            log.error(e) { "There was an issue getting ${updater.name} ready for update!" }
+        } catch (e: ExposedSQLException) {
+            log.error(e) { "There was an error with the database while trying to prepare ${updater.name} for an update." }
+        } catch (e: IOException) {
+            log.error(e) { "There was an IO error while trying to prepare ${updater.name} for an update." }
         }
     }
 
@@ -479,11 +501,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         val data = Data(folder.size())
 
         if (data > updaterConfig.backups.maxSize) {
-            plugin.log.warn {
-                "The plugin folder for ${updater.name} is too large to backup!" +
-                    "\n\t\tCurrent size: ${data.humanReadableSize()}" +
-                    "\n\t\tMax size: ${updaterConfig.backups.maxSize.humanReadableSize()}"
-            }
+            plugin.log.warn { "${updater.name}'s data folder is too large to backup (${data.humanReadableSize()}" }
             return UpdateResult.FAILED_BACKUP
         }
 
@@ -517,13 +535,20 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
     }
 
     private fun isCompatible(updater: PluginUpdater): Boolean = try {
-        val versions = updater.provider.latestMinecraftVersions?.map { MCVersion[it] }
+        val versions = updater.provider.latestMinecraftVersions?.map { str ->
+            val version = str.replace(".", "_").let { "MC_$it" }
+            MCVersion.valueOf(version)
+        }
         val supported = versions?.any { MCVersion.currentVersion sameMajor it } ?: false
         if (!supported) {
-            log.info {
-                "Update found but it isn't compatible with the current Minecraft version." +
-                    "\n\t\tCurrent version: ${MCVersion.currentVersion.majorMinecraftVersion}" +
-                    "\n\t\tSupported versions: ${versions?.joinToString(", ")}"
+            plugin.log.info {
+                val builder = StringBuilder()
+                builder.append("An update for ${updater.name} is available, but it isn't compatible with the current version of Minecraft!")
+                if (updaterConfig.verbose) {
+                    builder.append("\nCurrent version: ${MCVersion.currentVersion}")
+                    builder.append("\nSupported versions: ${versions?.joinToString { it.toString() }}")
+                }
+                builder.toString()
             }
         }
         supported
@@ -533,12 +558,16 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         false
     }
 
-    private val newVersionBlock = { updater: PluginUpdater ->
+    private fun versionAppend(mainString: String, updater: PluginUpdater) {
         if (updaterConfig.announceDownloadProgress && !updater.sentAvailable) {
             plugin.log.info {
-                "The plugin ${updater.name} has a new version." +
-                    "\n\t\tLocal version: ${updater.localVersion}" +
-                    "\n\t\tRemote version: ${updater.provider.latestVersion}"
+                val builder = StringBuilder()
+                builder.append(mainString)
+                if (updaterConfig.verbose) {
+                    builder.append("\nLocal version: ${updater.localVersion.rawVersion}")
+                    builder.append("\nRemote version: ${updater.provider.latestVersion?.rawVersion}")
+                }
+                builder.toString()
             }
             updater.sentAvailable = true
         }

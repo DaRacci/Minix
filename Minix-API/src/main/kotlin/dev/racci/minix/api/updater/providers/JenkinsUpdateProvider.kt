@@ -116,14 +116,6 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
         jsonObj: JsonObject,
         result: UpdateFile
     ) {
-        logger.debug {
-            """
-                | Updater - ${result.name}
-                | Filename - ${result.fileName}
-                | Matches Regex - ${VERSION_PATTERN.matches(result.fileName!!)}
-            """.trimIndent()
-        }
-
         VERSION_PATTERN.matchEntire(result.fileName!!)?.let { matcher ->
             val versionBuilder = StringBuilder(matcher.groups["VersionString"]!!.value)
             versionBuilder.append("-T")
@@ -133,8 +125,8 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
                 .let(versionBuilder::append)
             versionBuilder.append("-b")
             versionBuilder.append(jsonObj["number"].asJsonPrimitive.asString)
-            logger.debug { "| Version - $versionBuilder" }
-            result.version = Version(versionBuilder.toString())
+            val version = Version(versionBuilder.toString())
+            result.version = version
         }
     }
 

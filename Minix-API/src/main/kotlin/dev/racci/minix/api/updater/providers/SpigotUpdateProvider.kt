@@ -30,12 +30,13 @@ class SpigotUpdateProvider(
 
     private var _lastResult: UpdateFile? = null
     private var downloadable = false
-    private var lastResult get() = _lastResult // ?: throw NotSuccessfullyQueriedException()
+    private var lastResult get() = _lastResult
         set(value) { _lastResult = value }
     override val latestFileName get() = lastResult?.fileName
-    override val latestFileURL: URL get() = lastResult?.downloadURL?.takeIf { downloadable } ?: throw RequestTypeNotAvailableException("The spigot update provider only allows to download resources hosted on spigotmc.org!")
+    override val latestFileURL: URL get() = lastResult?.downloadURL?.takeIf { downloadable }
+        ?: throw RequestTypeNotAvailableException("The spigot update provider only allows to download resources hosted on spigotmc.org!")
     override val latestMinecraftVersion get() = lastResult?.gameVersion
-    override val latestMinecraftVersions get() = lastResult?.gameVersions ?: throw RequestTypeNotAvailableException("The plugin does not provide a list of compatible minecraft versions!")
+    override val latestMinecraftVersions get() = lastResult?.gameVersions ?: emptyArray()
     override val latestName get() = lastResult?.name
     override val latestVersion get() = lastResult?.version
     override val name get() = "SpigotMC"

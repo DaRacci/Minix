@@ -11,6 +11,7 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.safeCast
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
@@ -52,15 +53,15 @@ inline fun <R> WithPlugin<*>.completableAsync(crossinline block: suspend () -> R
     return future
 }
 
-/** Returns a [CompletableDeferred] that is completed when suspended lambda is completed */
-inline fun <R> WithPlugin<*>.deferredSync(crossinline block: suspend () -> R): CompletableDeferred<R> {
+/** Returns a [Deferred] that is completed when suspended lambda is completed */
+inline fun <R> WithPlugin<*>.deferredSync(crossinline block: suspend () -> R): Deferred<R> {
     val deferred = CompletableDeferred<R>()
     sync { deferred.complete(block()) }.invokeOnCompletion { it?.let(deferred::completeExceptionally) }
     return deferred
 }
 
-/** Returns a [CompletableDeferred] that is completed when suspended lambda is completed */
-inline fun <R> WithPlugin<*>.deferredAsync(crossinline block: suspend () -> R): CompletableDeferred<R> {
+/** Returns a [Deferred] that is completed when suspended lambda is completed */
+inline fun <R> WithPlugin<*>.deferredAsync(crossinline block: suspend () -> R): Deferred<R> {
     val deferred = CompletableDeferred<R>()
     async { deferred.complete(block()) }.invokeOnCompletion { it?.let(deferred::completeExceptionally) }
     return deferred

@@ -10,9 +10,9 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
     ignoreTags: Boolean = false
 ) : Comparable<Version> {
 
-    private val rawVersion: String
     private val tags: List<String>
     private val version: IntArray
+    val rawVersion: String
     val timestamp: Long // TODO: use a Date object instead
     val buildNumber: Long
 

@@ -27,6 +27,9 @@ class UpdaterConfig {
     @Comment("What folder should we use for old files and backups?")
     var updateFolder: String = "MinixUpdater"
 
+    @Comment("Verbose information about the update process")
+    var verbose: Boolean = false
+
     @Comment("Should the auto-updater announce it's progress?")
     var announceDownloadProgress: Boolean = true
 

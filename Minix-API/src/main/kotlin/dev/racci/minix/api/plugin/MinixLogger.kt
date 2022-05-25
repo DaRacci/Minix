@@ -8,16 +8,17 @@ import java.util.logging.Level
 private val terminal by lazy { Terminal() }
 
 @Suppress("MemberVisibilityCanBePrivate")
-class MinixLogger(
+// TODO: Continue Indent for newlines
+open class MinixLogger(
     override val plugin: MinixPlugin,
 ) : WithPlugin<MinixPlugin> {
 
-    private val prefix by lazy { TextColors.gray("[${plugin.description.prefix}]") }
-    private val trace by lazy { TextColors.gray("[TRACE]") }
-    private val info by lazy { TextColors.gray("[INFO]") }
-    private val warn by lazy { TextColors.gray("[WARN]") }
-    private val error by lazy { TextColors.gray("[ERROR]") }
-    private val debug by lazy { TextColors.gray("[DEBUG]") }
+    private val prefix by lazy { TextColors.brightCyan("[${plugin.description.prefix}]") }
+    private val trace by lazy { TextColors.white("[TRACE]") }
+    private val info by lazy { TextColors.cyan("[INFO]") }
+    private val warn by lazy { TextColors.yellow("[WARN]") }
+    private val error by lazy { TextColors.red("[ERROR]") }
+    private val debug by lazy { TextColors.magenta("[DEBUG]") }
 
     val debugEnabled: Boolean
         get() =
@@ -143,16 +144,36 @@ class MinixLogger(
         colour: TextColors,
     ) {
         val builder = StringBuilder("$prefix $type ${TextColors.brightWhite("->")} ")
-        msg?.let { builder.append(colour(it)) }
-        throwable?.let { thrower ->
-            builder.append("\n\t\t" + TextColors.yellow(thrower::class.qualifiedName ?: "null") + TextColors.brightWhite(" -> "))
-            builder.append(thrower.localizedMessage ?: thrower.cause?.localizedMessage ?: thrower.cause?.cause?.localizedMessage ?: "No message.") // Support two layers or suppressed exceptions
-            if (debugEnabled) { // Only print the stack trace if debug is enabled
-                thrower.stackTrace.forEach {
-                    builder.append(TextColors.gray("\n\t\t\tat "))
-                    builder.append(TextColors.white("${it.className}.${it.methodName}"))
-                    builder.append(TextColors.yellow("(${it.fileName}:${it.lineNumber})"))
+        if (msg != null) {
+            val lines = msg.split("\n")
+            for ((index, line) in lines.withIndex()) {
+                if (index > 0) {
+                    builder.append("\n\t\t")
                 }
+                builder.append(colour(line))
+            }
+        }
+        throwable?.let { thrower ->
+
+            builder.append("\n")
+                .append(TextColors.yellow(thrower::class.qualifiedName ?: "null"))
+                .append(TextColors.brightWhite(" -> "))
+                .append(thrower.localizedMessage ?: thrower.cause?.localizedMessage ?: thrower.cause?.cause)
+
+            var cause: Throwable? = thrower
+            while (cause != null) {
+                builder.append("\n\t\t" + TextColors.yellow(thrower::class.qualifiedName ?: "null") + TextColors.brightWhite(" -> "))
+                builder.append(thrower.localizedMessage)
+
+                if (debugEnabled) {
+                    cause.stackTrace.forEach {
+                        builder.append(TextColors.gray("\n\t\t\tat "))
+                        builder.append(TextColors.white("${it.className}.${it.methodName}"))
+                        builder.append(TextColors.yellow("(${it.fileName}:${it.lineNumber})"))
+                    }
+                }
+
+                cause = cause.cause
             }
         }
         terminal.println(builder)

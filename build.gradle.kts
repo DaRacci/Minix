@@ -52,6 +52,8 @@ allprojects {
         testImplementation(rootProject.libs.bundles.testing) { exclude("org.jetbrains.kotlin") }
         testImplementation(rootProject.libs.bundles.kotlin)
         testImplementation(rootProject.libs.bundles.kotlinx)
+        testImplementation("org.mockito:mockito-inline:4.+")
+        testImplementation("org.mockito.kotlin:mockito-kotlin:4.+")
     }
 
     tasks {

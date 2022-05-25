@@ -16,11 +16,11 @@ import dev.racci.minix.api.services.UpdaterService
 import dev.racci.minix.api.updater.ChecksumType
 import dev.racci.minix.api.updater.UpdateMode
 import dev.racci.minix.api.updater.UpdateResult
+import dev.racci.minix.api.updater.Version
 import dev.racci.minix.api.updater.providers.NotSuccessfullyQueriedException
 import dev.racci.minix.api.updater.providers.NullUpdateProvider
 import dev.racci.minix.api.updater.providers.RequestTypeNotAvailableException
 import dev.racci.minix.api.updater.providers.UpdateProvider
-import dev.racci.minix.api.utils.Closeable
 import dev.racci.minix.api.utils.data.Data
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.minecraft.MCVersion
@@ -34,11 +34,8 @@ import io.ktor.client.statement.bodyAsChannel
 import io.ktor.client.statement.discardRemaining
 import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import org.bukkit.event.server.PluginDisableEvent
@@ -198,6 +195,12 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                         "\n\t\tYou should contact the plugin author [${updater.pluginInstance?.description?.authors?.firstOrNull()}] about this!"
                 }
                 UpdateResult.FAILED_NO_VERSION
+            }
+            updater.localVersion == Version.ERROR -> {
+                plugin.log.warn {
+                    "Couldn't get local version for ${updater.name} - ${updater.pluginInstance?.description?.version}"
+                }
+                UpdateResult.FAILED_VERSION
             }
             updater.localVersion >= updater.provider.latestVersion!! -> {
                 if (updaterConfig.announceDownloadProgress && !updater.sentInfo) {

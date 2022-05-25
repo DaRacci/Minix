@@ -1,5 +1,6 @@
 package dev.racci.minix.api.data
 
+import dev.racci.minix.api.plugin.MinixLogger
 import dev.racci.minix.api.services.UpdaterService
 import dev.racci.minix.api.updater.UpdateMode
 import dev.racci.minix.api.updater.UpdateResult
@@ -43,16 +44,25 @@ class PluginUpdater {
                     sentInfo = false
                     sentAvailable = false
                 } else {
-                    getKoin().get<UpdaterService>().apply {
-                        enabledUpdaters -= this@PluginUpdater
-                        disabledUpdaters += this@PluginUpdater
-                    }
+                    UpdaterService.enabledUpdaters -= this
+                    UpdaterService.disabledUpdaters += this
                 }
             }
         }
     @Transient var pluginInstance: Plugin? = null
     @Transient var lastRun: Instant? = null
-    val localVersion: Version get() = Version(pluginInstance!!.description.version) // By the time these are called the instance should be set.
+    @Transient private var _localVersion: Version? = null
+    val localVersion: Version get() {
+        if (_localVersion == null) {
+            _localVersion = try {
+                Version(pluginInstance!!.description.version)
+            } catch (e: Version.InvalidVersionStringException) {
+                getKoin().get<MinixLogger>().warn(e) { "The version string of ${pluginInstance!!.description.name} couldn't be matched." }
+                Version.ERROR
+            }
+        }
+        return _localVersion!!
+    }
     val localFile: String get() = pluginInstance!!::class.java.protectionDomain.codeSource.location.file
     @Transient var result: UpdateResult? = null
         set(value) {

@@ -79,5 +79,10 @@ enum class UpdateResult(val isSuccessful: Boolean = false) {
     /**
      * The updater was unable to backup the plugin folder.
      */
-    FAILED_BACKUP
+    FAILED_BACKUP,
+
+    /**
+     * The updater was unable to get a local version.
+     */
+    FAILED_VERSION
 }

@@ -111,61 +111,80 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
     ) : this("$majorVersion.$minorVersion.$patchVersion")
 
     init {
-        try {
-            val matcher = versionStringRegex.matchEntire(rawVersion) ?: throw InvalidVersionStringException()
-            val version = matcher.groups["version"]!!.value.replace(unimportantVersionRegex, "")
+        if (rawVersion != "ERROR") {
+            this.rawVersion = rawVersion
+            this.version = IntArray(3) { 0 }
+            this.buildNumber = -1
+            this.timestamp = -1
+            this.tags = emptyArray()
+        } else {
+            try {
+                val matcher = versionStringRegex.matchEntire(rawVersion)
+                    ?: throw InvalidVersionStringException()
+                val version = matcher.groups["version"]!!.value.replace(unimportantVersionRegex, "")
+                val tags = matcher.groups["tags"]!!.value.split("-")
+                    .toTypedArray()
+                val comps = version.split(".")
+                    .toTypedArray()
+                val tagsList = if (ignoreTags) emptyList() else getAll(tags, preReleaseTags)
+                val notFinalVersion = tagsList.isNotEmpty()
 
-            val tags = matcher.groups["tags"]!!.value.split("-").toTypedArray()
-            val comps = version.split(".").toTypedArray()
-            val tagsList = if (ignoreTags) emptyList() else getAll(tags, preReleaseTags)
-            val notFinalVersion = tagsList.isNotEmpty()
+                this.rawVersion = rawVersion.takeUnless { it.startsWith("v", true) }
+                    ?: rawVersion.substring(1)
+                this.version = IntArray(
+                    comps.size.takeUnless { notFinalVersion }
+                        ?: (comps.size + 1)
+                )
+                this.buildNumber = getBuildParameter(tags, "(b|build(number)?)")
+                this.timestamp = getBuildParameter(tags, "(t|ts|time(stamp)?)")
+                this.tags = tags
 
-            this.rawVersion = rawVersion.takeUnless { it.startsWith("v", true) } ?: rawVersion.substring(1)
-            this.version = IntArray(comps.size.takeUnless { notFinalVersion } ?: (comps.size + 1))
-            this.buildNumber = getBuildParameter(tags, "(b|build(number)?)")
-            this.timestamp = getBuildParameter(tags, "(t|ts|time(stamp)?)")
-            this.tags = tags
-
-            getKoin().get<MinixLogger>().info {
-                """
+                getKoin().get<MinixLogger>()
+                    .info {
+                        """
                     | Raw version: $rawVersion
                     | Version: $version
                     | Tags: ${tags.joinToString(", ")}
                     | Build number: $buildNumber
                     | Timestamp: $timestamp
-                """.trimIndent()
-            }
-
-            comps.indices.forEach { this.version[it] = comps[it].toInt() }
-
-            if (notFinalVersion) {
-                isPreRelease = true
-                var last = 0
-                for (string in tagsList) {
-                    if (last == 0) last = Int.MAX_VALUE
-                    var tagNumber = 0
-                    var tag = string.lowercase()
-                    preReleaseTagRegex.find(tag).invokeIfNotNull { result ->
-                        tagNumber = result.groups["number"]!!.value.toInt()
-                        tag = result.groups["tag"]!!.value
+                        """.trimIndent()
                     }
-                    last = last - preReleaseTagResolution[tag]!! + tagNumber
-                }
-                this.version[(version.lastIndex - 1).coerceAtLeast(0)] = last
-                if (last > 0) {
-                    for (i in this.version.size - 2 downTo 0) {
-                        if (this.version[i] > 0 || i == 0) {
-                            this.version[i]--
-                            break
+
+                comps.indices.forEach { this.version[it] = comps[it].toInt() }
+
+                if (notFinalVersion) {
+                    isPreRelease = true
+                    var last = 0
+                    for (string in tagsList) {
+                        if (last == 0) last = Int.MAX_VALUE
+                        var tagNumber = 0
+                        var tag = string.lowercase()
+                        preReleaseTagRegex.find(tag)
+                            .invokeIfNotNull { result ->
+                                tagNumber = result.groups["number"]!!.value.toInt()
+                                tag = result.groups["tag"]!!.value
+                            }
+                        last = last - preReleaseTagResolution[tag]!! + tagNumber
+                    }
+                    this.version[(version.lastIndex - 1).coerceAtLeast(0)] = last
+                    if (last > 0) {
+                        for (i in this.version.size - 2 downTo 0) {
+                            if (this.version[i] > 0 || i == 0) {
+                                this.version[i]--
+                                break
+                            }
                         }
                     }
                 }
+            } catch (e: Exception) {
+                throw InvalidVersionStringException("Couldn't create version from $rawVersion\n\t\t\t\t$e")
             }
-        } catch (e: Exception) { throw InvalidVersionStringException(e.message) }
+        }
     }
 
     companion object {
 
+        val ERROR = Version(0, 0, 0)
         val unimportantVersionRegex by lazy { Regex("(\\.0)*$") }
         val preReleaseTagResolution: MutableMap<String, Int> = ConcurrentHashMap()
         val preReleaseTagRegex by lazy { Regex("(?<tag>\\w+)\\.?(?<number>\\d+)") }

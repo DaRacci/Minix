@@ -1,12 +1,14 @@
 package dev.racci.minix.api.utils.minecraft
 
 import dev.racci.minix.api.extensions.server
-import dev.racci.minix.api.plugin.Minix
+import dev.racci.minix.api.plugin.MinixLogger
 import dev.racci.minix.api.utils.getKoin
 import kotlinx.atomicfu.atomic
 import kotlinx.collections.immutable.toImmutableList
 import org.bukkit.Bukkit
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.typeOf
 
 class MCVersion private constructor(
     val name: String,
@@ -105,17 +107,21 @@ class MCVersion private constructor(
         private val nameMap = mutableMapOf<String, MCVersion>()
         private val protocolMap = mutableMapOf<Int, MCVersion>()
         private val nmsMap = mutableMapOf<String, MCVersion>()
-        val currentVersion: MCVersion = run {
-            val result = Regex("\\(MC: (?<version>\\d.\\d+(.\\d+)?)\\)").matchEntire(Bukkit.getVersion())
+        val currentVersion: MCVersion by lazy {
+            val result = Regex("\\(MC: (?<version>\\d(.\\d{1,5}){1,2})\\)\$").find(Bukkit.getVersion())
             var version: MCVersion = UNKNOWN
             if (result != null) {
-                version = valueOf(result.groups["version"]!!.value)
+                val versionString = result.groups["version"]!!.value
+                    .replace(".", "_")
+                    .let { "MC_$it" }
+                version = valueOf(versionString)
             }
             if (version === UNKNOWN) {
-                nmsMap.keys.find { server::class.java.name.split("\\.")[3] in it }?.let { version = valueOf(it) }
+                val fqn = server::class.qualifiedName!!.split('.')[3]
+                nmsMap.keys.find { fqn in it }?.let { version = valueOf(it) }
             }
             if (version === UNKNOWN) {
-                getKoin().get<Minix>().log.error { "Failed to obtain a server version!" }
+                getKoin().get<MinixLogger>().error { "Failed to obtain a server version!" }
             }
             version
         }
@@ -229,5 +235,11 @@ class MCVersion private constructor(
         val MC_NMS_1_18_R2 by MCVersionDelegate(122, 758)
         val MC_1_19 by MCVersionDelegate(131, Int.MAX_VALUE)
         val MC_NMS_1_19_R1 by MCVersionDelegate(131, Int.MAX_VALUE)
+
+        init {
+            this::class.declaredMemberProperties
+                .filter { it.returnType == typeOf<MCVersion>() }
+                .forEach { it.getter.call(this) }
+        }
     }
 }

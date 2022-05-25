@@ -100,5 +100,8 @@ internal class VersionTest : KoinTest {
         v1 = Version("5.4.5-T200")
         v2 = Version("5.4.5-T201")
         assertTrue { v1 < v2 }
+        v1 = Version("5.4.5-SNAPSHOT")
+        v2 = Version("5.4.4")
+        assertTrue { v1 > v2 }
     }
 }

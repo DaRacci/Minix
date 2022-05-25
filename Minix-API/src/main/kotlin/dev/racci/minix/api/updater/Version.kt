@@ -49,11 +49,6 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
         if (other === ERROR) return 1
         if (this === ERROR) return -1
 
-        when {
-            isPreRelease && !other.isPreRelease -> return -1
-            !isPreRelease && other.isPreRelease -> return 1
-        }
-
         val c = version.size.coerceAtMost(other.version.size)
 
         repeat(c) {
@@ -61,6 +56,11 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
                 other.version[it] > version[it] -> return -1
                 version[it] > other.version[it] -> return 1
             }
+        }
+
+        when {
+            isPreRelease && !other.isPreRelease -> return -1
+            !isPreRelease && other.isPreRelease -> return 1
         }
 
         if (version.size != other.version.size) { // If both version are the different length, the version that has more digits (>0) probably is the newer one.

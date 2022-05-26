@@ -50,3 +50,6 @@ fun Location.playSound(
     volume: Float,
     pitch: Float
 ) = world.playSound(this, sound, volume, pitch)
+
+val Location.isDay: Boolean get() = world.isDayTime
+val Location.isNight: Boolean get() = !isDay

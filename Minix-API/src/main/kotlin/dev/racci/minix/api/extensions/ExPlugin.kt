@@ -10,7 +10,6 @@ import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.safeCast
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job

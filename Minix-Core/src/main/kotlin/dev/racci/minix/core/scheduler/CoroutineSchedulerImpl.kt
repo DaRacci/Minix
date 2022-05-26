@@ -42,8 +42,8 @@ class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), C
             return newFixedThreadPoolContext(threadCount, "Coroutine Scheduler Thread")
         }
 
-        override fun close() {
-            value?.close()
+        override fun onClose() {
+            value.value?.close()
         }
     }
 

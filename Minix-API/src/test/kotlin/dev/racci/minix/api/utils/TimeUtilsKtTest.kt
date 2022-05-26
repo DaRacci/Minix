@@ -21,4 +21,10 @@ internal class TimeUtilsKtTest {
             .isEqualTo(duration.inWholeMilliseconds / 50)
             .isEqualTo(1)
     }
+
+    @Test
+    fun `100 milliseconds is 5 ticks`() {
+        expectThat(100.milliseconds.ticks)
+            .isEqualTo(5)
+    }
 }

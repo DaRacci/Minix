@@ -53,7 +53,7 @@ abstract class Loadable<T> {
     abstract fun onLoad(): T
 
     /** The function to be called when the value is to be unloaded. */
-    abstract fun onUnload()
+    open fun onUnload() {}
 
     /**
      * Attempts to load the value of this loadable.

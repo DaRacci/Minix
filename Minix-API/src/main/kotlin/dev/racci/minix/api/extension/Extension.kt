@@ -4,19 +4,19 @@ import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.extensions.SimpleKListener
 import dev.racci.minix.api.extensions.WithPlugin
-import dev.racci.minix.api.extensions.inWholeTicks
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.companionParent
+import dev.racci.minix.api.utils.now
 import dev.racci.minix.api.utils.unsafeCast
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
-import net.minecraft.world.entity.ai.memory.ExpirableValue
+import kotlinx.datetime.Instant
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.qualifier.Qualifier
@@ -83,15 +83,15 @@ abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin
      * @see [DataService.Companion]
      */
     abstract class ExtensionCompanion<E : Extension<*>> {
-        private var cached: ExpirableValue<E>? = null
+        private var cached: Pair<E, Instant>? = null
 
         operator fun getValue(thisRef: ExtensionCompanion<E>, property: KProperty<*>): E = thisRef.getService()
 
         fun getService(): E {
-            if (cached == null || cached!!.hasExpired()) {
-                cached = ExpirableValue.of(getKoin().get<E>(getParent()), 15.seconds.inWholeTicks)
+            if (cached == null || (cached!!.second + 5.seconds) < now()) {
+                cached = Pair(getKoin().get(getParent()), now())
             }
-            return cached!!.value
+            return cached!!.first
         }
 
         fun inject(): Lazy<E> = lazy { getKoin().get(getParent()) }

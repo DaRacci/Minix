@@ -1,16 +1,24 @@
 package dev.racci.minix.api.utils
 
 import dev.racci.minix.api.utils.kotlin.catchAndReturn
+import kotlinx.atomicfu.AtomicBoolean
+import kotlinx.atomicfu.AtomicRef
+import kotlinx.atomicfu.atomic
 
+/**
+ * A slighter more complicated and more advanced version of [Closeable]
+ *
+ * @param T the type of the object to be loaded
+ */
 abstract class Loadable<T> {
 
-    protected var initialized: Boolean = false
+    protected val initialized: AtomicBoolean = atomic(false)
 
-    var value: T? = null
+    val value: AtomicRef<T?> = atomic(null)
 
-    val failed: Boolean get() = value == null && initialized
-    val loaded: Boolean get() = value != null && initialized
-    val unloaded: Boolean get() = value != null && !initialized
+    val failed: Boolean get() = value.value == null && initialized.value
+    val loaded: Boolean get() = value.value != null && initialized.value
+    val unloaded: Boolean get() = value.value != null && !initialized.value
     val state: State get() = when {
         unloaded -> State.UNLOADED
         loaded -> State.LOADED
@@ -24,13 +32,13 @@ abstract class Loadable<T> {
      * If there is an exception thrown, or [predicateLoadable] returns false this will return null.
      *
      * @param force Should we ignore what [predicateLoadable] returns
-     * @return
+     * @return the value of this loadable if it is loaded, or null if it isn't loaded
      */
     fun get(force: Boolean = false): T? {
         return when (state) {
-            State.LOADED -> value!!
+            State.LOADED -> value.value
             State.FAILED -> null
-            State.UNLOADED, State.LOADABLE -> { load(force); value }
+            State.UNLOADED, State.LOADABLE -> { load(force); value.value }
         }
     }
 
@@ -41,29 +49,36 @@ abstract class Loadable<T> {
      */
     protected open fun predicateLoadable(): Boolean = true
 
-    /**
-     * The function to be called when the value is to be loaded.
-     */
-    abstract fun doLoad(): T
+    /** The function to be called when the value is to be loaded. */
+    abstract fun onLoad(): T
+
+    /** The function to be called when the value is to be unloaded. */
+    abstract fun onUnload()
 
     /**
-     * The function to be called when the value is to be unloaded.
+     * Attempts to load the value of this loadable.
+     *
+     * @param force If we should try to load the value even if it is already loaded
+     * @return The previous value if it was already loaded, the old value if it was loaded but forced, or null.
      */
-    abstract fun doUnload()
+    fun load(force: Boolean = false): T? {
+        if (!force && (initialized.value || !predicateLoadable())) return value.value
 
-    fun load(force: Boolean = false) {
-        if (!force && (initialized || !predicateLoadable())) return
-
-        initialized = true
-        value = catchAndReturn<Throwable, T> { doLoad() }
+        initialized.lazySet(true)
+        return value.getAndSet(catchAndReturn<Throwable, T> { onLoad() }) ?: value.value
     }
 
-    fun unload() {
+    /**
+     * Attempts to unload the value of this loadable.
+     *
+     * @return True if the value was previously loaded, false otherwise.
+     */
+    fun unload(): Boolean {
         if (loaded) {
-            doUnload()
+            onUnload()
         }
 
-        initialized = false
+        return initialized.getAndSet(false)
     }
 
     enum class State {

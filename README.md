@@ -6,10 +6,10 @@
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/DaRacci/Minix/Java%20CI?color=purple&style=for-the-badge)](https://github.com/DaRacci/Minix/actions/workflows/java-ci.yml)
 [![Maven metadata URL](https://img.shields.io/maven-metadata/v?color=purple&metadataUrl=https%3A%2F%2Frepo.racci.dev%2Freleases%2Fdev%2Fracci%2FMinix%2Fmaven-metadata.xml&style=for-the-badge)]()
 
-[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/DaRacci/Minix?color=purple&style=for-the-badge)]()
-[![Maintainability](https://img.shields.io/codeclimate/maintainability/DaRacci/Minix?color=purple&style=for-the-badge)]()
-[![Lines](https://img.shields.io/tokei/lines/github/DaRacci/Minix?color=purple&style=for-the-badge)]()
-[![Code Climate issues](https://img.shields.io/codeclimate/issues/DaRacci/Minix?color=purple&style=for-the-badge)]()
+[![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/DaRacci/Minix?color=purple&style=for-the-badge)](https://www.codefactor.io/repository/github/daracci/minix)
+[![Maintainability](https://img.shields.io/codeclimate/maintainability/DaRacci/Minix?color=purple&style=for-the-badge)](https://codeclimate.com/github/DaRacci/Minix/)
+[![Lines](https://img.shields.io/tokei/lines/github/DaRacci/Minix?color=purple&style=for-the-badge)]
+[![Code Climate issues](https://img.shields.io/codeclimate/issues/DaRacci/Minix?color=purple&style=for-the-badge)](https://codeclimate.com/github/DaRacci/Minix/)
 
 [![Servers](https://img.shields.io/bstats/servers/13706?color=purple&style=for-the-badge)](https://bstats.org/plugin/bukkit/Minix/13706)
 [![Players](https://img.shields.io/bstats/players/13706?color=purple&style=for-the-badge)](https://bstats.org/plugin/bukkit/Minix/13706)

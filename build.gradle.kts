@@ -49,11 +49,18 @@ allprojects {
     apply(plugin = "org.jetbrains.dokka")
 
     dependencies {
-        testImplementation(rootProject.libs.bundles.testing) { exclude("org.jetbrains.kotlin") }
+        testImplementation(platform(kotlin("bom")))
         testImplementation(rootProject.libs.bundles.kotlin)
         testImplementation(rootProject.libs.bundles.kotlinx)
-        testImplementation("org.mockito:mockito-inline:4.+")
-        testImplementation("org.mockito.kotlin:mockito-kotlin:4.+")
+        testImplementation(rootProject.libs.bundles.testing)
+        testImplementation(rootProject.libs.minecraft.bstats)
+        testImplementation("io.insert-koin:koin-test:3.+")
+        testImplementation("io.insert-koin:koin-test-junit5:3.+")
+        testImplementation("io.mockk:mockk:1.12.4")
+    }
+
+    configurations {
+        testImplementation.get().exclude("org.jetbrains.kotlin", "kotlin-test-junit")
     }
 
     tasks {

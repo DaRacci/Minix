@@ -6,6 +6,15 @@ import java.nio.file.Path
 
 object FileSystemUtils : UtilObject by UtilObject {
 
+    /**
+     * Calculates the size of a file / directory.
+     * If the file / directory does not exist, 0 is returned.
+     * This can hang if there are too many nested directories, so it is recommended to use a WithTimeout wrapper around this method.
+     *
+     * @param file The file / directory to calculate the size of.
+     * @param maxDepth The maximum depth of nested directories to calculate the size of.
+     * @return The size of the file / directory.
+     */
     fun size(
         file: File,
         maxDepth: Int = Int.MAX_VALUE
@@ -44,6 +53,8 @@ object FileSystemUtils : UtilObject by UtilObject {
     }
 }
 
+/** @see [FileSystemUtils.size] */
 fun Path.size(): Long = FileSystemUtils.size(this.toFile())
 
+/** @see [FileSystemUtils.size] */
 fun File.size(): Long = FileSystemUtils.size(this)

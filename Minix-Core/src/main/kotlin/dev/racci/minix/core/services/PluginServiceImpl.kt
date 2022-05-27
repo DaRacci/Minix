@@ -408,14 +408,16 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         extensions: MutableList<Extension<MinixPlugin>>,
         error: Throwable? = null
     ) {
-        val dependents = extensions(extensions, arrayListOf())
+        val dependents = getAllDependents(this, extensions.reversed(), hashSetOf())
+        dependents.forEach { it.setState(ExtensionState.FAILED_DEPENDENCIES) }
+
         log.error(error) {
             val builder = StringBuilder()
             builder.append("There was an error while loading / enabling extension ${this::class.getFullName()}!")
-            builder.append("\n\t\tThis is not a fatal error, but it may cause other extensions to fail to load.")
+            builder.append("\nThis is not a fatal error, but it may cause other extensions to fail to load.")
             if (dependents.isNotEmpty()) {
-                builder.append("\n\t\tThese extensions will not be loaded:")
-                dependents.forEach { builder.append("\n\t\t\t${it.name}") }
+                builder.append("\nThese extensions will not be loaded:")
+                dependents.forEach { builder.append("\n\t${it.name}") }
             }
             builder.toString()
         }
@@ -467,6 +469,28 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                 cache.unloadedExtensions += ex
             }
             true
+        }
+    }
+
+    companion object {
+
+        fun Extension<*>.dependsOn(other: Extension<*>): Boolean {
+            if (this.dependencies.isEmpty()) return false
+            return this.dependencies.any { it == other.bindToKClass || it == other::class }
+        }
+
+        fun getAllDependents(
+            requiredExt: Extension<*>,
+            allExtensions: List<Extension<MinixPlugin>>,
+            currentDependents: HashSet<Extension<*>>
+        ): HashSet<Extension<*>> {
+            for (extension in allExtensions) {
+                if (extension.dependsOn(requiredExt) && extension !in currentDependents) {
+                    currentDependents += extension
+                    currentDependents += getAllDependents(extension, allExtensions, currentDependents)
+                }
+            }
+            return currentDependents
         }
     }
 }

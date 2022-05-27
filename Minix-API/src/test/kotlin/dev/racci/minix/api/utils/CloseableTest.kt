@@ -1,5 +1,6 @@
 package dev.racci.minix.api.utils
 
+import kotlinx.atomicfu.AtomicRef
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -30,6 +31,6 @@ internal class CloseableTest {
     @Test
     fun `closeable should false once closed`() {
         closeable!!.close()
-        assertNull(closeable!!::class.memberProperties.first { it.name == "value" }.also { it.isAccessible = true }.call(closeable!!))
+        assertNull(closeable!!::class.memberProperties.first { it.name == "value" }.also { it.isAccessible = true }.call(closeable!!).unsafeCast<AtomicRef<*>>().value)
     }
 }

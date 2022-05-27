@@ -23,8 +23,8 @@ internal class TimeUtilsKtTest {
     }
 
     @Test
-    fun `100 milliseconds is 5 ticks`() {
-        expectThat(100.milliseconds.ticks)
+    fun `250 milliseconds is 5 ticks`() {
+        expectThat(250.milliseconds.ticks)
             .isEqualTo(5)
     }
 }

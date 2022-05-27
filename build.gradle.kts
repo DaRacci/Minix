@@ -57,6 +57,7 @@ allprojects {
         testImplementation("io.insert-koin:koin-test:3.+")
         testImplementation("io.insert-koin:koin-test-junit5:3.+")
         testImplementation("io.mockk:mockk:1.12.4")
+        testImplementation(project(":Minix-API"))
     }
 
     configurations {

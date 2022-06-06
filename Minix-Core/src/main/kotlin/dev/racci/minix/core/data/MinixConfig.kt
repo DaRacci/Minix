@@ -17,7 +17,7 @@ class MinixConfig {
     @Comment("This server unique uuid (Please don't change this)")
     var serverUUID: UUID = UUID.randomUUID()
 
-    @Comment("What log level should be used?")
+    @Comment("What log level should be used? [OFF, SEVERE, WARNING, INFO, FINE, ALL]")
     var loggingLevel: Level = Level.INFO
         set(value) {
             field = value

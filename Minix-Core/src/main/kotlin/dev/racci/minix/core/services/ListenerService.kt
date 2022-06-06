@@ -241,10 +241,7 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
             .toCenterLocation()
             .getNearbyEntitiesByType(Player::class.java, 0.5, 0.5) {
                 !it.isDead || it.location.block.liquidType == new || PlayerServiceImpl.getService()[it.uniqueId].liquidType == new // Don't trigger if the player is dead or already in that liquid type
-            }.takeUnless(Collection<*>::isEmpty) ?: return log.debug { "No nearby players" }
-
-        log.debug { "Found nearby players ${nearby.toMutableList().joinToString(", ") { it.name }}" }
-        log.debug { "LiquidType: $new" }
+            }.takeUnless(Collection<*>::isEmpty) ?: return
 
         plugin.launchAsync {
             for (player in nearby) {

@@ -2,6 +2,7 @@ package dev.racci.minix.core.services
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
+import com.github.benmanes.caffeine.cache.RemovalCause
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.racci.minix.api.annotations.MappedConfig
@@ -56,8 +57,8 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         }
 
     override val configurations: LoadingCache<KClass<*>, Pair<Any, CommentedConfigurationNode>> = Caffeine.newBuilder()
-        .removalListener<KClass<*>, Pair<Any, CommentedConfigurationNode>> { key, value, _ ->
-            if (key == null || value == null) return@removalListener
+        .removalListener<KClass<*>, Pair<Any, CommentedConfigurationNode>> { key, value, cause ->
+            if (key == null || value == null || cause == RemovalCause.REPLACED) return@removalListener
             log.info { "Saving and disposing configurate class ${key.simpleName}" }
 
             val (config, node) = value

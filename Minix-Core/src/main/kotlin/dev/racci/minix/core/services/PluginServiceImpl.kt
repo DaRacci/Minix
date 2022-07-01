@@ -105,7 +105,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                 }
             }
 
-            loadModule { single { plugin } bind (plugin.bindToKClass ?: plugin::class) }
+            loadModule { single { plugin } bind (plugin.bindToKClass ?: plugin::class).unsafeCast() }
             plugin.invokeIfOverrides(SusPlugin::handleLoad.name) { plugin.handleLoad() }
             plugin.loadReflection()
             pluginCache[plugin].extensions.ifNotEmpty { plugin.loadInOrder() }
@@ -464,7 +464,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                     } else log.error(e) { "Extension ${ex.name} through an error while unloading!" }
                     ex.setState(ExtensionState.FAILED_UNLOADING)
                 }
-                unloadKoinModules(module { single { ex } bind (ex.bindToKClass ?: ex::class) })
+                unloadKoinModules(module { single { ex } bind (ex.bindToKClass ?: ex::class).unsafeCast() })
                 ex.setState(ExtensionState.UNLOADED)
                 cache.unloadedExtensions += ex
             }

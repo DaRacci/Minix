@@ -32,7 +32,7 @@ bukkit {
     name = "Minix"
     prefix = "Minix"
     author = "Racci"
-    apiVersion = "1.18"
+    apiVersion = "1.19"
     version = rootProject.version.toString()
     main = "dev.racci.minix.core.MinixImpl"
     load = PluginLoadOrder.STARTUP

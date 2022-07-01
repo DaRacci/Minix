@@ -43,7 +43,7 @@ class ShapedRecipeIngredients(
                             Tag.REGISTRY_BLOCKS,
                             NamespacedKey.minecraft(ingredient.tag),
                             Material::class.java
-                        )
+                        )!!
                     )
                 )
             } else {

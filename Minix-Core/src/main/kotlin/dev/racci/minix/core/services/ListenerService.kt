@@ -23,7 +23,7 @@ import dev.racci.minix.api.utils.unsafeCast
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.Block
-import org.bukkit.craftbukkit.v1_18_R2.block.impl.CraftFluids
+import org.bukkit.craftbukkit.v1_19_R1.block.impl.CraftFluids
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority

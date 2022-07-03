@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.0.1](https://github.com/DaRacci/Minix/compare/v3.0.0..v3.0.1) - 2022-07-03
+#### Bug Fixes
+- eco fucking around with non relocated libs - ([92a7e5b](https://github.com/DaRacci/Minix/commit/92a7e5b931cb91e98b47974b1b5b8c2a15fe7510)) - [@DaRacci](https://github.com/DaRacci)
+- mordant - ([bd0ae76](https://github.com/DaRacci/Minix/commit/bd0ae76830cc01bee53d9905723c06acbad3418a)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.0.0 - ([9b88d21](https://github.com/DaRacci/Minix/commit/9b88d2114b3a2ddc9e1a9d2c55a0f3a1fb1396ee)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.0.0](https://github.com/DaRacci/Minix/compare/v2.10.1..v3.0.0) - 2022-07-03
 #### Bug Fixes
 - **(DataService)** hot reloading config - ([00d290f](https://github.com/DaRacci/Minix/commit/00d290fb84313a233b36e53ad0de860d6f49da4b)) - [@DaRacci](https://github.com/DaRacci)

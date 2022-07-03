@@ -2,6 +2,80 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.0.0](https://github.com/DaRacci/Minix/compare/v2.10.1..v3.0.0) - 2022-07-03
+#### Bug Fixes
+- **(DataService)** hot reloading config - ([00d290f](https://github.com/DaRacci/Minix/commit/00d290fb84313a233b36e53ad0de860d6f49da4b)) - [@DaRacci](https://github.com/DaRacci)
+- **(service)** Unmap CommandService as its unused for now - ([62c343e](https://github.com/DaRacci/Minix/commit/62c343e6bc05fc9f74c544a173a4bd4ea556ba88)) - [@DaRacci](https://github.com/DaRacci)
+- **(test)** check atomic refs value is null not the atomic itself - ([2221031](https://github.com/DaRacci/Minix/commit/222103168e24cac10d0196227ffb64337c870550)) - [@DaRacci](https://github.com/DaRacci)
+- 5 ticks is 250ms not 100 oops - ([1d84dda](https://github.com/DaRacci/Minix/commit/1d84ddae3567c21be1685a8b5f66d401ca72c207)) - [@DaRacci](https://github.com/DaRacci)
+- fix static versions - ([82f070e](https://github.com/DaRacci/Minix/commit/82f070e1029ce508cec4be14f0400417599bee42)) - [@DaRacci](https://github.com/DaRacci)
+- snapshot ordering - ([1fb5b8d](https://github.com/DaRacci/Minix/commit/1fb5b8d4d53cb7358fa3c82b34a6efac582cc865)) - [@DaRacci](https://github.com/DaRacci)
+- unused param - ([62373c8](https://github.com/DaRacci/Minix/commit/62373c85e97f75b03d362a2d824bedfe17e8602f)) - [@DaRacci](https://github.com/DaRacci)
+- so much refactoring and fixing - ([ee01e58](https://github.com/DaRacci/Minix/commit/ee01e5807f6a62d608212919336d6a3dbb5df2bf)) - [@DaRacci](https://github.com/DaRacci)
+- make sure to actually set the lastResult - ([0e54417](https://github.com/DaRacci/Minix/commit/0e544178b9eb9571314b3270626ac03fc7c34ac0)) - [@DaRacci](https://github.com/DaRacci)
+- add version error - ([84dcaaf](https://github.com/DaRacci/Minix/commit/84dcaaf5f90be0a2d2d1f08873a8cb2f5dbb2f83)) - [@DaRacci](https://github.com/DaRacci)
+- fix null pointer exception when checking sameMajor on UNKNOWN - ([87d9ce6](https://github.com/DaRacci/Minix/commit/87d9ce6e8f79b4538b70cff2d623b5b3299f0b22)) - [@DaRacci](https://github.com/DaRacci)
+- index out of bounds - ([aa8707d](https://github.com/DaRacci/Minix/commit/aa8707d722c3e8171cac1cdaac56e817517b28e3)) - [@DaRacci](https://github.com/DaRacci)
+- some jenkins builds have empty fingerprint arrays - ([62956c9](https://github.com/DaRacci/Minix/commit/62956c99fca08b106b1f3d8a5f4fe3666a7d2711)) - [@DaRacci](https://github.com/DaRacci)
+- Fix regex serialising - ([493c37b](https://github.com/DaRacci/Minix/commit/493c37bccc0b3f239d2e64c610d02b3c71ba815b)) - [@DaRacci](https://github.com/DaRacci)
+#### Documentation
+- **(api)** Update some kdocs - ([5add3cc](https://github.com/DaRacci/Minix/commit/5add3ccaa707c0c0ae611320cb8a9ff4bd591a09)) - [@DaRacci](https://github.com/DaRacci)
+- **(api)** add docs for FileSystemUtils.kt - ([92a9766](https://github.com/DaRacci/Minix/commit/92a97665690fd1a27e242de31830f7dc6f46c74a)) - [@DaRacci](https://github.com/DaRacci)
+- **(api)** add kdocs for Closeable - ([a52b672](https://github.com/DaRacci/Minix/commit/a52b6725460ffc0782272c33aadbb73a84f5d3af)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- add extension for events so bind to extension classes - ([f3528b2](https://github.com/DaRacci/Minix/commit/f3528b2db4d5c100bc828bdfe545b5f41fb69823)) - [@DaRacci](https://github.com/DaRacci)
+- refactor and implement extension supervisor scope - ([0b288c0](https://github.com/DaRacci/Minix/commit/0b288c0833a25bc6ff3592bd3e24912dec1f10d7)) - [@DaRacci](https://github.com/DaRacci)
+- Begin implementation of supervisor job and extension listener - ([ca6f1a4](https://github.com/DaRacci/Minix/commit/ca6f1a4f4cfc2e85233ff3b3fb90b53da011d375)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(config)** Add loggingLevels in comment - ([b02070b](https://github.com/DaRacci/Minix/commit/b02070b8174e3fcf4908531c3430d377f71b2237)) - [@DaRacci](https://github.com/DaRacci)
+- **(core)** update closable usage - ([8763269](https://github.com/DaRacci/Minix/commit/8763269e2e99584ec2efd33f835fa74d590ae402)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** Update test deps and use mockK instead of mockito - ([d8d4e48](https://github.com/DaRacci/Minix/commit/d8d4e4813d42fd1718ef047cfc1dada7b055f148)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** add mockito - ([4c17fbb](https://github.com/DaRacci/Minix/commit/4c17fbbcb87ba5670de610a5a3ee888cdadfb62f)) - [@DaRacci](https://github.com/DaRacci)
+- **(service)** removal debuging point - ([cabd4ad](https://github.com/DaRacci/Minix/commit/cabd4ad64d9e50d77d6568583fb658f960a1eb4d)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v2.10.1 - ([7e3c6a9](https://github.com/DaRacci/Minix/commit/7e3c6a989d0ceaa3ccef0a8be7bff47f08d49657)) - [@DaRacci](https://github.com/DaRacci)
+- Update to kotlin 1.7.0 and minecraft 1.19! - ([f911794](https://github.com/DaRacci/Minix/commit/f911794479f16aed76c5a3afaeaf964e7db7a085)) - [@DaRacci](https://github.com/DaRacci)
+- add links in README.md - ([341106b](https://github.com/DaRacci/Minix/commit/341106b12fa3f36e601eed907b87b6c2d3f7fc59)) - [@DaRacci](https://github.com/DaRacci)
+- remove now unused local name property - ([212f690](https://github.com/DaRacci/Minix/commit/212f69011b6c820e04577aa684a13e5642fd2d35)) - [@DaRacci](https://github.com/DaRacci)
+- Update README.md - ([b5234dd](https://github.com/DaRacci/Minix/commit/b5234dd711458bc83f48a5f4c2bf5cceeec1b981)) - [@DaRacci](https://github.com/DaRacci)
+- Remove legacy colour utils for 3.0.0 - ([aac07cf](https://github.com/DaRacci/Minix/commit/aac07cf9d4b7a5b877ba2bc22d8680ef2ef23758)) - [@DaRacci](https://github.com/DaRacci)
+- remove deprecated for 3.0.0 - ([84cccd1](https://github.com/DaRacci/Minix/commit/84cccd13d5378f3efabc5cd8bb45a1d4ae5de5b8)) - [@DaRacci](https://github.com/DaRacci)
+- Prepare for 3.0.0 - ([35237c0](https://github.com/DaRacci/Minix/commit/35237c0135f0d7163f2204ec612e0ddd0182ec7a)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(api)** change onUnload to open so it isn't a required override - ([db99a03](https://github.com/DaRacci/Minix/commit/db99a03e4a13d276ad81f5c66a8a7e4b60ea52a5)) - [@DaRacci](https://github.com/DaRacci)
+- **(api)** use better method? idk i know what it does exactly now though - ([a8a7b8b](https://github.com/DaRacci/Minix/commit/a8a7b8b3b46edbc4726a9406086ea37ef489733f)) - [@DaRacci](https://github.com/DaRacci)
+- **(api)** Use pair to instant instead of ExpirableValue since tests dont work with that. - ([cf92b3a](https://github.com/DaRacci/Minix/commit/cf92b3afc675011c95722e529a5a324d72421aaf)) - [@DaRacci](https://github.com/DaRacci)
+- **(extension)** Remove deprecated for 3.0.0 - ([1cfe1f6](https://github.com/DaRacci/Minix/commit/1cfe1f66e32c39b6560e0790b21fa228509b8cd2)) - [@DaRacci](https://github.com/DaRacci)
+- **(service)** cache states are atomic - ([eff32ea](https://github.com/DaRacci/Minix/commit/eff32ea38945eafc7e0b78b92434374e41fdae90)) - [@DaRacci](https://github.com/DaRacci)
+- **(utils)** WorldUtils.kt is now ExWorld.kt - ([f0eb9a2](https://github.com/DaRacci/Minix/commit/f0eb9a240cd6f99cfc12f7d28d01fa48015e5d23)) - [@DaRacci](https://github.com/DaRacci)
+- recursive dependent checks - ([080827f](https://github.com/DaRacci/Minix/commit/080827fbc649bb471e138f5722ab9d2067699209)) - [@DaRacci](https://github.com/DaRacci)
+- Correct classes - ([7a616f4](https://github.com/DaRacci/Minix/commit/7a616f439f176b1af30ec6f314d5da81cd932a94)) - [@DaRacci](https://github.com/DaRacci)
+- All leading to single methods - ([e546028](https://github.com/DaRacci/Minix/commit/e546028b40466ce0c67a6526359e0121f150b868)) - [@DaRacci](https://github.com/DaRacci)
+- Nicer logging + auto indents for newlines - ([2b0b11e](https://github.com/DaRacci/Minix/commit/2b0b11eec177c68c79e76838347e2892d59d4970)) - [@DaRacci](https://github.com/DaRacci)
+- even more update service refactoring - ([fe3bc08](https://github.com/DaRacci/Minix/commit/fe3bc08d3df884453f6df01a0069a70a95cf61b5)) - [@DaRacci](https://github.com/DaRacci)
+- move to one method - ([454194b](https://github.com/DaRacci/Minix/commit/454194b238007cf6e41232e51b4f7ad353a5b8c1)) - [@DaRacci](https://github.com/DaRacci)
+- Query and check updates concurrently - ([f0b9f00](https://github.com/DaRacci/Minix/commit/f0b9f00283fa7becffa17003bd7522c91ba924cd)) - [@DaRacci](https://github.com/DaRacci)
+- remove unused props - ([dfb43d0](https://github.com/DaRacci/Minix/commit/dfb43d0aa8a8f63198e2eac9395847417f057de6)) - [@DaRacci](https://github.com/DaRacci)
+- remove null update providers when checking - ([cee4271](https://github.com/DaRacci/Minix/commit/cee42713d13e3c7a12f24f59e3f702056def9119)) - [@DaRacci](https://github.com/DaRacci)
+- why in gods name? - ([7671c9e](https://github.com/DaRacci/Minix/commit/7671c9ee5e7f6160a80157e5c6cc070436a6e21f)) - [@DaRacci](https://github.com/DaRacci)
+- listeners are no more! - ([ac86821](https://github.com/DaRacci/Minix/commit/ac86821e49874fb7afd6ef3a9273996337a0d204)) - [@DaRacci](https://github.com/DaRacci)
+- use safecast function - ([3e7d3da](https://github.com/DaRacci/Minix/commit/3e7d3da34e818480a3607b96213f1795eed2cbba)) - [@DaRacci](https://github.com/DaRacci)
+- Those aren't needed in ExPlayer.kt anymore as their now in ExWorld - ([4f3d5cb](https://github.com/DaRacci/Minix/commit/4f3d5cb7abe56971bdad3d52cd86e7d13baaf55b)) - [@DaRacci](https://github.com/DaRacci)
+- Opt class into minix internal - ([d9ae4ed](https://github.com/DaRacci/Minix/commit/d9ae4edbc486f4aa02641b330c5857e7f1a777be)) - [@DaRacci](https://github.com/DaRacci)
+- Move extensionEvents to ExtensionState.kt - ([2679327](https://github.com/DaRacci/Minix/commit/26793276d12aaab741b91a489af10e1b54c4517f)) - [@DaRacci](https://github.com/DaRacci)
+- i dont know when but i guess we stopped leaking this - ([959d51a](https://github.com/DaRacci/Minix/commit/959d51a1efa76b7d07d804bf8a4ce01edceb11c3)) - [@DaRacci](https://github.com/DaRacci)
+- thats a withplugin! - ([c3bf991](https://github.com/DaRacci/Minix/commit/c3bf9912a404d874912024e4a8314a54f813087a)) - [@DaRacci](https://github.com/DaRacci)
+#### Tests
+- **(api)** assert correct conversion - ([22afd3a](https://github.com/DaRacci/Minix/commit/22afd3a2dfb02358c547c232dcf176aced942f5b)) - [@DaRacci](https://github.com/DaRacci)
+- **(api)** Implement test for Loadable - ([7deda6f](https://github.com/DaRacci/Minix/commit/7deda6f6185df3f7e433278fb3d511da4d60f33b)) - [@DaRacci](https://github.com/DaRacci)
+- **(api)** Add test for FileSystemUtilsTest.kt - ([b33a8c7](https://github.com/DaRacci/Minix/commit/b33a8c7221624d435e6bfe65ef7caf33ddf934da)) - [@DaRacci](https://github.com/DaRacci)
+- **(api)** implement test for Closable - ([8881b32](https://github.com/DaRacci/Minix/commit/8881b32d3e31cabfbecc4ac59641e051118071b3)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** add minix-api for tests - ([d4b873c](https://github.com/DaRacci/Minix/commit/d4b873c053b6b6f172f9065db35f605b82d0b28f)) - [@DaRacci](https://github.com/DaRacci)
+- add initial test for PluginService - ([f23c355](https://github.com/DaRacci/Minix/commit/f23c35516a7d8f118f45afaf4f05fe5af2472523)) - [@DaRacci](https://github.com/DaRacci)
+- add mcversion test - ([6f6b54e](https://github.com/DaRacci/Minix/commit/6f6b54e52ee278b5a68683ea6bdd8f6d1d431dd7)) - [@DaRacci](https://github.com/DaRacci)
+- add tests for version - ([cb662d6](https://github.com/DaRacci/Minix/commit/cb662d6303b385a4f23d87d6fdf888b6cd8ea07f)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v2.10.1](https://github.com/DaRacci/Minix/compare/v2.10.0..v2.10.1) - 2022-05-11
 #### Miscellaneous Chores
 - **(version)** v2.10.0 - ([144e0f2](https://github.com/DaRacci/Minix/commit/144e0f2808b9a980bf0fa16e14f277cc09013359)) - [@DaRacci](https://github.com/DaRacci)

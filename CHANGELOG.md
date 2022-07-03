@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.0.2](https://github.com/DaRacci/Minix/compare/v3.0.1..v3.0.2) - 2022-07-03
+#### Bug Fixes
+- eco related issues - ([984b9ba](https://github.com/DaRacci/Minix/commit/984b9baca1179693692470b767277a40d96ccd7c)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.0.1 - ([0c7fa37](https://github.com/DaRacci/Minix/commit/0c7fa370ea0a622f2ad7c58fb28ed7049b36ae3d)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.0.1](https://github.com/DaRacci/Minix/compare/v3.0.0..v3.0.1) - 2022-07-03
 #### Bug Fixes
 - eco fucking around with non relocated libs - ([92a7e5b](https://github.com/DaRacci/Minix/commit/92a7e5b931cb91e98b47974b1b5b8c2a15fe7510)) - [@DaRacci](https://github.com/DaRacci)

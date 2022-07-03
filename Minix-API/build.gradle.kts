@@ -8,26 +8,33 @@ extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME)
     configurations.getByName(apiElementsConfigurationName).extendsFrom(lib)
 }
 
+val libShade: Configuration by configurations.creating
+extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME) {
+    configurations.getByName(compileClasspathConfigurationName).extendsFrom(libShade)
+    configurations.getByName(runtimeClasspathConfigurationName).extendsFrom(libShade)
+    configurations.getByName(apiElementsConfigurationName).extendsFrom(libShade)
+}
+
 dependencies {
     // Has to be shaded
-    api(libs.minecraft.bstats)
+    libShade(libs.minecraft.bstats)
     // We Shade these two due to the puffer fish conflict
-    api(libs.sentry.core)
-    api(libs.sentry.kotlin)
+    libShade(libs.sentry.core)
+    libShade(libs.sentry.kotlin)
     // Shade these due to conflict with eco
-    api(rootProject.libs.bundles.kotlin)
-    api(rootProject.libs.bundles.kotlinx)
-    api(rootProject.libs.kotlinx.serialization.json)
-    api(rootProject.libs.bundles.exposed)
-    api(rootProject.libs.caffeine)
+    libShade(rootProject.libs.bundles.kotlin)
+    libShade(rootProject.libs.bundles.kotlinx)
+    libShade(rootProject.libs.kotlinx.serialization.json)
+    libShade(rootProject.libs.bundles.exposed)
+    libShade(rootProject.libs.caffeine)
     // Because of the kotlin shade
-    api(rootProject.libs.adventure.kotlin)
-    api(rootProject.libs.koin.core)
-    api(rootProject.libs.ktor.client.core)
-    api(rootProject.libs.ktor.client.cio)
-    api(rootProject.libs.cloud.kotlin.extensions)
-    api(rootProject.libs.cloud.kotlin.coroutines)
-    api(rootProject.libs.configurate.extra.kotlin)
+    libShade(rootProject.libs.adventure.kotlin)
+    libShade(rootProject.libs.koin.core)
+    libShade(rootProject.libs.ktor.client.core)
+    libShade(rootProject.libs.ktor.client.cio)
+    libShade(rootProject.libs.cloud.kotlin.extensions)
+    libShade(rootProject.libs.cloud.kotlin.coroutines)
+    libShade(rootProject.libs.configurate.extra.kotlin)
 
     lib(rootProject.libs.adventure.api)
     lib(rootProject.libs.adventure.minimessage)
@@ -78,7 +85,10 @@ publishing {
         }
         pom.withXml {
             val depNode = groovy.util.Node(asNode(), "dependencies")
-            configurations["lib"].resolvedConfiguration.firstLevelModuleDependencies.forEach { dep ->
+            arrayOf(
+                *configurations["lib"].resolvedConfiguration.firstLevelModuleDependencies.toTypedArray(),
+                *configurations["libShade"].resolvedConfiguration.firstLevelModuleDependencies.toTypedArray()
+            ).forEach { dep ->
                 depNode.children().cast<groovy.util.NodeList>().firstOrNull {
                     val node = it as groovy.util.Node
                     node["groupId"] == dep.moduleGroup &&

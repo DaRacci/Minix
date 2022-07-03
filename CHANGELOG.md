@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.0.4](https://github.com/DaRacci/Minix/compare/v3.0.3..v3.0.4) - 2022-07-03
+#### Bug Fixes
+- actually add the deps to the jar - ([a708687](https://github.com/DaRacci/Minix/commit/a708687b67b91922ee5f92e16564b47d4e0b82ec)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.0.3 - ([eb07b93](https://github.com/DaRacci/Minix/commit/eb07b93c9f77276c6230b30106eb4c5d4e1c7a07)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.0.3](https://github.com/DaRacci/Minix/compare/v3.0.2..v3.0.3) - 2022-07-03
 #### Bug Fixes
 - more issues from eco - ([e69fbd2](https://github.com/DaRacci/Minix/commit/e69fbd2d5e3cec0e7b4923282fc01074279fde70)) - [@DaRacci](https://github.com/DaRacci)

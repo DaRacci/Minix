@@ -107,11 +107,17 @@ tasks {
 
     shadowJar {
         dependencyFilter.include {
-            it.moduleGroup == "io.sentry" ||
+            it.moduleGroup == "io.ktor" ||
+                it.moduleGroup == "io.sentry" ||
                 it.moduleGroup == "org.bstats" ||
+                it.moduleGroup == "io.insert-koin" ||
                 it.moduleGroup == "org.jetbrains.kotlin" ||
                 it.moduleGroup == "org.jetbrains.kotlinx" ||
                 it.moduleGroup == "org.jetbrains.exposed" ||
+                it.moduleName == "configurate-extra-kotlin" ||
+                it.moduleName == "cloud-kotlin-extensions" ||
+                it.moduleName == "cloud-kotlin-coroutines" ||
+                it.moduleName == "adventure-extra-kotlin" ||
                 it.moduleName == "Minix-Core" ||
                 it.moduleName == "Minix-API" ||
                 it.moduleName == "caffeine"

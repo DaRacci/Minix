@@ -9,6 +9,7 @@ extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME)
 }
 
 dependencies {
+    // Has to be shaded
     api(libs.minecraft.bstats)
     // We Shade these two due to the puffer fish conflict
     api(libs.sentry.core)
@@ -19,24 +20,26 @@ dependencies {
     api(rootProject.libs.kotlinx.serialization.json)
     api(rootProject.libs.bundles.exposed)
     api(rootProject.libs.caffeine)
+    // Because of the kotlin shade
+    api(rootProject.libs.adventure.kotlin)
+    api(rootProject.libs.koin.core)
+    api(rootProject.libs.ktor.client.core)
+    api(rootProject.libs.ktor.client.cio)
+    api(rootProject.libs.cloud.kotlin.extensions)
+    api(rootProject.libs.cloud.kotlin.coroutines)
+    api(rootProject.libs.configurate.extra.kotlin)
 
-    lib(rootProject.libs.bundles.kyori)
-
-    lib(rootProject.libs.koin.core)
-    lib(rootProject.libs.ktor.client.core)
-    lib(rootProject.libs.ktor.client.cio)
+    lib(rootProject.libs.adventure.api)
+    lib(rootProject.libs.adventure.minimessage)
+    lib(rootProject.libs.adventure.configurate)
 
     lib(rootProject.libs.cloud.core)
     lib(rootProject.libs.cloud.minecraft.paper)
     lib(rootProject.libs.cloud.minecraft.extras)
-    lib(rootProject.libs.cloud.kotlin.extensions)
-    lib(rootProject.libs.cloud.kotlin.coroutines)
 
     lib(rootProject.libs.configurate.hocon)
-    lib(rootProject.libs.adventure.configurate)
-    lib(rootProject.libs.configurate.extra.kotlin)
-
     lib(rootProject.libs.mordant)
+
     lib("io.github.classgraph:classgraph:4.8.146")
 }
 

@@ -3,8 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>MinixLogger</title>
-<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
-    <script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
 const savedDarkMode = storage ? JSON.parse(storage) : false
 if(savedDarkMode === true){
     document.getElementsByTagName("html")[0].classList.add("theme-dark")
@@ -26,7 +25,7 @@ if(savedDarkMode === true){
     <div class="library-name">
 <a href="../../../index.html">
 <span>Minix</span>            </a>    </div>
-    <div>2.10.1
+    <div>2.11.0
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -42,7 +41,7 @@ if(savedDarkMode === true){
   <div class="breadcrumbs"><a href="../../index.html">Minix-API</a><span class="delimiter">/</span><a href="../index.html">dev.racci.minix.api.plugin</a><span class="delimiter">/</span><a href="index.html">MinixLogger</a></div>
   <div class="cover ">
     <h1 class="cover"><span>Minix</span><wbr><span><span>Logger</span></span></h1>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">MinixLogger</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>plugin<span class="token operator">: </span><a href="../-minix-plugin/index.html">MinixPlugin</a></span></span><span class="token punctuation">)</span> : <a href="../../dev.racci.minix.api.extensions/-with-plugin/index.html">WithPlugin</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-minix-plugin/index.html">MinixPlugin</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">MinixLogger</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>plugin<span class="token operator">: </span><a href="../-minix-plugin/index.html">MinixPlugin</a></span></span><span class="token punctuation">)</span> : <a href="../../dev.racci.minix.api.extensions/-with-plugin/index.html">WithPlugin</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../-minix-plugin/index.html">MinixPlugin</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button></div>
@@ -176,7 +175,7 @@ if(savedDarkMode === true){
         <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="debug-enabled.html">debugEnabled</a></div>
+                <div><a href="debug-enabled.html"><span>debug</span><wbr><span><span>Enabled</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1292928067%2FProperties%2F1147827468"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
@@ -191,7 +190,7 @@ if(savedDarkMode === true){
         <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="error-enabled.html">errorEnabled</a></div>
+                <div><a href="error-enabled.html"><span>error</span><wbr><span><span>Enabled</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1358910472%2FProperties%2F1147827468"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
@@ -206,7 +205,7 @@ if(savedDarkMode === true){
         <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="info-enabled.html">infoEnabled</a></div>
+                <div><a href="info-enabled.html"><span>info</span><wbr><span><span>Enabled</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1588638794%2FProperties%2F1147827468"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
@@ -221,7 +220,7 @@ if(savedDarkMode === true){
         <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="plugin.html">plugin</a></div>
+                <div><a href="plugin.html"><span><span>plugin</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1634812642%2FProperties%2F1147827468"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
@@ -236,7 +235,7 @@ if(savedDarkMode === true){
         <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="trace-enabled.html">traceEnabled</a></div>
+                <div><a href="trace-enabled.html"><span>trace</span><wbr><span><span>Enabled</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1073768651%2FProperties%2F1147827468"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
@@ -251,7 +250,7 @@ if(savedDarkMode === true){
         <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
             <div class=""><span class="inline-flex">
-                <div><a href="warn-enabled.html">warnEnabled</a></div>
+                <div><a href="warn-enabled.html"><span>warn</span><wbr><span><span>Enabled</span></span></a></div>
 <span class="anchor-wrapper"><span class="anchor-icon" pointing-to="594024846%2FProperties%2F1147827468"></span>
                   <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                 </span></span></div>
@@ -266,8 +265,9 @@ if(savedDarkMode === true){
     </div>
   </div>
 </div>
-        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-        </div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
     </div>
 </div>
 

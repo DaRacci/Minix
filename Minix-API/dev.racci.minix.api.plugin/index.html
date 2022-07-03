@@ -3,8 +3,7 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>dev.racci.minix.api.plugin</title>
-<link href="../../images/logo-icon.svg" rel="icon" type="image/svg">
-    <script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+<link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
 const savedDarkMode = storage ? JSON.parse(storage) : false
 if(savedDarkMode === true){
     document.getElementsByTagName("html")[0].classList.add("theme-dark")
@@ -26,7 +25,7 @@ if(savedDarkMode === true){
     <div class="library-name">
 <a href="../../index.html">
 <span>Minix</span>            </a>    </div>
-    <div>2.10.1
+    <div>2.11.0
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -62,21 +61,6 @@ if(savedDarkMode === true){
             </div>
           </div>
         </div>
-<a data-name="-698755669%2FClasslikes%2F1147827468" anchor-label="ListenerUnit" id="-698755669%2FClasslikes%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
-        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
-          <div class="main-subrow keyValue ">
-            <div class=""><span class="inline-flex">
-                <div><a href="index.html#-698755669%2FClasslikes%2F1147827468"><span>Listener</span><wbr><span><span>Unit</span></span></a></div>
-<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-698755669%2FClasslikes%2F1147827468"></span>
-                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
-                </span></span></div>
-            <div>
-              <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><a href="index.html#-698755669%2FClasslikes%2F1147827468">ListenerUnit</a><span class="token operator"> = </span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator"> -&gt; </span><span class="token keyword"></span><span data-unresolved-link="org.bukkit.event/Listener///PointingToDeclaration/">Listener</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
 <a data-name="-269187650%2FClasslikes%2F1147827468" anchor-label="Minix" id="-269187650%2FClasslikes%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
         <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
           <div class="main-subrow keyValue ">
@@ -102,7 +86,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="-minix-logger/index.html">MinixLogger</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>plugin<span class="token operator">: </span><a href="-minix-plugin/index.html">MinixPlugin</a></span></span><span class="token punctuation">)</span> : <a href="../dev.racci.minix.api.extensions/-with-plugin/index.html">WithPlugin</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-minix-plugin/index.html">MinixPlugin</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-minix-logger/index.html">MinixLogger</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">val </span>plugin<span class="token operator">: </span><a href="-minix-plugin/index.html">MinixPlugin</a></span></span><span class="token punctuation">)</span> : <a href="../dev.racci.minix.api.extensions/-with-plugin/index.html">WithPlugin</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-minix-plugin/index.html">MinixPlugin</a><span class="token operator">&gt; </span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
               </div>
             </div>
           </div>
@@ -156,8 +140,9 @@ if(savedDarkMode === true){
     </div>
   </div>
 </div>
-        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
-        </div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
     </div>
 </div>
 

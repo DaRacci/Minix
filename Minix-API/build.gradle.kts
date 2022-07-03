@@ -11,14 +11,16 @@ extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME)
 dependencies {
     api(libs.minecraft.bstats)
     // We Shade these two due to the puffer fish conflict
-    implementation(libs.sentry.core)
-    implementation(libs.sentry.kotlin)
+    api(libs.sentry.core)
+    api(libs.sentry.kotlin)
+    // Shade these due to conflict with eco
+    api(rootProject.libs.bundles.kotlin)
+    api(rootProject.libs.bundles.kotlinx)
+    api(rootProject.libs.kotlinx.serialization.json)
+    api(rootProject.libs.bundles.exposed)
+    api(rootProject.libs.caffeine)
 
     lib(rootProject.libs.bundles.kyori)
-    lib(rootProject.libs.bundles.kotlin)
-    lib(rootProject.libs.bundles.kotlinx)
-    lib(rootProject.libs.kotlinx.serialization.json)
-    lib(rootProject.libs.bundles.exposed)
 
     lib(rootProject.libs.koin.core)
     lib(rootProject.libs.ktor.client.core)
@@ -34,10 +36,7 @@ dependencies {
     lib(rootProject.libs.adventure.configurate)
     lib(rootProject.libs.configurate.extra.kotlin)
 
-    lib(rootProject.libs.sentry.core)
-    lib(rootProject.libs.sentry.kotlin)
     lib(rootProject.libs.mordant)
-    lib(rootProject.libs.caffeine)
     lib("io.github.classgraph:classgraph:4.8.146")
 }
 

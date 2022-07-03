@@ -5,6 +5,7 @@ val minixVersion: String by project
 val version: String by project
 
 plugins {
+    id("dev.racci.minix")
     id("dev.racci.minix.kotlin")
     id("dev.racci.minix.copyjar")
     id("dev.racci.minix.purpurmc")
@@ -105,15 +106,16 @@ inline fun <reified T : Task> TaskProvider<T>.alsoSubprojects(crossinline block:
 tasks {
 
     shadowJar {
-        val location = "dev.racci.minix.libs"
-        this.dependencyFilter.include {
-            it.moduleGroup == "org.bstats" ||
-                it.moduleGroup == "io.sentry" ||
+        dependencyFilter.include {
+            it.moduleGroup == "io.sentry" ||
+                it.moduleGroup == "org.bstats" ||
+                it.moduleGroup == "org.jetbrains.kotlin" ||
+                it.moduleGroup == "org.jetbrains.kotlinx" ||
+                it.moduleGroup == "org.jetbrains.exposed" ||
                 it.moduleName == "Minix-Core" ||
-                it.moduleName == "Minix-API"
+                it.moduleName == "Minix-API" ||
+                it.moduleName == "caffeine"
         }
-        relocate("org.bstats", "$location.bstats")
-        relocate("io.sentry", "$location.sentry")
     }
 
     ktlintFormat.alsoSubprojects()

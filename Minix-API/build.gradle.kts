@@ -13,6 +13,7 @@ extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME)
     configurations.getByName(compileClasspathConfigurationName).extendsFrom(libShade)
     configurations.getByName(runtimeClasspathConfigurationName).extendsFrom(libShade)
     configurations.getByName(apiElementsConfigurationName).extendsFrom(libShade)
+    configurations.getByName(implementationConfigurationName).extendsFrom(libShade)
 }
 
 dependencies {

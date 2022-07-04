@@ -86,7 +86,7 @@ publishing {
             val depNode = groovy.util.Node(asNode(), "dependencies")
             arrayOf(
                 *configurations["lib"].resolvedConfiguration.firstLevelModuleDependencies.toTypedArray(),
-                *configurations["libShade"].resolvedConfiguration.firstLevelModuleDependencies.toTypedArray()
+                *configurations["libSlim"].resolvedConfiguration.firstLevelModuleDependencies.toTypedArray()
             ).forEach { dep ->
                 depNode.children().cast<groovy.util.NodeList>().firstOrNull {
                     val node = it as groovy.util.Node

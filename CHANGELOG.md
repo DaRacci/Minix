@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.0.5](https://github.com/DaRacci/Minix/compare/v3.0.4..v3.0.5) - 2022-07-04
+#### Bug Fixes
+- use slimjar and a funky way of loading. - ([0e46ad7](https://github.com/DaRacci/Minix/commit/0e46ad77d894c0f92715f4bc97ce4d38a20a915a)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.0.4 - ([8048309](https://github.com/DaRacci/Minix/commit/8048309d2d697b2e24698bfa8ff177d5cc42839b)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.0.4](https://github.com/DaRacci/Minix/compare/v3.0.3..v3.0.4) - 2022-07-03
 #### Bug Fixes
 - actually add the deps to the jar - ([a708687](https://github.com/DaRacci/Minix/commit/a708687b67b91922ee5f92e16564b47d4e0b82ec)) - [@DaRacci](https://github.com/DaRacci)

@@ -5,7 +5,7 @@ val minixVersion: String by project
 val version: String by project
 
 plugins {
-    id("dev.racci.minix")
+//    id("dev.racci.minix")
     id("dev.racci.minix.kotlin")
     id("dev.racci.minix.copyjar")
     id("dev.racci.minix.purpurmc")
@@ -14,6 +14,7 @@ plugins {
     kotlin("plugin.atomicfu") version "1.6.20-RC2"
     kotlin("plugin.serialization")
     id("net.minecrell.plugin-yml.bukkit") version "0.5.1"
+    id("io.github.slimjar") version "1.3.0"
 }
 
 repositories {
@@ -23,6 +24,36 @@ repositories {
 dependencies {
     implementation(project("Minix-Core"))
     implementation(project("Minix-API"))
+    implementation("io.github.slimjar:slimjar:1.2.7")
+    // Has to be shaded
+    slim(libs.minecraft.bstats)
+    // We Shade these two due to the puffer fish conflict
+    slim(libs.sentry.core)
+    slim(libs.sentry.kotlin)
+    // Shade these due to conflict with eco
+    slim(libs.bundles.kotlin)
+    slim(libs.bundles.kotlinx)
+    slim(libs.kotlinx.serialization.json)
+    slim(libs.bundles.exposed)
+    slim(libs.caffeine)
+    // Because of the kotlin shade
+    slim(libs.adventure.kotlin)
+    slim(libs.koin.core)
+    slim(libs.ktor.client.core)
+    slim(libs.ktor.client.cio)
+    slim(libs.cloud.kotlin.extensions)
+    slim(libs.cloud.kotlin.coroutines)
+    slim(libs.configurate.extra.kotlin)
+
+    slim(rootProject.libs.adventure.configurate)
+
+    slim(rootProject.libs.cloud.core)
+    slim(rootProject.libs.cloud.minecraft.paper)
+    slim(rootProject.libs.cloud.minecraft.extras)
+
+    slim(rootProject.libs.mordant)
+
+    slim("io.github.classgraph:classgraph:4.8.146")
 }
 
 kotlin {
@@ -35,9 +66,9 @@ bukkit {
     author = "Racci"
     apiVersion = "1.19"
     version = rootProject.version.toString()
-    main = "dev.racci.minix.core.MinixImpl"
+    main = "dev.racci.minix.core.MinixInit"
     load = PluginLoadOrder.STARTUP
-    loadBefore = listOf("Terix")
+    loadBefore = listOf("eco")
     website = "https://github.com/DaRacci/Minix"
 }
 
@@ -48,6 +79,8 @@ allprojects {
     apply(plugin = "dev.racci.minix.nms")
     apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
     apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "com.github.johnrengelman.shadow")
+    apply(plugin = "io.github.slimjar")
 
     dependencies {
         testImplementation(platform(kotlin("bom")))
@@ -107,21 +140,16 @@ tasks {
 
     shadowJar {
         dependencyFilter.include {
-            it.moduleGroup == "io.ktor" ||
-                it.moduleGroup == "io.sentry" ||
+            it.moduleGroup == "io.sentry" ||
                 it.moduleGroup == "org.bstats" ||
-                it.moduleGroup == "io.insert-koin" ||
-                it.moduleGroup == "org.jetbrains.kotlin" ||
-                it.moduleGroup == "org.jetbrains.kotlinx" ||
-                it.moduleGroup == "org.jetbrains.exposed" ||
-                it.moduleName == "configurate-extra-kotlin" ||
-                it.moduleName == "cloud-kotlin-extensions" ||
-                it.moduleName == "cloud-kotlin-coroutines" ||
-                it.moduleName == "adventure-extra-kotlin" ||
+                it.moduleGroup == "io.github.slimjar" ||
                 it.moduleName == "Minix-Core" ||
-                it.moduleName == "Minix-API" ||
-                it.moduleName == "caffeine"
+                it.moduleName == "Minix-API"
         }
+        val prefix = "dev.racci.minix.libs"
+        relocate("io.sentry", "$prefix.io.sentry")
+        relocate("org.bstats", "$prefix.org.bstats")
+        relocate("io.github.slimjar", "$prefix.io.github.slimjar")
     }
 
     ktlintFormat.alsoSubprojects()

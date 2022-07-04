@@ -2,6 +2,7 @@
 
 dependencies {
     compileOnly(project(":Minix-API"))
+    compileOnly("io.github.slimjar:slimjar:1.2.6")
 }
 
 java.withSourcesJar()

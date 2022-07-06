@@ -60,7 +60,6 @@ tasks {
     dokkaHtml.get().outputDirectory.set(file("/docs"))
 
     withType<GenerateModuleMetadata> { enabled = false }
-
 }
 
 publishing {

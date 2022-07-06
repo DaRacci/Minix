@@ -50,7 +50,6 @@ class MinixImpl : Minix() {
     }
 
     override suspend fun handleEnable() {
-
         startSentry()
 
         loadModule { single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class }
@@ -68,6 +67,7 @@ class MinixImpl : Minix() {
             single { PluginServiceImpl(this@MinixImpl) } bind PluginService::class
             single { CoroutineServiceImpl() } bind CoroutineService::class
         }
+        println("Minix: Koin started")
     }
 
     @Suppress("UnstableApiUsage")

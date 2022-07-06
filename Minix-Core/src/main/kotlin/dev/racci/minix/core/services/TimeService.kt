@@ -27,7 +27,6 @@ class TimeService(override val plugin: Minix) : Extension<Minix>() {
     private val timeState = cacheOf<String, AtomicBoolean> { atomic(world(this)!!.isDayTime) }
 
     override suspend fun handleEnable() {
-
         event<WorldLoadEvent> { checkTime(world) }
         event<WorldUnloadEvent> { timeState.invalidate(world.name) }
 

@@ -79,8 +79,6 @@ allprojects {
     apply(plugin = "dev.racci.minix.nms")
     apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
     apply(plugin = "org.jetbrains.dokka")
-    apply(plugin = "com.github.johnrengelman.shadow")
-    apply(plugin = "io.github.slimjar")
 
     dependencies {
         testImplementation(platform(kotlin("bom")))

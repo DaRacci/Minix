@@ -1,5 +1,6 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
 import org.jetbrains.dokka.utilities.cast
+import java.net.URI
 
 val lib: Configuration by configurations.creating
 val libSlim: Configuration by configurations.creating
@@ -54,21 +55,18 @@ rootProject.extensions.getByName("bukkit").cast<BukkitPluginDescription>().libra
 
 java.withSourcesJar()
 
-tasks.dokkaHtml {
-    outputDirectory.set(file("/docs"))
-}
+tasks {
 
-tasks.withType<GenerateModuleMetadata> {
-    enabled = false
+    dokkaHtml.get().outputDirectory.set(file("/docs"))
+
+    withType<GenerateModuleMetadata> { enabled = false }
+
 }
 
 publishing {
-    repositories.maven("https://repo.racci.dev/releases") {
+    repositories.maven {
         name = "RacciRepo"
-        credentials(PasswordCredentials::class)
-    }
-    repositories.maven("https://repo.racci.dev/snapshots") {
-        name = "RacciSnapshots"
+        url = URI("https://repo.racci.dev/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
         credentials(PasswordCredentials::class)
     }
 

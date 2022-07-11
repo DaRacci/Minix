@@ -505,7 +505,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
             return UpdateResult.FAILED_BACKUP
         }
 
-        val zipFile = updateFolder.resolve("${updater.name}-${updater.localVersion}_backup_${now().toLocalDateTime(TimeZone.UTC)}.zip")
+        val zipFile = updateFolder.resolve("${updater.name}-${updater.localVersion.rawVersion}_backup_${now().toLocalDateTime(TimeZone.currentSystemDefault())}.zip")
         zipFile.createNewFile() // Shouldn't be a feasible way that this fails due to the name containing the current time
         ZipOutputStream(zipFile.outputStream().buffered()).use() {
             traverseDir(updater, it, folder)

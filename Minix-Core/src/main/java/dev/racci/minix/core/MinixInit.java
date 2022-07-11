@@ -3,11 +3,9 @@ package dev.racci.minix.core;
 import io.github.slimjar.app.builder.ApplicationBuilder;
 import io.github.slimjar.app.builder.InjectingApplicationBuilder;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
 import org.bukkit.plugin.java.PluginClassLoader;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,7 +39,10 @@ public class MinixInit extends JavaPlugin {
         }
 
         var folder = Path.of(String.format("%s/libraries", getDataFolder()));
-        if(!Files.exists(folder)) folder.toFile().mkdirs();
+        if(!Files.exists(folder) && !folder.toFile().mkdirs()) {
+            getLogger().severe("Error while creating parent directories.");
+            throw new RuntimeException();
+        }
         builder.downloadDirectoryPath(folder);
 
         builder.logger((m, anies) -> {
@@ -56,6 +57,6 @@ public class MinixInit extends JavaPlugin {
             throw new RuntimeException(e);
         }
 
-        new DummyLoader().loadPlugin(getDescription(), this, (JavaPluginLoader) getPluginLoader(), (PluginClassLoader) getClassLoader());
+        new DummyLoader().loadPlugin(getDescription(), this, (PluginClassLoader) getClassLoader());
     }
 }

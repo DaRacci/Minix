@@ -34,7 +34,9 @@ class PluginUpdater {
     var ignored: Array<String> = emptyArray()
 
     @Transient var sentInfo: Boolean = false
+
     @Transient var sentAvailable: Boolean = false
+
     @Transient var failedAttempts: Int = 0
         set(value) {
             if (value > 4) {
@@ -49,8 +51,11 @@ class PluginUpdater {
                 }
             }
         }
+
     @Transient var pluginInstance: Plugin? = null
+
     @Transient var lastRun: Instant? = null
+
     @Transient private var _localVersion: Version? = null
     val localVersion: Version get() {
         if (_localVersion == null) {
@@ -64,6 +69,7 @@ class PluginUpdater {
         return _localVersion!!
     }
     val localFile: String get() = pluginInstance!!::class.java.protectionDomain.codeSource.location.file
+
     @Transient var result: UpdateResult? = null
         set(value) {
             if (value?.name?.startsWith("FAILED") == true) {
@@ -71,6 +77,7 @@ class PluginUpdater {
             }
             field = value
         }
+
     @Transient var activeProvider: Int = 0
     val provider: UpdateProvider get() = providers[activeProvider]
 

@@ -9,6 +9,7 @@ tag_prefix = "v"
 
 [commit_types]
 gradle = { changelog_title = "Build" }
+format = { changelog_title = "Formatting" }
 
 
 [changelog]

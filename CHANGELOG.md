@@ -2,6 +2,21 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.1.2](https://github.com/DaRacci/Minix/compare/v3.1.1..v3.1.2) - 2022-07-25
+#### Bug Fixes
+- **(Updater)** Backup file name - ([70da568](https://github.com/DaRacci/Minix/commit/70da56816f7ce4971effb63ba76a066119bc0b80)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- Log for a plugin on breadcrumb - ([fc41495](https://github.com/DaRacci/Minix/commit/fc41495494805dd9d6df7781bc639faaf7aa7a43)) - [@DaRacci](https://github.com/DaRacci)
+- AbstractPlayerCollection - ([279fd64](https://github.com/DaRacci/Minix/commit/279fd64aec9f700e6e5b07351eb688877c6a49b9)) - [@DaRacci](https://github.com/DaRacci)
+#### Formatting
+- KtLint formatting - ([52b6567](https://github.com/DaRacci/Minix/commit/52b6567fdd450d3b0c4c99e1c3aeda2887df17eb)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.1.1 - ([b56ffd1](https://github.com/DaRacci/Minix/commit/b56ffd1f973786a862214951e709f0539785b70a)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- little cleanup - ([edd32b5](https://github.com/DaRacci/Minix/commit/edd32b5a4c3b358f2672b4a41f31028893213505)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.1.1](https://github.com/DaRacci/Minix/compare/v3.1.0..v3.1.1) - 2022-07-06
 #### Bug Fixes
 - **(build)** Minix-API Publication - ([573acaa](https://github.com/DaRacci/Minix/commit/573acaa0596b980cb50b1c94af02b1cb301511a1)) - [@DaRacci](https://github.com/DaRacci)

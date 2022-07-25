@@ -6,16 +6,20 @@ import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixLogger
+import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.Version
 import dev.racci.minix.api.updater.providers.GithubUpdateProvider
 import dev.racci.minix.api.utils.loadModule
+import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.data.MinixConfig
 import dev.racci.minix.core.services.PluginServiceImpl
+import io.sentry.Breadcrumb
 import io.sentry.Sentry
+import io.sentry.SentryLevel
 import io.sentry.protocol.User
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -67,7 +71,6 @@ class MinixImpl : Minix() {
             single { PluginServiceImpl(this@MinixImpl) } bind PluginService::class
             single { CoroutineServiceImpl() } bind CoroutineService::class
         }
-        println("Minix: Koin started")
     }
 
     @Suppress("UnstableApiUsage")
@@ -86,6 +89,22 @@ class MinixImpl : Minix() {
             }
             options.environment = "production"
             options.inAppIncludes += "dev.racci"
+
+            options.setBeforeBreadcrumb { breadcrumb, hint ->
+                val plugin = hint.get("plugin").safeCast<MinixPlugin>() ?: return@setBeforeBreadcrumb breadcrumb
+                breadcrumb.data["plugin"] = plugin.description.name
+                breadcrumb.data["plugin_version"] = plugin.description.version
+
+                when (breadcrumb.level) {
+                    SentryLevel.DEBUG -> plugin.log.debug(sentryLog(breadcrumb))
+                    SentryLevel.INFO -> plugin.log.info(sentryLog(breadcrumb))
+                    SentryLevel.WARNING -> plugin.log.warn(sentryLog(breadcrumb))
+                    SentryLevel.ERROR, SentryLevel.FATAL -> plugin.log.error(sentryLog(breadcrumb))
+                    null -> {}
+                }
+
+                breadcrumb
+            }
         }
         Sentry.configureScope { scope ->
             scope.user = User().apply {
@@ -96,5 +115,18 @@ class MinixImpl : Minix() {
             scope.setContexts("Server Version", server.version)
             scope.setContexts("Server Fork", server.name)
         }
+    }
+
+    @Suppress("UnstableApiUsage")
+    private fun sentryLog(breadcrumb: Breadcrumb): String {
+        val builder = StringBuilder(breadcrumb.category)
+        builder.append(" | ")
+        builder.append(breadcrumb.message)
+
+        if (breadcrumb.data.isEmpty()) return builder.toString()
+
+        builder.append(" | ")
+        builder.append(breadcrumb.data.entries.joinToString(", ", "[ ", " ]") { "${it.key}: ${it.value}" })
+        return builder.toString()
     }
 }

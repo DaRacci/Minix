@@ -22,7 +22,7 @@ fun WithPlugin<*>.onlinePlayerListOf() = plugin.onlinePlayerListOf()
 
 fun onlinePlayerListOf(
     vararg players: Player,
-    plugin: MinixPlugin,
+    plugin: MinixPlugin
 ) = OnlinePlayerList(plugin).apply { addAll(players) }
 
 fun MinixPlugin.onlinePlayerListOf(vararg players: Player) = onlinePlayerListOf(*players, plugin = this)
@@ -31,7 +31,7 @@ fun WithPlugin<*>.onlinePlayerListOf(vararg players: Player) = plugin.onlinePlay
 
 fun onlinePlayerListOf(
     vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>,
-    plugin: MinixPlugin,
+    plugin: MinixPlugin
 ) = OnlinePlayerList(plugin).apply { pair.forEach { (player, whenPlayerQuit) -> add(player, whenPlayerQuit) } }
 
 fun MinixPlugin.onlinePlayerListOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>) =
@@ -48,7 +48,7 @@ fun WithPlugin<*>.onlinePlayerSetOf() = plugin.onlinePlayerSetOf()
 
 fun onlinePlayerSetOf(
     vararg players: Player,
-    plugin: MinixPlugin,
+    plugin: MinixPlugin
 ) = OnlinePlayerSet(plugin).apply { addAll(players) }
 
 fun MinixPlugin.onlinePlayerSetOf(vararg players: Player) = onlinePlayerSetOf(*players, plugin = this)
@@ -57,7 +57,7 @@ fun WithPlugin<*>.onlinePlayerSetOf(vararg players: Player) = plugin.onlinePlaye
 
 fun onlinePlayerSetOf(
     vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>,
-    plugin: MinixPlugin,
+    plugin: MinixPlugin
 ) = OnlinePlayerSet(plugin).apply { pair.forEach { (player, whenPlayerQuit) -> add(player, whenPlayerQuit) } }
 
 fun MinixPlugin.onlinePlayerSetOf(vararg pair: Pair<Player, WhenPlayerQuitCollectionCallback>) =
@@ -74,7 +74,7 @@ fun <V> WithPlugin<*>.onlinePlayerMapOf() = plugin.onlinePlayerMapOf<V>()
 
 fun <V> onlinePlayerMapOf(
     vararg pair: Pair<Player, V>,
-    plugin: MinixPlugin,
+    plugin: MinixPlugin
 ) = OnlinePlayerMap<V>(plugin).apply { putAll(pair) }
 
 fun <V> MinixPlugin.onlinePlayerMapOf(vararg pair: Pair<Player, V>) = onlinePlayerMapOf(*pair, plugin = this)
@@ -83,7 +83,7 @@ fun <V> WithPlugin<*>.onlinePlayerMapOf(vararg pair: Pair<Player, V>) = plugin.o
 
 fun <V> onlinePlayerMapOf(
     vararg triple: Triple<Player, V, WhenPlayerQuitMapCallback<V>>,
-    plugin: MinixPlugin,
+    plugin: MinixPlugin
 ) = OnlinePlayerMap<V>(plugin).apply {
     triple.forEach { (player, value, whenPlayerQuit) ->
         put(
@@ -106,7 +106,7 @@ class OnlinePlayerList(override val plugin: MinixPlugin) : LinkedList<Player>(),
 
     override fun add(
         player: Player,
-        whenPlayerQuit: Player.() -> Unit,
+        whenPlayerQuit: Player.() -> Unit
     ): Boolean = if (super<OnlinePlayerCollection>.add(player, whenPlayerQuit)) {
         whenQuit.add(player to whenPlayerQuit)
         true
@@ -156,7 +156,7 @@ class OnlinePlayerSet(override val plugin: MinixPlugin) : HashSet<Player>(), Onl
 
     override fun add(
         player: Player,
-        whenPlayerQuit: WhenPlayerQuitCollectionCallback,
+        whenPlayerQuit: WhenPlayerQuitCollectionCallback
     ): Boolean = if (super<OnlinePlayerCollection>.add(player, whenPlayerQuit)) {
         whenQuit[player] = whenPlayerQuit
 
@@ -196,7 +196,7 @@ interface OnlinePlayerCollection : MutableCollection<Player>, KListener<MinixPlu
      */
     fun add(
         player: Player,
-        whenPlayerQuit: WhenPlayerQuitCollectionCallback,
+        whenPlayerQuit: WhenPlayerQuitCollectionCallback
     ): Boolean = add(player).also {
         if (it) checkRegistration()
     }
@@ -228,7 +228,7 @@ class OnlinePlayerMap<V>(override val plugin: MinixPlugin) : HashMap<Player, V>(
     fun put(
         key: Player,
         value: V,
-        whenPlayerQuit: WhenPlayerQuitMapCallback<V>,
+        whenPlayerQuit: WhenPlayerQuitMapCallback<V>
     ): V? {
         whenQuit[key] = whenPlayerQuit
         return put(key, value).also {
@@ -263,7 +263,7 @@ class OnlinePlayerMap<V>(override val plugin: MinixPlugin) : HashMap<Player, V>(
 
     override fun remove(
         key: Player,
-        value: V,
+        value: V
     ): Boolean = super.remove(key, value).also {
         checkRegistration()
     }

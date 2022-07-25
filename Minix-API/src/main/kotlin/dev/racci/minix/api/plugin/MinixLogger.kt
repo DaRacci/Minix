@@ -10,7 +10,7 @@ private val terminal by lazy { Terminal() }
 @Suppress("MemberVisibilityCanBePrivate")
 // TODO: Continue Indent for newlines
 open class MinixLogger(
-    override val plugin: MinixPlugin,
+    override val plugin: MinixPlugin
 ) : WithPlugin<MinixPlugin> {
 
     private val prefix by lazy { TextColors.brightCyan("[${plugin.description.prefix}]") }
@@ -51,35 +51,35 @@ open class MinixLogger(
 
     fun trace(
         t: Throwable? = null,
-        msg: () -> Any?,
+        msg: () -> Any?
     ) {
         if (traceEnabled) trace(msg.toStringSafe(), t)
     }
 
     fun debug(
         t: Throwable? = null,
-        msg: () -> Any?,
+        msg: () -> Any?
     ) {
         if (debugEnabled) debug(msg.toStringSafe(), t)
     }
 
     fun info(
         t: Throwable? = null,
-        msg: () -> Any?,
+        msg: () -> Any?
     ) {
         if (infoEnabled) info(msg.toStringSafe(), t)
     }
 
     fun warn(
         t: Throwable? = null,
-        msg: () -> Any?,
+        msg: () -> Any?
     ) {
         if (warnEnabled) warn(msg.toStringSafe(), t)
     }
 
     fun error(
         t: Throwable? = null,
-        msg: () -> Any?,
+        msg: () -> Any?
     ) {
         if (errorEnabled) error(msg.toStringSafe(), t)
     }
@@ -141,7 +141,7 @@ open class MinixLogger(
         type: String,
         msg: String?,
         throwable: Throwable?,
-        colour: TextColors,
+        colour: TextColors
     ) {
         val builder = StringBuilder("$prefix $type ${TextColors.brightWhite("->")} ")
         if (msg != null) {

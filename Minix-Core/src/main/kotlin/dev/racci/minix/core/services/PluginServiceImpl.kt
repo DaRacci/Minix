@@ -1,4 +1,5 @@
 @file:OptIn(MinixInternal::class)
+
 package dev.racci.minix.core.services
 
 import com.github.benmanes.caffeine.cache.Caffeine
@@ -82,7 +83,6 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         runBlocking {
             if (!plugin.annotation?.extensions.isNullOrEmpty()) {
                 for (clazz in plugin.annotation!!.extensions) {
-
                     if (!Extension::class.isSuperclassOf(clazz)) {
                         plugin.log.error { "$clazz isn't an extension.. Skipping." }
                         continue
@@ -173,6 +173,14 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             coroutineService.disable(plugin)
             loadedPlugins -= plugin::class
         }
+    }
+
+    override fun fromClassloader(classLoader: ClassLoader): MinixPlugin? {
+        for (plugin in loadedPlugins.values) {
+            if (pluginCache[plugin].loader != classLoader) continue
+            return plugin
+        }
+        return null
     }
 
     private fun MinixPlugin.loadReflection() {

@@ -25,5 +25,7 @@ interface PluginService {
 
     fun unloadPlugin(plugin: MinixPlugin)
 
+    fun fromClassloader(classLoader: ClassLoader): MinixPlugin?
+
     companion object : PluginService by getKoin().get()
 }

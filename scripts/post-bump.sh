@@ -6,13 +6,16 @@ if [ -z "$1" ] || [ -z "$2" ]; then
   exit 1
 fi
 
-rm temp # remove temp file
+if [ -f temp ]; then
+  echo "Removing temp file"
+  rm temp
+fi
 
 sed -i "s/version=.*/version=$2/" ./gradle.properties
 
 # Add the modified properties file to the version change commit
-git add ./gradle.properties
-git commit --amend -C HEAD
+git add gradle.properties
+git commit --amend --no-edit -n -S
 
 git push || exit 1 # There were remote changes not present in the local repo
 git push origin v"${2}" # Push the new version tag
@@ -41,5 +44,5 @@ git checkout main || exit 1
 git pull || exit 1
 sed -i "s/^minix = .*/minix = \"$2\"/" ./gradle/libs.versions.toml
 git add ./gradle/libs.versions.toml
-cog commit chore "Update Minix version from $PREVIOUS to $2" deps
+git commit -S -C -c "chore(deps): Update Minix version from $PREVIOUS to $2"
 git push || exit 1

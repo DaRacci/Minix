@@ -9,6 +9,7 @@ import dev.racci.minix.api.coroutine.launch
 import dev.racci.minix.api.coroutine.minecraftDispatcher
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.utils.unsafeCast
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
@@ -26,7 +27,7 @@ fun <T : Event> WithPlugin<*>.events(
     ignoreCancelled: Boolean = false,
     forceAsync: Boolean = false,
     listener: SimpleKListener = SimpleKListener(plugin),
-    block: suspend T.() -> Unit,
+    block: suspend T.() -> Unit
 ) { // Lmao this shit is scuffed as fuck but it works so fuck it (I'm not even sure if it works)
     events.forEach { clazz ->
         pm.registerEvent(
@@ -65,7 +66,7 @@ inline fun <reified T : Event> Extension<*>.event(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
     forceAsync: Boolean = false,
-    noinline block: suspend T.() -> Unit,
+    noinline block: suspend T.() -> Unit
 ) {
     this.eventListener
     val listener = SimpleKListener(plugin)
@@ -122,13 +123,13 @@ inline fun <reified T : Event> Listener.event(
     block = block
 )
 
-inline fun <reified T : Event> Listener.event(
+fun <T : Event> Listener.event(
     type: KClass<T>,
     plugin: MinixPlugin,
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
     forceAsync: Boolean = false,
-    crossinline block: suspend T.() -> Unit
+    block: suspend T.() -> Unit
 ) {
     pm.registerEvent(
         type.java,
@@ -140,8 +141,8 @@ inline fun <reified T : Event> Listener.event(
             } else plugin.minecraftDispatcher
 
             plugin.launch(dispatcher) {
-                if (type.isInstance(event) && event is T) {
-                    block(event)
+                if (type.isInstance(event) && event::class.isInstance(type)) {
+                    block(event.unsafeCast())
                 }
             }
         },

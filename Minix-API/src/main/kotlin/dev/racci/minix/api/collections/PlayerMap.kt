@@ -3,26 +3,25 @@ package dev.racci.minix.api.collections
 import dev.racci.minix.api.exceptions.MissingPluginException
 import dev.racci.minix.api.extensions.WithPlugin
 import dev.racci.minix.api.extensions.event
-import dev.racci.minix.api.extensions.player
+import dev.racci.minix.api.extensions.scheduler
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PluginService
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
 import org.bukkit.event.player.PlayerQuitEvent
+import kotlin.time.Duration.Companion.seconds
 
-/**
- * An abstract class for a collection of online players.
- * A player is automatically removed when they disconnect and don't reconnect for more than 30 seconds.
- *
- * @param T The value type of the collection.
- */
-abstract class AbstractPlayerCollection<T> : HashMap<Player, T>(), WithPlugin<MinixPlugin> {
+/** A map, which removes a player once they are offline for more than 30 seconds. */
+class PlayerMap<T> : HashMap<Player, T>(), WithPlugin<MinixPlugin> {
     override val plugin: MinixPlugin = PluginService.fromClassloader(this.javaClass.classLoader)
         ?: throw MissingPluginException("Could not find MinixPlugin for classloader ${this.javaClass.classLoader}")
 
     init {
         event<PlayerQuitEvent>(EventPriority.MONITOR, true) {
-            this@AbstractPlayerCollection.remove(player)
+            scheduler {
+                if (player.isOnline) return@scheduler
+                this@PlayerMap.remove(player)
+            }.runAsyncTaskLater(plugin, 30.seconds)
         }
     }
 }

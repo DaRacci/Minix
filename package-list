@@ -5,6 +5,7 @@ module:Minix-API
 dev.racci.minix.api.aliases
 dev.racci.minix.api.annotations
 dev.racci.minix.api.builders
+dev.racci.minix.api.collections
 dev.racci.minix.api.coroutine
 dev.racci.minix.api.coroutine.contract
 dev.racci.minix.api.data

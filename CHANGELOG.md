@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.1.3](https://github.com/DaRacci/Minix/compare/v3.1.2..v3.1.3) - 2022-08-03
+#### Bug Fixes
+- gpg sign commits - ([5c5a317](https://github.com/DaRacci/Minix/commit/5c5a31753e4d43cbec71d9c923723a144d015c02)) - [@DaRacci](https://github.com/DaRacci)
+- wait 30 seconds then remove - ([95a388e](https://github.com/DaRacci/Minix/commit/95a388e3ddb88520cb23d1d8ffe9c302c62e85c8)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.1.2 - ([6a87d12](https://github.com/DaRacci/Minix/commit/6a87d12c18349b95532bb031561f8e7c95442c31)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- don't inline - ([15da242](https://github.com/DaRacci/Minix/commit/15da24283a756489e49919ea77eb6d2153cd567a)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.1.2](https://github.com/DaRacci/Minix/compare/v3.1.1..v3.1.2) - 2022-07-25
 #### Bug Fixes
 - **(Updater)** Backup file name - ([70da568](https://github.com/DaRacci/Minix/commit/70da56816f7ce4971effb63ba76a066119bc0b80)) - [@DaRacci](https://github.com/DaRacci)

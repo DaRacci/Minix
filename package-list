@@ -16,6 +16,7 @@ dev.racci.minix.api.extension
 dev.racci.minix.api.extensions
 dev.racci.minix.api.flow
 dev.racci.minix.api.plugin
+dev.racci.minix.api.plugin.logger
 dev.racci.minix.api.scheduler
 dev.racci.minix.api.serializables
 dev.racci.minix.api.serializables.recipes

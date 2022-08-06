@@ -15,10 +15,7 @@ import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.data.MinixConfig
 import dev.racci.minix.core.services.PluginServiceImpl
-import io.sentry.Breadcrumb
 import io.sentry.Sentry
-import io.sentry.SentryLevel
-import io.sentry.protocol.User
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -67,7 +64,6 @@ class MinixImpl : Minix() {
         }
     }
 
-    @Suppress("UnstableApiUsage")
     private fun startSentry() {
         if (!config.sentryEnabled) return
 
@@ -76,51 +72,20 @@ class MinixImpl : Minix() {
             options.release = description.version
             options.isDebug = log.isEnabled(MinixLogger.LoggingLevel.DEBUG)
             options.environment = if (Version(this@MinixImpl.description.version).isPreRelease) "pre-release" else "release"
+            options.environment = "production"
+            options.inAppIncludes += "dev.racci"
             options.setBeforeSend { event, _ ->
                 event.setTag("TPS-AVG", server.tps.average().toString())
                 event.setTag("TPS-CUR", server.tps.last().toString())
                 event
             }
-            options.environment = "production"
-            options.inAppIncludes += "dev.racci"
-
-            options.setBeforeBreadcrumb { breadcrumb, hint ->
-                val plugin = hint.get("plugin").safeCast<MinixPlugin>() ?: return@setBeforeBreadcrumb breadcrumb
-                breadcrumb.data["plugin"] = plugin.description.name
-                breadcrumb.data["plugin_version"] = plugin.description.version
-
-                when (breadcrumb.level) {
-                    SentryLevel.DEBUG -> plugin.log.debug(sentryLog(breadcrumb))
-                    SentryLevel.INFO -> plugin.log.info(sentryLog(breadcrumb))
-                    SentryLevel.WARNING -> plugin.log.warn(sentryLog(breadcrumb))
-                    SentryLevel.ERROR, SentryLevel.FATAL -> plugin.log.error(sentryLog(breadcrumb))
-                    null -> {}
-                }
-
-                breadcrumb
-            }
         }
         Sentry.configureScope { scope ->
-            scope.user = User().apply {
-                ipAddress = server.ip
-                id = config.serverUUID.toString()
-            }
+            scope.setContexts("ID", config.serverUUID)
+            scope.setContexts("IP", server.ip)
             scope.setContexts("Minecraft Version", server.minecraftVersion)
             scope.setContexts("Server Version", server.version)
             scope.setContexts("Server Fork", server.name)
         }
-    }
-
-    @Suppress("UnstableApiUsage")
-    private fun sentryLog(breadcrumb: Breadcrumb): String {
-        val builder = StringBuilder(breadcrumb.category)
-        builder.append(" | ")
-        builder.append(breadcrumb.message)
-
-        if (breadcrumb.data.isEmpty()) return builder.toString()
-
-        builder.append(" | ")
-        builder.append(breadcrumb.data.entries.joinToString(", ", "[ ", " ]") { "${it.key}: ${it.value}" })
-        return builder.toString()
     }
 }

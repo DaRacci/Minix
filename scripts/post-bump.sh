@@ -44,5 +44,5 @@ git checkout main || exit 1
 git pull || exit 1
 sed -i "s/^minix = .*/minix = \"$2\"/" ./gradle/libs.versions.toml
 git add ./gradle/libs.versions.toml
-git commit -S -C -c "chore(deps): Update Minix version from $PREVIOUS to $2"
+git commit -S -C -c "chore(deps): Update Minix version from $1 to $2"
 git push || exit 1

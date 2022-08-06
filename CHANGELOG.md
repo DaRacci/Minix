@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.2.0](https://github.com/DaRacci/Minix/compare/v3.1.3..v3.2.0) - 2022-08-06
+#### Bug Fixes
+- **(Sentry)** fix breadcrumbs - ([e5e09fa](https://github.com/DaRacci/Minix/commit/e5e09fa72371fcdc22bf0d9c670e10725fd6afc5)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.1.3 - ([73459a1](https://github.com/DaRacci/Minix/commit/73459a1c07ca72540928e351aea28718fe2ab2b3)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(Logger)** rewrite logger - ([a9982b4](https://github.com/DaRacci/Minix/commit/a9982b438dfdf01eb55e0776faf8782de28212be)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.1.3](https://github.com/DaRacci/Minix/compare/v3.1.2..v3.1.3) - 2022-08-03
 #### Bug Fixes
 - gpg sign commits - ([5c5a317](https://github.com/DaRacci/Minix/commit/5c5a31753e4d43cbec71d9c923723a144d015c02)) - [@DaRacci](https://github.com/DaRacci)

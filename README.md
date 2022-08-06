@@ -235,6 +235,7 @@ plugin-updaters=[
 ```
 
 ## Plans
+* Support for plain spigot by disabling some functionality.
 
 ## 🤝 Contributing
 
@@ -245,3 +246,11 @@ Feel free to check [issues page](https://github.com/DaRacci/Minix/issues).
 
 Copyright © 2021-2022 [Racci](https://github.com/DaRacci) <br />
 This project is [licensed](https://github.com/DaRacci/Minix/blob/master/LICENSE.md).
+
+
+Special Thanks To:
+-------------
+
+[<img src="https://user-images.githubusercontent.com/21148213/121807008-8ffc6700-cc52-11eb-96a7-2f6f260f8fda.png" alt="" width="150">](https://www.jetbrains.com)
+
+[JetBrains](https://www.jetbrains.com/), creators of the IntelliJ IDEA, supports Minix with one of their [Open Source Licenses](https://www.jetbrains.com/opensource/). IntelliJ IDEA is the recommended IDE for working with Minix or any Java / Kotlin project.

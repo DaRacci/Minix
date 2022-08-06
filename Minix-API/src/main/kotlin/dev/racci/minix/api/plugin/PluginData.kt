@@ -2,6 +2,7 @@ package dev.racci.minix.api.plugin
 
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionStateEvent
+import dev.racci.minix.api.plugin.logger.PluginDependentMinixLogger
 import kotlinx.coroutines.flow.MutableSharedFlow
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
@@ -27,7 +28,7 @@ class PluginData<P : MinixPlugin>(val plugin: P) {
     val unloadedExtensions by lazy { mutableListOf<Extension<P>>() }
     val extensionEvents by lazy { MutableSharedFlow<ExtensionStateEvent>() }
 
-    val log by lazy { MinixLogger(plugin) }
+    val log by lazy { PluginDependentMinixLogger(plugin) }
 
     val configurations by lazy { mutableListOf<KClass<*>>() }
 

@@ -5,7 +5,6 @@ val minixVersion: String by project
 val version: String by project
 
 plugins {
-//    id("dev.racci.minix")
     id("dev.racci.minix.kotlin")
     id("dev.racci.minix.copyjar")
     id("dev.racci.minix.purpurmc")
@@ -86,9 +85,13 @@ allprojects {
         testImplementation(rootProject.libs.bundles.kotlinx)
         testImplementation(rootProject.libs.bundles.testing)
         testImplementation(rootProject.libs.minecraft.bstats)
-        testImplementation("io.insert-koin:koin-test:3.+")
-        testImplementation("io.insert-koin:koin-test-junit5:3.+")
-        testImplementation("io.mockk:mockk:1.12.4")
+        testImplementation(rootProject.libs.testing.strikt)
+        testImplementation("io.kotest:kotest-runner-junit5:5.4.1")
+        testImplementation("io.kotest:kotest-property:5.4.1")
+        testImplementation("io.kotest:kotest-assertions-core:5.4.1")
+        testImplementation("io.insert-koin:koin-test:3.2.0")
+        testImplementation("io.insert-koin:koin-test-junit5:3.2.0")
+        testImplementation("io.mockk:mockk:1.12.5")
         testImplementation(project(":Minix-API"))
     }
 
@@ -98,7 +101,9 @@ allprojects {
 
     tasks {
 
-        test.get().useJUnitPlatform()
+        withType<Test>().configureEach {
+            useJUnitPlatform()
+        }
 
         dokkaHtml.get().dokkaSourceSets.configureEach {
             includeNonPublic.set(false)

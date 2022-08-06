@@ -1,6 +1,6 @@
 package dev.racci.minix.api.data
 
-import dev.racci.minix.api.plugin.MinixLogger
+import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.services.UpdaterService
 import dev.racci.minix.api.updater.UpdateMode
 import dev.racci.minix.api.updater.UpdateResult

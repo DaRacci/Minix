@@ -23,7 +23,7 @@ class GithubUpdateProvider(
     internal val projectRepo: String,
     internal val userAgent: String = projectRepo,
     @Language("RegExp") internal val jarSearchRegex: String = ".*\\.jar$",
-    @Language("RegExp") internal val md5SearchRegex: String = ".*\\.md5$",
+    @Language("RegExp") internal val md5SearchRegex: String = ".*\\.md5$"
 ) : BaseOnlineProviderWithDownload(userAgent) {
 
     private val url: URL
@@ -40,14 +40,8 @@ class GithubUpdateProvider(
         url = try {
             URL(builder.toString())
         } catch (e: MalformedURLException) {
-            val throwable = InvalidUpdateProviderException(
-                "Failed to build github api url!" +
-                    "\n\t\tOwner: $projectOwner" +
-                    "\n\t\tRepo: $projectRepo" +
-                    "\n\t\tBuild URL: $builder"
-            ).also { it.addSuppressed(e) }
-            logger.throwing(throwable)
-            throw throwable
+            val throwable = InvalidUpdateProviderException(null, e)
+            throw logger.fatal(throwable) { "Failed to build Github URL [Owner=$projectOwner, Repo=$projectRepo, URL=$builder]" }
         }
     }
 

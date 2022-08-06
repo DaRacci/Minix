@@ -3,6 +3,7 @@ package dev.racci.minix.api.plugin
 import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.annotations.MinixDsl
 import dev.racci.minix.api.data.PluginUpdater
+import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.safeCast
 import org.bstats.bukkit.Metrics

@@ -14,17 +14,16 @@ import java.net.URL
 
 class BukkitUpdateProvider(
     internal val projectID: Int,
-    internal val apiKey: String? = null,
+    internal val apiKey: String? = null
 ) : BaseOnlineProviderWithDownload() {
 
     private val url: URL = try {
         URL(HOST + projectID)
     } catch (e: Exception) {
-        val throwable = InvalidUpdateProviderException("Error while creating URL for BukkitUpdateProvider!")
-        throwable.addSuppressed(e)
-        logger.throwing(throwable)
-        throw throwable
+        val throwable = InvalidUpdateProviderException(null, e)
+        throw logger.fatal(throwable, "Error while creating URL for BukkitUpdateProvider!")
     }
+
     private var lastHistory: Array<UpdateFile>? = null
 
     override val name get() = "dev.bukkit.org"

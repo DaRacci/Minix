@@ -2,11 +2,12 @@
 
 package dev.racci.minix.api.utils.kotlin
 
+import dev.racci.minix.api.exceptions.LevelConversionException
 import kotlin.reflect.KClass
 
 inline fun <reified T : Throwable, reified U : Any> catch(
     err: (T) -> U,
-    run: () -> U,
+    run: () -> U
 ): U = try {
     run()
 } catch (ex: Throwable) {
@@ -15,17 +16,17 @@ inline fun <reified T : Throwable, reified U : Any> catch(
 
 inline fun <reified T : Throwable> catch(
     err: (T) -> Unit = { it.printStackTrace() },
-    run: () -> Unit,
+    run: () -> Unit
 ) = catch<T, Unit>(err, run)
 
 inline fun <reified T : Throwable, reified U : Any> catch(
     default: U,
-    run: () -> U,
+    run: () -> U
 ): U = catch<T, U>({ default }, run)
 
 inline fun <reified T : Throwable, R> catchAndReturn(
     err: (T) -> Unit = { it.printStackTrace() },
-    run: () -> R,
+    run: () -> R
 ): R? = try {
     run()
 } catch (ex: Exception) {
@@ -43,7 +44,7 @@ inline fun <reified T : Throwable, R> catchAndReturn(
  */
 inline fun <reified T : Throwable> booleanCatch(
     errorCallback: (T) -> Boolean = { true },
-    run: () -> Any?,
+    run: () -> Any?
 ): Boolean = try {
     run()
     true
@@ -128,15 +129,32 @@ inline fun Boolean?.ifFalse(block: () -> Unit): Boolean = if (this == false) {
  * @return The collection itself.
  */
 inline fun <reified T> Collection<T>?.ifNotEmpty(block: (Collection<T>) -> Unit): Collection<T>? {
-    if (this != null && this.isNotEmpty()) block(this)
+    if (!this.isNullOrEmpty()) block(this)
     return this
 }
 
 inline fun <reified T : () -> R, R> T.ifFulfilled(
     boolean: Boolean? = null,
-    block: () -> Boolean = { false },
+    block: () -> Boolean = { false }
 ) { if (boolean == true || block()) this() }
 
 infix fun <F, S, T> Pair<F, S>.to(other: T): Triple<F, S, T> = Triple(first, second, other)
 
+/** Gets the parent kClass of a companionObject else null. */
 val <T : Any> KClass<T>.companionParent get() = if (isCompanion) java.declaringClass.kotlin else null
+
+/** Get an enum instance from the ordinal value. */
+@Throws(LevelConversionException::class)
+inline fun <reified E : Enum<*>> Enum.Companion.fromOrdinal(
+    ordinal: Int,
+    orElse: (Int) -> E = { throw LevelConversionException("Couldn't convert $ordinal to an enum of ${E::class.simpleName}") }
+): E = E::class.java.enumConstants.getOrElse(ordinal, orElse)
+
+/** Converts an invokable to a string safely. */
+fun (() -> Any?).toSafeString(): String {
+    return try {
+        this.invoke().toString()
+    } catch (e: Exception) {
+        "String invocation failed: $e"
+    }
+}

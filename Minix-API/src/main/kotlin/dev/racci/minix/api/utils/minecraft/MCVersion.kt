@@ -1,7 +1,7 @@
 package dev.racci.minix.api.utils.minecraft
 
 import dev.racci.minix.api.extensions.server
-import dev.racci.minix.api.plugin.MinixLogger
+import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.utils.getKoin
 import kotlinx.atomicfu.atomic
 import kotlinx.collections.immutable.toImmutableList

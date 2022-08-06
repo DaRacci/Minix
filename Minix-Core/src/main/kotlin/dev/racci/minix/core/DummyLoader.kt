@@ -19,7 +19,7 @@ class DummyLoader {
         // Update the main class path
         description.setValue("main", "dev.racci.minix.core.MinixImpl")
 
-        // These values need to be null when a JavaPlugin class creates a new instance on the classloader
+        // These values need to be null when a JavaPlugin class creates a new instance on the classloader.
         classLoader.setValue<PluginClassLoader, Plugin?>("plugin", null)
         classLoader.setValue<PluginClassLoader, Plugin?>("pluginInit", null)
         val minix = MinixImpl()

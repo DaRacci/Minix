@@ -64,15 +64,13 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
     override val pluginCache: LoadingCache<MinixPlugin, PluginData<MinixPlugin>> = Caffeine.newBuilder().build(::PluginData)
     override val coroutineSession: LoadingCache<MinixPlugin, CoroutineSession> = Caffeine.newBuilder().build { plugin ->
         if (!plugin.isEnabled) {
-            plugin.log.throwing(
-                RuntimeException(
-                    """
+            throw plugin.log.fatal(RuntimeException()) {
+                """
                     Plugin ${plugin.name} attempted to start a new coroutine session while being disabled.
                     Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already
                     disposed of at this point and cannot be used.
-                    """.trimIndent()
-                )
-            )
+                """.trimIndent()
+            }
         }
         CoroutineSessionImpl(plugin)
     }
@@ -183,15 +181,25 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         return null
     }
 
+    private fun getClassLoader(plugin: MinixPlugin): ClassLoader {
+        var loader = pluginCache.getIfPresent(plugin)?.loader
+        if (loader != null) return loader
+
+        val property = JavaPlugin::class.declaredMemberProperties.first { it.name == "classLoader" }
+        property.isAccessible = true
+        loader = property.getter.call(plugin).unsafeCast()
+        property.isAccessible = false
+        return loader!!
+    }
+
     private fun MinixPlugin.loadReflection() {
+        var int = 0
+        val packageName = this::class.java.`package`.name.takeWhile { it != '.' || int++ < 2 }
+        println(packageName)
         val classGraph = ClassGraph()
-            .acceptPackages("dev.racci")
+            .acceptPackages(packageName)
             .addClassLoader(this::class.java.classLoader)
-            .addClassLoader(
-                JavaPlugin::class.declaredMemberProperties.first {
-                    it.name == "classLoader"
-                }.also { it.isAccessible = true }.getter.call(this) as ClassLoader
-            )
+            .addClassLoader(getClassLoader(this))
             .enableClassInfo()
             .enableAnnotationInfo()
             .enableMethodInfo()

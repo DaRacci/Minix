@@ -5,14 +5,12 @@ import dev.racci.minix.api.builders.ItemBuilderDSL
 import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.plugin.Minix
-import dev.racci.minix.api.plugin.MinixLogger
-import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.Version
 import dev.racci.minix.api.updater.providers.GithubUpdateProvider
 import dev.racci.minix.api.utils.loadModule
-import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.data.MinixConfig
@@ -49,10 +47,6 @@ class MinixImpl : Minix() {
         get<PluginService>().loadPlugin(this)
     }
 
-    override suspend fun handleAfterLoad() {
-        logger.level = config.loggingLevel
-    }
-
     override suspend fun handleEnable() {
         startSentry()
 
@@ -80,7 +74,7 @@ class MinixImpl : Minix() {
         Sentry.init { options ->
             options.dsn = "https://80dedb0e861949509a7ed845deaca185@o1112455.ingest.sentry.io/6147185"
             options.release = description.version
-            options.isDebug = log.debugEnabled
+            options.isDebug = log.isEnabled(MinixLogger.LoggingLevel.DEBUG)
             options.environment = if (Version(this@MinixImpl.description.version).isPreRelease) "pre-release" else "release"
             options.setBeforeSend { event, _ ->
                 event.setTag("TPS-AVG", server.tps.average().toString())

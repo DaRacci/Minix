@@ -142,15 +142,8 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
             logger.debug { "Built Jenkins URL - $builder" }
             URL(builder.toString())
         } catch (e: Exception) {
-            val throwable = InvalidUpdateProviderException(
-                "Failed to build jenkins api url!" +
-                    "\n\t\tHost: $host" +
-                    "\n\t\tJob: $job" +
-                    "\n\t\tToken: $token" +
-                    "\n\t\tBuild URL: $builder"
-            ).also { it.addSuppressed(e) }
-            logger.throwing(throwable)
-            throw throwable
+            val throwable = InvalidUpdateProviderException(null, e)
+            throw logger.fatal(throwable) { "Failed to build jenkins api URL! [Host=$host | Job=$job | Token=$token | URL=$builder]" }
         }
     }
 

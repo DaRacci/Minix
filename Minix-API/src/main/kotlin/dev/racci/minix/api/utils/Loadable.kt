@@ -53,7 +53,7 @@ abstract class Loadable<T> {
     abstract fun onLoad(): T
 
     /** The function to be called when the value is to be unloaded. */
-    open fun onUnload() {}
+    open fun onUnload() { /* Does nothing until overridden */ }
 
     /**
      * Attempts to load the value of this loadable.
@@ -82,12 +82,15 @@ abstract class Loadable<T> {
     }
 
     enum class State {
-        /* The value is loaded and available */
+        /* The value has been loaded and is available */
         LOADED,
+
         /* The value was loaded previously but is not available anymore */
         UNLOADED,
+
         /* The value is not loaded yet */
         LOADABLE,
+
         /* The value attempted to be loaded but failed */
         FAILED
     }

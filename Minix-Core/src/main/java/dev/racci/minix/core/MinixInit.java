@@ -11,6 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 
+
+/**
+ * Creating a dummy plugin without any kotlin methods, so we can dynamically load the libraries.
+ */
+@SuppressWarnings({"java:S3011", "java:S1171"}) // We need reflection and non-static init.
 public class MinixInit extends JavaPlugin {
 
     {
@@ -19,44 +24,40 @@ public class MinixInit extends JavaPlugin {
             var field = PluginClassLoader.class.getDeclaredField("libraryLoader");
             field.setAccessible(true);
             libraryLoader = (ClassLoader) field.get(getClassLoader());
+            field.setAccessible(false);
         } catch(NoSuchFieldException e) {
-            getLogger().severe("Failed to find field 'libraryLoader' in class 'PluginClassLoader', unsupported version?");
-            throw new RuntimeException(e);
+            this.getLogger().severe("Failed to find field 'libraryLoader' in class 'PluginClassLoader', unsupported version?");
+            throw new ReflectingInitializationException(e);
         } catch(IllegalAccessException e) {
-            getLogger().severe("Failed to access field 'libraryLoader' in class 'PluginClassLoader', unsupported version?");
-            throw new RuntimeException(e);
+            this.getLogger().severe("Failed to access field 'libraryLoader' in class 'PluginClassLoader', unsupported version?");
+            throw new ReflectingInitializationException(e);
         } catch(ClassCastException e) {
-            getLogger().severe("Failed to cast field 'libraryLoader' as 'ClassLoader' in class 'PluginClassLoader', unsupported version?");
-            throw new RuntimeException(e);
+            this.getLogger().severe("Failed to cast field 'libraryLoader' as 'ClassLoader' in class 'PluginClassLoader', unsupported version?");
+            throw new ReflectingInitializationException(e);
         }
 
         ApplicationBuilder builder;
         try {
             builder = InjectingApplicationBuilder.createAppending("Minix", libraryLoader);
         } catch(ReflectiveOperationException | IOException | URISyntaxException | NoSuchAlgorithmException e) {
-            getLogger().severe("Failed to create application builder.");
-            throw new RuntimeException(e);
+            this.getLogger().severe("Failed to create application builder.");
+            throw new ReflectingInitializationException(e);
         }
 
         var folder = Path.of(String.format("%s/libraries", getDataFolder()));
         if(!Files.exists(folder) && !folder.toFile().mkdirs()) {
-            getLogger().severe("Error while creating parent directories.");
-            throw new RuntimeException();
+            this.getLogger().severe("Error while creating parent directories.");
+            throw new ReflectingInitializationException(null);
         }
         builder.downloadDirectoryPath(folder);
-
-        builder.logger((m, anies) -> {
-            var logger = getLogger();
-            logger.info(m.formatted(anies));
-        });
 
         try {
             builder.build();
         } catch(IOException | ReflectiveOperationException | URISyntaxException | NoSuchAlgorithmException e) {
-            getLogger().severe("Failed to build application.");
-            throw new RuntimeException(e);
+            this.getLogger().severe("Failed to build application.");
+            throw new ReflectingInitializationException(e);
         }
 
-        new DummyLoader().loadPlugin(getDescription(), this, (PluginClassLoader) getClassLoader());
+        new DummyLoader().loadPlugin(this.getDescription(), this, (PluginClassLoader) this.getClassLoader());
     }
 }

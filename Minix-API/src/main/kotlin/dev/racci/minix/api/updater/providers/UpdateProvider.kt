@@ -50,7 +50,7 @@ abstract class UpdateProvider : KoinComponent {
      * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
-    @get:Throws(RequestTypeNotAvailableException::class, /*NotSuccessfullyQueriedException::class*/)
+    @get:Throws(RequestTypeNotAvailableException::class /*NotSuccessfullyQueriedException::class*/)
     open val latestFileURL: URL? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a file url!")
 
     /**
@@ -69,7 +69,7 @@ abstract class UpdateProvider : KoinComponent {
      * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
-    @get:Throws(RequestTypeNotAvailableException::class, /*NotSuccessfullyQueriedException::class*/)
+    @get:Throws(RequestTypeNotAvailableException::class /*NotSuccessfullyQueriedException::class*/)
     open val latestName: String? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a name!")
 
     /**
@@ -166,7 +166,10 @@ abstract class UpdateProvider : KoinComponent {
     @Throws(IOException::class)
     abstract suspend fun connect(url: URL): HttpResponse?
 
-    class InvalidUpdateProviderException(message: String? = null) : Exception(message)
+    class InvalidUpdateProviderException(
+        message: String? = null,
+        cause: Throwable? = null
+    ) : Exception(message, cause)
 
     data class UpdateFile(
         var downloadURL: URL? = null,
@@ -176,7 +179,7 @@ abstract class UpdateProvider : KoinComponent {
         var changelog: String = "",
         var gameVersion: String? = null,
         var version: Version? = null,
-        var gameVersions: Array<String>? = null,
+        var gameVersions: Array<String>? = null
     ) {
 
         override fun equals(other: Any?): Boolean {
@@ -222,7 +225,7 @@ abstract class UpdateProvider : KoinComponent {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): UpdateProvider = try {
             val key = regexKey.find(node.toString())?.value ?: throw InvalidUpdateProviderException(
                 "No provider key found, regex should be ${regexKey.pattern}"
@@ -237,7 +240,7 @@ abstract class UpdateProvider : KoinComponent {
         override fun serialize(
             type: Type,
             obj: UpdateProvider?,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ) {
             if (obj == null || obj is NullUpdateProvider) return
             val key = obj::class.simpleName!!
@@ -304,7 +307,7 @@ abstract class UpdateProvider : KoinComponent {
                         projectRepo,
                         node.nonVirtualNode("userAgent").getOrNull()?.get() ?: projectRepo,
                         node.nonVirtualNode("jarSearchRegex").getOrNull()?.get() ?: ".*\\.jar$",
-                        node.nonVirtualNode("md5SearchRegex").getOrNull()?.get() ?: ".*\\.md5$",
+                        node.nonVirtualNode("md5SearchRegex").getOrNull()?.get() ?: ".*\\.md5$"
                     )
                 },
                 JenkinsUpdateProvider::class to { node ->
@@ -323,7 +326,7 @@ abstract class UpdateProvider : KoinComponent {
             )
 
             fun ConfigurationNode.nonVirtualNode(
-                vararg path: Any,
+                vararg path: Any
             ): Result<ConfigurationNode> = if (!this.hasChild(*path)) {
                 Result.failure(SerializationException("Field " + path.joinToString("") + " was not present in node"))
             } else Result.success(this.node(*path))

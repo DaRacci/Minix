@@ -2,6 +2,29 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.2.1](https://github.com/DaRacci/Minix/compare/v3.2.0..v3.2.1) - 2022-08-08
+#### Bug Fixes
+- **(Logger)** fix error on a wrong enum type. - ([662ca29](https://github.com/DaRacci/Minix/commit/662ca29fbd6ba8808b94626e69c5fe06e166a669)) - [@DaRacci](https://github.com/DaRacci)
+- **(script)** Fix commit message - ([b754724](https://github.com/DaRacci/Minix/commit/b754724b674d04f55f09eab98cb6056bc5bcf96b)) - [@DaRacci](https://github.com/DaRacci)
+- IllegalAccessException - ([d123805](https://github.com/DaRacci/Minix/commit/d123805d4637bf722c730d43647c6610d35cb1e5)) - [@DaRacci](https://github.com/DaRacci)
+#### Documentation
+- **(readme)** Thank jetbrains - ([607d62e](https://github.com/DaRacci/Minix/commit/607d62e8168ce9695b89e3d0aff682f4b69276d0)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- **(Logger)** Add scopes - ([63ed42e](https://github.com/DaRacci/Minix/commit/63ed42e562d0a3fd68b7cb8bd6ae612bab46f088)) - [@DaRacci](https://github.com/DaRacci)
+- kotlin and mc update - ([12d8f0d](https://github.com/DaRacci/Minix/commit/12d8f0d4af16473da41cf05c0893236eaf33b50b)) - [@DaRacci](https://github.com/DaRacci)
+- ExpiringArray - ([8690d3e](https://github.com/DaRacci/Minix/commit/8690d3e82d91be6585106d8fbfe9a4014c92ef2d)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.2.0 - ([42a67a4](https://github.com/DaRacci/Minix/commit/42a67a416bca4ae2660dd2887d179f477a5951e7)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(PluginService)** add info about constant warning - ([6c516ab](https://github.com/DaRacci/Minix/commit/6c516ab931a3791d899197fcb8b23e7875f3471b)) - [@DaRacci](https://github.com/DaRacci)
+#### Style
+- **(Util)** Ktlint + grammar formatting - ([4f00f6e](https://github.com/DaRacci/Minix/commit/4f00f6ea2ad9b96998d46a583eef14aafa1f48bd)) - [@DaRacci](https://github.com/DaRacci)
+- **(Util)** Ktlint + grammar formatting - ([63f249a](https://github.com/DaRacci/Minix/commit/63f249a442775d7644125315d48317471d94ad87)) - [@DaRacci](https://github.com/DaRacci)
+#### Tests
+- **(renovate)** try fix renovate - ([e484c49](https://github.com/DaRacci/Minix/commit/e484c497b819dca85933b3b12e77919100000557)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.2.0](https://github.com/DaRacci/Minix/compare/v3.1.3..v3.2.0) - 2022-08-06
 #### Bug Fixes
 - **(Sentry)** fix breadcrumbs - ([e5e09fa](https://github.com/DaRacci/Minix/commit/e5e09fa72371fcdc22bf0d9c670e10725fd6afc5)) - [@DaRacci](https://github.com/DaRacci)

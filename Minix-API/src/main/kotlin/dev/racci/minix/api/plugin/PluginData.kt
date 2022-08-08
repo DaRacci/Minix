@@ -8,7 +8,9 @@ import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.isAccessible
 
 typealias ExtensionUnit<P> = (P) -> Extension<*>
 
@@ -22,7 +24,7 @@ class PluginData<P : MinixPlugin>(val plugin: P) {
 
     val extensionsBuilder by lazy(plugin::ExtensionsBuilder)
 
-    val loader by lazy { JavaPlugin::class.java.getDeclaredMethod("getClassLoader").invoke(plugin) as ClassLoader }
+    val loader by lazy { JavaPlugin::class.declaredMemberFunctions.first { it.name == "getClassLoader" }.also { it.isAccessible = true }.call(plugin) as ClassLoader }
     val extensions by lazy { mutableListOf<ExtensionUnit<P>>() }
     val loadedExtensions by lazy { mutableListOf<Extension<P>>() }
     val unloadedExtensions by lazy { mutableListOf<Extension<P>>() }

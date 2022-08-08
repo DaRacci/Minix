@@ -25,6 +25,7 @@ import dev.racci.minix.api.utils.kotlin.invokeIfOverrides
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
+import dev.racci.minix.core.MinixImpl
 import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
 import io.github.classgraph.AnnotationClassRef
 import io.github.classgraph.ClassGraph
@@ -195,7 +196,6 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
     private fun MinixPlugin.loadReflection() {
         var int = 0
         val packageName = this::class.java.`package`.name.takeWhile { it != '.' || int++ < 2 }
-        println(packageName)
         val classGraph = ClassGraph()
             .acceptPackages(packageName)
             .addClassLoader(this::class.java.classLoader)
@@ -204,6 +204,10 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             .enableAnnotationInfo()
             .enableMethodInfo()
             .scan()
+
+        if (this !is MinixImpl) {
+            log.info { "Ignore the following warning, this is expected behavior." }
+        }
 
         classGraph.getClassesWithAnnotation(MappedExtension::class.java)
             .filter { clazz ->

@@ -18,7 +18,7 @@ object CollectionUtils : UtilObject by UtilObject {
      * @return True if the collection contains the [String]
      */
     fun Collection<String>.containsIgnoreCase(
-        element: String,
+        element: String
     ): Boolean = any { it.equals(element, true) }
 
     /**
@@ -26,9 +26,8 @@ object CollectionUtils : UtilObject by UtilObject {
      *
      * @param T the cast type.
      * @param index the index of the element.
-     * @return the casted element at this index.
+     * @return the cast element at this index.
      */
-    @Suppress("UNCHECKED_CAST")
     @Throws(ClassCastException::class)
     fun <T> Collection<*>.getCast(
         index: Int
@@ -39,9 +38,8 @@ object CollectionUtils : UtilObject by UtilObject {
      *
      * @param T the cast type.
      * @param index the index of the element.
-     * @return the casted element at this index.
+     * @return the cast element at this index.
      */
-    @Suppress("UNCHECKED_CAST")
     inline fun <reified T> Collection<*>.getCastOrNull(
         index: Int
     ): T? = elementAtOrNull(index).safeCast()
@@ -52,9 +50,8 @@ object CollectionUtils : UtilObject by UtilObject {
      * @param T the cast type.
      * @param index the index of the element.
      * @param def the default value if the result is null.
-     * @return the casted element at this index or the default value.
+     * @return the cast element at this index, or the default value.
      */
-    @Suppress("UNCHECKED_CAST")
     inline fun <reified T> Collection<*>.getCastOrDef(
         index: Int,
         def: () -> T
@@ -67,7 +64,7 @@ object CollectionUtils : UtilObject by UtilObject {
      * @return True if the array contains the [String]
      */
     fun Array<String>.containsIgnoreCase(
-        element: String,
+        element: String
     ): Boolean = any { it.equals(element, true) }
 
     /**
@@ -75,7 +72,7 @@ object CollectionUtils : UtilObject by UtilObject {
      *
      * @param T the cast type.
      * @param index the index of the element.
-     * @return the casted element at this index.
+     * @return the cast element at this index.
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(ClassCastException::class)
@@ -88,9 +85,8 @@ object CollectionUtils : UtilObject by UtilObject {
      *
      * @param T the cast type.
      * @param index the index of the element.
-     * @return the casted element at this index.
+     * @return the cast element at this index.
      */
-    @Suppress("UNCHECKED_CAST")
     inline fun <reified T> Array<*>.getCastOrNull(
         index: Int
     ): T? = elementAtOrNull(index).safeCast()
@@ -101,9 +97,8 @@ object CollectionUtils : UtilObject by UtilObject {
      * @param T the cast type.
      * @param index the index of the element.
      * @param def the default value if the result is null.
-     * @return the casted element at this index or the default value.
+     * @return the cast element at this index, or the default value.
      */
-    @Suppress("UNCHECKED_CAST")
     inline fun <reified T> Array<*>.getCastOrDef(
         index: Int,
         def: () -> T
@@ -117,7 +112,7 @@ object CollectionUtils : UtilObject by UtilObject {
      * @return True if the map contains the key of [String]
      */
     fun <V> Map<String, V>.containsKeyIgnoreCase(
-        key: String,
+        key: String
     ): Boolean = keys.containsIgnoreCase(key)
 
     /**
@@ -128,7 +123,7 @@ object CollectionUtils : UtilObject by UtilObject {
      * @return True if the map contains the key of [String]
      */
     fun <V> Map<String, V>.getIgnoreCase(
-        key: String,
+        key: String
     ): V? = entries.find { it.key.equals(key, true) }?.value
 
     /**
@@ -139,7 +134,7 @@ object CollectionUtils : UtilObject by UtilObject {
      * @param onRemove The Action to execute.
      */
     inline fun <T> MutableCollection<T>.clear(
-        onRemove: (T) -> Unit,
+        onRemove: (T) -> Unit
     ) {
         toMutableList().forEach {
             remove(it)
@@ -156,7 +151,7 @@ object CollectionUtils : UtilObject by UtilObject {
      * @param onRemove The Action to execute.
      */
     inline fun <K, V> MutableMap<K, V>.clear(
-        onRemove: (K, V) -> Unit,
+        onRemove: (K, V) -> Unit
     ) = keys.toMutableSet().forEach {
         onRemove(it, remove(it)!!)
     }
@@ -170,7 +165,7 @@ object CollectionUtils : UtilObject by UtilObject {
      * @param onRemove The Action to execute.
      */
     inline fun <K, V> MutableMap<K, V>.clear(
-        onRemove: V.() -> Unit,
+        onRemove: V.() -> Unit
     ) = entries.toMutableSet().forEach { (key, _) ->
         onRemove(remove(key)!!)
     }
@@ -180,12 +175,12 @@ object CollectionUtils : UtilObject by UtilObject {
      *
      * @param K The key type.
      * @param V The value type.
-     * @param key The items key.
+     * @param key The item key.
      * @param onRemove The action to perform.
      */
     inline fun <K, V> MutableMap<K, V>.computeAndRemove(
         key: K,
-        onRemove: (K, V) -> Unit,
+        onRemove: (K, V) -> Unit
     ) {
         if (isEmpty() || key !in this) return
         val value = this.getOrElse(key) { return }
@@ -198,12 +193,12 @@ object CollectionUtils : UtilObject by UtilObject {
      *
      * @param K The key type.
      * @param V The value type.
-     * @param key The items key.
+     * @param key The item key.
      * @param onRemove The action to perform.
      */
     inline fun <K, V> MutableMap<K, V>.computeAndRemove(
         key: K,
-        onRemove: V.() -> Unit,
+        onRemove: V.() -> Unit
     ) {
         if (isEmpty() || key !in this) return
         val value = this.getOrElse(key) { return }
@@ -213,7 +208,7 @@ object CollectionUtils : UtilObject by UtilObject {
 
     operator fun <K, V> Map<K, V>.get(
         key: K,
-        default: V,
+        default: V
     ): V = getOrDefault(key, default)
 
     inline fun <reified T> Map<*, *>.getCast(
@@ -230,7 +225,7 @@ object CollectionUtils : UtilObject by UtilObject {
     ): T = this[key].safeCast() ?: def()
 
     fun <K, V> cacheOf(
-        build: K.() -> V,
+        build: K.() -> V
     ): LoadingCache<K, V> = cacheOf(build) {}
 
     inline fun <K, V> cacheOf(

@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED", "UNCHECKED_CAST", "SameParameterValue", "MemberVisibilityCanBePrivate")
+@file:Suppress("UNUSED", "SameParameterValue", "MemberVisibilityCanBePrivate")
 
 package dev.racci.minix.api.scheduler
 
@@ -47,7 +47,7 @@ abstract class CoroutineRunnable {
     }
 
     fun runTask(
-        plugin: MinixPlugin,
+        plugin: MinixPlugin
     ): CoroutineTask {
         checkNotYetScheduled()
         return setupTask(CoroutineScheduler.runTask(plugin, this))
@@ -55,7 +55,7 @@ abstract class CoroutineRunnable {
 
     fun runTaskLater(
         plugin: MinixPlugin,
-        delay: Duration,
+        delay: Duration
     ): CoroutineTask {
         checkNotYetScheduled()
         return setupTask(CoroutineScheduler.runTaskLater(plugin, this, delay))
@@ -64,14 +64,14 @@ abstract class CoroutineRunnable {
     fun runTaskTimer(
         plugin: MinixPlugin,
         delay: Duration,
-        period: Duration,
+        period: Duration
     ): CoroutineTask {
         checkNotYetScheduled()
         return setupTask(CoroutineScheduler.runTaskTimer(plugin, this, delay, period))
     }
 
     fun runAsyncTask(
-        plugin: MinixPlugin,
+        plugin: MinixPlugin
     ): CoroutineTask {
         checkNotYetScheduled()
         return setupTask(CoroutineScheduler.runAsyncTask(plugin, runnable = this))
@@ -79,7 +79,7 @@ abstract class CoroutineRunnable {
 
     fun runAsyncTaskLater(
         plugin: MinixPlugin,
-        delay: Duration,
+        delay: Duration
     ): CoroutineTask {
         checkNotYetScheduled()
         return setupTask(CoroutineScheduler.runAsyncTaskLater(plugin, this, delay))
@@ -88,7 +88,7 @@ abstract class CoroutineRunnable {
     fun runAsyncTaskTimer(
         plugin: MinixPlugin,
         delay: Duration,
-        period: Duration,
+        period: Duration
     ): CoroutineTask {
         checkNotYetScheduled()
         return setupTask(CoroutineScheduler.runAsyncTaskTimer(plugin, this, delay, period))

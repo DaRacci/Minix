@@ -71,6 +71,7 @@ abstract class MinixLogger {
      */
     protected open fun format(
         message: String,
+        scope: String?,
         level: LoggingLevel,
         throwable: Throwable?,
         colour: TextColors?
@@ -87,28 +88,33 @@ abstract class MinixLogger {
 
     open fun trace(
         t: Throwable? = null,
+        scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.TRACE) { log(FormattedMessage(msg, LoggingLevel.TRACE, t, TextColors.brightWhite)) }
+    ) = ifLoggable(LoggingLevel.TRACE) { log(FormattedMessage(msg, scope, LoggingLevel.TRACE, t, TextColors.brightWhite)) }
 
     open fun debug(
         t: Throwable? = null,
+        scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.DEBUG) { log(FormattedMessage(msg, LoggingLevel.DEBUG, t, TextColors.brightBlue)) }
+    ) = ifLoggable(LoggingLevel.DEBUG) { log(FormattedMessage(msg, scope, LoggingLevel.DEBUG, t, TextColors.brightBlue)) }
 
     open fun info(
         t: Throwable? = null,
+        scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.INFO) { log(FormattedMessage(msg, LoggingLevel.INFO, t, TextColors.cyan)) }
+    ) = ifLoggable(LoggingLevel.INFO) { log(FormattedMessage(msg, scope, LoggingLevel.INFO, t, TextColors.cyan)) }
 
     open fun warn(
         t: Throwable? = null,
+        scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.WARN) { log(FormattedMessage(msg, LoggingLevel.WARN, t, TextColors.yellow)) }
+    ) = ifLoggable(LoggingLevel.WARN) { log(FormattedMessage(msg, scope, LoggingLevel.WARN, t, TextColors.yellow)) }
 
     open fun error(
         t: Throwable? = null,
+        scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.ERROR) { log(FormattedMessage(msg, LoggingLevel.ERROR, t, TextColors.red)) }
+    ) = ifLoggable(LoggingLevel.ERROR) { log(FormattedMessage(msg, scope, LoggingLevel.ERROR, t, TextColors.red)) }
 
     /**
      * Logs an error, which is unrecoverable.
@@ -120,36 +126,42 @@ abstract class MinixLogger {
      */
     open fun fatal(
         t: Throwable? = null,
+        scope: String? = null,
         msg: () -> Any?
     ): RuntimeException {
-        log(FormattedMessage(msg, LoggingLevel.FATAL, t, TextColors.brightRed))
+        log(FormattedMessage(msg, scope, LoggingLevel.FATAL, t, TextColors.brightRed))
         return NoTraceException()
     }
 
     open fun trace(
         t: Throwable? = null,
+        scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.TRACE) { log(FormattedMessage(msg, LoggingLevel.TRACE, t, TextColors.brightWhite)) }
+    ) = ifLoggable(LoggingLevel.TRACE) { log(FormattedMessage(msg, scope, LoggingLevel.TRACE, t, TextColors.brightWhite)) }
 
     open fun debug(
         t: Throwable? = null,
+        scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.DEBUG) { log(FormattedMessage(msg, LoggingLevel.DEBUG, t, TextColors.brightBlue)) }
+    ) = ifLoggable(LoggingLevel.DEBUG) { log(FormattedMessage(msg, scope, LoggingLevel.DEBUG, t, TextColors.brightBlue)) }
 
     open fun info(
         t: Throwable? = null,
+        scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.INFO) { log(FormattedMessage(msg, LoggingLevel.INFO, t, TextColors.cyan)) }
+    ) = ifLoggable(LoggingLevel.INFO) { log(FormattedMessage(msg, scope, LoggingLevel.INFO, t, TextColors.cyan)) }
 
     open fun warn(
         t: Throwable? = null,
+        scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.WARN) { log(FormattedMessage(msg, LoggingLevel.WARN, t, TextColors.yellow)) }
+    ) = ifLoggable(LoggingLevel.WARN) { log(FormattedMessage(msg, scope, LoggingLevel.WARN, t, TextColors.yellow)) }
 
     open fun error(
         t: Throwable? = null,
+        scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.ERROR) { log(FormattedMessage(msg, LoggingLevel.ERROR, t, TextColors.red)) }
+    ) = ifLoggable(LoggingLevel.ERROR) { log(FormattedMessage(msg, scope, LoggingLevel.ERROR, t, TextColors.red)) }
 
     /**
      * Logs an error, which is unrecoverable.
@@ -160,9 +172,10 @@ abstract class MinixLogger {
      */
     open fun fatal(
         t: Throwable? = null,
+        scope: String? = null,
         msg: String? = null
     ): RuntimeException {
-        log(FormattedMessage(msg, LoggingLevel.FATAL, t, TextColors.brightRed))
+        log(FormattedMessage(msg, scope, LoggingLevel.FATAL, t, TextColors.brightRed))
         return NoTraceException()
     }
 
@@ -195,6 +208,7 @@ abstract class MinixLogger {
     @API(status = API.Status.STABLE, since = "3.2.0")
     inner class FormattedMessage(
         input: String?,
+        scope: String?,
         val level: LoggingLevel,
         val throwable: Throwable?,
         textColour: TextColors?,
@@ -206,6 +220,7 @@ abstract class MinixLogger {
 
         constructor(
             input: () -> Any?,
+            scope: String?,
             level: LoggingLevel,
             throwable: Throwable?,
             textColour: TextColors?,
@@ -213,7 +228,7 @@ abstract class MinixLogger {
             alignment: TextAlign = TextAlign.NONE,
             overflowWrap: OverflowWrap = OverflowWrap.NORMAL,
             width: Int = terminal.info.width
-        ) : this(input.toSafeString(), level, throwable, textColour, whitespace, alignment, overflowWrap, width)
+        ) : this(input.toSafeString(), scope, level, throwable, textColour, whitespace, alignment, overflowWrap, width)
 
         val raw: String
 
@@ -223,7 +238,7 @@ abstract class MinixLogger {
 
         init {
             this.raw = input.orEmpty()
-            this.formatted = format(raw, level, throwable, textColour)
+            this.formatted = format(raw, scope, level, throwable, textColour)
             this.rendered = terminal.render(formatted, whitespace, alignment, overflowWrap, width)
         }
     }

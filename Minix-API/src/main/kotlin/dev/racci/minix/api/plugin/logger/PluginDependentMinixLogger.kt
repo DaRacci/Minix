@@ -27,6 +27,7 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
 
     override fun format(
         message: String,
+        scope: String?,
         level: LoggingLevel,
         throwable: Throwable?,
         colour: TextColors?
@@ -35,6 +36,7 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
         var appended = false
 
         if (level.ordinal > 3) builder.append(colour?.invoke("[${level.name.capitalize()}] ") ?: "[${level.name.capitalize()}] ")
+        if (!scope.isNullOrBlank()) builder.append(colour?.invoke("[$scope] ") ?: "[$scope] ")
 
         if (message.isNotEmpty()) {
             val lines = message.split('\n')
@@ -51,6 +53,7 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
             val stackTrace = isEnabled(LoggingLevel.DEBUG)
 
             while (cause != null && attempts++ < 3) {
+                if (!builder.last().isWhitespace() && builder.last() != '\n') builder.append(' ')
                 if (attempts != 0) {
                     builder.append("\n")
                     builder.append(TextColors.brightRed("Nested Caused by: "))

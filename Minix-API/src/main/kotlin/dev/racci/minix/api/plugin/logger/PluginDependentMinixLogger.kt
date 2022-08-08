@@ -15,9 +15,15 @@ import kotlin.reflect.jvm.isAccessible
 
 class PluginDependentMinixLogger<T : MinixPlugin>(
     override val plugin: T,
-    loggingLevel: LoggingLevel = LoggingLevel.fromJava(plugin.logger.level)
+    loggingLevel: LoggingLevel = LoggingLevel.INFO
 ) : MinixLogger(loggingLevel), WithPlugin<T> {
     private var logger: Logger? = null
+
+    init {
+        if (plugin.logger.level != null) {
+            this.setLevel(LoggingLevel.fromJava(plugin.logger.level))
+        }
+    }
 
     override fun format(
         message: String,

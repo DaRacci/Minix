@@ -92,7 +92,7 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
         val logAtLevel = level.toLog4J()
 
         addSentryBreadcrumb(message)
-        getLogger().log(logAtLevel, null as Marker?, message.rendered, message.throwable)
+        getLogger().log(logAtLevel, null as Marker?, message.rendered)
     }
 
     private fun addSentryBreadcrumb(message: FormattedMessage) {

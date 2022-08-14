@@ -9,7 +9,6 @@ import dev.racci.minix.api.coroutine.launch
 import dev.racci.minix.api.coroutine.minecraftDispatcher
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.utils.unsafeCast
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
@@ -139,8 +138,8 @@ fun <T : Event> Listener.event(
             } else plugin.minecraftDispatcher
 
             plugin.launch(dispatcher) {
-                if (type.isInstance(event) && event::class.isInstance(type)) {
-                    block(event.unsafeCast())
+                if (type.isInstance(event) && event as? T != null) {
+                    block(event)
                 }
             }
         },

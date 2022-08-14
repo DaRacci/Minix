@@ -8,7 +8,6 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.ItemStack
-import org.jetbrains.annotations.ApiStatus
 
 /**
  * Holds the block and block face of an event.
@@ -21,7 +20,6 @@ data class BlockData(
 /**
  * Base class for all combo events.
  */
-@ApiStatus.Internal
 sealed class AbstractComboEvent(
     player: Player,
     /**

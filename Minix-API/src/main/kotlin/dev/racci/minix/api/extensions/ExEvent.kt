@@ -68,9 +68,7 @@ inline fun <reified T : Event> Extension<*>.event(
     forceAsync: Boolean = false,
     noinline block: suspend T.() -> Unit
 ) {
-    this.eventListener
-    val listener = SimpleKListener(plugin)
-    listener.event(
+    eventListener.event(
         type = T::class,
         plugin = plugin,
         priority,

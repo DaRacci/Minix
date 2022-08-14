@@ -52,7 +52,7 @@ dependencies {
 
     slim(rootProject.libs.mordant)
 
-    slim("io.github.classgraph:classgraph:4.8.146")
+    slim("io.github.classgraph:classgraph:4.8.149")
 }
 
 kotlin {

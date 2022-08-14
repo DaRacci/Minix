@@ -206,7 +206,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             .scan()
 
         if (this !is MinixImpl) {
-            log.info { "Ignore the following warning, this is expected behavior." }
+            minix.log.info { "Ignore the following warning, this is expected behavior." }
         }
 
         classGraph.getClassesWithAnnotation(MappedExtension::class.java)

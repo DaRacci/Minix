@@ -63,7 +63,7 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
 
                 builder.append(TextColors.brightCyan(cause::class.simpleName ?: "null"))
                 builder.append(TextColors.brightWhite(" -> "))
-                builder.append(TextColors.brightCyan(cause.localizedMessage))
+                builder.append(TextColors.brightCyan(cause.message ?: "null"))
 
                 if (stackTrace) {
                     cause.stackTrace.forEach {

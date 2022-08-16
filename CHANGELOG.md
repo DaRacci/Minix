@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.2.2](https://github.com/DaRacci/Minix/compare/v3.2.1..v3.2.2) - 2022-08-16
+#### Bug Fixes
+- **(Event)** Instance Checking - ([61ccf49](https://github.com/DaRacci/Minix/commit/61ccf49630c57ae30099378eadd17749b8d833db)) - [@DaRacci](https://github.com/DaRacci)
+- **(Event)** Extension Listener - ([bff0f2d](https://github.com/DaRacci/Minix/commit/bff0f2d98e231d4df76d8dd2f981f4537ba49b0e)) - [@DaRacci](https://github.com/DaRacci)
+- **(Logger)** Display qualifiedName - ([aabdb9b](https://github.com/DaRacci/Minix/commit/aabdb9b518a4d436cf4b4649f44c12d6ad677cbb)) - [@DaRacci](https://github.com/DaRacci)
+- **(Logger)** Unformated stacktrace - ([239ad23](https://github.com/DaRacci/Minix/commit/239ad23aee1e2cb97b5b766736e83a8e3d7ae2f9)) - [@DaRacci](https://github.com/DaRacci)
+- **(Logger)** Null-pointer - ([78302f4](https://github.com/DaRacci/Minix/commit/78302f4981e12db1205d342823e0e0d105d4c90f)) - [@DaRacci](https://github.com/DaRacci)
+- **(Logger)** Log from Minix - ([3e694cd](https://github.com/DaRacci/Minix/commit/3e694cd729638974bfd7cc7a97754ac21c5cab38)) - [@DaRacci](https://github.com/DaRacci)
+- **(script)** bump script - ([a51e32e](https://github.com/DaRacci/Minix/commit/a51e32e8c9e420e5be4951c391c4247204c6a7cb)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.2.1 - ([5597e18](https://github.com/DaRacci/Minix/commit/5597e1876343e3cada173efb8c1b9048a98b6254)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.2.1](https://github.com/DaRacci/Minix/compare/v3.2.0..v3.2.1) - 2022-08-08
 #### Bug Fixes
 - **(Logger)** fix error on a wrong enum type. - ([662ca29](https://github.com/DaRacci/Minix/commit/662ca29fbd6ba8808b94626e69c5fe06e166a669)) - [@DaRacci](https://github.com/DaRacci)

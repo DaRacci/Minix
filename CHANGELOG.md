@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.2.3](https://github.com/DaRacci/Minix/compare/v3.2.2..v3.2.3) - 2022-08-20
+#### Bug Fixes
+- **(PlayerMap)** MissingPluginException - ([eaa2577](https://github.com/DaRacci/Minix/commit/eaa25772652d552bc2d54b515498876b07ad7ebe)) - [@DaRacci](https://github.com/DaRacci)
+- **(script)** chore not core - ([8c2012f](https://github.com/DaRacci/Minix/commit/8c2012fe1d7654f4cc368a2070310ba1e97ec268)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- **(PluginService)** #firstNonMinixPlugin - ([059eaf2](https://github.com/DaRacci/Minix/commit/059eaf2f263267c5cc5ef367060f1f27952c2c56)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.2.2 - ([5855d32](https://github.com/DaRacci/Minix/commit/5855d32b658b9f99a099d985d06bb700cdaeb272)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.2.2](https://github.com/DaRacci/Minix/compare/v3.2.1..v3.2.2) - 2022-08-16
 #### Bug Fixes
 - **(Event)** Instance Checking - ([61ccf49](https://github.com/DaRacci/Minix/commit/61ccf49630c57ae30099378eadd17749b8d833db)) - [@DaRacci](https://github.com/DaRacci)

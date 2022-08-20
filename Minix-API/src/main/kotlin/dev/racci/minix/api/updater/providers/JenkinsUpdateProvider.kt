@@ -59,10 +59,12 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
                     "The Jenkins server requires authentication, but no token was provided. " +
                         "Please add a token to your configuration."
                 }
+
                 code -> logger.error {
                     "The Jenkins server requires authentication, but the provided token is invalid. " +
                         "Please check your configuration."
                 }
+
                 else -> logErrorOffline(host, e.message.orEmpty())
             }
             return@withContext UpdateResult.FAILED_KEY

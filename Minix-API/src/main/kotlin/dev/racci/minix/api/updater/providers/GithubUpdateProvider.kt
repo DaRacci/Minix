@@ -79,6 +79,7 @@ class GithubUpdateProvider(
                         result.downloadURL = URL(url)
                         foundDL = true
                     }
+
                     assetMD5Pattern.matches(name) -> result.checksum = getMD5FromUrl(url)
                 }
             }
@@ -108,9 +109,11 @@ class GithubUpdateProvider(
                     if (assetJarPattern.matches(match.groups["file"]!!.value)) return match.groups["hash"]!!.value
                 }
             }
-        } catch (ignored: Exception) {}
+        } catch (ignored: Exception) {
+        }
         return ""
     }
+
     override val latestChecksum: String? get() = lastResult?.checksum?.orEmpty()
 
     override val providesMinecraftVersions get() = false // TODO: I think this is possible, but I don't know how to do it.

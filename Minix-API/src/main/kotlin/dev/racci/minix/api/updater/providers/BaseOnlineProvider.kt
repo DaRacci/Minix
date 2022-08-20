@@ -14,7 +14,7 @@ import io.ktor.http.HttpStatusCode
 import java.net.URL
 
 abstract class BaseOnlineProvider protected constructor(
-    private val userAgent: String = "Minix Auto-Updater",
+    private val userAgent: String = "Minix Auto-Updater"
 ) : UpdateProvider() {
 
     override val latestReleaseType: ReleaseType

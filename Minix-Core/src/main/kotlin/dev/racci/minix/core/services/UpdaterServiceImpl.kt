@@ -70,7 +70,9 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
     private val updaterConfig by lazy { get<DataService>().get<UpdaterConfig>() }
     private val updateFolder by lazy { // Ensure the update folder exists whenever we first get its location
         val folder = plugin.dataFolder.resolve(updaterConfig.updateFolder)
-        if (!folder.exists() && !folder.mkdirs()) { log.error { "Could not create update folder!" } }
+        if (!folder.exists() && !folder.mkdirs()) {
+            log.error { "Could not create update folder!" }
+        }
         folder
     }
     override val enabledUpdaters: MutableList<PluginUpdater> = Collections.synchronizedList(mutableListOf<PluginUpdater>())
@@ -95,6 +97,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                             oldFile.toPath().moveTo(updateFolder.resolve("old-versions/${holder.oldVersion}").toPath())
                         }
                     }
+
                     holder.oldVersion -> {
                         log.warn {
                             """
@@ -106,6 +109,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                             """.trimIndent()
                         }
                     }
+
                     else -> {} // We can assume that the plugin was updated manually.
                 }
 
@@ -159,9 +163,11 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
             updater.pluginInstance == null -> {
                 plugin.log.warn { "Couldn't find plugin with the name ${updater.name}" }
             }
+
             updater.providers.isEmpty() -> {
                 plugin.log.warn { "Updater ${updater.name} has no providers" }
             }
+
             else -> enabledUpdaters += updater
         }
     }
@@ -204,14 +210,17 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                 }
                 UpdateResult.FAILED_NO_VERSION
             }
+
             updater.localVersion == Version.ERROR -> {
                 plugin.log.warn { "Couldn't get local version for ${updater.name} - ${updater.pluginInstance?.description?.version}" }
                 UpdateResult.FAILED_VERSION
             }
+
             updater.localVersion >= updater.provider.latestVersion!! -> {
                 versionAppend("${updater.name} is up to date or ahead of the latest remote version!", updater)
                 UpdateResult.NO_UPDATE
             }
+
             updater.provider.providesMinecraftVersion -> {
                 if (isCompatible(updater)) {
                     versionAppend("An update for ${updater.name} is available!", updater)
@@ -220,6 +229,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                     UpdateResult.FAILED_VERSION_INCOMPATIBLE
                 }
             }
+
             else -> {
                 versionAppend("An update for ${updater.name} is available!", updater)
                 UpdateResult.UPDATE_FOUND
@@ -247,13 +257,16 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                     log.debug { "Backup failed for ${updater.name} with ${updater.provider.name}" }
                     updater.result = UpdateResult.FAILED_BACKUP
                 }
+
                 hashCheck.getCompleted() != null -> {
                     log.debug { "Hash check failed for ${updater.name} with ${updater.provider.name}" }
                     updater.result = UpdateResult.FAILED_CHECKSUM
                 }
+
                 updater.result?.name?.startsWith("FAILED") == true -> {
                     log.warn { "Update failed for ${updater.name} with reason ${updater.provider.name}" }
                 }
+
                 else -> {
                     val (file, _) = unzip(downloadFile).also { if (it.second.name.startsWith("FAILED")) updater.result = it.second }
                     readyPlugin(updater, file ?: downloadFile)
@@ -294,7 +307,9 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
             downloadFile.createNewFile()
             outputStream = downloadFile.outputStream()
 
-            if (updaterConfig.announceDownloadProgress) { log.info { "Started downloading update: ${provider.latestVersion}" } }
+            if (updaterConfig.announceDownloadProgress) {
+                log.info { "Started downloading update: ${provider.latestVersion}" }
+            }
 
             withTimeout(15.seconds) {
                 downloadWriter(inputStream, outputStream, fileLength)
@@ -307,14 +322,17 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                     log.error(e) { "The update provider supplied invalid capability data!" }
                     UpdateResult.FAILED_DOWNLOAD
                 }
+
                 is NotSuccessfullyQueriedException -> {
                     log.error(e) { "The update provider could not be queried!" }
                     UpdateResult.FAILED_CONNECTION
                 }
+
                 is IOException -> {
                     log.error(e) { "The auto-updater tried to download a new update but was unsuccessful." }
                     UpdateResult.FAILED_DOWNLOAD
                 }
+
                 else -> throw e
             }
         } finally {
@@ -411,7 +429,9 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                 }
                 if (downloadFile.delete()) {
                     plugin.log.info { "Deleted corrupted file." }
-                } else { plugin.log.warn { "Could not delete corrupted file: ${downloadFile.absolutePath}" } }
+                } else {
+                    plugin.log.warn { "Could not delete corrupted file: ${downloadFile.absolutePath}" }
+                }
                 return UpdateResult.FAILED_CHECKSUM
             }
         }

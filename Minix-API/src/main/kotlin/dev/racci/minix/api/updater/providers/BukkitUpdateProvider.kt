@@ -69,6 +69,7 @@ class BukkitUpdateProvider(
                         )
                         lastResult!!
                     }
+
                     index == jsonObj.size() - 1 -> return@withContext UpdateResult.FAILED_NO_VERSION
                     else -> {
                         UpdateFile(

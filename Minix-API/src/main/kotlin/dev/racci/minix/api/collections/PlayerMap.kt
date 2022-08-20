@@ -13,8 +13,7 @@ import kotlin.time.Duration.Companion.seconds
 
 /** A map, which removes a player once they are offline for more than 30 seconds. */
 class PlayerMap<T> : HashMap<Player, T>(), WithPlugin<MinixPlugin> {
-    override val plugin: MinixPlugin = PluginService.fromClassloader(this.javaClass.classLoader)
-        ?: throw MissingPluginException("Could not find MinixPlugin for classloader ${this.javaClass.classLoader}")
+    override val plugin: MinixPlugin = PluginService.firstNonMinixPlugin() ?: throw MissingPluginException("Could not find MinixPlugin in the stack.")
 
     init {
         event<PlayerQuitEvent>(EventPriority.MONITOR, true) {

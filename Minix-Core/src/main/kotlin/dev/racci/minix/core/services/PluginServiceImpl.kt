@@ -26,6 +26,7 @@ import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
 import dev.racci.minix.core.MinixImpl
+import dev.racci.minix.core.MinixInit
 import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
 import io.github.classgraph.AnnotationClassRef
 import io.github.classgraph.ClassGraph
@@ -39,6 +40,7 @@ import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
+import org.bukkit.plugin.java.PluginClassLoader
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
@@ -49,6 +51,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import org.koin.ext.getFullName
+import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.isSubtypeOf
@@ -180,6 +183,20 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             return plugin
         }
         return null
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    override fun firstNonMinixPlugin(): MinixPlugin? {
+        return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+            .walk { stream ->
+                stream.filter { frame ->
+                    val loader = frame.declaringClass.classLoader
+                    loader is PluginClassLoader && loader.plugin !is MinixImpl && loader.plugin !is MinixInit
+                }.map { frame ->
+                    val classLoader = frame.declaringClass.classLoader as PluginClassLoader
+                    classLoader.plugin as MinixPlugin
+                }.findFirst()
+            }.getOrNull()
     }
 
     private fun getClassLoader(plugin: MinixPlugin): ClassLoader {

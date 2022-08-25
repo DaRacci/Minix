@@ -24,6 +24,7 @@ dev.racci.minix.api.services
 dev.racci.minix.api.updater
 dev.racci.minix.api.updater.providers
 dev.racci.minix.api.utils
+dev.racci.minix.api.utils.adventure
 dev.racci.minix.api.utils.collections
 dev.racci.minix.api.utils.data
 dev.racci.minix.api.utils.exposed

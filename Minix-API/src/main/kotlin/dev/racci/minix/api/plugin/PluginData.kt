@@ -1,5 +1,6 @@
 package dev.racci.minix.api.plugin
 
+import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionStateEvent
 import dev.racci.minix.api.plugin.logger.PluginDependentMinixLogger
@@ -32,7 +33,7 @@ class PluginData<P : MinixPlugin>(val plugin: P) {
 
     val log by lazy { PluginDependentMinixLogger(plugin) }
 
-    val configurations by lazy { mutableListOf<KClass<*>>() }
+    val configurations by lazy { mutableListOf<KClass<MinixConfig<P>>>() }
 
     var metrics: Metrics? = null
 }

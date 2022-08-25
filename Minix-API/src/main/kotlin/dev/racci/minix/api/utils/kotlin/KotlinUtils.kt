@@ -4,6 +4,11 @@ package dev.racci.minix.api.utils.kotlin
 
 import dev.racci.minix.api.exceptions.LevelConversionException
 import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.declaredFunctions
+import kotlin.reflect.full.functions
+import kotlin.reflect.full.memberProperties
 
 inline fun <reified T : Throwable, reified U : Any> catch(
     err: (T) -> U,
@@ -52,8 +57,22 @@ inline fun <reified T : Throwable> booleanCatch(
     if (t is T) errorCallback(t) else throw t
 }
 
-infix fun KClass<*>.doesOverride(methodName: String): Boolean {
-    return this.java.methods.find { it.name == methodName } in this.java.declaredMethods
+infix fun KClass<*>.doesOverride(functionName: String): Boolean {
+    val function = this.functions.find { it.name == functionName }
+    if (function != null) return this.doesOverride(function)
+
+    val property = this.memberProperties.find { it.name == functionName }
+    if (property != null) return this.doesOverride(property)
+
+    return false
+}
+
+infix fun KClass<*>.doesOverride(function: KFunction<*>): Boolean {
+    return this.functions.find { it == function } in declaredFunctions
+}
+
+infix fun KClass<*>.doesOverride(property: KProperty1<*, *>): Boolean {
+    return this.memberProperties.find { it == property } in memberProperties
 }
 
 /**

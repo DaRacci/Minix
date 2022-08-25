@@ -8,6 +8,7 @@ import dev.racci.minix.api.coroutine.launch
 import dev.racci.minix.api.coroutine.minecraftDispatcher
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.utils.safeCast
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import org.bukkit.event.Listener
 import org.bukkit.plugin.Plugin
+import org.koin.core.component.KoinComponent
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.CoroutineContext
 
@@ -78,7 +80,9 @@ fun WithPlugin<*>.launch(
     return plugin.launch(dispatcher, parent, block)
 }
 
-interface WithPlugin<T : MinixPlugin> {
+val WithPlugin<*>.log: MinixLogger get() = plugin.log
+
+interface WithPlugin<T : MinixPlugin> : KoinComponent {
 
     val plugin: T
 }

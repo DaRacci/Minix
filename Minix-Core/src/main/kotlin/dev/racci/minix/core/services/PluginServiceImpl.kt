@@ -17,7 +17,6 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.PluginData
 import dev.racci.minix.api.plugin.SusPlugin
 import dev.racci.minix.api.scheduler.CoroutineScheduler
-import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.kotlin.ifNotEmpty
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
@@ -62,7 +61,7 @@ import kotlin.reflect.jvm.isAccessible
 import kotlin.time.Duration.Companion.seconds
 
 class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
-    private val dataService by inject<DataService>()
+    private val dataService by inject<DataServiceImpl>()
 
     override val loadedPlugins by lazy { mutableMapOf<KClass<out MinixPlugin>, MinixPlugin>() }
     override val pluginCache: LoadingCache<MinixPlugin, PluginData<MinixPlugin>> = Caffeine.newBuilder().build(::PluginData)
@@ -168,7 +167,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
 
             cache?.configurations?.takeIf(MutableList<*>::isNotEmpty)?.let { configs ->
                 plugin.log.debug { "Unloading ${configs.size} configurations for ${plugin.name}" }
-                dataService.configurations.invalidateAll(configs)
+                dataService.configDataHolder.invalidateAll(configs)
             }
 
             plugin.log.debug { "Disabling the coroutine session for ${plugin.name}" }
@@ -248,10 +247,15 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         classGraph.getClassesWithAnnotation(MappedConfig::class.java)
             .filter { matchingAnnotation<MappedConfig>(this, it, "configuration") }
             .forEach {
-                log.debug { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
+                log.trace(scope = SCOPE) { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
                 try {
-                    get<DataService>().configurations[it.loadClass().kotlin] // Call the cache so we load can have it loaded.
-                } catch (ignored: NoBeanDefFoundException) {} // This is so i can auto-magic load the data service.
+                    dataService.configDataHolder[it.loadClass().kotlin.unsafeCast()] // Call the cache so we load can have it loaded.
+                } catch (ignored: NoBeanDefFoundException) {
+                    // This is so I can auto-magic load the data service.
+                } catch (e: ClassCastException) {
+                    log.error(e) { "Failed to create configuration ${it.simpleName} for ${this.name}" }
+                    throw e
+                }
             }
     }
 
@@ -461,7 +465,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
     }
 
     // TODO: Why oh why is this not working? Please somehow figure out how to get the dependencies of dependencies and so on.
-    private suspend fun Extension<MinixPlugin>.extensions(
+    /*private suspend fun Extension<MinixPlugin>.extensions(
         extensions: MutableList<Extension<MinixPlugin>>,
         dependents: MutableList<Extension<MinixPlugin>>
     ): MutableList<Extension<MinixPlugin>> {
@@ -475,7 +479,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             extension.setState(ExtensionState.FAILED_DEPENDENCIES)
         }
         return dependents
-    }
+    }*/
 
     private suspend inline fun <reified P : MinixPlugin> P.shutdownInOrder() {
         val cache = pluginCache[this]
@@ -510,6 +514,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
     }
 
     companion object {
+        const val SCOPE = "pluginService"
 
         fun Extension<*>.dependsOn(other: Extension<*>): Boolean {
             if (this.dependencies.isEmpty()) return false

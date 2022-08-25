@@ -2,9 +2,7 @@ package dev.racci.minix.api.extension
 
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MinixInternal
-import dev.racci.minix.api.extensions.SimpleKListener
-import dev.racci.minix.api.extensions.WithPlugin
-import dev.racci.minix.api.plugin.Minix
+import dev.racci.minix.api.extensions.KListener
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
@@ -12,14 +10,11 @@ import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.companionParent
 import dev.racci.minix.api.utils.now
 import dev.racci.minix.api.utils.unsafeCast
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.datetime.Instant
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.findAnnotation
@@ -32,48 +27,35 @@ import kotlin.time.Duration.Companion.seconds
  * @param P The owning plugin.
  * @see DataService
  */
-abstract class Extension<P : MinixPlugin> : KoinComponent, Qualifier, WithPlugin<P> {
+@OptIn(MinixInternal::class)
+abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
     private val annotation by lazy { this::class.findAnnotation<MappedExtension>() }
     private val pluginService by inject<PluginService>()
-    @MinixInternal val eventListener by lazy { SimpleKListener(plugin) }
-    @MinixInternal val supervisor by lazy { CoroutineScope(SupervisorJob()) }
 
-    open val name: String get() = annotation?.name ?: this::class.simpleName ?: throw RuntimeException("Extension name is not defined")
+    final override val name get() = annotation?.name ?: this::class.simpleName ?: throw RuntimeException("Extension name is not defined")
+    final override val log get() = plugin.log
+    final override val bindToKClass get() = annotation?.bindToKClass.takeIf { it != Extension::class }
+    final override val value by lazy { "${plugin.name}:$name" }
+    final override val supervisor by lazy { CoroutineScope(SupervisorJob()) }
+    final override val dependencies get() = annotation?.dependencies?.filterIsInstance<KClass<Extension<*>>>().orEmpty().toImmutableSet()
+    final override var bound = false
+    final override var state = ExtensionState.UNLOADED
+    final override val loaded get() = state == ExtensionState.LOADED || state == ExtensionState.ENABLED
+    final override val eventListener = object : KListener<P> {
+        override val plugin: P get() = this@Extension.plugin
+    }
 
-    open val bindToKClass: KClass<*>? get() = annotation?.bindToKClass.takeIf { it != Extension::class }
+    override suspend fun handleLoad() = Unit
+    override suspend fun handleEnable() = Unit
 
-    open val minix by inject<Minix>()
+    override suspend fun handleUnload() = Unit
 
-    open val log get() = plugin.log
-
-    open val dependencies: ImmutableList<KClass<out Extension<*>>> get() = annotation?.dependencies?.filterIsInstance<KClass<Extension<*>>>().orEmpty().toImmutableList()
-
-    open var state: ExtensionState = ExtensionState.UNLOADED
-
-    open val loaded: Boolean get() = state == ExtensionState.LOADED || state == ExtensionState.ENABLED
-
-    override val value by lazy(::name)
-
-    @MinixInternal
-    var bound: Boolean = false
-
-    /** Called when the plugin loading and not yet enabled. */
-    open suspend fun handleLoad() {}
-
-    /** Called when the plugin has finished loading and is enabled. */
-    open suspend fun handleEnable() {}
-
-    /** Called when the plugin is being disabled. */
-    open suspend fun handleUnload() {}
-
-    open suspend fun setState(state: ExtensionState) {
+    suspend fun setState(state: ExtensionState) {
         send(plugin, ExtensionStateEvent(this, state))
         this.state = state
     }
 
-    final override fun toString(): String {
-        return "${plugin.name}:$value"
-    }
+    final override fun toString(): String = "${plugin.name}:$value"
 
     /**
      * Designed to be applied to a companion object of a class that extends [Extension].

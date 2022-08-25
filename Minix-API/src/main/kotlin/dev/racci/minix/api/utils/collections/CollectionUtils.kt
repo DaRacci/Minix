@@ -58,6 +58,18 @@ object CollectionUtils : UtilObject by UtilObject {
     ): T = elementAtOrNull(index).safeCast() ?: def()
 
     /**
+     * Find the first element that matches the name given.
+     *
+     * @param name the name to match.
+     * @param ignoreCase true if the name should be matched ignoring case.
+     * @return the first element that matches the name.
+     */
+    fun Collection<String>.find(
+        name: String,
+        ignoreCase: Boolean = false
+    ): String? = find { it.equals(name, ignoreCase) }
+
+    /**
      * Checks if the array contains the [String] by IgnoreCase.
      *
      * @param element The [String] to look for.
@@ -103,6 +115,11 @@ object CollectionUtils : UtilObject by UtilObject {
         index: Int,
         def: () -> T
     ): T = elementAtOrNull(index).safeCast() ?: def()
+
+    fun Array<String>.find(
+        name: String,
+        ignoreCase: Boolean = false
+    ): String? = find { it.equals(name, ignoreCase) }
 
     /**
      * Checks if the map contains the [String] as a key by IgnoreCase.

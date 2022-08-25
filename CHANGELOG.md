@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.3.0](https://github.com/DaRacci/Minix/compare/v3.2.3..v3.3.0) - 2022-08-25
+#### Features
+- **(DataService)** Complete rework. - ([ad9eed0](https://github.com/DaRacci/Minix/commit/ad9eed0532c70fb786709e5e64189ca567b1c4ff)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.2.3 - ([cb06a93](https://github.com/DaRacci/Minix/commit/cb06a93a63f177654e6552c49d223718bd3ede37)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.2.3](https://github.com/DaRacci/Minix/compare/v3.2.2..v3.2.3) - 2022-08-20
 #### Bug Fixes
 - **(PlayerMap)** MissingPluginException - ([eaa2577](https://github.com/DaRacci/Minix/commit/eaa25772652d552bc2d54b515498876b07ad7ebe)) - [@DaRacci](https://github.com/DaRacci)

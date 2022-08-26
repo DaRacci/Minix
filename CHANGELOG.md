@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.3.2](https://github.com/DaRacci/Minix/compare/v3.3.1..v3.3.2) - 2022-08-26
+#### Bug Fixes
+- **(DataService)** out generics - ([17ee7de](https://github.com/DaRacci/Minix/commit/17ee7de46fff9888dc1ce9b604f184859b7be6ad)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.3.1 - ([6dd20d7](https://github.com/DaRacci/Minix/commit/6dd20d7e2a5d41cdf7d35877fe07c9d50e6b864e)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.3.1](https://github.com/DaRacci/Minix/compare/v3.3.0..v3.3.1) - 2022-08-25
 #### Bug Fixes
 - fix minix config - ([b871075](https://github.com/DaRacci/Minix/commit/b871075adffcd6d2756295f1670f533b34ddd3b1)) - [@DaRacci](https://github.com/DaRacci)

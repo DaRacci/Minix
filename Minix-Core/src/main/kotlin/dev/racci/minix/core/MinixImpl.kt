@@ -15,7 +15,6 @@ import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.data.MinixConfig
-import dev.racci.minix.core.services.DataServiceImpl
 import dev.racci.minix.core.services.PluginServiceImpl
 import io.sentry.Sentry
 import kotlinx.coroutines.DelicateCoroutinesApi

@@ -57,9 +57,9 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         override fun onClose() { value.value?.close() }
     }
 
-    val configDataHolder: LoadingCache<KClass<MinixConfig<MinixPlugin>>, ConfigData<MinixPlugin, MinixConfig<MinixPlugin>>> = Caffeine.newBuilder()
+    val configDataHolder: LoadingCache<KClass<out MinixConfig<*>>, ConfigData<out MinixConfig<*>>> = Caffeine.newBuilder()
         .executor(threadContext.get().executor)
-        .removalListener<KClass<*>, ConfigData<*, *>> { key, value, cause ->
+        .removalListener<KClass<*>, ConfigData<*>> { key, value, cause ->
             if (key == null || value == null || cause == RemovalCause.REPLACED) return@removalListener
             log.info(scope = SCOPE) { "Saving and disposing configurate class ${key.simpleName}" }
 
@@ -68,7 +68,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
                 value.save()
             }
         }
-        .build(::ConfigData)
+        .build { ConfigData(it) }
 
     private val dataSource = lazy {
         HikariConfig().apply {
@@ -92,9 +92,9 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         configDataHolder.invalidateAll()
     }
 
-    override fun <P : MinixPlugin, T : MinixConfig<P>> getConfig(kClass: KClass<T>): T? = configDataHolder[kClass.unsafeCast()].configInstance as? T
+    override fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T? = configDataHolder[kClass].configInstance as? T
 
-    class ConfigData<P : MinixPlugin, T : MinixConfig<P>>(val kClass: KClass<T>) {
+    class ConfigData<T : MinixConfig<out MinixPlugin>>(val kClass: KClass<T>) {
         val mappedConfig: MappedConfig = this.kClass.findAnnotation() ?: throw MissingAnnotationException(this.kClass, MappedConfig::class.unsafeCast())
         val configInstance: T
         val file: File

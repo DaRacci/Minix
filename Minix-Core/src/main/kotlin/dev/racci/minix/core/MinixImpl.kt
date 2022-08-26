@@ -7,6 +7,7 @@ import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.services.DataService
+import dev.racci.minix.api.services.DataService.Companion.inject
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.Version
 import dev.racci.minix.api.updater.providers.GithubUpdateProvider
@@ -14,6 +15,7 @@ import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.data.MinixConfig
+import dev.racci.minix.core.services.DataServiceImpl
 import dev.racci.minix.core.services.PluginServiceImpl
 import io.sentry.Sentry
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -30,7 +32,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @MappedPlugin(13706, Minix::class)
 class MinixImpl : Minix() {
-    private val config by lazy { get<DataService>().get<MinixConfig>() }
+    private val config by DataService.inject().inject<MinixConfig>()
 
     override val updater: PluginUpdater = PluginUpdater().apply {
         ignored += "MinixUpdater"

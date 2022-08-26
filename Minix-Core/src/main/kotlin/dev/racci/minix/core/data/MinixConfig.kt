@@ -3,7 +3,6 @@ package dev.racci.minix.core.data
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.plugin.Minix
-import org.koin.core.component.get
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Setting

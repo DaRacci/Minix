@@ -11,7 +11,6 @@ import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.exceptions.MissingAnnotationException
 import dev.racci.minix.api.exceptions.MissingPluginException
-import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin

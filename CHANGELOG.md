@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.3.3](https://github.com/DaRacci/Minix/compare/v3.3.2..v3.3.3) - 2022-08-27
+#### Bug Fixes
+- **(DataService)** Fix DataService rework. - ([61818bd](https://github.com/DaRacci/Minix/commit/61818bda39345efb6ec93419697bcf8891ac1075)) - [@DaRacci](https://github.com/DaRacci)
+- KoinApplication has not been started - ([1a0ed46](https://github.com/DaRacci/Minix/commit/1a0ed467aa9c179f7b7b8cc28cde6be5c14d02ec)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- Add Eco plugin patch checker. - ([b635e3c](https://github.com/DaRacci/Minix/commit/b635e3cf4aa45e23bf3c9b64aacd916bb661ee79)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(deps)** Add h2 to slimJar deps - ([ca65008](https://github.com/DaRacci/Minix/commit/ca6500880143aab1807c8d464b8e077ded648197)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v3.3.2 - ([816e7d9](https://github.com/DaRacci/Minix/commit/816e7d9b41c43a4d870280fd7fc9929de90a676a)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.3.2](https://github.com/DaRacci/Minix/compare/v3.3.1..v3.3.2) - 2022-08-26
 #### Bug Fixes
 - **(DataService)** out generics - ([17ee7de](https://github.com/DaRacci/Minix/commit/17ee7de46fff9888dc1ce9b604f184859b7be6ad)) - [@DaRacci](https://github.com/DaRacci)

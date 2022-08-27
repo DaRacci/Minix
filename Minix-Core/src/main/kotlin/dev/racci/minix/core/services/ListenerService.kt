@@ -1,5 +1,8 @@
 package dev.racci.minix.core.services
 
+import com.google.common.graph.Graphs
+import com.google.common.graph.MutableGraph
+import com.willfp.eco.core.EcoPlugin
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.coroutine.launchAsync
@@ -15,8 +18,10 @@ import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.callEvent
 import dev.racci.minix.api.extensions.cancel
 import dev.racci.minix.api.extensions.event
+import dev.racci.minix.api.extensions.pluginManager
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.utils.accessWith
 import dev.racci.minix.api.utils.classConstructor
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.unsafeCast
@@ -38,18 +43,20 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.server.PluginDisableEvent
+import org.bukkit.event.server.PluginEnableEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
+import org.bukkit.plugin.SimplePluginManager
+import kotlin.reflect.full.declaredMemberProperties
 
 @MappedExtension(Minix::class, "Listener Service")
 class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
     override suspend fun handleEnable() {
-
         event<PlayerMoveEvent>(
             EventPriority.HIGHEST,
             ignoreCancelled = true,
-            forceAsync = true,
+            forceAsync = true
         ) {
             if (!hasExplicitlyChangedPosition()) return@event
 
@@ -58,7 +65,7 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
         event<PlayerMoveXYZEvent>(
             EventPriority.HIGH,
-            ignoreCancelled = true,
+            ignoreCancelled = true
         ) {
             if (!hasExplicitlyChangedBlock()) return@event
 
@@ -67,7 +74,7 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
         event<PlayerMoveFullXYZEvent>(
             EventPriority.HIGH,
-            ignoreCancelled = true,
+            ignoreCancelled = true
         ) {
             val fromLiquid = from.block.liquidType
             val toLiquid = to.block.liquidType
@@ -84,14 +91,14 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
                 mapOf(
                     this[0] to player,
                     this[1] to fromLiquid,
-                    this[2] to toLiquid,
+                    this[2] to toLiquid
                 )
             }
         }
 
         event<PlayerBucketEmptyEvent>(
             EventPriority.HIGHEST,
-            ignoreCancelled = true,
+            ignoreCancelled = true
         ) {
             val from = block.liquidType
             val to = bucket.liquidType
@@ -105,14 +112,14 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
         event<PlayerBucketFillEvent>(
             EventPriority.HIGHEST,
-            ignoreCancelled = true,
+            ignoreCancelled = true
         ) {
             liquidEvent(block, block.liquidType, LiquidType.NON, true)
         }
 
         event<BlockFromToEvent>(
             EventPriority.HIGH,
-            ignoreCancelled = true,
+            ignoreCancelled = true
         ) {
             val new = block.liquidType
             liquidEvent(toBlock, toBlock.liquidType, new, new == LiquidType.NON)
@@ -120,7 +127,7 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
         event<FluidLevelChangeEvent>(
             EventPriority.MONITOR,
-            ignoreCancelled = true,
+            ignoreCancelled = true
         ) {
             if (block.blockData as? CraftFluids == null || newData as? CraftFluids != null) return@event
 
@@ -176,7 +183,10 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
                     BlockData::class.java,
                     Entity::class.java
                 ),
-                player, player.inventory.getItem(hand), null, rightClicked
+                player,
+                player.inventory.getItem(hand),
+                null,
+                rightClicked
             ).callEvent().ifTrue(::cancel)
         }
 
@@ -197,7 +207,10 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
                     BlockData::class.java,
                     Entity::class.java
                 ),
-                p, p.inventory.itemInMainHand, null, entity
+                p,
+                p.inventory.itemInMainHand,
+                null,
+                entity
             ).callEvent().ifTrue(::cancel)
         }
 
@@ -218,13 +231,31 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
                     BlockData::class.java,
                     Entity::class.java
                 ),
-                player, mainHandItem, offHandItem, null, null
+                player,
+                mainHandItem,
+                offHandItem,
+                null,
+                null
             ).callEvent().ifTrue(::cancel)
         }
 
         event<PluginDisableEvent> {
             val minixPlugin = this.plugin as? MinixPlugin ?: return@event
             coroutineService.disable(minixPlugin)
+        }
+
+        @Suppress("UnstableApiUsage")
+        event<PluginEnableEvent> {
+            val ecoPlugin = this.plugin as? EcoPlugin ?: return@event
+            val graph = SimplePluginManager::class.declaredMemberProperties.first { it.name == "dependencyGraph" }.accessWith { get(pluginManager.unsafeCast()) }.unsafeCast<MutableGraph<String>>()
+            val patched = Graphs.reachableNodes(graph, ecoPlugin.description.name).contains("Minix")
+
+            if (!patched) {
+                log.error { "Eco doesn't appear to be patched to work with Minix, Please obtain the patch or disable all Eco plugins." }
+                pluginManager.disablePlugin(ecoPlugin)
+            }
+
+            log.trace { "Eco is patched, allowing ${ecoPlugin.name}" }
         }
     }
 

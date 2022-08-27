@@ -8,7 +8,7 @@ import kotlin.coroutines.CoroutineContext
 
 internal class MinecraftCoroutineDispatcher(
     private val plugin: Plugin,
-    private val wakeUpBlockService: WakeUpBlockService,
+    private val wakeUpBlockService: WakeUpBlockService
 ) : CoroutineDispatcher() {
 
     /**
@@ -16,7 +16,7 @@ internal class MinecraftCoroutineDispatcher(
      */
     override fun dispatch(
         context: CoroutineContext,
-        block: Runnable,
+        block: Runnable
     ) {
         when {
             !plugin.isEnabled -> return

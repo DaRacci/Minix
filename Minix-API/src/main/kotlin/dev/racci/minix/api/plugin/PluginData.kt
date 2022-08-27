@@ -33,7 +33,7 @@ class PluginData<P : MinixPlugin>(val plugin: P) {
 
     val log by lazy { PluginDependentMinixLogger(plugin) }
 
-    val configurations by lazy { mutableListOf<KClass<MinixConfig<P>>>() }
+    val configurations by lazy { mutableListOf<KClass<MinixConfig<out P>>>() }
 
     var metrics: Metrics? = null
 }

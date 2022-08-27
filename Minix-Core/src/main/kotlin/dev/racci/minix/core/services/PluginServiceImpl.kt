@@ -1,12 +1,9 @@
-@file:OptIn(MinixInternal::class)
-
 package dev.racci.minix.core.services
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.annotations.MappedExtension
-import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.extension.Extension
@@ -148,12 +145,12 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
 
     override fun unloadPlugin(plugin: MinixPlugin) {
         runBlocking {
-            CoroutineScheduler.activateTasks(plugin)?.takeIf(IntArray::isNotEmpty)?.let {
-                plugin.log.debug { "Cancelling ${it.size} tasks for ${plugin.name}" }
-                it.forEach { id -> CoroutineScheduler.cancelTask(id) }
-            }
-
             val cache = pluginCache.getIfPresent(plugin)
+
+            cache?.configurations?.takeIf(MutableList<*>::isNotEmpty)?.let { configs ->
+                plugin.log.debug { "Unloading ${configs.size} configurations for ${plugin.name}" }
+                dataService.configDataHolder.invalidateAll(configs)
+            }
 
             cache?.loadedExtensions?.takeIf(MutableList<*>::isNotEmpty)?.let { ex ->
                 plugin.log.debug { "Unloading ${ex.size} extensions for ${plugin.name}" }
@@ -165,9 +162,9 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                 plugin.handleDisable()
             }
 
-            cache?.configurations?.takeIf(MutableList<*>::isNotEmpty)?.let { configs ->
-                plugin.log.debug { "Unloading ${configs.size} configurations for ${plugin.name}" }
-                dataService.configDataHolder.invalidateAll(configs)
+            CoroutineScheduler.activateTasks(plugin)?.takeIf(IntArray::isNotEmpty)?.let {
+                plugin.log.debug(scope = SCOPE) { "Cancelling ${it.size} tasks for ${plugin.name}" }
+                it.forEach { id -> CoroutineScheduler.cancelTask(id) }
             }
 
             plugin.log.debug { "Disabling the coroutine session for ${plugin.name}" }
@@ -485,13 +482,13 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         val cache = pluginCache[this]
         cache.loadedExtensions.reverse()
         cache.loadedExtensions.removeAll { ex ->
-            log.debug { "Unloading extension ${ex.name}" }
+            log.debug { "Unloading extension ${ex.name} on thread ${Thread.currentThread().name}" }
             runBlocking {
                 ex.setState(ExtensionState.UNLOADING)
                 try {
                     withTimeout(5.seconds) {
                         ex.eventListener.unregisterListener()
-                        // Give the jobs 2 seconds of grace time to unload then shutdown forcefully
+                        // Give the jobs 2 seconds of grace time to unload, then shutdown forcefully.
                         try {
                             withTimeoutOrNull(2.seconds) {
                                 ex.supervisor.coroutineContext.job.unsafeCast<CompletableJob>().complete()

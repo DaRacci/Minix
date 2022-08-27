@@ -5,6 +5,8 @@ import com.github.benmanes.caffeine.cache.LoadingCache
 import dev.racci.minix.api.utils.UtilObject
 import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
+import kotlin.reflect.KFunction
+import kotlin.reflect.KProperty
 
 /**
  * Utilities for Generic Collections.
@@ -69,6 +71,22 @@ object CollectionUtils : UtilObject by UtilObject {
         ignoreCase: Boolean = false
     ): String? = find { it.equals(name, ignoreCase) }
 
+    fun <T> Collection<KProperty<T>>.find(
+        name: String,
+        ignoreCase: Boolean = false
+    ): KProperty<T>? = find { it.name.equals(name, ignoreCase) }
+
+    fun <T> Collection<KFunction<T>>.find(
+        name: String,
+        ignoreCase: Boolean = false
+    ): KFunction<T>? = find { it.name.equals(name, ignoreCase) }
+
+    fun <T> Collection<T>.find(
+        name: String,
+        ignoreCase: Boolean = false,
+        selector: (T) -> String
+    ): T? = find { selector(it).equals(name, ignoreCase) }
+
     /**
      * Checks if the array contains the [String] by IgnoreCase.
      *
@@ -120,6 +138,22 @@ object CollectionUtils : UtilObject by UtilObject {
         name: String,
         ignoreCase: Boolean = false
     ): String? = find { it.equals(name, ignoreCase) }
+
+    fun <T> Array<KProperty<T>>.find(
+        name: String,
+        ignoreCase: Boolean = false
+    ): KProperty<T>? = find { it.name.equals(name, ignoreCase) }
+
+    fun <T> Array<KFunction<T>>.find(
+        name: String,
+        ignoreCase: Boolean = false
+    ): KFunction<T>? = find { it.name.equals(name, ignoreCase) }
+
+    fun <T> Array<T>.find(
+        name: String,
+        ignoreCase: Boolean = false,
+        selector: (T) -> String
+    ): T? = find { selector(it).equals(name, ignoreCase) }
 
     /**
      * Checks if the map contains the [String] as a key by IgnoreCase.

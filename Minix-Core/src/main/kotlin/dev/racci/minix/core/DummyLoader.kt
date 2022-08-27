@@ -27,8 +27,6 @@ class DummyLoader {
         classLoader.setValue<PluginClassLoader, Plugin?>("pluginInit", minix)
         minix.onLoad()
 
-//        val loaders = getValue<JavaPluginLoader, CopyOnWriteArrayList<PluginClassLoader>>("loaders", pluginLoader)
-
         Thread {
             // Delay for a nanosecond to allow the method to return, otherwise the plugin won't have been added to these lists/maps yet.
             Thread.sleep(0, 1)
@@ -42,7 +40,11 @@ class DummyLoader {
         }.start()
     }
 
-    private inline fun <reified T : Any, R> getValue(field: String, obj: T, relock: Boolean = false): R {
+    private inline fun <reified T : Any, R> getValue(
+        field: String,
+        obj: T,
+        relock: Boolean = false
+    ): R {
         val prop = T::class.memberProperties.find { it.name == field } ?: throw IllegalArgumentException("Field $field not found in ${obj::class.qualifiedName}")
         var wasLocked = false
 
@@ -81,7 +83,14 @@ class DummyLoader {
         }
     }
 
-    private inline fun <reified T : Any, reified V> T.setValue(field: String, value: V) {
+    private inline fun <reified T : Any, reified V> T.setValue(
+        field: String,
+        value: V
+    ) {
         setValue(field, this, value, true)
+    }
+
+    private companion object {
+        val ECO_PLUGINS = arrayOf("eco", "EcoPets")
     }
 }

@@ -10,7 +10,7 @@ import java.util.UUID
 
 @ConfigSerializable
 @MappedConfig(Minix::class, "config.conf")
-class MinixConfig : MinixConfig<Minix>() {
+class MinixConfig : MinixConfig<Minix>(true) {
 
     @Setting("server-uuid")
     @Comment("This server unique uuid (Please don't change this)")

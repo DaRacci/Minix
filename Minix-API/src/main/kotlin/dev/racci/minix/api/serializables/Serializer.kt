@@ -1,5 +1,6 @@
 package dev.racci.minix.api.serializables
 
+import dev.racci.minix.api.utils.adventure.PartialComponent
 import dev.racci.minix.api.utils.data.Data
 import org.spongepowered.configurate.serialize.TypeSerializer
 import org.spongepowered.configurate.serialize.TypeSerializerCollection
@@ -22,6 +23,7 @@ object Serializer {
             .registerExact(FloatRangeSerializer.Configurate)
             .registerExact(Data.Serializer)
             .registerExact(LoggingLevelSerializer)
+            .registerExact(PartialComponent.Serializer)
             .register(PairSerializer)
             .build()
     }

@@ -7,9 +7,12 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.exceptions.MissingAnnotationException
 import dev.racci.minix.api.exceptions.MissingPluginException
+import dev.racci.minix.api.extension.Extension
+import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.logger.MinixLogger
@@ -17,6 +20,7 @@ import dev.racci.minix.api.serializables.Serializer
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.utils.Closeable
+import dev.racci.minix.api.utils.clone
 import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.ifInitialized
 import dev.racci.minix.api.utils.safeCast
@@ -24,6 +28,7 @@ import dev.racci.minix.api.utils.unsafeCast
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.runBlocking
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer
 import org.bukkit.plugin.Plugin
 import org.jetbrains.exposed.dao.Entity
@@ -35,6 +40,7 @@ import org.jetbrains.exposed.sql.Database
 import org.koin.core.component.KoinComponent
 import org.spongepowered.configurate.CommentedConfigurationNode
 import org.spongepowered.configurate.ConfigurateException
+import org.spongepowered.configurate.NodePath.path
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.kotlin.extensions.set
@@ -61,14 +67,16 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         .executor(threadContext.get().executor)
         .removalListener<KClass<*>, ConfigData<*>> { key, value, cause ->
             if (key == null || value == null || cause == RemovalCause.REPLACED) return@removalListener
-            log.info(scope = SCOPE) { "Saving and disposing configurate class ${key.simpleName}" }
+            log.info(scope = SCOPE) { "Saving and disposing configurate class ${key.simpleName} on thread ${Thread.currentThread().name}." }
 
             value.configInstance.handleUnload()
             if (value.configLoader.canSave()) {
                 value.save()
             }
+
+            getKoin().get<PluginServiceImpl>()[plugin].configurations.remove(value.kClass.unsafeCast())
         }
-        .build { ConfigData(it) }
+        .build { runBlocking(threadContext.get()) { ConfigData(it) } }
 
     private val dataSource = lazy {
         HikariConfig().apply {
@@ -94,6 +102,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
     override fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T? = configDataHolder[kClass].configInstance as? T
 
+    @OptIn(MinixInternal::class)
     class ConfigData<T : MinixConfig<out MinixPlugin>>(val kClass: KClass<T>) {
         val mappedConfig: MappedConfig = this.kClass.findAnnotation() ?: throw MissingAnnotationException(this.kClass, MappedConfig::class.unsafeCast())
         val configInstance: T
@@ -115,7 +124,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
                 val endVersion = trans.version(node)
                 if (startVersion != endVersion) { // we might not have made any changes
-                    getKoin().get<MinixLogger>().info { "Updated config schema from $startVersion to $endVersion" }
+                    configInstance.log.info { "Updated config schema from $startVersion to $endVersion" }
                 }
             }
 
@@ -124,12 +133,25 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
         private fun createVersionBuilder(): ConfigurationTransformation.Versioned {
             val builder = ConfigurationTransformation.versionedBuilder()
-            for ((version, transformation) in configInstance.versionTransformations) {
-                builder.versionKey()
+            builder.versionKey("minix", "config-version")
+            builder.addVersion(0, baseTransformation())
+            for ((version, transformation) in this.configInstance.versionTransformations) {
                 builder.addVersion(version, transformation)
             }
 
             return builder.build()
+        }
+
+        private fun baseTransformation(): ConfigurationTransformation {
+            return ConfigurationTransformation.builder()
+                .addAction(path()) { _, node ->
+                    if (this.configInstance.primaryConfig) {
+                        node.node("minix").set(MinixConfig.Minix())
+                    }
+
+                    null
+                }
+                .build()
         }
 
         private fun buildConfigLoader() = HoconConfigurationLoader.builder()
@@ -164,36 +186,37 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
             return collection.build()
         }
 
-        private fun ensureDirectory() {
-            if (!configInstance.plugin.dataFolder.exists() && !configInstance.plugin.dataFolder.mkdirs()) {
-                getKoin().get<MinixLogger>().warn { "Failed to create directory: ${configInstance.plugin.dataFolder.absolutePath}" }
+        private fun ensureDirectory(plugin: MinixPlugin) {
+            if (!plugin.dataFolder.exists() && !plugin.dataFolder.mkdirs()) {
+                getKoin().get<MinixLogger>().warn { "Failed to create directory: ${plugin.dataFolder.absolutePath}" }
             }
         }
 
         init {
-            println("Building new config on thread: " + Thread.currentThread().name)
-
             if (!this.kClass.hasAnnotation<ConfigSerializable>()) throw MissingAnnotationException(this.kClass, ConfigSerializable::class.unsafeCast())
 
             val plugin = getKoin().getOrNull<MinixPlugin>(this.mappedConfig.parent) ?: throw MissingPluginException("Could not find plugin instance for ${this.mappedConfig.parent}")
             this.file = plugin.dataFolder.resolve(this.mappedConfig.file)
 
-            ensureDirectory()
+            this.ensureDirectory(plugin)
             this.configLoader = buildConfigLoader()
 
             try {
                 this.node = this.configLoader.load()
                 this.configInstance = this.node.get(kClass) ?: throw RuntimeException("Could not load configurate class ${this.kClass.simpleName}")
 
-                if (!this.file.exists()) {
+                this.configInstance.load()
+                val copy = this.configInstance.clone()
+
+                if (!this.file.exists() || this.configInstance != copy) {
                     this.save()
                 }
-
-                this.configInstance.load()
             } catch (e: ConfigurateException) {
                 getKoin().get<MinixLogger>().error(e) { "Failed to load configurate file ${this.file.name}" }
                 throw e
             }
+
+            getKoin().get<PluginServiceImpl>()[plugin].configurations.add(kClass.unsafeCast())
         }
     }
 

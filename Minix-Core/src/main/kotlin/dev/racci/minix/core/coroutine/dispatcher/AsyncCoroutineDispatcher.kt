@@ -8,7 +8,7 @@ import kotlin.coroutines.CoroutineContext
 
 internal class AsyncCoroutineDispatcher(
     private val plugin: MinixPlugin,
-    private val wakeUpBlockService: WakeUpBlockService,
+    private val wakeUpBlockService: WakeUpBlockService
 ) : CoroutineDispatcher() {
 
     /**
@@ -16,7 +16,7 @@ internal class AsyncCoroutineDispatcher(
      */
     override fun dispatch(
         context: CoroutineContext,
-        block: Runnable,
+        block: Runnable
     ) {
         when {
             !plugin.isEnabled -> return

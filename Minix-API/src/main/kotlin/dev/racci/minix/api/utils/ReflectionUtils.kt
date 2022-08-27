@@ -34,7 +34,7 @@ fun exists(className: String): Boolean {
  */
 fun <T> classConstructor(
     constructor: Constructor<T>,
-    vararg args: Any?,
+    vararg args: Any?
 ): T = constructor.newInstance(*args)
 
 /**
@@ -49,7 +49,7 @@ fun <T> classConstructor(
 fun <R> readInstanceProperty(
     instance: Any,
     propertyName: String,
-    ignoreCase: Boolean = false,
+    ignoreCase: Boolean = false
 ): R? = instance::class.members.firstOrNull {
     it.name.equals(propertyName, ignoreCase)
 }?.also { it.isAccessible = true }.safeCast<KProperty1<Any, *>>()?.get(instance) as? R
@@ -116,7 +116,7 @@ inline fun <reified T> Any?.tryCast(block: T.() -> Unit): Boolean = if (this is 
 } else false
 
 /**
- * Reads the properties of an instance through reflection,
+ * Read the properties of an instance through reflection,
  * and constructs a new instance of the same type.
  *
  * @param replaceArgs A map of property names to values to replace.
@@ -127,11 +127,19 @@ fun <T : Any> T.clone(replaceArgs: Map<KProperty1<T, *>, Any> = emptyMap()): T =
     val mutableProperties = memberProperties.filterIsInstance<KMutableProperty1<T, Any?>>()
     val allValues = memberProperties
         .filter { it in mutableProperties || it.name in consParams.map(KParameter::name) }
-        .associate { it.name to (replaceArgs[it] ?: it.get(this@clone)) }
+        .associate { it.name to (replaceArgs[it] ?: it.accessWith { get(this@clone) }) }
     // Safe to say this isn't null, because we checked it above
     primaryConstructor!!.callBy(consParams.associateWith { allValues[it.name] }).also { newInstance ->
         for (prop in mutableProperties) {
-            prop.set(newInstance, allValues[prop.name])
+            prop.accessWith { set(newInstance, allValues[prop.name]) }
         }
     }
+}
+
+/** Temporarily make a property accessible and invokes the [action]. */
+inline fun <reified T : KProperty1<*, R>, reified R> T.accessWith(action: T.() -> R): R {
+    isAccessible = true
+    val value = this.action()
+    isAccessible = false
+    return value
 }

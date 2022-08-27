@@ -2,6 +2,7 @@ package dev.racci.minix.core;
 
 import io.github.slimjar.app.builder.ApplicationBuilder;
 import io.github.slimjar.app.builder.InjectingApplicationBuilder;
+import io.github.slimjar.logging.ProcessLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.PluginClassLoader;
 
@@ -39,6 +40,19 @@ public class MinixInit extends JavaPlugin {
         ApplicationBuilder builder;
         try {
             builder = InjectingApplicationBuilder.createAppending("Minix", libraryLoader);
+            builder.logger(new ProcessLogger() {
+                @Override
+                public void log(String s, Object... args) {
+                    final var string = s.replaceAll("\\{\\d+}", "%s");
+                    getLogger().info(String.format(string, args));
+                }
+
+                @Override
+                public void debug(String s, Object... args) {
+                    final var string = s.replaceAll("\\{\\d+}", "%s");
+                    getLogger().fine(String.format(string, args));
+                }
+            });
         } catch(ReflectiveOperationException | IOException | URISyntaxException | NoSuchAlgorithmException e) {
             this.getLogger().severe("Failed to create application builder.");
             throw new ReflectingInitializationException(e);

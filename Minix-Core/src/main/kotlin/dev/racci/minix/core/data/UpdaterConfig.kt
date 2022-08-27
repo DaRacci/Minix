@@ -1,6 +1,7 @@
 package dev.racci.minix.core.data
 
 import dev.racci.minix.api.annotations.MappedConfig
+import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.utils.data.Data
@@ -12,7 +13,7 @@ import kotlin.time.Duration.Companion.minutes
 
 @ConfigSerializable
 @MappedConfig(Minix::class, "updater.conf")
-class UpdaterConfig {
+class UpdaterConfig : MinixConfig<Minix>(false) {
 
     @Comment("Should the auto-updater be enabled?")
     var enabled: Boolean = true

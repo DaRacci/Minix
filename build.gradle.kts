@@ -51,6 +51,7 @@ dependencies {
     slim(rootProject.libs.cloud.minecraft.extras)
 
     slim(rootProject.libs.mordant)
+    slim("com.h2database:h2:2.1.214")
 
     slim("io.github.classgraph:classgraph:4.8.149")
 }

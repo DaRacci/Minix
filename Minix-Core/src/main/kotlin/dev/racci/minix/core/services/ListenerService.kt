@@ -2,7 +2,6 @@ package dev.racci.minix.core.services
 
 import com.google.common.graph.Graphs
 import com.google.common.graph.MutableGraph
-import com.willfp.eco.core.EcoPlugin
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.coroutine.launchAsync
@@ -246,16 +245,16 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
         @Suppress("UnstableApiUsage")
         event<PluginEnableEvent> {
-            val ecoPlugin = this.plugin as? EcoPlugin ?: return@event
+            if (this.plugin.name != "eco") return@event
             val graph = SimplePluginManager::class.declaredMemberProperties.first { it.name == "dependencyGraph" }.accessWith { get(pluginManager.unsafeCast()) }.unsafeCast<MutableGraph<String>>()
-            val patched = Graphs.reachableNodes(graph, ecoPlugin.description.name).contains("Minix")
+            val patched = Graphs.reachableNodes(graph, this.plugin.description.name).contains("Minix")
 
             if (!patched) {
                 log.error { "Eco doesn't appear to be patched to work with Minix, Please obtain the patch or disable all Eco plugins." }
-                pluginManager.disablePlugin(ecoPlugin)
+                pluginManager.disablePlugin(this.plugin)
             }
 
-            log.trace { "Eco is patched, allowing ${ecoPlugin.name}" }
+            log.info { "Eco is patched, hopefully no linkage errors!" }
         }
     }
 

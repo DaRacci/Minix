@@ -66,7 +66,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         .executor(threadContext.get().executor)
         .removalListener<KClass<*>, ConfigData<*>> { key, value, cause ->
             if (key == null || value == null || cause == RemovalCause.REPLACED) return@removalListener
-            log.info(scope = SCOPE) { "Saving and disposing configurate class ${key.simpleName} on thread ${Thread.currentThread().name}." }
+            log.info(scope = SCOPE) { "Saving and disposing configurate class ${key.simpleName}." }
 
             value.configInstance.handleUnload()
             if (value.configLoader.canSave()) {

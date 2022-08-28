@@ -47,13 +47,16 @@ dependencies {
     lib(rootProject.libs.configurate.hocon)
     libSlim(rootProject.libs.mordant)
 
-    libSlim("io.github.classgraph:classgraph:4.8.146")
+    libSlim("io.github.classgraph:classgraph:4.8.149")
 }
 
 // Lmao this works well as compared to what I was doing before
 rootProject.extensions.getByName("bukkit").cast<BukkitPluginDescription>().libraries = lib.dependencies.map { "${it.group}:${it.name}:${it.version}" }
 
 java.withSourcesJar()
+repositories {
+    mavenCentral()
+}
 
 tasks {
 

@@ -15,14 +15,6 @@ tasks.withType<GenerateModuleMetadata> {
     enabled = false
 }
 
-repositories {
-    maven("jitpack.io")
-}
-
-dependencies {
-    compileOnly(rootProject.libs.minecraft.api.eco)
-}
-
 publishing {
     repositories.maven("https://repo.racci.dev/releases") {
         name = "RacciRepo"

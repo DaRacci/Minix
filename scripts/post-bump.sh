@@ -20,7 +20,7 @@ git commit --amend --no-edit -n -S
 git push || exit 1 # There were remote changes not present in the local repo
 git push origin v"${2}" # Push the new version tag
 
-./gradlew clean build
+./gradlew clean build --stacktrace
 
 URL="https://github.com/DaRacci/Minix/compare/v$1..v$2"
 grep -Poz "(?s)(?<=## \\[v$2\\]\\(${URL}\\) - ....-..-..\n).*?(?=- - -)" CHANGELOG.md >> ./.templog.md

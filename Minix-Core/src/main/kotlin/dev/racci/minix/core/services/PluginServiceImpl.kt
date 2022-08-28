@@ -15,6 +15,7 @@ import dev.racci.minix.api.plugin.PluginData
 import dev.racci.minix.api.plugin.SusPlugin
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
+import dev.racci.minix.api.utils.kotlin.catchAndReturn
 import dev.racci.minix.api.utils.kotlin.ifNotEmpty
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import dev.racci.minix.api.utils.kotlin.invokeIfOverrides
@@ -24,6 +25,7 @@ import dev.racci.minix.api.utils.unsafeCast
 import dev.racci.minix.core.MinixImpl
 import dev.racci.minix.core.MinixInit
 import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
+import dev.racci.minix.core.services.DataServiceImpl.Companion.SCOPE
 import io.github.classgraph.AnnotationClassRef
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
@@ -52,7 +54,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.isSuperclassOf
-import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.jvm.isAccessible
 import kotlin.time.Duration.Companion.seconds
@@ -232,8 +233,20 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             }
             .forEach { clazz ->
                 pluginCache[this].extensions += { plugin: MinixPlugin ->
+                    val kClass = catchAndReturn<IllegalArgumentException, KClass<Extension<*>>> {
+                        clazz.loadClass().kotlin.unsafeCast()
+                    } ?: error("Failed to load extension class ${clazz.fullyQualifiedDefiningMethodName}.")
+
+                    val constructor = kClass.constructors.first { it.parameters.isEmpty() || it.parameters[0].name == "plugin" }
+
                     try {
-                        clazz.loadClass().kotlin.primaryConstructor!!.call(plugin) as Extension<*>
+                        when (constructor.parameters.size) {
+                            0 -> constructor.call()
+                            else -> constructor.call(plugin)
+                        }.unsafeCast<Extension<*>>()
+                    } catch (e: ClassCastException) {
+                        log.error(e) { "The class ${kClass.qualifiedName} is not an extension." }
+                        throw e
                     } catch (e: Exception) {
                         log.error(e) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
                         throw e

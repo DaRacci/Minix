@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.3.4](https://github.com/DaRacci/Minix/compare/v3.3.3..v3.3.4) - 2022-08-28
+#### Bug Fixes
+- **(LangConfig)** call super.load not super.handleLoad() - ([2eb7f63](https://github.com/DaRacci/Minix/commit/2eb7f631ea10ba4b17776da857d879880f90bbbe)) - [@DaRacci](https://github.com/DaRacci)
+- **(ListenerService)** Fix eco patch checker. - ([128569c](https://github.com/DaRacci/Minix/commit/128569c89eb56841ec787a58af8707a4ace0b26a)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.3.3 - ([867aa18](https://github.com/DaRacci/Minix/commit/867aa18a1e3c64488b6b03d457d39a4ac2017026)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(PluginService)** Constructor with and without plugin. - ([6aaab99](https://github.com/DaRacci/Minix/commit/6aaab9961c76921aca318bb8028d052a405869ea)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.3.3](https://github.com/DaRacci/Minix/compare/v3.3.2..v3.3.3) - 2022-08-27
 #### Bug Fixes
 - **(DataService)** Fix DataService rework. - ([61818bd](https://github.com/DaRacci/Minix/commit/61818bda39345efb6ec93419697bcf8891ac1075)) - [@DaRacci](https://github.com/DaRacci)

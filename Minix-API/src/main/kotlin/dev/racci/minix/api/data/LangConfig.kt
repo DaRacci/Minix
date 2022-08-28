@@ -18,36 +18,8 @@ abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
         val map = prefixes.mapKeys {
             if (!it.key.matches(prefixRegex)) "<prefix_${it.key}>" else it.key
         }
-
-//        val initialNested = getNested(this)
-//        val queue = ArrayDeque(initialNested)
-//        while (queue.isNotEmpty()) {
-//            val (instance, property) = queue.removeFirst()
-//
-//            val propInstance = try {
-//                property.get(instance)
-//            } catch (e: ClassCastException) {
-//                continue
-//            }
-//
-//            val nested = getNested(propInstance)
-//            if (nested.isNotEmpty()) {
-//                queue.addAll(nested)
-//            }
-//
-//            propInstance::class.declaredMemberProperties
-//                .filterIsInstance<KProperty1<PropertyFinder<PartialComponent>, PartialComponent>>()
-//                .forEach {
-//                    try {
-//                        it.get(propInstance).formatRaw(map)
-//                    } catch (e: ClassCastException) {
-//                        return@forEach
-//                    }
-//                }
-//        }
-
         this.onNested<PartialComponent> { this.formatRaw(map) }
-        super.handleLoad()
+        super.load()
     }
 
     operator fun get(key: String, vararg placeholder: Pair<String, () -> Any>): Component {

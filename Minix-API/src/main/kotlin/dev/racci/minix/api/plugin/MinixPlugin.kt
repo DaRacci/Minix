@@ -3,12 +3,12 @@ package dev.racci.minix.api.plugin
 import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.annotations.MinixDsl
 import dev.racci.minix.api.data.PluginUpdater
-import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.services.PluginService
+import dev.racci.minix.api.updater.Version
 import dev.racci.minix.api.utils.safeCast
-import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import org.koin.core.component.get
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
@@ -20,16 +20,20 @@ import kotlin.reflect.full.isSubclassOf
  * systems of Minix.
  */
 abstract class MinixPlugin : JavaPlugin(), SusPlugin {
-    @get:ApiStatus.Internal // Public to be used within the plugin service impl
+    @get:ApiStatus.Internal
+    // Public to be used within the plugin service impl
+    @Deprecated("Useless and uses unneeded resources.")
+    @get:ScheduledForRemoval(inVersion = "4.0.0")
     val annotation by lazy { this::class.findAnnotation<MappedPlugin>() }
 
-    override val bStatsId: Int? by lazy { annotation?.bStatsId.takeIf { it != -1 } }
-    override val bindToKClass: KClass<out MinixPlugin>? by lazy { annotation?.bindToKClass.takeIf { it?.isSubclassOf(MinixPlugin::class) == true }.safeCast() }
+    final override val log get() = get<PluginService>()[this].log
+    final override val bStatsId = this::class.findAnnotation<MappedPlugin>()?.bStatsId.takeIf { it != -1 }
+    final override val metrics get() = get<PluginService>()[this].metrics
+    final override val version by lazy { Version(description.version) }
 
-    val log: MinixLogger get() = get<PluginService>()[this].log
-    val metrics: Metrics? get() = get<PluginService>()[this].metrics
+    override val updater: PluginUpdater? = null
 
-    open val updater: PluginUpdater? = null
+    override val bindToKClass = this::class.findAnnotation<MappedPlugin>()?.bindToKClass?.takeIf { it.isSubclassOf(MinixPlugin::class) }.safeCast<KClass<out MinixPlugin>>()
 
     @ApiStatus.Internal
     @ApiStatus.NonExtendable
@@ -50,11 +54,15 @@ abstract class MinixPlugin : JavaPlugin(), SusPlugin {
     }
 
     @MinixDsl
+    @Deprecated("Use the MappedPlugin annotation instead")
+    @ScheduledForRemoval(inVersion = "4.0.0")
     protected suspend fun extensions(builder: suspend ExtensionsBuilder.() -> Unit) {
         builder(get<PluginService>()[this].extensionsBuilder)
     }
 
     @MinixDsl
+    @Deprecated("Use the MappedPlugin annotation instead")
+    @ScheduledForRemoval(inVersion = "4.0.0")
     inner class ExtensionsBuilder {
 
         @MinixDsl

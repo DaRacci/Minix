@@ -4,8 +4,11 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.annotations.MappedPlugin
+import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.coroutineService
+import dev.racci.minix.api.coroutine.scope
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionState
 import dev.racci.minix.api.extensions.unregisterListener
@@ -13,6 +16,7 @@ import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.PluginData
 import dev.racci.minix.api.plugin.SusPlugin
+import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.kotlin.catchAndReturn
@@ -25,7 +29,6 @@ import dev.racci.minix.api.utils.unsafeCast
 import dev.racci.minix.core.MinixImpl
 import dev.racci.minix.core.MinixInit
 import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
-import dev.racci.minix.core.services.DataServiceImpl.Companion.SCOPE
 import io.github.classgraph.AnnotationClassRef
 import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
@@ -40,7 +43,6 @@ import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.PluginClassLoader
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
@@ -49,15 +51,18 @@ import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import org.koin.ext.getFullName
+import java.lang.reflect.InvocationTargetException
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.isSuperclassOf
 import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.jvm.isAccessible
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(MinixInternal::class)
 class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
     private val dataService by inject<DataServiceImpl>()
 
@@ -80,10 +85,22 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
 
     override fun loadPlugin(plugin: MinixPlugin) {
         runBlocking {
-            if (!plugin.annotation?.extensions.isNullOrEmpty()) {
-                for (clazz in plugin.annotation!!.extensions) {
+            val annotation = plugin::class.findAnnotation<MappedPlugin>() ?: throw minix.log.fatal(scope = SCOPE) {
+                """
+                Plugin ${plugin.name} is missing the @MappedPlugin annotation.
+                    This annotation is required for Minix to load the plugin.
+                """.trimIndent()
+            }
+
+            if (plugin.version.isPreRelease) {
+                plugin.log.setLevel(MinixLogger.LoggingLevel.TRACE)
+                plugin.log.lockLevel()
+            }
+
+            if (annotation.extensions.isNotEmpty()) {
+                for (clazz in annotation.extensions) {
                     if (!Extension::class.isSuperclassOf(clazz)) {
-                        plugin.log.error { "$clazz isn't an extension.. Skipping." }
+                        plugin.log.error(scope = SCOPE) { "$clazz isn't an extension.. Skipping." }
                         continue
                     }
 
@@ -94,22 +111,24 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                                     it.parameters[0].name == "plugin" &&
                                     !it.parameters[0].type.isMarkedNullable &&
                                     it.parameters[0].type.isSubtypeOf(MinixPlugin::class.starProjectedType)
-                            } ?: throw IllegalArgumentException("Extension class $clazz does not have a constructor with one parameter of type MinixPlugin!")
+                            } ?: error("Extension class $clazz does not have a constructor with one parameter of type MinixPlugin!")
                             const.call(plugin) as Extension<*>
                         } catch (e: Exception) {
-                            plugin.log.error(e) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
+                            plugin.log.error(e, SCOPE) { "Failed to create extension ${clazz.simpleName}." }
                             throw e
                         }
                     }
                 }
             }
 
-            loadModule { single { plugin } bind (plugin.bindToKClass ?: plugin::class).unsafeCast() }
+            val bindKClass = annotation.bindToKClass.takeUnless { it == MinixPlugin::class } ?: plugin::class
+            loadModule { single { plugin } bind (bindKClass).unsafeCast() }
+
             plugin.invokeIfOverrides(SusPlugin::handleLoad.name) { plugin.handleLoad() }
             plugin.loadReflection()
             pluginCache[plugin].extensions.ifNotEmpty { plugin.loadInOrder() }
             plugin.invokeIfOverrides(SusPlugin::handleAfterLoad.name) {
-                plugin.log.debug { "Running handleAfterLoad for ${plugin.name}" }
+                plugin.log.trace(scope = SCOPE) { "Running handleAfterLoad." }
                 plugin.handleAfterLoad()
             }
         }
@@ -121,7 +140,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             val cache = pluginCache[plugin]
 
             plugin.invokeIfOverrides(SusPlugin::handleEnable.name) {
-                plugin.log.debug { "Running handleEnable for ${plugin.name}" }
+                plugin.log.trace(scope = SCOPE) { "Running handleEnable." }
                 plugin.handleEnable()
             }
 
@@ -130,12 +149,12 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             }
 
             plugin.bStatsId.invokeIfNotNull {
-                plugin.log.debug { "Registering bStats for ${plugin.name}" }
+                plugin.log.info(scope = SCOPE) { "Registering bStats." }
                 cache.metrics = Metrics(plugin, it)
             }
 
             plugin.invokeIfOverrides(SusPlugin::handleAfterEnable.name) {
-                plugin.log.debug { "Running handleAfterEnable for ${plugin.name}" }
+                plugin.log.trace(scope = SCOPE) { "Running handleAfterEnable." }
                 plugin.handleAfterEnable()
             }
 
@@ -149,26 +168,26 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             val cache = pluginCache.getIfPresent(plugin)
 
             cache?.configurations?.takeIf(MutableList<*>::isNotEmpty)?.let { configs ->
-                plugin.log.debug { "Unloading ${configs.size} configurations for ${plugin.name}" }
+                plugin.log.trace(scope = SCOPE) { "Unloading ${configs.size} configurations." }
                 dataService.configDataHolder.invalidateAll(configs)
             }
 
             cache?.loadedExtensions?.takeIf(MutableList<*>::isNotEmpty)?.let { ex ->
-                plugin.log.debug { "Unloading ${ex.size} extensions for ${plugin.name}" }
+                plugin.log.trace(scope = SCOPE) { "Unloading ${ex.size} extensions." }
                 plugin.shutdownInOrder()
             }
 
             plugin.invokeIfOverrides(SusPlugin::handleDisable.name) {
-                plugin.log.debug { "Running handleDisable for ${plugin.name}" }
+                plugin.log.trace(scope = SCOPE) { "Running handleDisable." }
                 plugin.handleDisable()
             }
 
             CoroutineScheduler.activateTasks(plugin)?.takeIf(IntArray::isNotEmpty)?.let {
-                plugin.log.debug(scope = SCOPE) { "Cancelling ${it.size} tasks for ${plugin.name}" }
+                plugin.log.trace(scope = SCOPE) { "Cancelling ${it.size} tasks." }
                 it.forEach { id -> CoroutineScheduler.cancelTask(id) }
             }
 
-            plugin.log.debug { "Disabling the coroutine session for ${plugin.name}" }
+            plugin.log.trace(scope = SCOPE) { "Disabling the coroutine session." }
             coroutineService.disable(plugin)
             loadedPlugins -= plugin::class
         }
@@ -220,14 +239,14 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             .scan()
 
         if (this !is MinixImpl) {
-            minix.log.info { "Ignore the following warning, this is expected behavior." }
+            minix.log.info(scope = SCOPE) { "Ignore the following warning, this is expected behavior." }
         }
 
         classGraph.getClassesWithAnnotation(MappedExtension::class.java)
             .filter { clazz ->
-                matchingAnnotation<MappedExtension>(this, clazz, "extension") &&
+                matchingAnnotation<MappedExtension>(this, clazz) &&
                     if (!clazz.extendsSuperclass(Extension::class.java)) {
-                        log.warn { "${clazz.name} is annotated with MappedExtension but isn't an extension!." }
+                        log.warn(scope = SCOPE) { "${clazz.name} is annotated with MappedExtension but isn't an extension!." }
                         false
                     } else true
             }
@@ -245,21 +264,19 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                             else -> constructor.call(plugin)
                         }.unsafeCast<Extension<*>>()
                     } catch (e: ClassCastException) {
-                        log.error(e) { "The class ${kClass.qualifiedName} is not an extension." }
-                        throw e
-                    } catch (e: Exception) {
-                        log.error(e) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
-                        throw e
+                        throw log.fatal(e, SCOPE) { "The class ${kClass.qualifiedName} is not an extension." }
+                    } catch (e: InvocationTargetException) {
+                        throw log.fatal(e, SCOPE) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
                     }
                 }
             }
 
         classGraph.getClassesWithAnnotation(MappedConfig::class.java)
-            .filter { matchingAnnotation<MappedConfig>(this, it, "configuration") }
+            .filter { matchingAnnotation<MappedConfig>(this, it) }
             .forEach {
                 log.trace(scope = SCOPE) { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
                 try {
-                    dataService.configDataHolder[it.loadClass().kotlin.unsafeCast()] // Call the cache so we load can have it loaded.
+                    dataService.configDataHolder.get(it.loadClass().kotlin.unsafeCast()) // Call the cache so we load can have it loaded.
                 } catch (ignored: NoBeanDefFoundException) {
                     // This is so I can auto-magic load the data service.
                 } catch (e: ClassCastException) {
@@ -271,20 +288,11 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
 
     private inline fun <reified T : Annotation> matchingAnnotation(
         plugin: MinixPlugin,
-        clazz: ClassInfo,
-        type: String
+        clazz: ClassInfo
     ): Boolean {
         val annotation = clazz.getAnnotationInfo(T::class.java)
         val classRef = annotation.parameterValues["parent"].value.safeCast<AnnotationClassRef>()?.loadClass()?.kotlin
-        return if (annotation.parameterValues["parent"].value is AnnotationClassRef &&
-            classRef == plugin::class || classRef == plugin.bindToKClass
-        ) {
-            plugin.log.debug { "Found $type ${clazz.name} from ${plugin.name}" }
-            true
-        } else {
-            plugin.log.debug { "Skipping $type ${clazz.name} because it isn't loaded by ${plugin.name}" }
-            false
-        }
+        return annotation.parameterValues["parent"].value is AnnotationClassRef && classRef == plugin::class || classRef == plugin.bindToKClass
     }
 
     private inline fun <reified P : MinixPlugin> P.getSortedExtensions(): MutableList<Extension<P>> {
@@ -323,7 +331,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
 
             extensions.find { it::class == dependency }?.let {
                 toAdd += it
-                log.debug { "Adding required dependency ${it.name} before ${next.name}" }
+                log.trace(scope = SCOPE) { "Adding required dependency ${it.name} before ${next.name}" }
             }
         }
         toAdd += next
@@ -359,7 +367,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             next.dependencies.all { dep -> sortedExtensions.find { it::class == dep } == null }
         ) return false
 
-        log.debug { "All dependencies for ${next.name} are loaded, adding to sorted" }
+        log.trace(scope = SCOPE) { "All dependencies for ${next.name} are loaded, adding to sorted" }
         return sortedExtensions.add(next)
     }
 
@@ -378,10 +386,10 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
 
     private fun Extension<MinixPlugin>.checkFailed(): Boolean {
         when (this.state) {
-            ExtensionState.FAILED_DEPENDENCIES -> log.warn { "Extension $name had one or more dependencies fail to load, Skipping." }
-            ExtensionState.FAILED_LOADING -> log.warn { "Extension $name had previously failed to load, Skipping." }
-            ExtensionState.FAILED_UNLOADING -> log.warn { "Extension $name had previously failed to unload, Skipping." }
-            ExtensionState.LOADING, ExtensionState.ENABLING, ExtensionState.UNLOADING -> log.warn { "Extension $name is still ${state.name.lowercase()}, Skipping." }
+            ExtensionState.FAILED_DEPENDENCIES -> log.warn(scope = SCOPE) { "Extension $name had one or more dependencies fail to load, Skipping." }
+            ExtensionState.FAILED_LOADING -> log.warn(scope = SCOPE) { "Extension $name had previously failed to load, Skipping." }
+            ExtensionState.FAILED_UNLOADING -> log.warn(scope = SCOPE) { "Extension $name had previously failed to unload, Skipping." }
+            ExtensionState.LOADING, ExtensionState.ENABLING, ExtensionState.UNLOADING -> log.warn(scope = SCOPE) { "Extension $name is still ${state.name.lowercase()}, Skipping." }
             else -> return true
         }
         return false
@@ -408,7 +416,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                 }
             }
         } catch (e: Throwable) {
-            if (e is TimeoutCancellationException) { this.log.warn { "Extension $name took too longer than 5 seconds to load!" } }
+            if (e is TimeoutCancellationException) { this.log.warn(scope = SCOPE) { "Extension $name took too longer than 5 seconds to load!" } }
 
             when (state) {
                 ExtensionState.LOADING -> setState(ExtensionState.FAILED_LOADING)
@@ -422,7 +430,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         when (state) {
             ExtensionState.LOADING -> setState(ExtensionState.LOADED)
             ExtensionState.ENABLING -> setState(ExtensionState.ENABLED)
-            else -> {}
+            else -> Unit
         }
         bound = true
         pluginCache[this@start.plugin].loadedExtensions += this
@@ -433,13 +441,13 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             Triple(
                 Extension<MinixPlugin>::handleLoad.name,
                 suspend { this.handleLoad() }
-            ) { log.info { "Loading extension $name" } }
+            ) { log.info(scope = SCOPE) { "Loading extension $name" } }
         }
         ExtensionState.ENABLING -> {
             Triple(
                 Extension<MinixPlugin>::handleEnable.name,
                 suspend { this.handleEnable() }
-            ) { log.info { "Enabling extension $name" } }
+            ) { log.info(scope = SCOPE) { "Enabling extension $name" } }
         }
         else -> throw IllegalArgumentException("Cannot get triple for state $state")
     }
@@ -462,7 +470,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         val dependents = getAllDependents(this, extensions.reversed(), hashSetOf())
         dependents.forEach { it.setState(ExtensionState.FAILED_DEPENDENCIES) }
 
-        log.error(error) {
+        log.error(error, SCOPE) {
             val builder = StringBuilder()
             builder.append("There was an error while loading / enabling extension ${this::class.getFullName()}!")
             builder.append("\nThis is not a fatal error, but it may cause other extensions to fail to load.")
@@ -474,28 +482,11 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         }
     }
 
-    // TODO: Why oh why is this not working? Please somehow figure out how to get the dependencies of dependencies and so on.
-    /*private suspend fun Extension<MinixPlugin>.extensions(
-        extensions: MutableList<Extension<MinixPlugin>>,
-        dependents: MutableList<Extension<MinixPlugin>>
-    ): MutableList<Extension<MinixPlugin>> {
-        for (extension in extensions.reversed()) {
-            if (bindToKClass !in extension.dependencies &&
-                this::class !in extension.dependencies ||
-                extension.dependencies.all { clazz -> dependents.any { it.bindToKClass == clazz || it::class == clazz } }
-            ) continue
-
-            dependents.add(extension)
-            extension.setState(ExtensionState.FAILED_DEPENDENCIES)
-        }
-        return dependents
-    }*/
-
     private suspend inline fun <reified P : MinixPlugin> P.shutdownInOrder() {
         val cache = pluginCache[this]
         cache.loadedExtensions.reverse()
         cache.loadedExtensions.removeAll { ex ->
-            log.debug { "Unloading extension ${ex.name} on thread ${Thread.currentThread().name}" }
+            log.trace(scope = SCOPE) { "Unloading extension ${ex.name}." }
             runBlocking {
                 ex.setState(ExtensionState.UNLOADING)
                 try {
@@ -511,8 +502,8 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                     }
                 } catch (e: Throwable) {
                     if (e is TimeoutCancellationException) {
-                        log.warn { "Extension ${ex.name} took too longer than 5 seconds to unload!" }
-                    } else log.error(e) { "Extension ${ex.name} through an error while unloading!" }
+                        log.warn(scope = SCOPE) { "Extension ${ex.name} took too longer than 5 seconds to unload!" }
+                    } else log.error(e, SCOPE) { "Extension ${ex.name} threw an error while unloading!" }
                     ex.setState(ExtensionState.FAILED_UNLOADING)
                 }
                 unloadKoinModules(module { single { ex } bind (ex.bindToKClass ?: ex::class).unsafeCast() })

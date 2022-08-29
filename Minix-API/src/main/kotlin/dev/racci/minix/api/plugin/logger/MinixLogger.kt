@@ -5,11 +5,13 @@ import com.github.ajalt.mordant.rendering.TextAlign
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.Whitespace
 import com.github.ajalt.mordant.terminal.Terminal
+import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.exceptions.LevelConversionException
 import dev.racci.minix.api.exceptions.NoTraceException
 import dev.racci.minix.api.utils.kotlin.fromOrdinal
 import dev.racci.minix.api.utils.kotlin.toSafeString
 import dev.racci.minix.api.utils.unsafeCast
+import kotlinx.atomicfu.AtomicBoolean
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import org.apache.logging.log4j.spi.StandardLevel
@@ -19,8 +21,27 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.jvm.isAccessible
 
+@OptIn(MinixInternal::class)
 @API(status = API.Status.EXPERIMENTAL, since = "3.2.0")
 abstract class MinixLogger {
+
+    @MinixInternal
+    private val atomicLock: AtomicBoolean = atomic(false)
+
+    @MinixInternal
+    private val atomicLevel: AtomicRef<LoggingLevel>
+
+    val level get() = atomicLevel.value
+
+    @MinixInternal
+    fun lockLevel() {
+        this.atomicLock.compareAndSet(expect = false, update = true)
+    }
+
+    @MinixInternal
+    fun unlockLevel() {
+        this.atomicLock.compareAndSet(expect = true, update = false)
+    }
 
     constructor(level: LoggingLevel) {
         this.atomicLevel = atomic(level)
@@ -38,9 +59,6 @@ abstract class MinixLogger {
         this.atomicLevel = atomic(LoggingLevel.fromSlF4(level))
     }
 
-    private val atomicLevel: AtomicRef<LoggingLevel>
-    val level get() = atomicLevel.value
-
     /**
      * @param level The [LoggingLevel] to test.
      * @return `true` if the given [LoggingLevel] can display.
@@ -48,10 +66,14 @@ abstract class MinixLogger {
     fun isEnabled(level: LoggingLevel): Boolean = level.ordinal <= this.level.ordinal
 
     /**
+     * Sets the [LoggingLevel] of this logger.
+     * If [atomicLock] is `true` this will not change the level.
+     *
      * @param level the [LoggingLevel] to log at.
      * @return The previous [LoggingLevel] and makes a trace log, or if the same just returns.
      */
     fun setLevel(level: LoggingLevel): LoggingLevel {
+        if (this.atomicLock.value) return this.level
         if (level == this.level) return level
 
         val previous = this.atomicLevel.getAndSet(level)
@@ -130,7 +152,7 @@ abstract class MinixLogger {
         msg: () -> Any?
     ): RuntimeException {
         log(FormattedMessage(msg, scope, LoggingLevel.FATAL, t, TextColors.brightRed))
-        return NoTraceException()
+        return NoTraceException(cause = t)
     }
 
     open fun trace(
@@ -176,7 +198,7 @@ abstract class MinixLogger {
         msg: String? = null
     ): RuntimeException {
         log(FormattedMessage(msg, scope, LoggingLevel.FATAL, t, TextColors.brightRed))
-        return NoTraceException()
+        return NoTraceException(cause = t)
     }
 
     /**

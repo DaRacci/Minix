@@ -7,6 +7,7 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.coroutines.CoroutineScope
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
@@ -35,6 +36,7 @@ interface ExtensionSkeleton<P : MinixPlugin> : WithPlugin<P>, Qualifier {
     val name: String
 
     /** The MinixLogger instance from the plugin. */
+    @get:ScheduledForRemoval(inVersion = "4.0.0")
     @Deprecated("Use the WithPlugin extension instead.", ReplaceWith("WithPlugin<*>.log", "dev.racci.minix.api.extensions.ExPlugin"))
     val log: MinixLogger
 

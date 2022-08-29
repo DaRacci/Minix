@@ -18,6 +18,7 @@ import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.serializables.Serializer
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.updater.providers.UpdateProvider
+import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.Companion.nonVirtualNode
 import dev.racci.minix.api.utils.Closeable
 import dev.racci.minix.api.utils.clone
 import dev.racci.minix.api.utils.getKoin
@@ -42,6 +43,7 @@ import org.spongepowered.configurate.ConfigurateException
 import org.spongepowered.configurate.NodePath.path
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
+import org.spongepowered.configurate.kotlin.extensions.node
 import org.spongepowered.configurate.kotlin.extensions.set
 import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
@@ -108,6 +110,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         val file: File
         val node: CommentedConfigurationNode
         val configLoader: HoconConfigurationLoader
+        val configClone: T
 
         fun save() {
             this.node.set(this.kClass, this.configInstance)
@@ -132,7 +135,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
         private fun createVersionBuilder(): ConfigurationTransformation.Versioned {
             val builder = ConfigurationTransformation.versionedBuilder()
-            builder.versionKey("minix", "config-version")
+            builder.versionKey("config-version")
             builder.addVersion(0, baseTransformation())
             for ((version, transformation) in this.configInstance.versionTransformations) {
                 builder.addVersion(version, transformation)
@@ -203,11 +206,17 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
             try {
                 this.node = this.configLoader.load()
                 this.configInstance = this.node.get(kClass) ?: throw RuntimeException("Could not load configurate class ${this.kClass.simpleName}")
+                this.node.nonVirtualNode("minix").onSuccess { node ->
+                    val instance = node.get(MinixConfig.Minix::class) ?: error("The minix config section was not of the correct type!")
+                    instance.plugin = plugin
+                    instance.initialized = true
+                    instance.processLoggingLevel()
+                }
 
                 this.configInstance.load()
-                val copy = this.configInstance.clone()
+                this.configClone = this.configInstance.clone().unsafeCast()
 
-                if (!this.file.exists() || this.configInstance != copy) {
+                if (!this.file.exists() || this.configInstance != this.configClone) {
                     this.save()
                 }
             } catch (e: ConfigurateException) {

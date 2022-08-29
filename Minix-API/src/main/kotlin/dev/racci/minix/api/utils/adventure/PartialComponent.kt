@@ -2,6 +2,8 @@ package dev.racci.minix.api.utils.adventure
 
 import dev.racci.minix.api.extensions.lazyPlaceholder
 import dev.racci.minix.api.extensions.msg
+import dev.racci.minix.api.plugin.logger.MinixLogger
+import dev.racci.minix.api.utils.getKoin
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.command.CommandSender
@@ -31,12 +33,17 @@ class PartialComponent private constructor(private var raw: String) {
 
     fun formatRaw(placeholders: Map<String, String>) {
         var tmp = raw
-        placeholders.forEach { (placeholder, prefix) ->
-            tmp = tmp.replaceFirst(placeholder, prefix)
+
+        for ((placeholder, prefix) in placeholders.entries) {
+            val index = tmp.indexOf(placeholder).takeIf { it != -1 } ?: continue
+            tmp = tmp.replaceRange(index, index + placeholder.length, prefix)
+
+            dirty = true
+            cache = null
+            getKoin().get<MinixLogger>().debug { "Replaced $placeholder in $raw" }
         }
+
         _value = tmp
-        dirty = true
-        cache = null
     }
 
     companion object {

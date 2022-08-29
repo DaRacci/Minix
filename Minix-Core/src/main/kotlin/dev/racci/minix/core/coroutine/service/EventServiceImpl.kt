@@ -23,10 +23,11 @@ import org.bukkit.plugin.SimplePluginManager
 import java.lang.Deprecated
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
+import kotlin.reflect.full.hasAnnotation
 
 internal class EventServiceImpl(
     private val plugin: MinixPlugin,
-    private val coroutineSession: CoroutineSession,
+    private val coroutineSession: CoroutineSession
 ) : EventService {
     private val eventListenersMethod by lazy { SimplePluginManager::class.java.getDeclaredMethod("getEventListeners", Class::class.java).apply { isAccessible = true } }
 
@@ -59,7 +60,7 @@ internal class EventServiceImpl(
 
     private fun createCoroutineListener(
         listener: Listener,
-        plugin: MinixPlugin,
+        plugin: MinixPlugin
     ): Map<Class<*>, MutableSet<RegisteredListener>> {
         val eventMethods = HashSet<Method>()
 
@@ -136,29 +137,29 @@ internal class EventServiceImpl(
     class SuspendingEventExecutor(
         private val eventClass: Class<*>,
         private val method: Method,
-        private val coroutineSession: CoroutineSession,
+        private val coroutineSession: CoroutineSession
     ) : EventExecutor {
 
         fun executeSuspend(
             listener: Listener,
-            event: Event,
+            event: Event
         ): Job = executeEvent(listener, event)
 
         override fun execute(
             listener: Listener,
-            event: Event,
+            event: Event
         ) { executeEvent(listener, event) }
 
         private fun executeEvent(
             listener: Listener,
-            event: Event,
+            event: Event
         ): Job {
             val result: Result<Job> = try {
                 when {
                     !eventClass.isAssignableFrom(event.javaClass) -> Result.failure(IllegalArgumentException("Event ${event.javaClass.name} is not assignable to ${eventClass.name}"))
                     else -> {
                         val dispatcher = when {
-                            event.isAsynchronous || listener::class.annotations.any { it::class == RunAsync::class } -> Dispatchers.Unconfined
+                            event.isAsynchronous || listener::class.hasAnnotation<RunAsync>() -> Dispatchers.Unconfined
                             else -> coroutineSession.dispatcherMinecraft
                         }
                         Result.success(
@@ -190,7 +191,7 @@ internal class EventServiceImpl(
         private val executor: EventExecutor,
         priority: EventPriority,
         plugin: Plugin,
-        ignoreCancelled: Boolean,
+        ignoreCancelled: Boolean
     ) : RegisteredListener(lister, executor, priority, plugin, ignoreCancelled) {
 
         fun callSuspendingEvent(event: Event): Job {

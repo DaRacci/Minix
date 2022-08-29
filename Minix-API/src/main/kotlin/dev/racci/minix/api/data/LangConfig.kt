@@ -15,11 +15,19 @@ abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
     open val prefixes: Map<String, String> = mapOf()
 
     override fun load() {
-        val map = prefixes.mapKeys {
-            if (!it.key.matches(prefixRegex)) "<prefix_${it.key}>" else it.key
-        }
-        this.onNested<PartialComponent> { this.formatRaw(map) }
         super.load()
+        val map = prefixes.mapKeys {
+            if (it.key.startsWith("<prefix_") && it.key.endsWith(">")) {
+                it.key
+            } else "<prefix_${it.key}>"
+        }
+
+        plugin.log.debug { "Loaded prefixes: $map" }
+        this.onNestedInstance<PropertyFinder<PartialComponent>> {
+            onNested<PartialComponent, PropertyFinder<PartialComponent>>(this) {
+                this.formatRaw(map)
+            }
+        }
     }
 
     operator fun get(key: String, vararg placeholder: Pair<String, () -> Any>): Component {
@@ -32,7 +40,5 @@ abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
         return value[key.substringAfter('.')].get(*placeholder)
     }
 
-    companion object {
-        private val prefixRegex = Regex("<prefix_(.*)>")
-    }
+    class InnerLang : PropertyFinder<PartialComponent>(), InnerConfig by InnerConfig.Default()
 }

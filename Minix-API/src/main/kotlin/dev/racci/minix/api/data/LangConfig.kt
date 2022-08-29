@@ -40,5 +40,5 @@ abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
         return value[key.substringAfter('.')].get(*placeholder)
     }
 
-    class InnerLang : PropertyFinder<PartialComponent>(), InnerConfig by InnerConfig.Default()
+    open class InnerLang : PropertyFinder<PartialComponent>(), InnerConfig by InnerConfig.Default()
 }

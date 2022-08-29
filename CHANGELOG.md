@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.3.5](https://github.com/DaRacci/Minix/compare/v3.3.4..v3.3.5) - 2022-08-29
+#### Bug Fixes
+- **(DataService)** Fix more errors. - ([188a48b](https://github.com/DaRacci/Minix/commit/188a48b081df06e96381195e9e0814affbd486c7)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v3.3.4 - ([b46c49e](https://github.com/DaRacci/Minix/commit/b46c49ed9865e19aeedb2f5040cd579b9455845c)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(Loadable)** Partial rework. - ([eb465c2](https://github.com/DaRacci/Minix/commit/eb465c2db10a99b777685876a73696f8c290fcf5)) - [@DaRacci](https://github.com/DaRacci)
+- Plugin and Plugin Service - ([8f9023c](https://github.com/DaRacci/Minix/commit/8f9023c3005265d760ef31cd75939f34dbc1fd84)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.3.4](https://github.com/DaRacci/Minix/compare/v3.3.3..v3.3.4) - 2022-08-28
 #### Bug Fixes
 - **(LangConfig)** call super.load not super.handleLoad() - ([2eb7f63](https://github.com/DaRacci/Minix/commit/2eb7f631ea10ba4b17776da857d879880f90bbbe)) - [@DaRacci](https://github.com/DaRacci)

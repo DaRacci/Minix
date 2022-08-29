@@ -17,7 +17,6 @@ import dev.racci.minix.api.services.UpdaterService
 import dev.racci.minix.api.updater.ChecksumType
 import dev.racci.minix.api.updater.UpdateMode
 import dev.racci.minix.api.updater.UpdateResult
-import dev.racci.minix.api.updater.Version
 import dev.racci.minix.api.updater.providers.NotSuccessfullyQueriedException
 import dev.racci.minix.api.updater.providers.NullUpdateProvider
 import dev.racci.minix.api.updater.providers.RequestTypeNotAvailableException
@@ -211,12 +210,12 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                 UpdateResult.FAILED_NO_VERSION
             }
 
-            updater.localVersion == Version.ERROR -> {
-                plugin.log.warn { "Couldn't get local version for ${updater.name} - ${updater.pluginInstance?.description?.version}" }
+            updater.localVersion.get().isFailure -> {
+                plugin.log.warn(updater.localVersion.get().exceptionOrNull(), SCOPE) { "Failed to get local version for ${updater.name} - ${updater.pluginInstance?.description?.version}" }
                 UpdateResult.FAILED_VERSION
             }
 
-            updater.localVersion >= updater.provider.latestVersion!! -> {
+            updater.localVersion.get().getOrThrow() >= updater.provider.latestVersion!! -> {
                 versionAppend("${updater.name} is up to date or ahead of the latest remote version!", updater)
                 UpdateResult.NO_UPDATE
             }
@@ -347,7 +346,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
     private fun downloadWriter(
         inputStream: InputStream,
         outputStream: OutputStream,
-        fileLength: Long,
+        fileLength: Long
     ) {
         var count: Int
         var downloaded = 0
@@ -374,7 +373,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
     }
 
     private fun getSize(
-        fileLength: Long,
+        fileLength: Long
     ): String {
         if (!updaterConfig.announceDownloadProgress || fileLength <= 0) return ""
         return when {
@@ -525,7 +524,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
             return UpdateResult.FAILED_BACKUP
         }
 
-        val zipFile = updateFolder.resolve("${updater.name}-${updater.localVersion.rawVersion}_backup_${now().toLocalDateTime(TimeZone.currentSystemDefault())}.zip")
+        val zipFile = updateFolder.resolve("${updater.name}-${updater.localVersion.get().getOrThrow().rawVersion}_backup_${now().toLocalDateTime(TimeZone.currentSystemDefault())}.zip")
         zipFile.createNewFile() // Shouldn't be a feasible way that this fails due to the name containing the current time
         ZipOutputStream(zipFile.outputStream().buffered()).use() {
             traverseDir(updater, it, folder)
@@ -584,7 +583,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                 val builder = StringBuilder()
                 builder.append(mainString)
                 if (updaterConfig.verbose) {
-                    builder.append("\nLocal version: ${updater.localVersion.rawVersion}")
+                    builder.append("\nLocal version: ${updater.localVersion.get().getOrNull()?.rawVersion}")
                     builder.append("\nRemote version: ${updater.provider.latestVersion?.rawVersion}")
                 }
                 builder.toString()
@@ -594,6 +593,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
     }
 
     companion object {
+        private const val SCOPE = "updaterService"
         private const val BUFFER_SIZE = 1024
         private val BYTE_NAMES by lazy { arrayOf("byte", "bytes", "kiB", "MiB", "GiB", "TiB", "PiB", "EiB") }
     }

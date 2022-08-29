@@ -1,9 +1,9 @@
 package dev.racci.minix.api.utils
 
-import dev.racci.minix.api.utils.kotlin.catchAndReturn
 import kotlinx.atomicfu.AtomicBoolean
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.updateAndGet
 
 /**
  * A slighter more complicated and more advanced version of [Closeable]
@@ -11,12 +11,11 @@ import kotlinx.atomicfu.atomic
  * @param T the type of the object to be loaded
  */
 abstract class Loadable<T> {
-
     protected val initialized: AtomicBoolean = atomic(false)
+    protected val error: AtomicRef<Throwable?> = atomic(null)
+    protected val value: AtomicRef<T?> = atomic(null)
 
-    val value: AtomicRef<T?> = atomic(null)
-
-    val failed: Boolean get() = value.value == null && initialized.value
+    val failed: Boolean get() = error.value != null
     val loaded: Boolean get() = value.value != null && initialized.value
     val unloaded: Boolean get() = value.value != null && !initialized.value
     val state: State get() = when {
@@ -32,13 +31,13 @@ abstract class Loadable<T> {
      * If there is an exception thrown, or [predicateLoadable] returns false this will return null.
      *
      * @param force Should we ignore what [predicateLoadable] returns
-     * @return the value of this loadable if it is loaded, or null if it isn't loaded
+     * @return the value of this loadable if it is loaded, or null if it isn't loaded.
      */
-    fun get(force: Boolean = false): T? {
-        return when (state) {
-            State.LOADED -> value.value
-            State.FAILED -> null
-            State.UNLOADED, State.LOADABLE -> { load(force); value.value }
+    fun get(force: Boolean = false): Result<T> {
+        return when (this.state) {
+            State.LOADED -> Result.success(this.value.value!!)
+            State.FAILED -> Result.failure(this.error.value!!)
+            State.UNLOADED, State.LOADABLE -> { load(force) }
         }
     }
 
@@ -57,15 +56,31 @@ abstract class Loadable<T> {
 
     /**
      * Attempts to load the value of this loadable.
+     * If force loaded, and the value is already loaded, it will run [unload] before getting a new instance.
      *
-     * @param force If we should try to load the value even if it is already loaded
-     * @return The previous value if it was already loaded, the old value if it was loaded but forced, or null.
+     * @param force If we should try to load the value even if it is already loaded.
+     * @return A result with the new value or an exception if one was thrown.
      */
-    fun load(force: Boolean = false): T? {
-        if (!force && (initialized.value || !predicateLoadable())) return value.value
+    fun load(force: Boolean = false): Result<T> {
+        if (!force && (loaded)) return Result.success(value.value!!)
+        if (!predicateLoadable()) return Result.failure(RuntimeException("Loadable is not loadable because of predicate."))
 
-        initialized.lazySet(true)
-        return value.getAndSet(catchAndReturn<Throwable, T> { onLoad() }) ?: value.value
+        val success = initialized.updateAndGet { previous ->
+            if (previous) this.unload()
+
+            val value = runCatching { onLoad() }
+            value.fold(
+                onSuccess = { this.value.lazySet(it); this.error.lazySet(null) },
+                onFailure = { this.value.lazySet(null); this.error.lazySet(it) }
+            )
+
+            value.isSuccess
+        }
+
+        return when (success) {
+            true -> Result.success(value.value!!)
+            false -> Result.failure(error.value!!)
+        }
     }
 
     /**
@@ -79,6 +94,14 @@ abstract class Loadable<T> {
         }
 
         return initialized.getAndSet(false)
+    }
+
+    companion object {
+        inline fun <reified T> of(crossinline loader: () -> T): Loadable<T> {
+            return object : Loadable<T>() {
+                override fun onLoad(): T = loader()
+            }
+        }
     }
 
     enum class State {

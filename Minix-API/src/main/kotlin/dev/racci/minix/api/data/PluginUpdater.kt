@@ -1,12 +1,11 @@
 package dev.racci.minix.api.data
 
-import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.services.UpdaterService
 import dev.racci.minix.api.updater.UpdateMode
 import dev.racci.minix.api.updater.UpdateResult
 import dev.racci.minix.api.updater.Version
 import dev.racci.minix.api.updater.providers.UpdateProvider
-import dev.racci.minix.api.utils.getKoin
+import dev.racci.minix.api.utils.Loadable
 import kotlinx.datetime.Instant
 import org.bukkit.plugin.Plugin
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
@@ -56,18 +55,11 @@ class PluginUpdater {
 
     @Transient var lastRun: Instant? = null
 
-    @Transient private var _localVersion: Version? = null
-    val localVersion: Version get() {
-        if (_localVersion == null) {
-            _localVersion = try {
-                Version(pluginInstance!!.description.version)
-            } catch (e: Version.InvalidVersionStringException) {
-                getKoin().get<MinixLogger>().warn(e) { "The version string of ${pluginInstance!!.description.name} couldn't be matched." }
-                Version.ERROR
-            }
-        }
-        return _localVersion!!
+    @Transient val localVersion = Loadable.of {
+        val instance = pluginInstance ?: error("Plugin instance is null")
+        Version(instance.description.version)
     }
+
     val localFile: String get() = pluginInstance!!::class.java.protectionDomain.codeSource.location.file
 
     @Transient var result: UpdateResult? = null

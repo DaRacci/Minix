@@ -20,7 +20,8 @@ class UpdaterConfig : MinixConfig<Minix>(false) {
 
     @Comment("The interval in minutes to check for updates")
     @Setting("interval")
-    private var _interval: Long = 60
+    var _interval: Long = 60
+
     var interval: Duration
         get() = _interval.minutes
         set(value) { _interval = value.inWholeMinutes }
@@ -56,15 +57,15 @@ class UpdaterConfig : MinixConfig<Minix>(false) {
         }
     }
 
-    override fun toString(): String {
-        val builder = StringBuilder("UpdaterConfig:")
-        builder.append("enabled=$enabled:")
-        builder.append("interval=$interval:")
-        builder.append("updateFolder=$updateFolder:")
-        builder.append("announceDownloadProgress=$announceDownloadProgress:")
-        builder.append("downloadDependencies=$downloadDependencies:")
-        builder.append("backups=$backups:")
-        builder.append("pluginUpdaters=[${pluginUpdaters.joinToString(", ")}]:")
-        return builder.toString()
-    }
+//    override fun toString(): String {
+//        val builder = StringBuilder("UpdaterConfig:")
+//        builder.append("enabled=$enabled:")
+//        builder.append("interval=$interval:")
+//        builder.append("updateFolder=$updateFolder:")
+//        builder.append("announceDownloadProgress=$announceDownloadProgress:")
+//        builder.append("downloadDependencies=$downloadDependencies:")
+//        builder.append("backups=$backups:")
+//        builder.append("pluginUpdaters=[${pluginUpdaters.joinToString(", ")}]:")
+//        return builder.toString()
+//    }
 }

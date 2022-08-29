@@ -14,5 +14,5 @@ import kotlin.reflect.KClass
 annotation class MappedPlugin(
     val bStatsId: Int = -1,
     val bindToKClass: KClass<*> = MinixPlugin::class,
-    val extensions: Array<KClass<*>> = [],
+    val extensions: Array<KClass<*>> = []
 )

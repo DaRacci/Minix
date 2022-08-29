@@ -34,6 +34,7 @@ class MinixImpl : Minix() {
 
     override val updater: PluginUpdater = PluginUpdater().apply {
         ignored += "MinixUpdater"
+        ignored += "libraries"
         name = "Minix"
         providers += GithubUpdateProvider("DaRacci", "Minix")
     }

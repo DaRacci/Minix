@@ -23,7 +23,7 @@ internal class LoadableTest {
 
     @Test
     fun `loadable returns true`() {
-        assertTrue(loadable.get() == true)
+        assertTrue(loadable.get().isSuccess)
     }
 
     @Test
@@ -38,15 +38,9 @@ internal class LoadableTest {
         death = true
         loadable.unload()
 
-        assertNull(loadable.get())
+        assertNull(loadable.get().getOrNull())
         assertTrue(loadable.failed)
 
         death = false
-    }
-
-    @Test
-    fun `loadable should return old value when forced`() {
-        loadable.load()
-        assertTrue(loadable.load(true) == true)
     }
 }

@@ -7,7 +7,6 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.getKoin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import org.bukkit.command.PluginCommand
 import org.bukkit.event.Event
 import org.bukkit.event.Listener
 import org.bukkit.plugin.PluginManager
@@ -118,27 +117,6 @@ fun PluginManager.callSuspendingEvent(
     event: Event,
     plugin: MinixPlugin
 ): Collection<Job> = coroutineService.getCoroutineSession(plugin).eventService.fireSuspendingEvent(event)
-
-/**
- * Registers an command executor with suspending function.
- * Does exactly the same as PluginCommand.setExecutor.
- */
-fun PluginCommand.setSuspendingExecutor(
-    suspendingCommandExecutor: SuspendingCommandExecutor
-) = coroutineService.getCoroutineSession(plugin as MinixPlugin).commandService.registerSuspendCommandExecutor(
-    this,
-    suspendingCommandExecutor
-)
-
-/**
- * Registers a tab completer with suspending function.
- * Does exactly the same as PluginCommand.setExecutor.
- */
-fun PluginCommand.setSuspendingTabCompleter(suspendingTabCompleter: SuspendingTabCompleter) =
-    coroutineService.getCoroutineSession(plugin as MinixPlugin).commandService.registerSuspendTabCompleter(
-        this,
-        suspendingTabCompleter
-    )
 
 /**
  * Finds the version compatible class.

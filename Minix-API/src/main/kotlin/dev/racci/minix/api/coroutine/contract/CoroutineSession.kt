@@ -17,11 +17,6 @@ interface CoroutineSession {
     val eventService: EventService
 
     /**
-     * Gets the command service.
-     */
-    val commandService: CommandService
-
-    /**
      * Gets the wakeup service.
      */
     val wakeUpBlockService: WakeUpBlockService

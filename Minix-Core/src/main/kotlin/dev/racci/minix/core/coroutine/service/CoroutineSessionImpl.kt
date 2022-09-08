@@ -1,6 +1,5 @@
 package dev.racci.minix.core.coroutine.service
 
-import dev.racci.minix.api.coroutine.contract.CommandService
 import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.contract.EventService
 import dev.racci.minix.api.coroutine.contract.WakeUpBlockService
@@ -25,7 +24,6 @@ internal class CoroutineSessionImpl(override val plugin: MinixPlugin) : WithPlug
 
     override val scope: CoroutineScope by lazy { CoroutineScope(plugin.minecraftDispatcher) }
     override val eventService: EventService by lazy { EventServiceImpl(plugin, this) }
-    override val commandService: CommandService by lazy { CommandServiceImpl(plugin, this) }
     override val wakeUpBlockService: WakeUpBlockService by lazy { WakeUpBlockServiceImpl(plugin) }
     override val dispatcherMinecraft: CoroutineContext by lazy { MinecraftCoroutineDispatcher(plugin, wakeUpBlockService) }
     override val dispatcherAsync: CoroutineContext by lazy { AsyncCoroutineDispatcher(plugin, wakeUpBlockService) }
@@ -52,8 +50,8 @@ internal class CoroutineSessionImpl(override val plugin: MinixPlugin) : WithPlug
         coroutineStart: CoroutineStart,
         f: suspend CoroutineScope.() -> Unit,
     ): Job = (parentScope ?: scope).launch(dispatcher, coroutineStart) {
-        try { // The user may or may not launch multiple sub suspension operations. If
-            // one of those fails, only this scope should fail instead of the parent scope.
+        try { // The user may or may not launch multiple sub suspension operations.
+            // If one of those fails, only this scope should fail instead of the parent scope.
             coroutineScope(f)
         } catch (e: Throwable) {
             when (e) {

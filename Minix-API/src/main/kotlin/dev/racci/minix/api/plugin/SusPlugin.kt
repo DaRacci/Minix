@@ -6,9 +6,7 @@ import dev.racci.minix.api.updater.Version
 import org.apiguardian.api.API
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.Plugin
-import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import org.koin.core.component.KoinComponent
-import kotlin.reflect.KClass
 
 @API(status = API.Status.MAINTAINED, since = "1.0.0")
 interface SusPlugin : Plugin, KoinComponent {
@@ -27,10 +25,6 @@ interface SusPlugin : Plugin, KoinComponent {
 
     /** The plugin's auto-updater. */
     val updater: PluginUpdater?
-
-    @Deprecated("Use the MappedPlugin annotation instead.")
-    @get:ScheduledForRemoval(inVersion = "4.0.0")
-    val bindToKClass: KClass<out MinixPlugin>?
 
     /**
      * This is called when the server picks up your Plugin and has begun loading it.

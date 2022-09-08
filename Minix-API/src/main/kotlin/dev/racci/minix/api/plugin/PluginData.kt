@@ -23,8 +23,6 @@ class PluginData<P : MinixPlugin>(val plugin: P) {
         property: KProperty<*>
     ): T = this::class.memberProperties.find { it.name == property.name }?.getter?.call(thisRef) as T
 
-    val extensionsBuilder by lazy(plugin::ExtensionsBuilder)
-
     val loader by lazy { JavaPlugin::class.declaredMemberFunctions.first { it.name == "getClassLoader" }.also { it.isAccessible = true }.call(plugin) as ClassLoader }
     val extensions by lazy { mutableListOf<ExtensionUnit<P>>() }
     val loadedExtensions by lazy { mutableListOf<Extension<P>>() }

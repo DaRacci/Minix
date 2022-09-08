@@ -35,11 +35,6 @@ interface ExtensionSkeleton<P : MinixPlugin> : WithPlugin<P>, Qualifier {
     /** The name of the extension. */
     val name: String
 
-    /** The MinixLogger instance from the plugin. */
-    @get:ScheduledForRemoval(inVersion = "4.0.0")
-    @Deprecated("Use the WithPlugin extension instead.", ReplaceWith("WithPlugin<*>.log", "dev.racci.minix.api.extensions.ExPlugin"))
-    val log: MinixLogger
-
     /** The current state of the extension. */
     val state: ExtensionState
 

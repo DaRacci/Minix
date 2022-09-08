@@ -11,6 +11,7 @@ import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionState
+import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.extensions.unregisterListener
 import dev.racci.minix.api.integrations.Integration
 import dev.racci.minix.api.integrations.IntegrationManager
@@ -245,13 +246,12 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             .enableMethodInfo()
             .scan()
 
-        if (this !is MinixImpl) {
-            minix.log.info { "Ignore the following warning, this is expected behavior." }
-        }
+        if (this !is MinixImpl) minix.log.info { "Ignore the following warning, this is expected behavior." }
+        val boundKClass = this::class.findAnnotation<MappedPlugin>()?.bindToKClass.takeUnless { it == MinixPlugin::class } ?: this::class
 
         classGraph.getClassesWithAnnotation(MappedExtension::class.java)
             .filter { clazz ->
-                matchingAnnotation<MappedExtension>(this, clazz) &&
+                matchingAnnotation<MappedExtension>(this, boundKClass, clazz) &&
                     if (!clazz.extendsSuperclass(Extension::class.java)) {
                         log.warn { "${clazz.name} is annotated with MappedExtension but isn't an extension!." }
                         false
@@ -279,7 +279,7 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             }
 
         classGraph.getClassesWithAnnotation(MappedConfig::class.java)
-            .filter { matchingAnnotation<MappedConfig>(this, it) }
+            .filter { matchingAnnotation<MappedConfig>(this, boundKClass, it) }
             .forEach {
                 log.trace { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
                 try {
@@ -292,15 +292,16 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
                 }
             }
 
-        processMappedIntegrations(classGraph, this)
+        processMappedIntegrations(classGraph, this, boundKClass)
     }
 
     private fun processMappedIntegrations(
         scanResult: ScanResult,
-        plugin: MinixPlugin
+        plugin: MinixPlugin,
+        boundKClass: KClass<*>
     ) {
         for (classInfo in scanResult.getClassesWithAnnotation(MappedIntegration::class.java)) {
-            if (!matchingAnnotation<MappedIntegration>(plugin, classInfo)) continue
+            if (!matchingAnnotation<MappedIntegration>(plugin, boundKClass, classInfo)) continue
 
             this.minix.log.trace { "Found MappedIntegration [${classInfo.simpleName}] from ${plugin.name}" }
 
@@ -326,11 +327,12 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
 
     private inline fun <reified T : Annotation> matchingAnnotation(
         plugin: MinixPlugin,
+        boundKClass: KClass<*>,
         clazz: ClassInfo
     ): Boolean {
         val annotation = clazz.getAnnotationInfo(T::class.java)
         val classRef = annotation.parameterValues["parent"].value.safeCast<AnnotationClassRef>()?.loadClass()?.kotlin
-        return annotation.parameterValues["parent"].value is AnnotationClassRef && classRef == plugin::class || classRef == plugin.bindToKClass
+        return annotation.parameterValues["parent"].value is AnnotationClassRef && classRef == plugin::class || classRef == boundKClass
     }
 
     private inline fun <reified P : MinixPlugin> P.getSortedExtensions(): MutableList<Extension<P>> {

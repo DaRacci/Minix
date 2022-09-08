@@ -33,7 +33,6 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
     private val pluginService by inject<PluginService>()
 
     final override val name get() = annotation?.name ?: this::class.simpleName ?: throw RuntimeException("Extension name is not defined")
-    final override val log get() = plugin.log
     final override val bindToKClass get() = annotation?.bindToKClass.takeIf { it != Extension::class }
     final override val value by lazy { "${plugin.name}:$name" }
     final override val supervisor by lazy { CoroutineScope(SupervisorJob()) }

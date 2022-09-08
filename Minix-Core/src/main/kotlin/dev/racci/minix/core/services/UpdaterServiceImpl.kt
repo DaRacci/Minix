@@ -6,6 +6,7 @@ import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.async
 import dev.racci.minix.api.extensions.deferredAsync
 import dev.racci.minix.api.extensions.event
+import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.extensions.pm
 import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.extensions.taskAsync

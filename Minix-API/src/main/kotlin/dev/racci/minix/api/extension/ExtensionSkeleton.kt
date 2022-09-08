@@ -8,7 +8,6 @@ import dev.racci.minix.api.utils.Closeable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import org.koin.core.qualifier.Qualifier
-import kotlin.reflect.KClass
 
 interface ExtensionSkeleton<P : MinixPlugin> : WithPlugin<P>, Qualifier {
 
@@ -19,21 +18,8 @@ interface ExtensionSkeleton<P : MinixPlugin> : WithPlugin<P>, Qualifier {
     @MinixInternal
     val eventListener: KListener<P>
 
-    /** The supervisor scope, which is used to launch coroutines in the extension. */
-    @MinixInternal
-    val supervisor: CoroutineScope
-
-    /** The required Extensions for this Extension to load. */
-    @MinixInternal
-    val dependencies: ImmutableSet<KClass<out Extension<*>>>
-
-    /** If the extension has been bound in koin. */
-    @MinixInternal
-    var bound: Boolean
-
-    /** An external Class to bind to in koin. */
-    @MinixInternal
-    val bindToKClass: KClass<*>?
+    /** If the extension is loaded. */
+    val loaded: Boolean
 
     /** The name of the extension. */
     val name: String
@@ -41,15 +27,42 @@ interface ExtensionSkeleton<P : MinixPlugin> : WithPlugin<P>, Qualifier {
     /** The current state of the extension. */
     val state: ExtensionState
 
-    /** If the extension is loaded. */
-    val loaded: Boolean
+    /**
+     * The supervisor scope, which is used to launch coroutines in the
+     * extension.
+     */
+    @MinixInternal
+    val supervisor: CoroutineScope
 
-    /** Called when the plugin loading and not yet enabled. */
-    suspend fun handleLoad()
+    /**
+     * Handles the enabling of the extension.
+     * This is called once the plugin has finished loading and is considered enabled.
+     *
+     * ## Enabling can occur multiple times during the lifetime of the extension.
+     */
+    suspend fun handleEnable() = Unit
 
-    /** Called when the plugin has finished loading and is enabled. */
-    suspend fun handleEnable()
+    /**
+     * Handles the loading of the extension.
+     * This is called while the plugin is being loaded and is not yet considered enabled.
+     *
+     * ## Loading only occurs once when this extension is found from reflection.
+     */
+    suspend fun handleLoad() = Unit
 
-    /** Called when the plugin is being disabled. */
-    suspend fun handleUnload()
+    /**
+     * Handles the unloading of the extension.
+     * This is called while the plugin is disabling and is considered disabled.
+     *
+     * ## Unloading only occurs once when server is shutting down.
+     */
+    suspend fun handleUnload() = Unit
+
+    /**
+     * Handles the disabling of the extension.
+     * This is called when the plugin is disabled and is considered disabled.
+     *
+     * ## Unloading can occur multiple times during the lifetime of the extension.
+     */
+    suspend fun handleDisable() = Unit
 }

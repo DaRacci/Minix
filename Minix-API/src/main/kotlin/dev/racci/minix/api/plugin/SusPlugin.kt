@@ -27,28 +27,54 @@ interface SusPlugin : Plugin, KoinComponent {
     val updater: PluginUpdater?
 
     /**
-     * This is called when the server picks up your Plugin and has begun loading it.
-     */
-    suspend fun handleLoad() = Unit
-
-    /**
-     * This is called Once the Plugin is ready to accept and register
-     * events, commands etc.
+     * Handles the enabling of the plugin.
+     * This is called while the plugin is considered enabled.
+     * This is called before Minix starts its internal enabling process.
+     *
+     * ## Enabling can occur multiple times during the lifetime of the plugin.
      */
     suspend fun handleEnable() = Unit
 
     /**
-     * This will be called after your Plugin is done loading
-     * and Minix has finished its loading process for your Plugin.
+     * Handles the loading of the plugin.
+     * This is called while the plugin considered disabled.
+     * This is called before Minix starts its internal loading process.
+     *
+     * ## Loading only occurs once when the server loads this plugin.
+     */
+    suspend fun handleLoad() = Unit
+
+    /**
+     * Handles the unloading of the plugin.
+     * This is called while the plugin is considered disabled.
+     *
+     * ## Unloading only occurs once when server is shutting down.
+     */
+    suspend fun handleUnload() = Unit
+
+    /**
+     * Handles the disabling of the plugin.
+     * This is called when the plugin is considered disabled.
+     *
+     * ## Unloading can occur multiple times during the lifetime of the extension.
+     */
+    suspend fun handleDisable() = Unit
+
+    /**
+     * Handles the after-loading of the plugin.
+     * This is called while the plugin is considered disabled.
+     * This is called after Minix has completed its internal loading process.
+     *
+     * ## After-load only occurs once when the server loads this plugin.
      */
     suspend fun handleAfterLoad() = Unit
 
-    /** This is called after [handleEnable] and after plugin service has finished processing the plugin. */
-    suspend fun handleAfterEnable() = Unit
-
     /**
-     * This is triggered when your Plugin is being disabled by the Server,
-     * Please use this to clean up your Plugin to not leak resources.
+     * Handles the after-loading of the plugin.
+     * This is called while the plugin is disabling and is considered disabled.
+     * This is called after Minix has completed its internal enabling process.
+     *
+     * ## Unloading only occurs once when server is shutting down.
      */
-    suspend fun handleDisable() = Unit
+    suspend fun handleAfterEnable() = Unit
 }

@@ -21,12 +21,12 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinApplication
 import org.koin.core.component.get
 import org.koin.core.context.startKoin
 import org.koin.dsl.bind
 import org.koin.mp.KoinPlatformTools
-import java.util.logging.Level
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(MinixInternal::class)
@@ -42,29 +42,30 @@ class MinixImpl : Minix() {
     }
 
     override fun onLoad() {
-        startKoin()
-        if (Version(description.version).isPreRelease) logger.level = Level.ALL
-        get<PluginService>().loadPlugin(this)
-    }
+        runBlocking {
+            startKoin()
+            startSentry()
 
-    override suspend fun handleEnable() {
-        startSentry()
-
-        loadModule { single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class }
+            get<PluginService>().loadPlugin(this@MinixImpl)
+        }
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    override suspend fun handleDisable() {
+    override suspend fun handleUnload() {
         GlobalScope.launch { delay(1.seconds); KoinPlatformTools.defaultContext().getOrNull()?.close() }
     }
 
-    private fun startKoin() {
+    private suspend fun startKoin() {
         startKoin(KoinApplication.init())
         loadModule {
             single { log } bind MinixLogger::class
             single { PluginServiceImpl(this@MinixImpl) } bind PluginService::class
             single { CoroutineServiceImpl() } bind CoroutineService::class
+            single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class
         }
+
+        val service = PluginServiceImpl(this)
+        service.loadExtension(service, mutableListOf())
     }
 
     private fun startSentry() {

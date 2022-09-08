@@ -94,6 +94,11 @@ inline fun <reified T : Any> T.invokeIfOverrides(
     return false
 }
 
+inline fun <reified T : Any> T.ifOverrides(
+    function: KFunction<*>,
+    action: () -> Unit
+): Boolean = this::class.doesOverride(function).ifTrue(action)
+
 /**
  * Invokes the given block if the receiver is not null.
  *

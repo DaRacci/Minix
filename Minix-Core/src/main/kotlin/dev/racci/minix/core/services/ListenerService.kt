@@ -17,6 +17,7 @@ import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.callEvent
 import dev.racci.minix.api.extensions.cancel
 import dev.racci.minix.api.extensions.event
+import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.extensions.pluginManager
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin

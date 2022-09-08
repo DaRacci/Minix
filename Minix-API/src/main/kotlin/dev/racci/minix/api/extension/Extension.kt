@@ -10,21 +10,19 @@ import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.companionParent
 import dev.racci.minix.api.utils.now
 import dev.racci.minix.api.utils.unsafeCast
-import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.datetime.Instant
-import org.koin.core.component.inject
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.findAnnotation
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * An Extension is a class which is designed to basically act like it's own mini plugin.
+ * An Extension is a class, which is designed to basically act like it's own mini plugin.
  * With dependencies for other extensions and load states.
  *
  * @param P The owning plugin.
@@ -32,15 +30,7 @@ import kotlin.time.Duration.Companion.seconds
  */
 @OptIn(MinixInternal::class, DelicateCoroutinesApi::class)
 abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
-    private val annotation by lazy { this::class.findAnnotation<MappedExtension>() }
-    private val pluginService by inject<PluginService>()
 
-    final override val name get() = annotation?.name ?: this::class.simpleName ?: throw RuntimeException("Extension name is not defined")
-    final override val bindToKClass get() = annotation?.bindToKClass.takeIf { it != Extension::class }
-    final override val value by lazy { "${plugin.name}:$name" }
-    final override val supervisor by lazy { CoroutineScope(SupervisorJob()) }
-    final override val dependencies get() = annotation?.dependencies?.filterIsInstance<KClass<Extension<*>>>().orEmpty().toImmutableSet()
-    final override var bound = false
     final override var state = ExtensionState.UNLOADED
 
     /** This extensions local isolated thread context. */
@@ -59,10 +49,17 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
         override val plugin: P get() = this@Extension.plugin
     }
 
-    override suspend fun handleLoad() = Unit
-    override suspend fun handleEnable() = Unit
+    final override val loaded get() = state == ExtensionState.LOADED || state == ExtensionState.ENABLED
 
-    override suspend fun handleUnload() = Unit
+    final override val name = buildString {
+        append(plugin.name)
+        append(':')
+        append(this@Extension::class.findAnnotation<MappedExtension>()!!.name)
+    }
+
+    final override val supervisor by lazy { CoroutineScope(SupervisorJob()) }
+
+    final override val value get() = name
 
     suspend fun setState(state: ExtensionState) {
         send(plugin, ExtensionStateEvent(this, state))

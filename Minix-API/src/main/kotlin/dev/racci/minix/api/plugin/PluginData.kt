@@ -24,9 +24,7 @@ class PluginData<P : MinixPlugin>(val plugin: P) {
     ): T = this::class.memberProperties.find { it.name == property.name }?.getter?.call(thisRef) as T
 
     val loader by lazy { JavaPlugin::class.declaredMemberFunctions.first { it.name == "getClassLoader" }.also { it.isAccessible = true }.call(plugin) as ClassLoader }
-    val extensions by lazy { mutableListOf<ExtensionUnit<P>>() }
-    val loadedExtensions by lazy { mutableListOf<Extension<P>>() }
-    val unloadedExtensions by lazy { mutableListOf<Extension<P>>() }
+    val extensions: MutableList<Extension<out P>> = mutableListOf()
     val extensionEvents by lazy { MutableSharedFlow<ExtensionStateEvent>() }
 
     val log by lazy { PluginDependentMinixLogger(plugin) }

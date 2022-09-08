@@ -12,6 +12,7 @@ import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionState
 import dev.racci.minix.api.extensions.log
+import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.extensions.unregisterListener
 import dev.racci.minix.api.integrations.Integration
 import dev.racci.minix.api.integrations.IntegrationManager
@@ -22,11 +23,11 @@ import dev.racci.minix.api.plugin.SusPlugin
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
-import dev.racci.minix.api.utils.kotlin.catchAndReturn
-import dev.racci.minix.api.utils.kotlin.ifNotEmpty
+import dev.racci.minix.api.utils.collections.CollectionUtils.clear
+import dev.racci.minix.api.utils.kotlin.doesOverride
+import dev.racci.minix.api.utils.kotlin.ifOverrides
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import dev.racci.minix.api.utils.kotlin.invokeIfOverrides
-import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
 import dev.racci.minix.core.MinixImpl
@@ -37,177 +38,50 @@ import io.github.classgraph.ClassGraph
 import io.github.classgraph.ClassInfo
 import io.github.classgraph.ScanResult
 import kotlinx.coroutines.CompletableJob
-import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.withTimeoutOrNull
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.PluginClassLoader
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 import org.koin.core.error.NoBeanDefFoundException
 import org.koin.core.qualifier.StringQualifier
-import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import org.koin.ext.getFullName
-import java.lang.reflect.InvocationTargetException
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.isSubtypeOf
-import kotlin.reflect.full.isSuperclassOf
 import kotlin.reflect.full.primaryConstructor
-import kotlin.reflect.full.starProjectedType
 import kotlin.reflect.jvm.isAccessible
-import kotlin.time.Duration.Companion.seconds
 
+@MappedExtension(Minix::class, "Plugin Manager")
 @OptIn(MinixInternal::class)
-class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
+class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<Minix>() {
+
     private val dataService by inject<DataServiceImpl>()
     private val integrationService by inject<IntegrationService>()
 
-    override val loadedPlugins by lazy { mutableMapOf<KClass<out MinixPlugin>, MinixPlugin>() }
-    override val pluginCache: LoadingCache<MinixPlugin, PluginData<MinixPlugin>> = Caffeine.newBuilder().build(::PluginData)
     override val coroutineSession: LoadingCache<MinixPlugin, CoroutineSession> = Caffeine.newBuilder().build { plugin ->
         if (!plugin.isEnabled) {
             throw plugin.log.fatal(RuntimeException()) {
                 """
-                    Plugin ${plugin.name} attempted to start a new coroutine session while being disabled.
-                    Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already
-                    disposed of at this point and cannot be used.
+                Plugin ${plugin.name} attempted to start a new coroutine session while being disabled.
+                Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already
+                disposed of at this point and cannot be used.
                 """.trimIndent()
             }
         }
         CoroutineSessionImpl(plugin)
     }
 
-    override operator fun <P : MinixPlugin> get(plugin: P): PluginData<P> = pluginCache[plugin].unsafeCast()
+    override val loadedPlugins by lazy { mutableMapOf<KClass<out MinixPlugin>, MinixPlugin>() }
 
-    override fun loadPlugin(plugin: MinixPlugin) {
-        runBlocking {
-            val annotation = plugin::class.findAnnotation<MappedPlugin>() ?: throw minix.log.fatal {
-                """
-                Plugin ${plugin.name} is missing the @MappedPlugin annotation.
-                    This annotation is required for Minix to load the plugin.
-                """.trimIndent()
-            }
-
-            if (plugin.version.isPreRelease) {
-                plugin.log.setLevel(MinixLogger.LoggingLevel.TRACE)
-                plugin.log.lockLevel()
-            }
-
-            if (annotation.extensions.isNotEmpty()) {
-                for (clazz in annotation.extensions) {
-                    if (!Extension::class.isSuperclassOf(clazz)) {
-                        plugin.log.error { "$clazz isn't an extension.. Skipping." }
-                        continue
-                    }
-
-                    pluginCache[plugin].extensions += { plugin: MinixPlugin ->
-                        try {
-                            val const = clazz.constructors.firstOrNull {
-                                it.parameters.size == 1 &&
-                                    it.parameters[0].name == "plugin" &&
-                                    !it.parameters[0].type.isMarkedNullable &&
-                                    it.parameters[0].type.isSubtypeOf(MinixPlugin::class.starProjectedType)
-                            } ?: error("Extension class $clazz does not have a constructor with one parameter of type MinixPlugin!")
-                            const.call(plugin) as Extension<*>
-                        } catch (e: Exception) {
-                            plugin.log.error(e) { "Failed to create extension ${clazz.simpleName}." }
-                            throw e
-                        }
-                    }
-                }
-            }
-
-            val bindKClass = annotation.bindToKClass.takeUnless { it == MinixPlugin::class } ?: plugin::class
-            loadModule { single { plugin } bind (bindKClass).unsafeCast() }
-
-            plugin.invokeIfOverrides(SusPlugin::handleLoad.name) { plugin.handleLoad() }
-            plugin.loadReflection()
-            pluginCache[plugin].extensions.ifNotEmpty { plugin.loadInOrder() }
-            plugin.invokeIfOverrides(SusPlugin::handleAfterLoad.name) {
-                plugin.log.trace { "Running handleAfterLoad." }
-                plugin.handleAfterLoad()
-            }
-        }
-    }
-
-    override fun startPlugin(plugin: MinixPlugin) {
-        coroutineService.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = true
-        runBlocking {
-            val cache = pluginCache[plugin]
-
-            plugin.invokeIfOverrides(SusPlugin::handleEnable.name) {
-                plugin.log.trace { "Running handleEnable." }
-                plugin.handleEnable()
-            }
-
-            if (cache.extensions.isNotEmpty() || cache.loadedExtensions.isNotEmpty()) {
-                plugin.startInOrder()
-            }
-
-            plugin.bStatsId.invokeIfNotNull {
-                plugin.log.info { "Registering bStats." }
-                cache.metrics = Metrics(plugin, it)
-            }
-
-            plugin.invokeIfOverrides(SusPlugin::handleAfterEnable.name) {
-                plugin.log.trace { "Running handleAfterEnable." }
-                plugin.handleAfterEnable()
-            }
-
-            loadedPlugins += plugin::class to plugin
-        }
-        coroutineService.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = false
-    }
-
-    override fun unloadPlugin(plugin: MinixPlugin) {
-        runBlocking {
-            val cache = pluginCache.getIfPresent(plugin)
-
-            cache?.configurations?.takeIf(MutableList<*>::isNotEmpty)?.let { configs ->
-                plugin.log.trace { "Unloading ${configs.size} configurations." }
-                dataService.configDataHolder.invalidateAll(configs)
-            }
-
-            cache?.loadedExtensions?.takeIf(MutableList<*>::isNotEmpty)?.let { ex ->
-                plugin.log.trace { "Unloading ${ex.size} extensions." }
-                plugin.shutdownInOrder()
-            }
-
-            plugin.invokeIfOverrides(SusPlugin::handleDisable.name) {
-                plugin.log.trace { "Running handleDisable." }
-                plugin.handleDisable()
-            }
-
-            CoroutineScheduler.activateTasks(plugin)?.takeIf(IntArray::isNotEmpty)?.let {
-                plugin.log.trace { "Cancelling ${it.size} tasks." }
-                it.forEach { id -> CoroutineScheduler.cancelTask(id) }
-            }
-
-            plugin.log.trace { "Disabling the coroutine session." }
-            coroutineService.disable(plugin)
-            loadedPlugins -= plugin::class
-        }
-    }
-
-    override fun fromClassloader(classLoader: ClassLoader): MinixPlugin? {
-        for (plugin in loadedPlugins.values) {
-            if (pluginCache[plugin].loader != classLoader) continue
-            return plugin
-        }
-        return null
-    }
+    override val pluginCache: LoadingCache<MinixPlugin, PluginData<MinixPlugin>> = Caffeine.newBuilder().build(::PluginData)
 
     @OptIn(ExperimentalStdlibApi::class)
     override fun firstNonMinixPlugin(): MinixPlugin? {
@@ -223,6 +97,324 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
             }.getOrNull()
     }
 
+    override fun fromClassloader(classLoader: ClassLoader): MinixPlugin? {
+        for (plugin in loadedPlugins.values) {
+            if (pluginCache[plugin].loader != classLoader) continue
+            return plugin
+        }
+        return null
+    }
+
+    override operator fun <P : MinixPlugin> get(plugin: P): PluginData<P> = pluginCache[plugin].unsafeCast()
+
+    override fun loadPlugin(plugin: MinixPlugin) {
+        runBlocking {
+            plugin.ifOverrides(SusPlugin::handleLoad) {
+                plugin.log.trace { "Running HandleLoad." }
+                plugin.handleLoad()
+            }
+
+            loadKoinModules(getModule(plugin))
+
+            if (plugin.version.isPreRelease) {
+                plugin.log.setLevel(MinixLogger.LoggingLevel.TRACE)
+                plugin.log.lockLevel()
+            }
+
+            loadReflection(plugin)
+            loadExtensions(plugin)
+
+            plugin.ifOverrides(SusPlugin::handleAfterLoad) {
+                plugin.log.trace { "Running HandleAfterLoad." }
+                plugin.handleAfterLoad()
+            }
+        }
+    }
+
+    override fun unloadPlugin(plugin: MinixPlugin) {
+        runBlocking {
+            loadedPlugins -= plugin::class
+
+            val isFullUnload = server.isStopping // TODO -> Support ServerUtils
+            if (isFullUnload) {
+                plugin.log.debug { "Running full unload." }
+            }
+
+            plugin.ifOverrides(SusPlugin::handleDisable) {
+                plugin.log.trace { "Running handleDisable." }
+                plugin.handleDisable()
+            }
+
+            if (isFullUnload && plugin::class.doesOverride(SusPlugin::handleUnload)) {
+                plugin.log.trace { "Running handleUnload." }
+                plugin.handleUnload()
+            }
+
+            val cache = pluginCache.getIfPresent(plugin)
+
+            cache?.configurations?.takeIf(MutableList<*>::isNotEmpty)?.let { configs ->
+                plugin.log.trace { "Unloading ${configs.size} configurations." }
+                dataService.configDataHolder.invalidateAll(configs)
+            }
+
+            cache?.extensions?.takeIf(MutableList<*>::isNotEmpty)?.let { ex ->
+                plugin.log.trace { "Disabling ${ex.size} extensions." }
+                disableExtensions(plugin)
+
+                if (isFullUnload) {
+                    plugin.log.trace { "Unloading ${ex.size} extensions." }
+                    unloadExtensions(plugin)
+                }
+            }
+
+            CoroutineScheduler.activateTasks(plugin)?.takeIf(IntArray::isNotEmpty)?.let {
+                plugin.log.trace { "Cancelling ${it.size} tasks." }
+                it.forEach { id -> CoroutineScheduler.cancelTask(id) }
+            }
+
+            if (!isFullUnload) return@runBlocking
+            coroutineService.disable(plugin)
+            unloadKoinModules(getModule(plugin))
+        }
+    }
+
+    override fun startPlugin(plugin: MinixPlugin) {
+        coroutineService.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = true
+        runBlocking {
+            val cache = pluginCache[plugin]
+
+            plugin.invokeIfOverrides(SusPlugin::handleEnable.name) {
+                plugin.log.trace { "Running handleEnable." }
+                plugin.handleEnable()
+            }
+
+            plugin.bStatsId.invokeIfNotNull {
+                plugin.log.info { "Registering bStats." }
+                cache.metrics = Metrics(plugin, it)
+            }
+
+            enableExtensions(plugin)
+
+            plugin.invokeIfOverrides(SusPlugin::handleAfterEnable.name) {
+                plugin.log.trace { "Running handleAfterEnable." }
+                plugin.handleAfterEnable()
+            }
+
+            loadedPlugins += plugin::class to plugin
+        }
+        coroutineService.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = false
+    }
+
+    private fun checkAddedAndMissingDeps(
+        plugin: MinixPlugin,
+        next: Extension<out MinixPlugin>,
+        sortedExtensions: MutableList<Extension<out MinixPlugin>>,
+        extensions: ArrayDeque<Extension<out MinixPlugin>>
+    ): Boolean {
+        if (next !in sortedExtensions) return false
+
+        plugin.log.debug { "Missing dependency for ${next.name} in ${plugin.name}, Reordering required dependencies." }
+        val currentIndex = sortedExtensions.indexOf(next)
+        sortedExtensions.removeAt(currentIndex)
+
+        val needed = next::class.findAnnotation<MappedExtension>()!!.dependencies
+            .filterNot { sortedExtensions.any { ex -> ex::class == it } }
+            .mapNotNull { clazz -> extensions.find { it::class == clazz || bindToKClass(it) == clazz } }
+
+        sortedExtensions.addAll(currentIndex, needed)
+        sortedExtensions.add(currentIndex + needed.size + 1, next)
+        return true
+    }
+
+    private fun bindToKClass(instance: Any): KClass<*> {
+        return when (instance) {
+            is Extension<*> -> instance::class.findAnnotation<MappedExtension>()!!.bindToKClass.takeUnless { it == Extension::class } ?: instance::class
+            is MinixPlugin -> instance::class.findAnnotation<MappedPlugin>()!!.bindToKClass.takeUnless { it == MinixPlugin::class } ?: instance::class
+            else -> instance::class
+        }
+    }
+
+    private fun checkNoDeps(
+        plugin: MinixPlugin,
+        next: Extension<out MinixPlugin>,
+        sortedExtensions: MutableList<Extension<out MinixPlugin>>
+    ): Boolean {
+        val annotation = next::class.findAnnotation<MappedExtension>()!!
+        if (next in sortedExtensions ||
+            annotation.dependencies.isNotEmpty() &&
+            annotation.dependencies.all { dep -> sortedExtensions.find { it::class == dep } == null }
+        ) return false
+
+        plugin.log.trace { "All dependencies for ${next.name} are loaded, adding to sorted" }
+        return sortedExtensions.add(next)
+    }
+
+    private fun checkOrder(
+        plugin: MinixPlugin,
+        next: Extension<out MinixPlugin>,
+        sortedExtensions: MutableList<Extension<out MinixPlugin>>,
+        extensions: MutableList<Extension<out MinixPlugin>>
+    ) {
+        val index = sortedExtensions.indexOf(next).takeUnless { it == -1 } ?: (sortedExtensions.lastIndex + 1)
+        if (next in sortedExtensions) {
+            sortedExtensions.removeAt(index)
+        }
+
+        val toAdd = mutableListOf<Extension<out MinixPlugin>>()
+        for (dependency in next::class.findAnnotation<MappedExtension>()!!.dependencies) {
+            if (sortedExtensions.find { it::class == dependency } != null) continue // Already added
+
+            extensions.find { it::class == dependency }?.let {
+                toAdd += it
+                plugin.log.trace { "Adding required dependency ${it.name} before ${next.name}" }
+            }
+        }
+        toAdd += next
+        sortedExtensions.addAll(index, toAdd)
+    }
+
+    private suspend fun errorDependents(
+        failedExtension: Extension<*>,
+        extensions: List<Extension<*>>,
+        error: Throwable? = null
+    ) {
+        val dependents = getRecursiveDependencies(failedExtension, extensions.reversed(), hashSetOf())
+        dependents.forEach { unloadExtension(it) }
+
+        log.error(error) {
+            val builder = StringBuilder()
+            builder.append("There was an error while loading / enabling extension ${failedExtension::class.getFullName()}!")
+            builder.append("\nThis is not a fatal error, but it may cause other extensions to fail to load.")
+            if (dependents.isNotEmpty()) {
+                builder.append("\nThese extensions will not be loaded:")
+                dependents.forEach { builder.append("\n\t${it.name}") }
+            }
+            builder.toString()
+        }
+    }
+
+    private fun getModule(instance: Any): org.koin.core.module.Module {
+        val module = module {
+            val bind = bindToKClass(instance)
+            val binds = setOf(instance::class, bind).toTypedArray()
+            single { instance }.binds(binds)
+        }
+
+        return module
+    }
+
+    private fun sortInitialized(plugin: MinixPlugin): MutableList<Extension<out MinixPlugin>> {
+        val cache = pluginCache[plugin]
+        val extensions = ArrayDeque(cache.extensions.filter { it.state == ExtensionState.UNLOADED })
+        val sortedExtensions = mutableListOf<Extension<out MinixPlugin>>()
+
+        while (extensions.isNotEmpty()) {
+            val popped = extensions.removeFirst()
+
+            if (checkNoDeps(plugin, popped, sortedExtensions)) continue
+            if (checkAddedAndMissingDeps(plugin, popped, sortedExtensions, extensions)) continue
+            checkOrder(plugin, popped, sortedExtensions, extensions)
+        }
+
+        return sortedExtensions
+    }
+
+    private suspend fun loadExtensions(plugin: MinixPlugin) {
+        val sorted = sortInitialized(plugin)
+        for (extension in sorted) { loadExtension(extension, sorted) }
+    }
+
+    internal suspend fun loadExtension(
+        extension: Extension<*>,
+        sorted: MutableList<Extension<*>>
+    ) {
+        withState(ExtensionState.LOADING, extension) {
+            extension.handleLoad()
+        }.fold(
+            { loadKoinModules(getModule(extension)) },
+            {
+                errorDependents(extension, sorted, it)
+                unloadExtension(extension)
+            }
+        )
+    }
+
+    private suspend fun unloadExtensions(plugin: MinixPlugin) {
+        val cache = pluginCache[plugin]
+        cache.extensions.asReversed().clear { unloadExtension(it) }
+    }
+
+    private suspend fun unloadExtension(extension: Extension<*>) {
+        if (extension.state.ordinal <= 5) {
+            log.trace { "Unloading extension ${extension.name}." }
+
+            withState(ExtensionState.UNLOADING, extension) {
+                extension.handleUnload()
+            }.fold(
+                { log.trace { "Unloaded extension ${extension.name}." } },
+                { log.error(it) { "Extension ${extension.name} threw an error while unloading!" } }
+            )
+
+            extension.eventListener.unregisterListener()
+            extension.supervisor.coroutineContext.job.unsafeCast<CompletableJob>().complete()
+            extension.dispatcher.close()
+            pluginCache[extension.plugin].extensions.remove(extension)
+            unloadKoinModules(getModule(extension))
+        }
+    }
+
+    private suspend fun enableExtensions(plugin: MinixPlugin) {
+        val extensions = pluginCache[plugin].extensions
+        for (extension in extensions) {
+            if (extension.state.ordinal < 2 || extension.state.ordinal > 3) continue
+
+            withState(ExtensionState.ENABLED, extension) {
+                extension.handleEnable()
+            }.fold(
+                { log.trace { "Enabled extension ${extension.name}." } },
+                {
+                    errorDependents(extension, extensions, it)
+                    unloadExtension(extension)
+                }
+            )
+        }
+    }
+
+    private suspend fun disableExtensions(plugin: MinixPlugin) {
+        val extensions = pluginCache[plugin].extensions.asReversed()
+        for (extension in extensions) {
+            if (extension.state.ordinal < 4) continue
+
+            withState(ExtensionState.DISABLING, extension) {
+                extension.handleDisable()
+            }.fold(
+                { log.trace { "Disabled extension ${extension.name}." } },
+                {
+                    errorDependents(extension, extensions, it)
+                    unloadExtension(extension)
+                }
+            )
+        }
+    }
+
+    private suspend fun withState(
+        state: ExtensionState,
+        extension: Extension<*>,
+        block: suspend () -> Unit
+    ): Result<Boolean> {
+        extension.setState(state)
+
+        try {
+            block()
+        } catch (e: Throwable) {
+            log.error(e) { "Extension ${extension.name} threw an error while ${state.name.lowercase()}!" }
+            return Result.failure(e)
+        }
+
+        extension.setState(ExtensionState.values()[state.ordinal - 1])
+        return Result.success(true)
+    }
+
     private fun getClassLoader(plugin: MinixPlugin): ClassLoader {
         var loader = pluginCache.getIfPresent(plugin)?.loader
         if (loader != null) return loader
@@ -234,95 +426,24 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         return loader!!
     }
 
-    private fun MinixPlugin.loadReflection() {
+    private fun loadReflection(plugin: MinixPlugin) {
         var int = 0
-        val packageName = this::class.java.`package`.name.takeWhile { it != '.' || int++ < 2 }
+        val packageName = plugin::class.java.`package`.name.takeWhile { it != '.' || int++ < 2 }
         val classGraph = ClassGraph()
             .acceptPackages(packageName)
-            .addClassLoader(this::class.java.classLoader)
-            .addClassLoader(getClassLoader(this))
+            .addClassLoader(plugin::class.java.classLoader)
+            .addClassLoader(getClassLoader(plugin))
             .enableClassInfo()
             .enableAnnotationInfo()
             .enableMethodInfo()
             .scan()
 
-        if (this !is MinixImpl) minix.log.info { "Ignore the following warning, this is expected behavior." }
-        val boundKClass = this::class.findAnnotation<MappedPlugin>()?.bindToKClass.takeUnless { it == MinixPlugin::class } ?: this::class
+        if (plugin !is MinixImpl) plugin.log.info { "Ignore the following warning, this is expected behavior." }
+        val boundKClass = plugin::class.findAnnotation<MappedPlugin>()?.bindToKClass.takeUnless { it == MinixPlugin::class } ?: plugin::class
 
-        classGraph.getClassesWithAnnotation(MappedExtension::class.java)
-            .filter { clazz ->
-                matchingAnnotation<MappedExtension>(this, boundKClass, clazz) &&
-                    if (!clazz.extendsSuperclass(Extension::class.java)) {
-                        log.warn { "${clazz.name} is annotated with MappedExtension but isn't an extension!." }
-                        false
-                    } else true
-            }
-            .forEach { clazz ->
-                pluginCache[this].extensions += { plugin: MinixPlugin ->
-                    val kClass = catchAndReturn<IllegalArgumentException, KClass<Extension<*>>> {
-                        clazz.loadClass().kotlin.unsafeCast()
-                    } ?: error("Failed to load extension class ${clazz.fullyQualifiedDefiningMethodName}.")
-
-                    val constructor = kClass.constructors.first { it.parameters.isEmpty() || it.parameters[0].name == "plugin" }
-
-                    try {
-                        when (constructor.parameters.size) {
-                            0 -> constructor.call()
-                            else -> constructor.call(plugin)
-                        }.unsafeCast<Extension<*>>()
-                    } catch (e: ClassCastException) {
-                        throw log.fatal(e) { "The class ${kClass.qualifiedName} is not an extension." }
-                    } catch (e: InvocationTargetException) {
-                        throw log.fatal(e) { "Failed to create extension ${clazz.simpleName} for ${plugin.name}" }
-                    }
-                }
-            }
-
-        classGraph.getClassesWithAnnotation(MappedConfig::class.java)
-            .filter { matchingAnnotation<MappedConfig>(this, boundKClass, it) }
-            .forEach {
-                log.trace { "Found MappedConfig [${it.simpleName}] from ${this.name}" }
-                try {
-                    dataService.configDataHolder.get(it.loadClass().kotlin.unsafeCast()) // Call the cache so we load can have it loaded.
-                } catch (ignored: NoBeanDefFoundException) {
-                    // This is so I can auto-magic load the data service.
-                } catch (e: ClassCastException) {
-                    log.error(e) { "Failed to create configuration ${it.simpleName} for ${this.name}" }
-                    throw e
-                }
-            }
-
-        processMappedIntegrations(classGraph, this, boundKClass)
-    }
-
-    private fun processMappedIntegrations(
-        scanResult: ScanResult,
-        plugin: MinixPlugin,
-        boundKClass: KClass<*>
-    ) {
-        for (classInfo in scanResult.getClassesWithAnnotation(MappedIntegration::class.java)) {
-            if (!matchingAnnotation<MappedIntegration>(plugin, boundKClass, classInfo)) continue
-
-            this.minix.log.trace { "Found MappedIntegration [${classInfo.simpleName}] from ${plugin.name}" }
-
-            val kClass = classInfo.loadClass().kotlin.unsafeCast<KClass<out Integration>>()
-            val annotation = kClass.findAnnotation<MappedIntegration>()!!
-            val managerKClass = annotation.IntegrationManager
-            val manager = managerKClass.objectInstance.safeCast<IntegrationManager<Integration>>()
-
-            if (manager == null) {
-                this.minix.log.error { "Failed to obtain singleton instance of ${managerKClass.qualifiedName}." }
-                continue
-            }
-
-            IntegrationService.IntegrationLoader(annotation.pluginName) { _ ->
-                val constructor = kClass.primaryConstructor!!
-                when (constructor.parameters.size) {
-                    0 -> constructor.call()
-                    else -> constructor.call(get(StringQualifier(plugin.name)))
-                }
-            }.let(integrationService::registerIntegration)
-        }
+        processMappedExtensions(classGraph, plugin, boundKClass)
+        processMappedConfigurations(classGraph, plugin, boundKClass)
+        processMappedIntegrations(classGraph, plugin, boundKClass)
     }
 
     private inline fun <reified T : Annotation> matchingAnnotation(
@@ -335,243 +456,95 @@ class PluginServiceImpl(val minix: Minix) : PluginService, KoinComponent {
         return annotation.parameterValues["parent"].value is AnnotationClassRef && classRef == plugin::class || classRef == boundKClass
     }
 
-    private inline fun <reified P : MinixPlugin> P.getSortedExtensions(): MutableList<Extension<P>> {
-        val extensions = pluginCache[this].let { cache ->
-            cache.extensions
-                .map { it.invoke(this) }
-                .filterIsInstance<Extension<P>>()
-                .toMutableList().also { it.addAll(cache.loadedExtensions.toMutableList().unsafeCast()) }
-        }
-        val sortedExtensions = mutableListOf<Extension<P>>()
-        while (extensions.isNotEmpty()) {
-            val next = extensions.first()
-            extensions.remove(next)
-
-            if (checkNoDeps(next, sortedExtensions)) continue
-            if (checkAddedAndMissingDeps(next, sortedExtensions, extensions)) continue
-            checkOrder(next, sortedExtensions, extensions)
-        }
-        pluginCache[this].loadedExtensions.clear()
-        return sortedExtensions
-    }
-
-    private inline fun <reified P : MinixPlugin> MinixPlugin.checkOrder(
-        next: Extension<P>,
-        sortedExtensions: MutableList<Extension<P>>,
-        extensions: MutableList<Extension<P>>
+    private fun processMappedConfigurations(
+        scanResult: ScanResult,
+        plugin: MinixPlugin,
+        boundKClass: KClass<out Any>
     ) {
-        val index = sortedExtensions.indexOf(next).takeUnless { it == -1 } ?: (sortedExtensions.lastIndex + 1)
-        if (next in sortedExtensions) {
-            sortedExtensions.removeAt(index)
-        }
+        for (classInfo in scanResult.getClassesWithAnnotation(MappedConfig::class.java)) {
+            if (!matchingAnnotation<MappedConfig>(plugin, boundKClass, classInfo)) continue
 
-        val toAdd = mutableListOf<Extension<P>>()
-        for (dependency in next.dependencies) {
-            if (sortedExtensions.find { it::class == dependency } != null) continue // Already added
+            this.plugin.log.trace { "Found MappedIntegration [${classInfo.simpleName}] from ${plugin.name}" }
 
-            extensions.find { it::class == dependency }?.let {
-                toAdd += it
-                log.trace { "Adding required dependency ${it.name} before ${next.name}" }
+            try {
+                dataService.configDataHolder.get(classInfo.loadClass().kotlin.unsafeCast())
+            } catch (ignored: NoBeanDefFoundException) {
+                /* This is expected behavior. */
+            } catch (e: Exception) {
+                throw this.plugin.log.fatal(e) { "Failed to create configuration [${classInfo.simpleName}] for ${plugin.name}" }
             }
         }
-        toAdd += next
-        sortedExtensions.addAll(index, toAdd)
     }
 
-    private inline fun <reified P : MinixPlugin> MinixPlugin.checkAddedAndMissingDeps(
-        next: Extension<P>,
-        sortedExtensions: MutableList<Extension<P>>,
-        extensions: MutableList<Extension<P>>
-    ): Boolean {
-        if (next !in sortedExtensions) return false
-
-        log.debug { "Missing dependency for ${next.name} in ${this.name}, Reordering required dependencies." }
-        val currentIndex = sortedExtensions.indexOf(next)
-        sortedExtensions.removeAt(currentIndex)
-
-        val needed = next.dependencies
-            .filterNot { sortedExtensions.any { ex -> ex::class == it } }
-            .mapNotNull { clazz -> extensions.find { it::class == clazz || it.bindToKClass == clazz } }
-
-        sortedExtensions.addAll(currentIndex, needed)
-        sortedExtensions.add(currentIndex + needed.size + 1, next)
-        return true
-    }
-
-    private inline fun <reified P : MinixPlugin> MinixPlugin.checkNoDeps(
-        next: Extension<P>,
-        sortedExtensions: MutableList<Extension<P>>
-    ): Boolean {
-        if (next in sortedExtensions ||
-            next.dependencies.isNotEmpty() &&
-            next.dependencies.all { dep -> sortedExtensions.find { it::class == dep } == null }
-        ) return false
-
-        log.trace { "All dependencies for ${next.name} are loaded, adding to sorted" }
-        return sortedExtensions.add(next)
-    }
-
-    // TODO: Refactor the dependency system to be more efficient and less hacky maybe using a shared flow
-    private suspend fun MinixPlugin.loadInOrder() {
-        val sorted = getSortedExtensions()
-        sorted.forEach { ex -> ex.start(ExtensionState.LOADING, sorted) }
-        pluginCache[this].extensions.clear()
-    }
-
-    private suspend fun MinixPlugin.startInOrder() {
-        val sorted = getSortedExtensions()
-        sorted.filter { it.checkFailed() }.forEach { ex -> ex.start(ExtensionState.ENABLING, sorted) }
-        pluginCache[this].extensions.clear()
-    }
-
-    private fun Extension<MinixPlugin>.checkFailed(): Boolean {
-        when (this.state) {
-            ExtensionState.FAILED_DEPENDENCIES -> log.warn { "Extension $name had one or more dependencies fail to load, Skipping." }
-            ExtensionState.FAILED_LOADING -> log.warn { "Extension $name had previously failed to load, Skipping." }
-            ExtensionState.FAILED_UNLOADING -> log.warn { "Extension $name had previously failed to unload, Skipping." }
-            ExtensionState.LOADING, ExtensionState.ENABLING, ExtensionState.UNLOADING -> log.warn { "Extension $name is still ${state.name.lowercase()}, Skipping." }
-            else -> return true
-        }
-        return false
-    }
-
-    private suspend fun Extension<MinixPlugin>.start(
-        state: ExtensionState,
-        sorted: MutableList<Extension<MinixPlugin>>
+    private fun processMappedExtensions(
+        scanResult: ScanResult,
+        plugin: MinixPlugin,
+        boundKClass: KClass<out Any>
     ) {
-        if (this.state == ExtensionState.FAILED_DEPENDENCIES) {
-            return // Don't start failed dependencies, let them disappear into the void of the garbage collector.
-        }
-
-        val module = getModule()
-        val (handle, invoke, log) = getTriple(state)
-        setState(state)
-
-        try {
-            module?.let(::loadKoinModules)
-            withTimeout(5.seconds) {
-                this@start.invokeIfOverrides(handle) {
-                    log()
-                    invoke()
-                }
+        for (classInfo in scanResult.getClassesWithAnnotation(MappedExtension::class.java)) {
+            if (!matchingAnnotation<MappedExtension>(plugin, boundKClass, classInfo)) continue
+            if (!classInfo.extendsSuperclass(Extension::class.java)) {
+                this.plugin.log.error { "Class ${classInfo.name} is annotated with @MappedExtension but does not extend Extension." }
+                continue
             }
-        } catch (e: Throwable) {
-            if (e is TimeoutCancellationException) { this.log.warn { "Extension $name took too longer than 5 seconds to load!" } }
 
-            when (state) {
-                ExtensionState.LOADING -> setState(ExtensionState.FAILED_LOADING)
-                ExtensionState.ENABLING -> setState(ExtensionState.FAILED_ENABLING)
-                else -> {}
+            val kClass = classInfo.loadClass().kotlin.unsafeCast<KClass<Extension<*>>>()
+            val constructor = kClass.constructors.first { it.parameters.isEmpty() || it.parameters[0].name == "plugin" }
+
+            val extension = when (constructor.parameters.size) {
+                0 -> constructor.call()
+                else -> constructor.call(plugin)
             }
-            errorDependents(sorted, e)
-            module?.let(::unloadKoinModules)
-        }
 
-        when (state) {
-            ExtensionState.LOADING -> setState(ExtensionState.LOADED)
-            ExtensionState.ENABLING -> setState(ExtensionState.ENABLED)
-            else -> Unit
+            pluginCache[plugin].extensions.add(extension)
         }
-        bound = true
-        pluginCache[this@start.plugin].loadedExtensions += this
     }
 
-    private fun Extension<MinixPlugin>.getTriple(state: ExtensionState) = when (state) {
-        ExtensionState.LOADING -> {
-            Triple(
-                Extension<MinixPlugin>::handleLoad.name,
-                suspend { this.handleLoad() }
-            ) { log.info { "Loading extension $name" } }
-        }
-        ExtensionState.ENABLING -> {
-            Triple(
-                Extension<MinixPlugin>::handleEnable.name,
-                suspend { this.handleEnable() }
-            ) { log.info { "Enabling extension $name" } }
-        }
-        else -> throw IllegalArgumentException("Cannot get triple for state $state")
-    }
-
-    private fun Extension<MinixPlugin>.getModule(): org.koin.core.module.Module? {
-        if (bound) return null
-
-        val module = module {
-            val binds = arrayListOf<KClass<*>>(this@getModule::class).also { if (bindToKClass != null) it.add(bindToKClass!!) }
-            single { this@getModule }.binds(binds.toTypedArray())
-        }
-
-        return module
-    }
-
-    private suspend fun Extension<MinixPlugin>.errorDependents(
-        extensions: MutableList<Extension<MinixPlugin>>,
-        error: Throwable? = null
+    private fun processMappedIntegrations(
+        scanResult: ScanResult,
+        plugin: MinixPlugin,
+        boundKClass: KClass<*>
     ) {
-        val dependents = getAllDependents(this, extensions.reversed(), hashSetOf())
-        dependents.forEach { it.setState(ExtensionState.FAILED_DEPENDENCIES) }
+        for (classInfo in scanResult.getClassesWithAnnotation(MappedIntegration::class.java)) {
+            if (!matchingAnnotation<MappedIntegration>(plugin, boundKClass, classInfo)) continue
 
-        log.error(error) {
-            val builder = StringBuilder()
-            builder.append("There was an error while loading / enabling extension ${this::class.getFullName()}!")
-            builder.append("\nThis is not a fatal error, but it may cause other extensions to fail to load.")
-            if (dependents.isNotEmpty()) {
-                builder.append("\nThese extensions will not be loaded:")
-                dependents.forEach { builder.append("\n\t${it.name}") }
+            this.plugin.log.trace { "Found MappedIntegration [${classInfo.simpleName}] from ${plugin.name}" }
+
+            val kClass = classInfo.loadClass().kotlin.unsafeCast<KClass<out Integration>>()
+            val annotation = kClass.findAnnotation<MappedIntegration>()!!
+            val managerKClass = annotation.IntegrationManager
+            val manager = managerKClass.objectInstance.safeCast<IntegrationManager<Integration>>()
+
+            if (manager == null) {
+                this.plugin.log.error { "Failed to obtain singleton instance of ${managerKClass.qualifiedName}." }
+                continue
             }
-            builder.toString()
+
+            IntegrationService.IntegrationLoader(annotation.pluginName) {
+                val constructor = kClass.primaryConstructor!!
+                when (constructor.parameters.size) {
+                    0 -> constructor.call()
+                    else -> constructor.call(get(StringQualifier(plugin.name)))
+                }
+            }.let(integrationService::registerIntegration)
         }
     }
 
-    private suspend inline fun <reified P : MinixPlugin> P.shutdownInOrder() {
-        val cache = pluginCache[this]
-        cache.loadedExtensions.reverse()
-        cache.loadedExtensions.removeAll { ex ->
-            log.trace { "Unloading extension ${ex.name}." }
-            runBlocking {
-                ex.setState(ExtensionState.UNLOADING)
-                try {
-                    withTimeout(5.seconds) {
-                        ex.eventListener.unregisterListener()
-                        // Give the jobs 2 seconds of grace time to unload, then shutdown forcefully.
-                        try {
-                            withTimeoutOrNull(2.seconds) {
-                                ex.supervisor.coroutineContext.job.unsafeCast<CompletableJob>().complete()
-                            }
-                        } catch (e: TimeoutCancellationException) { ex.supervisor.cancel(e) }
-                        ex.invokeIfOverrides(Extension<*>::handleUnload.name) { ex.handleUnload() }
-                    }
-                } catch (e: Throwable) {
-                    if (e is TimeoutCancellationException) {
-                        log.warn { "Extension ${ex.name} took too longer than 5 seconds to unload!" }
-                    } else log.error(e) { "Extension ${ex.name} threw an error while unloading!" }
-                    ex.setState(ExtensionState.FAILED_UNLOADING)
-                }
-                unloadKoinModules(module { single { ex } bind (ex.bindToKClass ?: ex::class).unsafeCast() })
-                ex.setState(ExtensionState.UNLOADED)
-                cache.unloadedExtensions += ex
-            }
-            true
-        }
-    }
+    private fun getRecursiveDependencies(
+        requiredExt: Extension<*>,
+        allExtensions: List<Extension<*>>,
+        currentDependents: HashSet<Extension<*>>
+    ): HashSet<Extension<*>> {
+        for (extension in allExtensions) {
+            val annotation = extension::class.findAnnotation<MappedExtension>()!!
+            if (annotation.dependencies.isEmpty()) continue
+            if (annotation.dependencies.none { it == bindToKClass(requiredExt) || it == requiredExt::class }) continue
+            if (extension in currentDependents) continue
 
-    companion object {
-        fun Extension<*>.dependsOn(other: Extension<*>): Boolean {
-            if (this.dependencies.isEmpty()) return false
-            return this.dependencies.any { it == other.bindToKClass || it == other::class }
+            currentDependents += extension
+            currentDependents += getRecursiveDependencies(extension, allExtensions, currentDependents)
         }
 
-        fun getAllDependents(
-            requiredExt: Extension<*>,
-            allExtensions: List<Extension<MinixPlugin>>,
-            currentDependents: HashSet<Extension<*>>
-        ): HashSet<Extension<*>> {
-            for (extension in allExtensions) {
-                if (extension.dependsOn(requiredExt) && extension !in currentDependents) {
-                    currentDependents += extension
-                    currentDependents += getAllDependents(extension, allExtensions, currentDependents)
-                }
-            }
-            return currentDependents
-        }
+        return currentDependents
     }
 }

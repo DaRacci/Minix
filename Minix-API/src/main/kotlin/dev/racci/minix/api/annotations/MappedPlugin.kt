@@ -11,6 +11,7 @@ import kotlin.reflect.KClass
  * @property extensions The extensions that this plugin provides
  */
 @Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class MappedPlugin(
     val bStatsId: Int = -1,
     val bindToKClass: KClass<*> = MinixPlugin::class,

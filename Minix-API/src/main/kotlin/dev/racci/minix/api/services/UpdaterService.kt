@@ -3,7 +3,9 @@ package dev.racci.minix.api.services
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.updater.UpdateResult
 import dev.racci.minix.api.utils.getKoin
+import org.apiguardian.api.API
 
+@API(status = API.Status.EXPERIMENTAL, since = "2.4.0")
 interface UpdaterService {
     val enabledUpdaters: MutableList<PluginUpdater>
     val disabledUpdaters: MutableList<PluginUpdater>

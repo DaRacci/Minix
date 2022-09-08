@@ -5,10 +5,10 @@ import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.PluginData
 import dev.racci.minix.api.utils.getKoin
-import org.jetbrains.annotations.ApiStatus
+import org.apiguardian.api.API
 import kotlin.reflect.KClass
 
-@ApiStatus.Internal
+@API(status = API.Status.INTERNAL)
 interface PluginService {
 
     val loadedPlugins: MutableMap<KClass<out MinixPlugin>, MinixPlugin>

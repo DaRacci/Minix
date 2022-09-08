@@ -2,6 +2,7 @@ package dev.racci.minix.api.plugin
 
 import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.annotations.MinixDsl
+import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.Version
@@ -10,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import org.koin.core.component.get
+import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.isSubclassOf
@@ -19,13 +21,14 @@ import kotlin.reflect.full.isSubclassOf
  * This class provides many more features and allows implementation into the
  * systems of Minix.
  */
-abstract class MinixPlugin : JavaPlugin(), SusPlugin {
+abstract class MinixPlugin : JavaPlugin(), SusPlugin, Qualifier {
     @get:ApiStatus.Internal
     // Public to be used within the plugin service impl
     @Deprecated("Useless and uses unneeded resources.")
     @get:ScheduledForRemoval(inVersion = "4.0.0")
     val annotation by lazy { this::class.findAnnotation<MappedPlugin>() }
 
+    final override val value = this.name
     final override val log get() = get<PluginService>()[this].log
     final override val bStatsId = this::class.findAnnotation<MappedPlugin>()?.bStatsId.takeIf { it != -1 }
     final override val metrics get() = get<PluginService>()[this].metrics
@@ -35,19 +38,19 @@ abstract class MinixPlugin : JavaPlugin(), SusPlugin {
 
     override val bindToKClass = this::class.findAnnotation<MappedPlugin>()?.bindToKClass?.takeIf { it.isSubclassOf(MinixPlugin::class) }.safeCast<KClass<out MinixPlugin>>()
 
-    @ApiStatus.Internal
+    @MinixInternal
     @ApiStatus.NonExtendable
     override fun onEnable() {
         get<PluginService>().startPlugin(this)
     }
 
-    @ApiStatus.Internal
+    @MinixInternal
     @ApiStatus.NonExtendable
     override fun onDisable() {
         get<PluginService>().unloadPlugin(this)
     }
 
-    @ApiStatus.Internal
+    @MinixInternal
     @ApiStatus.NonExtendable
     override fun onLoad() {
         get<PluginService>().loadPlugin(this)

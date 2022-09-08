@@ -1,6 +1,7 @@
 package dev.racci.minix.core
 
 import dev.racci.minix.api.annotations.MappedPlugin
+import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.builders.ItemBuilderDSL
 import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.data.PluginUpdater
@@ -28,6 +29,7 @@ import org.koin.mp.KoinPlatformTools
 import java.util.logging.Level
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(MinixInternal::class)
 @MappedPlugin(13706, Minix::class)
 class MinixImpl : Minix() {
     private val config by lazy { DataService.getService().get<MinixConfig>() }

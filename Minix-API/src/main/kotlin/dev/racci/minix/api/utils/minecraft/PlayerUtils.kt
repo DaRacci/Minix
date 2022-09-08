@@ -21,7 +21,7 @@ object PlayerUtils {
     fun Player.chatInput(
         plugin: MinixPlugin,
         whenQuitWithoutInput: PlayerQuitFunction = {},
-        callback: ChatInputCallBack,
+        callback: ChatInputCallBack
     ) {
         PlayerService.inputCallbacks.put(
             player!!,
@@ -31,14 +31,14 @@ object PlayerUtils {
 
     // null if player disconnect
     suspend fun Player.chatInput(
-        plugin: MinixPlugin,
+        plugin: MinixPlugin
     ): ComponentLike? = suspendCoroutine { c ->
         chatInput(plugin, { c.resume(null) }) { c.resume(it) }
     }
 
     fun Player.whenQuit(
         plugin: MinixPlugin,
-        callback: PlayerQuitFunction,
+        callback: PlayerQuitFunction
     ) {
         PlayerService.functionsQuit.put(this, PlayerCallback(plugin, callback)) {
             it.callback.invoke(player!!)
@@ -47,7 +47,7 @@ object PlayerUtils {
 
     fun Player.whenMove(
         plugin: MinixPlugin,
-        callback: PlayerMoveFunction,
+        callback: PlayerMoveFunction
     ) {
         PlayerService.functionsMove[this] = PlayerCallback(plugin, callback)
     }
@@ -55,11 +55,11 @@ object PlayerUtils {
     data class ChatInput(
         val plugin: MinixPlugin,
         val callback: ChatInputCallBack,
-        val playerQuit: PlayerQuitFunction,
+        val playerQuit: PlayerQuitFunction
     )
 
     data class PlayerCallback<R>(
         val plugin: MinixPlugin,
-        val callback: PlayerCallbackFunction<R>,
+        val callback: PlayerCallbackFunction<R>
     )
 }

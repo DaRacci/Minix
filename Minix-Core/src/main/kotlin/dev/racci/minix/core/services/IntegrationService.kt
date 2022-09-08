@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services
 
+import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.collections.RegisteringMap
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.event
@@ -14,12 +15,13 @@ import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.event.server.PluginEnableEvent
 import org.bukkit.plugin.Plugin
 
+@MappedExtension(Minix::class, "Integration Service")
 class IntegrationService(override val plugin: Minix) : Extension<Minix>() {
-    private lateinit var ENABLED_PLUGINS: PersistentMap<String, Plugin>
-    private var integrations = RegisteringMap<String, Integration>()
+    private lateinit var enabledPlugins: PersistentMap<String, Plugin>
+    private val integrations = RegisteringMap<String, Integration>()
 
     override suspend fun handleLoad() {
-        this.ENABLED_PLUGINS = pluginManager.plugins
+        this.enabledPlugins = pluginManager.plugins
             .associateBy { it.name.lowercase() }
             .toPersistentHashMap()
     }
@@ -30,7 +32,7 @@ class IntegrationService(override val plugin: Minix) : Extension<Minix>() {
 
     override suspend fun handleUnload() {
         this.integrations.unregisterAll()
-        this.ENABLED_PLUGINS = persistentHashMapOf()
+        this.enabledPlugins = persistentHashMapOf()
     }
 
     internal fun registerIntegration(integration: IntegrationLoader) {
@@ -43,22 +45,25 @@ class IntegrationService(override val plugin: Minix) : Extension<Minix>() {
         descriptor: String,
         integrationLoader: IntegrationLoader
     ): Loadable<Integration> = object : Loadable<Integration>() {
-        override fun predicateLoadable() = ENABLED_PLUGINS.contains(descriptor)
+        override fun predicateLoadable() = enabledPlugins.contains(descriptor)
         override suspend fun onLoad(): Integration {
-//            plugin.log.info
-            return integrationLoader.callback.invoke(ENABLED_PLUGINS[descriptor]!!).also { integration -> integration.handleLoad() }
+            plugin.log.info { "Loading integration with ${integrationLoader.pluginName}" }
+            return integrationLoader.callback.invoke(enabledPlugins[descriptor]!!).also { integration -> integration.handleLoad() }
         }
-        override suspend fun onUnload(value: Integration) = value.handleUnload()
+        override suspend fun onUnload(value: Integration) {
+            plugin.log.info { "Unloading integration with ${integrationLoader.pluginName}" }
+            value.handleUnload()
+        }
     }
 
     private fun registerEvents() {
         event<PluginEnableEvent> {
-            ENABLED_PLUGINS = ENABLED_PLUGINS.put(this.plugin.name.lowercase(), this.plugin)
+            enabledPlugins = enabledPlugins.put(this.plugin.name.lowercase(), this.plugin)
             integrations.register(this.plugin.name.lowercase())
         }
 
         event<PluginDisableEvent> {
-            ENABLED_PLUGINS = ENABLED_PLUGINS.remove(this.plugin.name.lowercase(), this.plugin)
+            enabledPlugins = enabledPlugins.remove(this.plugin.name.lowercase(), this.plugin)
             integrations.unregister(this.plugin.name.lowercase())
         }
     }

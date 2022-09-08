@@ -3,6 +3,7 @@ package dev.racci.minix.core.scheduler
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.minecraftDispatcher
 import dev.racci.minix.api.extension.Extension
+import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.scheduler.CoroutineBlock
@@ -35,16 +36,13 @@ class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), C
     private val bukkitContext by lazy { get<Minix>().minecraftDispatcher }
     private val ids by lazy { atomic(-1) }
     private val tasks by lazy { mutableMapOf<Int, CoroutineTaskImpl>() }
-    private val threadContext = object : Closeable<ExecutorCoroutineDispatcher>() {
+    override val dispatcher = object : Closeable<ExecutorCoroutineDispatcher>() {
         override fun create(): ExecutorCoroutineDispatcher {
             val threadCount = (ManagementFactory.getThreadMXBean().threadCount / 4).coerceIn(1..4)
-            log.debug { "Creating new thread pool with $threadCount threads" }
-            return newFixedThreadPoolContext(threadCount, "Coroutine Scheduler Thread")
+            return newFixedThreadPoolContext(threadCount, "$name-thread")
         }
 
-        override fun onClose() {
-            value.value?.close()
-        }
+        override fun onClose() { value.value?.close() }
     }
 
     override suspend fun handleLoad() {
@@ -54,7 +52,6 @@ class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), C
     override suspend fun handleUnload() {
         tasks.clear(CoroutineTaskImpl::cancel)
         parentJob.complete()
-        threadContext.close()
     }
 
     @OptIn(InternalCoroutinesApi::class)
@@ -66,7 +63,7 @@ class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), C
         task.taskID = ids.incrementAndGet()
         task.period = period
 
-        val context = if (task.async) threadContext.get() else bukkitContext
+        val context = if (task.async) dispatcher.get() else bukkitContext
         val job = CoroutineScope(parentJob).launch(context, CoroutineStart.LAZY) {
             delay?.let { delay(it) }
 

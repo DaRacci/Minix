@@ -4,14 +4,17 @@ import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.extensions.KListener
 import dev.racci.minix.api.extensions.WithPlugin
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.plugin.logger.MinixLogger
-import kotlinx.collections.immutable.ImmutableSet
+import dev.racci.minix.api.utils.Closeable
 import kotlinx.coroutines.CoroutineScope
-import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import org.koin.core.qualifier.Qualifier
 import kotlin.reflect.KClass
 
 interface ExtensionSkeleton<P : MinixPlugin> : WithPlugin<P>, Qualifier {
+
+    @MinixInternal
+    val dispatcher: Closeable<ExecutorCoroutineDispatcher>
+
     /** The Listener, which is used to register events in the extension. */
     @MinixInternal
     val eventListener: KListener<P>

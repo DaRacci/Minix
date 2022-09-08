@@ -38,8 +38,10 @@ inline fun WithPlugin<*>.sync(noinline block: suspend CoroutineScope.() -> Unit)
 
 /** Launches a job off the main bukkit thread and if fired from a extension attaches as a parentJob */
 inline fun WithPlugin<*>.async(noinline block: suspend CoroutineScope.() -> Unit): Job {
-    val parent = this.safeCast<Extension<*>>()?.supervisor
-    return plugin.launch(plugin.asyncDispatcher, parent, block)
+    val extension = this.safeCast<Extension<*>>()
+    val parent = extension?.supervisor
+    val dispatcher = extension?.dispatcher?.get() ?: plugin.asyncDispatcher
+    return plugin.launch(dispatcher, parent, block)
 }
 
 /** Returns a [CompletableFuture] that is completed when suspended lambda is completed */

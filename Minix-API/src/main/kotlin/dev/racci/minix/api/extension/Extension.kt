@@ -5,14 +5,17 @@ import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.extensions.KListener
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.DataService
-import dev.racci.minix.api.services.PluginService
+import dev.racci.minix.api.utils.Closeable
 import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.companionParent
 import dev.racci.minix.api.utils.now
 import dev.racci.minix.api.utils.unsafeCast
 import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.datetime.Instant
 import org.koin.core.component.inject
 import kotlin.reflect.KClass
@@ -27,7 +30,7 @@ import kotlin.time.Duration.Companion.seconds
  * @param P The owning plugin.
  * @see DataService
  */
-@OptIn(MinixInternal::class)
+@OptIn(MinixInternal::class, DelicateCoroutinesApi::class)
 abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
     private val annotation by lazy { this::class.findAnnotation<MappedExtension>() }
     private val pluginService by inject<PluginService>()
@@ -39,7 +42,19 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
     final override val dependencies get() = annotation?.dependencies?.filterIsInstance<KClass<Extension<*>>>().orEmpty().toImmutableSet()
     final override var bound = false
     final override var state = ExtensionState.UNLOADED
-    final override val loaded get() = state == ExtensionState.LOADED || state == ExtensionState.ENABLED
+
+    /** This extensions local isolated thread context. */
+    override val dispatcher = object : Closeable<ExecutorCoroutineDispatcher>() {
+        override fun create(): ExecutorCoroutineDispatcher {
+            val threadCount = this@Extension::class.findAnnotation<MappedExtension>()!!.threadCount
+            return newFixedThreadPoolContext(threadCount, "$name-thread")
+        }
+
+        override fun onClose() {
+            value.value?.close()
+        }
+    }
+
     final override val eventListener = object : KListener<P> {
         override val plugin: P get() = this@Extension.plugin
     }
@@ -57,9 +72,13 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
     final override fun toString(): String = "${plugin.name}:$value"
 
     /**
-     * Designed to be applied to a companion object of a class that extends [Extension].
-     * This will allow a static method for getting the service or injecting it.
-     * ## Note: If used incorrectly it will throw [ClassCastException] when used.
+     * Designed to be applied to a companion object of a class extending
+     * [Extension]. This will allow a static method for getting the service or
+     * injecting it.
+     *
+     * ## Note: If used incorrectly it will throw [ClassCastException] when
+     * used.
+     *
      * @param E The type of the extension. (The class that extends [Extension])
      * @see [DataService.Companion]
      */

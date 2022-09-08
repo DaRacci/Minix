@@ -15,6 +15,10 @@ tasks.withType<GenerateModuleMetadata> {
     enabled = false
 }
 
+dependencies {
+    compileOnly(rootProject.libs.minecraft.api.landsAPI)
+}
+
 publishing {
     repositories.maven("https://repo.racci.dev/releases") {
         name = "RacciRepo"

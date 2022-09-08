@@ -4,6 +4,7 @@ import kotlinx.atomicfu.AtomicBoolean
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.updateAndGet
+import kotlinx.coroutines.runBlocking
 
 /**
  * A slighter more complicated and more advanced version of [Closeable]
@@ -17,7 +18,7 @@ abstract class Loadable<T> {
 
     val failed: Boolean get() = error.value != null
     val loaded: Boolean get() = value.value != null && initialized.value
-    val unloaded: Boolean get() = value.value != null && !initialized.value
+    val unloaded: Boolean get() = !initialized.value
     val state: State get() = when {
         unloaded -> State.UNLOADED
         loaded -> State.LOADED
@@ -37,7 +38,7 @@ abstract class Loadable<T> {
         return when (this.state) {
             State.LOADED -> Result.success(this.value.value!!)
             State.FAILED -> Result.failure(this.error.value!!)
-            State.UNLOADED, State.LOADABLE -> { load(force) }
+            State.UNLOADED, State.LOADABLE -> { runBlocking { load(force) } }
         }
     }
 
@@ -49,10 +50,10 @@ abstract class Loadable<T> {
     protected open fun predicateLoadable(): Boolean = true
 
     /** The function to be called when the value is to be loaded. */
-    abstract fun onLoad(): T
+    abstract suspend fun onLoad(): T
 
     /** The function to be called when the value is to be unloaded. */
-    open fun onUnload() { /* Does nothing until overridden */ }
+    open suspend fun onUnload(value: T) = Unit
 
     /**
      * Attempts to load the value of this loadable.
@@ -61,7 +62,7 @@ abstract class Loadable<T> {
      * @param force If we should try to load the value even if it is already loaded.
      * @return A result with the new value or an exception if one was thrown.
      */
-    fun load(force: Boolean = false): Result<T> {
+    suspend fun load(force: Boolean = false): Result<T> {
         if (!force && (loaded)) return Result.success(value.value!!)
         if (!predicateLoadable()) return Result.failure(RuntimeException("Loadable is not loadable because of predicate."))
 
@@ -88,18 +89,40 @@ abstract class Loadable<T> {
      *
      * @return True if the value was previously loaded, false otherwise.
      */
-    fun unload(): Boolean {
-        if (loaded) {
-            onUnload()
+    suspend fun unload(): Boolean {
+        if (this.loaded) {
+            this.get().onSuccess { onUnload(it) }
         }
 
-        return initialized.getAndSet(false)
+        return this.initialized.getAndSet(false)
+    }
+
+    final override fun toString(): String = "Loadable(state=$state, value=$value, error=$error)"
+
+    final override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Loadable<*>
+
+        if (initialized.value != other.initialized.value) return false
+        if (error.value != other.error.value) return false
+        if (value.value != other.value.value) return false
+
+        return true
+    }
+
+    final override fun hashCode(): Int {
+        var result = initialized.value.hashCode()
+        result = 31 * result + (error.value?.hashCode() ?: 0)
+        result = 31 * result + (value.value?.hashCode() ?: 0)
+        return result
     }
 
     companion object {
         inline fun <reified T> of(crossinline loader: () -> T): Loadable<T> {
             return object : Loadable<T>() {
-                override fun onLoad(): T = loader()
+                override suspend fun onLoad(): T = loader()
             }
         }
     }

@@ -12,7 +12,7 @@ import kotlin.math.sqrt
 fun blockPosOf(
     x: Int,
     y: Int,
-    z: Int,
+    z: Int
 ) = BlockPos(x, y, z)
 
 fun locationPosOf(
@@ -20,26 +20,26 @@ fun locationPosOf(
     y: Double,
     z: Double,
     yaw: Float = 0f,
-    pitch: Float = 0f,
+    pitch: Float = 0f
 ) = LocationPos(x, y, z, yaw, pitch)
 
 fun chunkPosOf(
     x: Int,
-    z: Int,
+    z: Int
 ) = ChunkPos(x, z)
 
-fun Block.asPos() = BlockPos(x, y, z)
+fun Block.asPos() = blockPosOf(x, y, z)
 
-fun Location.asBlockPos() = BlockPos(blockX, blockY, blockZ)
+fun Location.asBlockPos() = blockPosOf(blockX, blockY, blockZ)
 
-fun Location.asPos() = LocationPos(x, y, z, yaw, pitch)
+fun Location.asPos() = locationPosOf(x, y, z, yaw, pitch)
 
 fun Chunk.asPos() = ChunkPos(x, z)
 
 data class BlockPos(
     val x: Int,
     val y: Int,
-    val z: Int,
+    val z: Int
 ) : VectorComparable<BlockPos> {
 
     override fun axis(): DoubleArray = doubleArrayOf(x.toDouble(), y.toDouble(), z.toDouble())
@@ -61,23 +61,23 @@ data class LocationPos(
     val y: Double,
     val z: Double,
     val yaw: Float,
-    val pitch: Float,
+    val pitch: Float
 ) : VectorComparable<LocationPos> {
 
     override fun axis(): DoubleArray = doubleArrayOf(x, y, z)
     override fun factor(axis: IntArray) =
         LocationPos(axis[0].toDouble(), axis[1].toDouble(), axis[2].toDouble(), yaw, pitch)
 
-    fun LocationPos.asBukkitBlock(world: World) = world.getBlockAt(x.toInt(), y.toInt(), z.toInt())
+    fun asBukkitBlock(world: World) = world.getBlockAt(x.toInt(), y.toInt(), z.toInt())
 
-    fun LocationPos.asBukkitLocation(world: World) = Location(world, x, y, z)
+    fun asBukkitLocation(world: World) = Location(world, x, y, z)
 
-    fun LocationPos.asBlockPos() = BlockPos(x.toInt(), y.toInt(), z.toInt())
+    fun asBlockPos() = BlockPos(x.toInt(), y.toInt(), z.toInt())
 }
 
 data class ChunkPos(
     val x: Int,
-    val z: Int,
+    val z: Int
 ) : VectorComparable<ChunkPos> {
 
     override fun axis(): DoubleArray = doubleArrayOf(x.toDouble(), z.toDouble())

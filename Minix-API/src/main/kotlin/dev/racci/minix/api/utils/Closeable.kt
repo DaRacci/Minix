@@ -28,12 +28,13 @@ abstract class Closeable<T : Any> {
     operator fun getValue(ref: Any, property: KProperty<*>): T = get()
 
     fun get(): T {
-        if (value.value == null || closed)
+        if (value.value == null || closed) {
             try {
                 value.lazySet(create())
             } catch (e: Exception) {
                 throw RuntimeException(e)
             }
+        }
         return value.value!!
     }
 
@@ -53,5 +54,5 @@ abstract class Closeable<T : Any> {
     }
 
     /** Called when [close] is called but before the value is disposed of. */
-    open fun onClose() {}
+    open fun onClose() = Unit
 }

@@ -1,6 +1,8 @@
 package dev.racci.minix.api.plugin.logger
 
 import com.github.ajalt.mordant.rendering.TextColors
+import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.WithPlugin
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.unsafeCast
@@ -10,6 +12,7 @@ import io.sentry.SentryLevel
 import org.apache.logging.log4j.Marker
 import org.apache.logging.log4j.core.Logger
 import org.apache.logging.slf4j.Log4jLogger
+import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
@@ -32,11 +35,12 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
         throwable: Throwable?,
         colour: TextColors?
     ): String {
+        val actualScope = scope ?: extensionScope()
         val builder = StringBuilder(TextColors.brightWhite("->")).append(' ')
         var appended = false
 
         if (level.ordinal > 3) builder.append(colour?.invoke("[${level.name.capitalize()}] ") ?: "[${level.name.capitalize()}] ")
-        if (!scope.isNullOrBlank()) builder.append(colour?.invoke("[$scope] ") ?: "[$scope] ")
+        if (!actualScope.isNullOrBlank()) append(builder, "[$actualScope] ", colour)
 
         if (message.isNotEmpty()) {
             val lines = message.split('\n')
@@ -88,11 +92,21 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
 
     // TODO: Bypass formatting and use the stream directly.
     override fun log(message: FormattedMessage) {
-        val level = message.level.takeUnless { it.ordinal > 3 } ?: LoggingLevel.INFO
+        val level = message.level.takeUnless { it.ordinal > 3 } ?: LoggingLevel.INFO // Only INFO, WARN, and ERROR are supported.
         val logAtLevel = level.toLog4J()
 
         addSentryBreadcrumb(message)
         getLogger().log(logAtLevel, null as Marker?, message.rendered)
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun extensionScope(): String? {
+        return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).walk { stream ->
+            stream.skip(11).map(StackWalker.StackFrame::getDeclaringClass).filter { it.superclass == Extension::class.java }.findFirst().map { clazz ->
+                val annotation = clazz.getAnnotation(MappedExtension::class.java)
+                annotation.name
+            }
+        }.getOrNull()
     }
 
     private fun addSentryBreadcrumb(message: FormattedMessage) {

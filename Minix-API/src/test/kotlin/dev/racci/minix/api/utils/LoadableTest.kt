@@ -1,5 +1,6 @@
 package dev.racci.minix.api.utils
 
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Test
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
@@ -9,7 +10,7 @@ internal class LoadableTest {
     private var death = false
 
     private val loadable = object : Loadable<Boolean>() {
-        override fun onLoad(): Boolean {
+        override suspend fun onLoad(): Boolean {
             if (death) error("death")
             return true
         }
@@ -17,8 +18,10 @@ internal class LoadableTest {
 
     @Test
     fun `loadable should be loaded`() {
-        loadable.load()
-        assertTrue(loadable.loaded)
+        runBlocking {
+            loadable.load()
+            assertTrue(loadable.loaded)
+        }
     }
 
     @Test
@@ -34,13 +37,15 @@ internal class LoadableTest {
 
     @Test
     fun `loadable should be null on death`() {
-        loadable.load()
-        death = true
-        loadable.unload()
+        runBlocking {
+            loadable.load()
+            death = true
+            loadable.unload()
 
-        assertNull(loadable.get().getOrNull())
-        assertTrue(loadable.failed)
+            assertNull(loadable.get().getOrNull())
+            assertTrue(loadable.failed)
 
-        death = false
+            death = false
+        }
     }
 }

@@ -36,14 +36,5 @@ internal class PluginServiceImplTest {
         println(level)
 
         assertEquals(level, MinixLogger.LoggingLevel.TRACE)
-//                return when (log) {
-//                    org.apache.logging.log4j.Level.ALL, org.apache.logging.log4j.Level.TRACE -> TRACE
-//                    org.apache.logging.log4j.Level.DEBUG -> DEBUG
-//                    org.apache.logging.log4j.Level.INFO -> INFO
-//                    org.apache.logging.log4j.Level.WARN -> WARN
-//                    org.apache.logging.log4j.Level.ERROR -> ERROR
-//                    org.apache.logging.log4j.Level.FATAL, org.apache.logging.log4j.Level.OFF -> FATAL
-//                    else -> throw LevelConversionException(log)
-//                }
     }
 }

@@ -59,7 +59,6 @@ class MinixImpl : Minix() {
         startKoin(KoinApplication.init())
         loadModule {
             single { log } bind MinixLogger::class
-            single { PluginServiceImpl(this@MinixImpl) } bind PluginService::class
             single { CoroutineServiceImpl() } bind CoroutineService::class
             single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class
         }

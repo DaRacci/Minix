@@ -59,7 +59,7 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.isAccessible
 
-@MappedExtension(Minix::class, "Plugin Manager")
+@MappedExtension(Minix::class, "Plugin Manager", bindToKClass = PluginService::class)
 @OptIn(MinixInternal::class)
 class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<Minix>() {
 
@@ -328,15 +328,13 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         extension: Extension<*>,
         sorted: MutableList<Extension<*>>
     ) {
+        loadKoinModules(getModule(extension))
         withState(ExtensionState.LOADING, extension) {
             extension.handleLoad()
-        }.fold(
-            { loadKoinModules(getModule(extension)) },
-            {
-                errorDependents(extension, sorted, it)
-                unloadExtension(extension)
-            }
-        )
+        }.onFailure {
+            errorDependents(extension, sorted, it)
+            unloadExtension(extension)
+        }
     }
 
     private suspend fun unloadExtensions(plugin: MinixPlugin) {

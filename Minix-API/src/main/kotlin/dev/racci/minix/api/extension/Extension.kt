@@ -51,10 +51,12 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
 
     final override val loaded get() = state == ExtensionState.LOADED || state == ExtensionState.ENABLED
 
-    final override val name = buildString {
-        append(plugin.name)
-        append(':')
-        append(this@Extension::class.findAnnotation<MappedExtension>()!!.name)
+    final override val name by lazy {
+        buildString {
+            append(plugin.name)
+            append(':')
+            append(this@Extension::class.findAnnotation<MappedExtension>()!!.name)
+        }
     }
 
     final override val supervisor by lazy { CoroutineScope(SupervisorJob()) }

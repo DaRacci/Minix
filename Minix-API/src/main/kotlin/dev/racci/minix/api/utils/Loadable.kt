@@ -64,7 +64,7 @@ abstract class Loadable<T> {
      */
     suspend fun load(force: Boolean = false): Result<T> {
         if (!force && (loaded)) return Result.success(value.value!!)
-        if (!predicateLoadable()) return Result.failure(RuntimeException("Loadable is not loadable because of predicate."))
+        if (runCatching { !predicateLoadable() }.getOrDefault(false)) return Result.failure(RuntimeException("Loadable is not loadable because of predicate."))
 
         val success = initialized.updateAndGet { previous ->
             if (previous) this.unload()

@@ -293,7 +293,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         }
     }
 
-    private fun getModule(instance: Any): org.koin.core.module.Module {
+    internal fun getModule(instance: Any): org.koin.core.module.Module {
         val module = module {
             val bind = bindToKClass(instance)
             val binds = setOf(instance::class, bind).toTypedArray()
@@ -328,7 +328,6 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         extension: Extension<*>,
         sorted: MutableList<Extension<*>>
     ) {
-        loadKoinModules(getModule(extension))
         withState(ExtensionState.LOADING, extension) {
             extension.handleLoad()
         }.onFailure {
@@ -494,6 +493,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
                 else -> constructor.call(plugin)
             }
 
+            loadKoinModules(getModule(extension))
             pluginCache[plugin].extensions.add(extension)
         }
     }

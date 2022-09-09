@@ -9,7 +9,6 @@ import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
-import dev.racci.minix.api.updater.Version
 import dev.racci.minix.api.updater.providers.GithubUpdateProvider
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
@@ -24,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinApplication
 import org.koin.core.component.get
+import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.dsl.bind
 import org.koin.mp.KoinPlatformTools
@@ -44,9 +44,8 @@ class MinixImpl : Minix() {
     override fun onLoad() {
         runBlocking {
             startKoin()
-            startSentry()
-
             get<PluginService>().loadPlugin(this@MinixImpl)
+            startSentry()
         }
     }
 
@@ -64,6 +63,7 @@ class MinixImpl : Minix() {
         }
 
         val service = PluginServiceImpl(this)
+        loadKoinModules(service.getModule(service))
         service.loadExtension(service, mutableListOf())
     }
 
@@ -74,7 +74,7 @@ class MinixImpl : Minix() {
             options.dsn = "https://80dedb0e861949509a7ed845deaca185@o1112455.ingest.sentry.io/6147185"
             options.release = description.version
             options.isDebug = log.isEnabled(MinixLogger.LoggingLevel.DEBUG)
-            options.environment = if (Version(this@MinixImpl.description.version).isPreRelease) "pre-release" else "release"
+            options.environment = if (version.isPreRelease) "pre-release" else "release"
             options.environment = "production"
             options.inAppIncludes += "dev.racci"
             options.setBeforeSend { event, _ ->

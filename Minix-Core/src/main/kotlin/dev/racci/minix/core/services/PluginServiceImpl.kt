@@ -450,7 +450,13 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
     ): Boolean {
         val annotation = clazz.getAnnotationInfo(T::class.java)
         val classRef = annotation.parameterValues["parent"].value.safeCast<AnnotationClassRef>()?.loadClass()?.kotlin
-        return annotation.parameterValues["parent"].value is AnnotationClassRef && classRef == plugin::class || classRef == boundKClass
+        val result = annotation.parameterValues["parent"].value is AnnotationClassRef && classRef == plugin::class || classRef == boundKClass
+
+        if (!result) {
+            plugin.log.error { "Found ${T::class.simpleName} [${clazz.fullyQualifiedDefiningMethodName} but it is not bound to this plugin." }
+        }
+
+        return result
     }
 
     private fun processMappedConfigurations(
@@ -461,7 +467,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         for (classInfo in scanResult.getClassesWithAnnotation(MappedConfig::class.java)) {
             if (!matchingAnnotation<MappedConfig>(plugin, boundKClass, classInfo)) continue
 
-            this.plugin.log.trace { "Found MappedIntegration [${classInfo.simpleName}] from ${plugin.name}" }
+            plugin.log.trace { "Registered MappedIntegration [${classInfo.simpleName}]." }
 
             try {
                 dataService.configDataHolder.get(classInfo.loadClass().kotlin.unsafeCast())
@@ -480,10 +486,13 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
     ) {
         for (classInfo in scanResult.getClassesWithAnnotation(MappedExtension::class.java)) {
             if (!matchingAnnotation<MappedExtension>(plugin, boundKClass, classInfo)) continue
+
             if (!classInfo.extendsSuperclass(Extension::class.java)) {
-                this.plugin.log.error { "Class ${classInfo.name} is annotated with @MappedExtension but does not extend Extension." }
+                plugin.log.error { "Class ${classInfo.name} is annotated with @MappedExtension but does not extend Extension." }
                 continue
             }
+
+            plugin.log.trace { "Registering MappedExtension [${classInfo.fullyQualifiedDefiningMethodName}]." }
 
             val kClass = classInfo.loadClass().kotlin.unsafeCast<KClass<Extension<*>>>()
             val constructor = kClass.constructors.first { it.parameters.isEmpty() || it.parameters[0].name == "plugin" }
@@ -506,7 +515,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         for (classInfo in scanResult.getClassesWithAnnotation(MappedIntegration::class.java)) {
             if (!matchingAnnotation<MappedIntegration>(plugin, boundKClass, classInfo)) continue
 
-            this.plugin.log.trace { "Found MappedIntegration [${classInfo.simpleName}] from ${plugin.name}" }
+            plugin.log.trace { "Registering MappedIntegration [${classInfo.simpleName}]." }
 
             val kClass = classInfo.loadClass().kotlin.unsafeCast<KClass<out Integration>>()
             val annotation = kClass.findAnnotation<MappedIntegration>()!!
@@ -514,7 +523,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             val manager = managerKClass.objectInstance.safeCast<IntegrationManager<Integration>>()
 
             if (manager == null) {
-                this.plugin.log.error { "Failed to obtain singleton instance of ${managerKClass.qualifiedName}." }
+                plugin.log.error { "Failed to obtain singleton instance of ${managerKClass.qualifiedName}." }
                 continue
             }
 

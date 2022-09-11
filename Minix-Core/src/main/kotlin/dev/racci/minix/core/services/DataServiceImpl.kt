@@ -20,7 +20,6 @@ import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.Companion.nonVirtualNode
 import dev.racci.minix.api.utils.Closeable
-import dev.racci.minix.api.utils.clone
 import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.ifInitialized
 import dev.racci.minix.api.utils.safeCast
@@ -43,7 +42,6 @@ import org.spongepowered.configurate.ConfigurateException
 import org.spongepowered.configurate.NodePath.path
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
 import org.spongepowered.configurate.kotlin.extensions.get
-import org.spongepowered.configurate.kotlin.extensions.node
 import org.spongepowered.configurate.kotlin.extensions.set
 import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
@@ -68,7 +66,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         .executor(threadContext.get().executor)
         .removalListener<KClass<*>, ConfigData<*>> { key, value, cause ->
             if (key == null || value == null || cause == RemovalCause.REPLACED) return@removalListener
-            log.info(scope = SCOPE) { "Saving and disposing configurate class ${key.simpleName}." }
+            log.info { "Saving and disposing configurate class ${key.simpleName}." }
 
             value.configInstance.handleUnload()
             if (value.configLoader.canSave()) {
@@ -92,7 +90,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
     override suspend fun handleLoad() {
         if (!plugin.dataFolder.exists() && !plugin.dataFolder.mkdirs()) {
-            log.error(scope = SCOPE) { "Failed to create data folder!" }
+            log.error { "Failed to create data folder!" }
         }
     }
 
@@ -110,7 +108,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         val file: File
         val node: CommentedConfigurationNode
         val configLoader: HoconConfigurationLoader
-        val configClone: T
+//        val configClone: T
 
         fun save() {
             this.node.set(this.kClass, this.configInstance)
@@ -214,9 +212,9 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
                 }
 
                 this.configInstance.load()
-                this.configClone = this.configInstance.clone().unsafeCast()
+//                this.configClone = this.configInstance.clone().unsafeCast()
 
-                if (!this.file.exists() || this.configInstance != this.configClone) {
+                if (!this.file.exists()) { // || this.configInstance != this.configClone) {
                     this.save()
                 }
             } catch (e: ConfigurateException) {
@@ -250,7 +248,5 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         var oldVersion by PluginData.oldVersion
     }
 
-    companion object : ExtensionCompanion<DataServiceImpl>() {
-        const val SCOPE = "data"
-    }
+    companion object : ExtensionCompanion<DataServiceImpl>()
 }

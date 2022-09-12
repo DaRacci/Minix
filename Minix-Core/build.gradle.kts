@@ -2,7 +2,7 @@
 
 dependencies {
     compileOnly(project(":Minix-API"))
-    compileOnly("io.github.slimjar:slimjar:1.2.6")
+    compileOnly("dev.racci:slimjar:1.3.1")
 }
 
 java.withSourcesJar()
@@ -17,6 +17,7 @@ tasks.withType<GenerateModuleMetadata> {
 
 dependencies {
     compileOnly(rootProject.libs.minecraft.api.landsAPI)
+    compileOnly(rootProject.libs.bundles.cloud.kotlin)
 }
 
 publishing {

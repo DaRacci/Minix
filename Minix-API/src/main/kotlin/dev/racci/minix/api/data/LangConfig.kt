@@ -7,6 +7,7 @@ import dev.racci.minix.api.utils.safeCast
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
+import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 
 @ConfigSerializable
@@ -22,11 +23,14 @@ abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
             } else "<prefix_${it.key}>"
         }
 
-        plugin.log.debug { "Loaded prefixes: $map" }
+        plugin.log.info { "Loaded prefixes: $map" }
         this.onNestedInstance<PropertyFinder<PartialComponent>> {
-            onNested<PartialComponent, PropertyFinder<PartialComponent>>(this) {
-                this.formatRaw(map)
-            }
+            plugin.log.info { "Found property finder: $this" }
+            this::class.declaredMemberProperties
+                .filterIsInstance<KProperty1<PropertyFinder<PartialComponent>, PartialComponent>>()
+                .map { it.getter.call(this) }
+                .onEach { plugin.log.info { "Found partial component: $this" } }
+                .forEach { it.formatRaw(map) }
         }
     }
 
@@ -40,5 +44,6 @@ abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
         return value[key.substringAfter('.')].get(*placeholder)
     }
 
+    @ConfigSerializable
     open class InnerLang : PropertyFinder<PartialComponent>(), InnerConfig by InnerConfig.Default()
 }

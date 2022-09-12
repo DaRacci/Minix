@@ -72,6 +72,16 @@ bukkit {
     website = "https://github.com/DaRacci/Minix"
 }
 
+tasks {
+    val quickBuild by creating {
+        this.group = "build"
+        dependsOn(clean)
+        dependsOn(compileKotlin)
+        dependsOn(shadowJar)
+        dependsOn(copyJar)
+    }
+}
+
 allprojects {
 
     apply(plugin = "dev.racci.minix.kotlin")

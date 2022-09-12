@@ -24,6 +24,7 @@ import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.collections.CollectionUtils.clear
+import dev.racci.minix.api.utils.collections.CollectionUtils.find
 import dev.racci.minix.api.utils.kotlin.doesOverride
 import dev.racci.minix.api.utils.kotlin.ifOverrides
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
@@ -426,21 +427,24 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
     private fun loadReflection(plugin: MinixPlugin) {
         var int = 0
         val packageName = plugin::class.java.`package`.name.takeWhile { it != '.' || int++ < 2 }
-        val classGraph = ClassGraph()
+        val scanResult = ClassGraph()
             .acceptPackages(packageName)
             .addClassLoader(plugin::class.java.classLoader)
             .addClassLoader(getClassLoader(plugin))
             .enableClassInfo()
             .enableAnnotationInfo()
-            .enableMethodInfo()
-            .scan()
+            .disableNestedJarScanning()
+            .disableRuntimeInvisibleAnnotations()
+            .scan(4)
 
         if (plugin !is MinixImpl) plugin.log.info { "Ignore the following warning, this is expected behavior." }
         val boundKClass = plugin::class.findAnnotation<MappedPlugin>()?.bindToKClass.takeUnless { it == MinixPlugin::class } ?: plugin::class
 
-        processMappedExtensions(classGraph, plugin, boundKClass)
-        processMappedConfigurations(classGraph, plugin, boundKClass)
-        processMappedIntegrations(classGraph, plugin, boundKClass)
+        processMappedExtensions(scanResult, plugin, boundKClass)
+        processMappedConfigurations(scanResult, plugin, boundKClass)
+        processMappedIntegrations(scanResult, plugin, boundKClass)
+
+        scanResult.close()
     }
 
     private inline fun <reified T : Annotation> matchingAnnotation(
@@ -467,11 +471,12 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         for (classInfo in scanResult.getClassesWithAnnotation(MappedConfig::class.java)) {
             if (!matchingAnnotation<MappedConfig>(plugin, boundKClass, classInfo)) continue
 
-            plugin.log.trace { "Registered MappedIntegration [${classInfo.simpleName}]." }
+            plugin.log.trace { "Registered MappedIntegration [${plugin.name}:${classInfo.simpleName}]." }
 
             try {
                 dataService.configDataHolder.get(classInfo.loadClass().kotlin.unsafeCast())
             } catch (ignored: NoBeanDefFoundException) {
+                plugin.log.error(ignored)
                 /* This is expected behavior. */
             } catch (e: Exception) {
                 throw this.plugin.log.fatal(e) { "Failed to create configuration [${classInfo.simpleName}] for ${plugin.name}" }
@@ -492,7 +497,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
                 continue
             }
 
-            plugin.log.trace { "Registering MappedExtension [${classInfo.fullyQualifiedDefiningMethodName}]." }
+            plugin.log.trace { "Registering MappedExtension [${plugin.name}:${classInfo.simpleName}]." }
 
             val kClass = classInfo.loadClass().kotlin.unsafeCast<KClass<Extension<*>>>()
             val constructor = kClass.constructors.first { it.parameters.isEmpty() || it.parameters[0].name == "plugin" }
@@ -515,7 +520,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         for (classInfo in scanResult.getClassesWithAnnotation(MappedIntegration::class.java)) {
             if (!matchingAnnotation<MappedIntegration>(plugin, boundKClass, classInfo)) continue
 
-            plugin.log.trace { "Registering MappedIntegration [${classInfo.simpleName}]." }
+            plugin.log.trace { "Registering MappedIntegration [${plugin.name}:${classInfo.simpleName}]." }
 
             val kClass = classInfo.loadClass().kotlin.unsafeCast<KClass<out Integration>>()
             val annotation = kClass.findAnnotation<MappedIntegration>()!!

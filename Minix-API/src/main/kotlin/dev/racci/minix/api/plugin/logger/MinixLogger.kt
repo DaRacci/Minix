@@ -5,25 +5,46 @@ import com.github.ajalt.mordant.rendering.TextAlign
 import com.github.ajalt.mordant.rendering.TextColors
 import com.github.ajalt.mordant.rendering.Whitespace
 import com.github.ajalt.mordant.terminal.Terminal
+import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.exceptions.LevelConversionException
 import dev.racci.minix.api.exceptions.NoTraceException
+import dev.racci.minix.api.extension.Extension
+import dev.racci.minix.api.utils.Loadable
 import dev.racci.minix.api.utils.kotlin.fromOrdinal
 import dev.racci.minix.api.utils.kotlin.toSafeString
 import dev.racci.minix.api.utils.unsafeCast
 import kotlinx.atomicfu.AtomicBoolean
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.newSingleThreadContext
 import org.apache.logging.log4j.spi.StandardLevel
 import org.apiguardian.api.API
+import org.checkerframework.checker.units.qual.t
 import java.util.logging.Level
+import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.declaredMemberFunctions
 import kotlin.reflect.jvm.isAccessible
 
-@OptIn(MinixInternal::class)
+@OptIn(MinixInternal::class, DelicateCoroutinesApi::class)
 @API(status = API.Status.EXPERIMENTAL, since = "3.2.0")
 abstract class MinixLogger {
+
+//    override fun isTraceEnabled(): Boolean = isEnabled(LoggingLevel.TRACE)
+//    override fun isTraceEnabled(marker: Marker): Boolean = isEnabled(LoggingLevel.TRACE)
+//    override fun isDebugEnabled(): Boolean = isEnabled(LoggingLevel.DEBUG)
+//    override fun isDebugEnabled(marker: Marker): Boolean = isEnabled(LoggingLevel.DEBUG)
+//    override fun isInfoEnabled(): Boolean = isEnabled(LoggingLevel.INFO)
+//    override fun isInfoEnabled(marker: Marker): Boolean = isEnabled(LoggingLevel.INFO)
+//    override fun isWarnEnabled(): Boolean = isEnabled(LoggingLevel.WARN)
+//    override fun isWarnEnabled(marker: Marker): Boolean = isEnabled(LoggingLevel.WARN)
+//    override fun isErrorEnabled(): Boolean = isEnabled(LoggingLevel.ERROR)
+//    override fun isErrorEnabled(marker: Marker): Boolean = isEnabled(LoggingLevel.ERROR)
 
     @MinixInternal
     private val atomicLock: AtomicBoolean = atomic(false)
@@ -43,19 +64,19 @@ abstract class MinixLogger {
         this.atomicLock.compareAndSet(expect = true, update = false)
     }
 
-    constructor(level: LoggingLevel) {
+    constructor(level: LoggingLevel) : super() {
         this.atomicLevel = atomic(level)
     }
 
-    constructor(level: Level) {
+    constructor(level: Level) : super() {
         this.atomicLevel = atomic(LoggingLevel.fromJava(level))
     }
 
-    constructor(level: org.apache.logging.log4j.Level) {
+    constructor(level: org.apache.logging.log4j.Level) : super() {
         this.atomicLevel = atomic(LoggingLevel.fromLog4J(level))
     }
 
-    constructor(level: org.slf4j.event.Level) {
+    constructor(level: org.slf4j.event.Level) : super() {
         this.atomicLevel = atomic(LoggingLevel.fromSlF4(level))
     }
 
@@ -105,38 +126,53 @@ abstract class MinixLogger {
      * @param message The [FormattedMessage] to log.
      */
     open fun log(
-        message: FormattedMessage
-    ) = rawPrintln.call(terminal, message.rendered)
+        message: () -> FormattedMessage
+    ) { GlobalScope.launch(dispatcher.get().getOrThrow()) { rawPrintln.call(terminal, message().rendered) } }
 
     open fun trace(
         t: Throwable? = null,
         scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.TRACE) { log(FormattedMessage(msg, scope, LoggingLevel.TRACE, t, TextColors.brightWhite)) }
+    ) = ifLoggable(LoggingLevel.TRACE) {
+        val actualScope = scope ?: getCallerScope()
+        log { FormattedMessage(msg, actualScope, LoggingLevel.TRACE, t, TextColors.brightGreen) }
+    }
 
     open fun debug(
         t: Throwable? = null,
         scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.DEBUG) { log(FormattedMessage(msg, scope, LoggingLevel.DEBUG, t, TextColors.brightBlue)) }
+    ) = ifLoggable(LoggingLevel.DEBUG) {
+        val actualScope = scope ?: getCallerScope()
+        log { FormattedMessage(msg, actualScope, LoggingLevel.DEBUG, t, TextColors.brightBlue) }
+    }
 
     open fun info(
         t: Throwable? = null,
         scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.INFO) { log(FormattedMessage(msg, scope, LoggingLevel.INFO, t, TextColors.cyan)) }
+    ) = ifLoggable(LoggingLevel.INFO) {
+        val actualScope = scope ?: getCallerScope()
+        log { FormattedMessage(msg, actualScope, LoggingLevel.INFO, t, TextColors.cyan) }
+    }
 
     open fun warn(
         t: Throwable? = null,
         scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.WARN) { log(FormattedMessage(msg, scope, LoggingLevel.WARN, t, TextColors.yellow)) }
+    ) = ifLoggable(LoggingLevel.WARN) {
+        val actualScope = scope ?: getCallerScope()
+        log { FormattedMessage(msg, actualScope, LoggingLevel.WARN, t, TextColors.yellow) }
+    }
 
     open fun error(
         t: Throwable? = null,
         scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.ERROR) { log(FormattedMessage(msg, scope, LoggingLevel.ERROR, t, TextColors.red)) }
+    ) = ifLoggable(LoggingLevel.ERROR) {
+        val actualScope = scope ?: getCallerScope()
+        log { FormattedMessage(msg, actualScope, LoggingLevel.ERROR, t, TextColors.red) }
+    }
 
     /**
      * Logs an error, which is unrecoverable.
@@ -151,7 +187,7 @@ abstract class MinixLogger {
         scope: String? = null,
         msg: () -> Any?
     ): RuntimeException {
-        log(FormattedMessage(msg, scope, LoggingLevel.FATAL, t, TextColors.brightRed))
+        log { FormattedMessage(msg, scope, LoggingLevel.FATAL, t, TextColors.brightRed) }
         return NoTraceException(cause = t)
     }
 
@@ -159,31 +195,46 @@ abstract class MinixLogger {
         t: Throwable? = null,
         scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.TRACE) { log(FormattedMessage(msg, scope, LoggingLevel.TRACE, t, TextColors.brightWhite)) }
+    ) = ifLoggable(LoggingLevel.TRACE) {
+        val actualScope = scope ?: getCallerScope()
+        log { FormattedMessage(msg, actualScope, LoggingLevel.TRACE, t, TextColors.brightGreen) }
+    }
 
     open fun debug(
         t: Throwable? = null,
         scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.DEBUG) { log(FormattedMessage(msg, scope, LoggingLevel.DEBUG, t, TextColors.brightBlue)) }
+    ) = ifLoggable(LoggingLevel.DEBUG) {
+        val actualScope = scope ?: getCallerScope()
+        log { FormattedMessage(msg, actualScope, LoggingLevel.DEBUG, t, TextColors.brightBlue) }
+    }
 
     open fun info(
         t: Throwable? = null,
         scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.INFO) { log(FormattedMessage(msg, scope, LoggingLevel.INFO, t, TextColors.cyan)) }
+    ) = ifLoggable(LoggingLevel.INFO) {
+        val actualScope = scope ?: getCallerScope()
+        log { FormattedMessage(msg, actualScope, LoggingLevel.INFO, t, TextColors.cyan) }
+    }
 
     open fun warn(
         t: Throwable? = null,
         scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.WARN) { log(FormattedMessage(msg, scope, LoggingLevel.WARN, t, TextColors.yellow)) }
+    ) = ifLoggable(LoggingLevel.WARN) {
+        val actualScope = scope ?: getCallerScope()
+        log { FormattedMessage(msg, actualScope, LoggingLevel.WARN, t, TextColors.yellow) }
+    }
 
     open fun error(
         t: Throwable? = null,
         scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.ERROR) { log(FormattedMessage(msg, scope, LoggingLevel.ERROR, t, TextColors.red)) }
+    ) = ifLoggable(LoggingLevel.ERROR) {
+        val actualScope = scope ?: getCallerScope()
+        log { FormattedMessage(msg, actualScope, LoggingLevel.ERROR, t, TextColors.red) }
+    }
 
     /**
      * Logs an error, which is unrecoverable.
@@ -197,7 +248,7 @@ abstract class MinixLogger {
         scope: String? = null,
         msg: String? = null
     ): RuntimeException {
-        log(FormattedMessage(msg, scope, LoggingLevel.FATAL, t, TextColors.brightRed))
+        log { FormattedMessage(msg, scope, LoggingLevel.FATAL, t, TextColors.brightRed) }
         return NoTraceException(cause = t)
     }
 
@@ -216,9 +267,25 @@ abstract class MinixLogger {
         action()
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
+    protected fun getCallerScope(): String? {
+        return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).walk { walker ->
+            walker.filter { frame ->
+                frame.declaringClass.superclass == Extension::class.java
+            }.map { frame ->
+                frame.declaringClass.getAnnotation(MappedExtension::class.java).name
+            }.findFirst()
+        }.getOrNull()
+    }
+
     protected companion object {
         val terminal = Terminal(tabWidth = 4, interactive = true, hyperlinks = false)
         val rawPrintln: KFunction<Unit>
+
+        val dispatcher = object : Loadable<ExecutorCoroutineDispatcher>() {
+            override suspend fun onLoad() = newSingleThreadContext("MinixLogging Thread")
+            override suspend fun onUnload(value: ExecutorCoroutineDispatcher) = value.close()
+        }
 
         init {
             val func = Terminal::class.declaredMemberFunctions.first { it.name == "rawPrintln" }
@@ -230,7 +297,7 @@ abstract class MinixLogger {
     @API(status = API.Status.STABLE, since = "3.2.0")
     inner class FormattedMessage(
         input: String?,
-        scope: String?,
+        val scope: String?,
         val level: LoggingLevel,
         val throwable: Throwable?,
         textColour: TextColors?,

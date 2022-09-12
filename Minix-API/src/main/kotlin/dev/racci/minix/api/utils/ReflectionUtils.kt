@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KParameter
+import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
@@ -137,9 +138,31 @@ fun <T : Any> T.clone(replaceArgs: Map<KProperty1<T, *>, Any> = emptyMap()): T =
 }
 
 /** Temporarily make a property accessible and invokes the [action]. */
-inline fun <reified T : KProperty1<*, R>, reified R> T.accessWith(action: T.() -> R): R {
+inline fun <T : KProperty1<*, R>, R> T.accessReturn(action: T.() -> R): R {
     isAccessible = true
     val value = this.action()
     isAccessible = false
     return value
+}
+
+/** Temporarily make a property accessible and invokes the [action]. */
+inline fun <T : KProperty<R>, R> T.accessReturn(action: T.() -> R): R {
+    isAccessible = true
+    val value = this.action()
+    isAccessible = false
+    return value
+}
+
+/** Temporarily make a property accessible and invokes the [action]. */
+inline fun <T : KProperty1<*, R>, R> T.accessWith(action: T.() -> Unit) {
+    isAccessible = true
+    this.action()
+    isAccessible = false
+}
+
+/** Temporarily make a property accessible and invokes the [action]. */
+inline fun <T : KProperty<R>, R> T.accessWith(action: T.() -> Unit) {
+    isAccessible = true
+    this.action()
+    isAccessible = false
 }

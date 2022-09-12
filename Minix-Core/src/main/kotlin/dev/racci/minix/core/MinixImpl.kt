@@ -45,8 +45,11 @@ class MinixImpl : Minix() {
         runBlocking {
             startKoin()
             get<PluginService>().loadPlugin(this@MinixImpl)
-            startSentry()
         }
+    }
+
+    override suspend fun handleLoad() {
+        this.startSentry()
     }
 
     @OptIn(DelicateCoroutinesApi::class)

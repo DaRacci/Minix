@@ -4,23 +4,61 @@ import com.github.ajalt.mordant.rendering.TextColors
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.WithPlugin
+import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.utils.accessReturn
+import dev.racci.minix.api.utils.collections.CollectionUtils.find
 import dev.racci.minix.api.utils.unsafeCast
 import io.sentry.Breadcrumb
 import io.sentry.Sentry
 import io.sentry.SentryLevel
-import org.apache.logging.log4j.Marker
-import org.apache.logging.log4j.core.Logger
-import org.apache.logging.slf4j.Log4jLogger
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import org.apache.logging.log4j.core.appender.AbstractManager
+import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager
+import org.jline.terminal.Terminal
+import org.jline.terminal.TerminalBuilder
+import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.jvm.isAccessible
+import kotlin.reflect.KProperty1
+import kotlin.reflect.full.staticProperties
 
+@OptIn(DelicateCoroutinesApi::class)
 class PluginDependentMinixLogger<T : MinixPlugin>(
     override val plugin: T,
     loggingLevel: LoggingLevel = LoggingLevel.INFO
 ) : MinixLogger(loggingLevel), WithPlugin<T> {
-    private var logger: Logger? = null
+    private val generalLength = run {
+        var length = 6 // [][][]
+        length += 8 // HH:mm:ss
+        length += 3 // Spaces
+        length += 16 // Colours
+        length += plugin.name.length
+
+        length
+    }
+
+    private fun getPrefixLength(
+        scope: String?,
+        level: LoggingLevel
+    ): Int {
+        var length = generalLength
+        length += level.name.length
+
+        if (!scope.isNullOrBlank()) {
+            length += scope.length + 1
+        }
+
+        if (level.ordinal > 3) {
+            length += Thread.currentThread().name.length + 1
+        }
+
+        return length
+    }
 
     init {
         if (plugin.logger.level != null) {
@@ -34,75 +72,198 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
         level: LoggingLevel,
         throwable: Throwable?,
         colour: TextColors?
-    ): String {
-        val actualScope = scope ?: extensionScope()
-        val builder = StringBuilder(TextColors.brightWhite("->")).append(' ')
+    ): String = buildString {
         var appended = false
+        val prefix = prefix(level, scope)
+        val padding = prefix.length + 4
 
-        if (level.ordinal > 3) builder.append(colour?.invoke("[${level.name.capitalize()}] ") ?: "[${level.name.capitalize()}] ")
-        if (!actualScope.isNullOrBlank()) append(builder, "[$actualScope] ", colour)
+        append(applyColour(prefix, colour))
 
-        if (message.isNotEmpty()) {
-            val lines = message.split('\n')
-            lines.forEachIndexed { index, contents ->
-                if (index > 0) builder.append("\n\t")
-                val trimmed = contents.trim()
-                appended = append(builder, trimmed, colour)
-            }
+        append(' ')
+        append(TextColors.brightWhite("->"))
+        append(' ')
+
+        formatMessage(message, padding).ifPresent { msg ->
+            append(applyColour(msg, colour))
+            appended = true
         }
 
-        if (throwable != null) {
-            var cause: Throwable? = throwable
-            var attempts: Int = -1
-            val stackTrace = isEnabled(LoggingLevel.DEBUG)
-
-            while (cause != null && attempts++ < 3) {
-                if (!builder.last().isWhitespace() && builder.last() != '\n') builder.append(' ')
-                if (attempts != 0) {
-                    builder.append("\n")
-                    builder.append(TextColors.brightRed("Nested Caused by: "))
-                } else {
-                    builder.append(TextColors.brightRed("Caused by: "))
-                }
-
-                builder.append(TextColors.brightCyan(cause::class.qualifiedName ?: "null"))
-                builder.append(TextColors.brightWhite(" -> "))
-                builder.append(TextColors.brightCyan(cause.message ?: "null"))
-
-                if (stackTrace) {
-                    cause.stackTrace.forEach {
-                        builder.append(TextColors.gray("\n\tat "))
-                        builder.append(TextColors.white("${it.className}.${it.methodName}"))
-                        builder.append(TextColors.yellow("(${it.fileName}:${it.lineNumber})"))
-                    }
-                }
-
-                cause = cause.cause
-            }
-
+        formatThrowable(throwable).ifPresent { thr ->
+            append(thr, colour)
             appended = true
         }
 
         if (!appended) {
-            builder.append("Empty message.").toString()
+            append(applyColour("Empty message.", colour)).toString()
         }
-
-        return builder.toString()
     }
 
-    // TODO: Bypass formatting and use the stream directly.
-    override fun log(message: FormattedMessage) {
-        val level = message.level.takeUnless { it.ordinal > 3 } ?: LoggingLevel.INFO // Only INFO, WARN, and ERROR are supported.
-        val logAtLevel = level.toLog4J()
+    override fun log(message: () -> FormattedMessage) {
+        if (server.isPrimaryThread) { // We don't want anything to do with the server thread.
+            GlobalScope.launch(dispatcher.get().getOrThrow()) {
+                logAction(message)
+            }
+        } else logAction(message)
+    }
 
-        addSentryBreadcrumb(message)
-        getLogger().log(logAtLevel, null as Marker?, message.rendered)
+    private fun logAction(message: () -> FormattedMessage) {
+        val formatted = message()
+
+        addSentryBreadcrumb(formatted)
+        appendLogFile(formatted)
+
+        TERMINAL.writer().println(formatted.rendered)
+        TERMINAL.writer().flush()
+    }
+
+    private fun applyColour(
+        string: String,
+        colour: TextColors?
+    ): String = when (colour) {
+        null -> string
+        else -> colour(string)
+    }
+
+    private fun prefix(
+        level: LoggingLevel,
+        actualScope: String?
+    ): String = buildString {
+        append('[')
+        append(getTime())
+
+        append(' ')
+        append(level.name)
+        append("] [")
+        append(plugin.name)
+
+        if (!actualScope.isNullOrBlank()) {
+            append(':')
+            append(actualScope)
+        }
+
+        if (level.ordinal > 3) {
+            append('/')
+            append(Thread.currentThread().name)
+        }
+
+        append(']')
+    }
+
+    private fun formatMessage(
+        message: String,
+        padding: Int
+    ): Optional<String> {
+        if (message.isBlank()) return Optional.empty()
+
+        return Optional.of(
+            buildString {
+                for ((index, line) in message.split('\n').withIndex()) {
+                    if (index > 0) {
+                        append('\n')
+                        append("\t".repeat(padding))
+                    }
+
+                    append(line.trimEnd())
+                }
+            }
+        )
+    }
+
+    private fun formatThrowable(throwable: Throwable?): Optional<String> {
+        if (throwable == null) return Optional.empty()
+
+        val string = buildString {
+            var lastCause: Throwable? = null
+            var cause: Throwable? = throwable
+            val stackTrace = isEnabled(LoggingLevel.DEBUG)
+
+            repeat(3) { depth ->
+                if (cause == null || cause === lastCause) return@repeat
+
+                if (lastOrNull()?.isWhitespace() == false && last() != '\n') append(' ')
+
+                if (depth > 0) {
+                    append('\n')
+                    append(TextColors.brightRed("Nested Caused by: "))
+                } else append(TextColors.brightRed("Caused by: "))
+
+                append(TextColors.brightCyan(cause!!::class.qualifiedName ?: "null"))
+                append(TextColors.brightWhite(" -> "))
+                append(TextColors.brightCyan(cause!!.message ?: "null"))
+
+                if (stackTrace) {
+                    for (element in cause!!.stackTrace) {
+                        append(TextColors.gray("\n\tat "))
+                        append(TextColors.white("${element.className}.${element.methodName}"))
+                        append(TextColors.yellow("(${element.fileName}:${element.lineNumber})"))
+                    }
+                }
+
+                lastCause = cause
+                cause = cause!!.cause
+            }
+        }
+
+        return Optional.of(string)
+    }
+
+    private fun appendLogFile(formatted: FormattedMessage) {
+        val byteArray = buildString {
+            append(logFilePrefix(formatted.scope, plugin.name, formatted.level))
+            append(formatted.formatted.substring(getPrefixLength(formatted.scope, formatted.level)))
+        }.toByteArray(Charsets.UTF_8)
+
+        ROLLING_MANAGER.writeBytes(byteArray, 0, byteArray.size)
+        ROLLING_MANAGER.writeBytes(NEWLINE, 0, NEWLINE.size)
+    }
+
+    private fun logFilePrefix(
+        scope: String?,
+        plugin: String?,
+        level: LoggingLevel
+    ): String = buildString {
+        append('[')
+        append(getTime())
+        append("] [")
+
+        append(Thread.currentThread().name)
+        append('/')
+        append(level.name)
+        append("] [")
+
+        append(plugin)
+        if (scope != null) {
+            append('/')
+            append(scope)
+        }
+
+        append("] -> ")
+    }
+
+    private fun getTime(): String = buildString {
+        val time = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+
+        append(time.hour.toString().padStart(2, '0'))
+        append(':')
+        append(time.minute.toString().padStart(2, '0'))
+        append(':')
+        append(time.second.toString().padStart(2, '0'))
+
+//        if (level.ordinal > 4) {
+//                append('.')
+//                append(this.nanosecond)
+//        }
     }
 
     @OptIn(ExperimentalStdlibApi::class)
     private fun extensionScope(): String? {
         return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).walk { stream ->
-            stream.skip(11).map(StackWalker.StackFrame::getDeclaringClass).filter { it.superclass == Extension::class.java }.findFirst().map { clazz ->
+//            stream.forEachOrdered { frame ->
+//                println(frame.declaringClass.simpleName + " -> " + frame.methodName)
+//            }
+//
+//            Optional.empty<String>()
+            stream.skip(15).map(StackWalker.StackFrame::getDeclaringClass).filter { it.superclass == Extension::class.java }.findFirst().map { clazz ->
                 val annotation = clazz.getAnnotation(MappedExtension::class.java)
                 annotation.name
             }
@@ -123,29 +284,13 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
         Sentry.addBreadcrumb(breadcrumb)
     }
 
-    private fun append(
-        builder: StringBuilder,
-        text: String,
-        colour: TextColors?
-    ): Boolean {
-        if (text.isEmpty()) return false
-
-        when (colour) {
-            null -> builder.append(text)
-            else -> builder.append(colour(text))
-        }
-
-        return true
-    }
-
-    private fun getLogger(): Logger {
-        if (logger != null) return logger!!
-
-        val loggerProp = Log4jLogger::class.memberProperties.first { it.name == "logger" }
-        loggerProp.isAccessible = true
-        logger = loggerProp.get(plugin.slF4JLogger.unsafeCast()) as Logger
-        loggerProp.isAccessible = false
-
-        return logger!!
+    private companion object {
+        val NEWLINE: ByteArray = "\n".encodeToByteArray()
+        val TERMINAL: Terminal = TerminalBuilder.builder().build()
+        val ROLLING_MANAGER: RollingRandomAccessFileManager = AbstractManager::class.staticProperties
+            .unsafeCast<Collection<KProperty1<AbstractManager, Map<String, AbstractManager>>>>()
+            .find("MAP")!!.accessReturn {
+            this.getter.call()
+        }["logs/latest.log"].unsafeCast()
     }
 }

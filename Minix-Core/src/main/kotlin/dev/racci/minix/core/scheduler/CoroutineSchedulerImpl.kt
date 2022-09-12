@@ -39,7 +39,7 @@ class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), C
     override val dispatcher = object : Closeable<ExecutorCoroutineDispatcher>() {
         override fun create(): ExecutorCoroutineDispatcher {
             val threadCount = (ManagementFactory.getThreadMXBean().threadCount / 4).coerceIn(1..4)
-            return newFixedThreadPoolContext(threadCount, "$name-thread")
+            return newFixedThreadPoolContext(threadCount, "${name.substringAfter(':')}-Thread")
         }
 
         override fun onClose() { value.value?.close() }

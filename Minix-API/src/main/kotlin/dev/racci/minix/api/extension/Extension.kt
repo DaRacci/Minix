@@ -37,7 +37,7 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
     override val dispatcher = object : Closeable<ExecutorCoroutineDispatcher>() {
         override fun create(): ExecutorCoroutineDispatcher {
             val threadCount = this@Extension::class.findAnnotation<MappedExtension>()!!.threadCount
-            return newFixedThreadPoolContext(threadCount, "$name-thread")
+            return newFixedThreadPoolContext(threadCount, "${name.substringAfter(':')}-Thread")
         }
 
         override fun onClose() {

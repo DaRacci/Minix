@@ -38,23 +38,18 @@ public class MinixInit extends JavaPlugin {
         }
 
         ApplicationBuilder builder;
-        try {
-            builder = InjectingApplicationBuilder.createAppending("Minix", libraryLoader);
-            builder.logger(new ProcessLogger() {
-                @Override
-                public void log(String s, Object... args) {
-                    getLogger().info(String.format(s, args));
-                }
+        builder = InjectingApplicationBuilder.createAppending("Minix", libraryLoader);
+        builder.logger(new ProcessLogger() {
+            @Override
+            public void log(String s, Object... args) {
+                getLogger().info(String.format(s, args));
+            }
 
-                @Override
-                public void debug(String s, Object... args) {
-                    getLogger().fine(String.format(s, args));
-                }
-            });
-        } catch(ReflectiveOperationException | IOException | URISyntaxException | NoSuchAlgorithmException e) {
-            this.getLogger().severe("Failed to create application builder.");
-            throw new ReflectingInitializationException(e);
-        }
+            @Override
+            public void debug(String s, Object... args) {
+                getLogger().fine(String.format(s, args));
+            }
+        });
 
         var folder = Path.of(String.format("%s/libraries", getDataFolder()));
         if(!Files.exists(folder) && !folder.toFile().mkdirs()) {
@@ -65,7 +60,7 @@ public class MinixInit extends JavaPlugin {
 
         try {
             builder.build();
-        } catch(IOException | ReflectiveOperationException | URISyntaxException | NoSuchAlgorithmException e) {
+        } catch(IOException | ReflectiveOperationException | URISyntaxException | NoSuchAlgorithmException | InterruptedException e) {
             this.getLogger().severe("Failed to build application.");
             throw new ReflectingInitializationException(e);
         }

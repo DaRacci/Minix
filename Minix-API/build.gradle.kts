@@ -113,7 +113,7 @@ publishing {
                 node["groupId"] == this.moduleGroup &&
                     node["artifactId"] == this.moduleName &&
                     node["version"] == this.moduleVersion &&
-                    node["scope"] == this.configuration
+                    node["scope"] == this.getScope()
             }
 
             configurations["slim"].resolvedConfiguration.firstLevelModuleDependencies.forEach { dep ->
@@ -123,7 +123,7 @@ publishing {
                     appendNode("groupId", dep.moduleGroup)
                     appendNode("artifactId", dep.moduleName)
                     appendNode("version", dep.moduleVersion)
-                    appendNode("scope", dep.configuration)
+                    appendNode("scope", dep.getScope())
                 }
             }
         }

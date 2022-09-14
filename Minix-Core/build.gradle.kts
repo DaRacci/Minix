@@ -1,3 +1,5 @@
+import java.net.URI
+
 dependencies {
     compileOnly(project(":Minix-API"))
     compileOnly("dev.racci.slimjar:slimjar:1.2.10")
@@ -19,12 +21,9 @@ dependencies {
 }
 
 publishing {
-    repositories.maven("https://repo.racci.dev/releases") {
+    repositories.maven {
         name = "RacciRepo"
-        credentials(PasswordCredentials::class)
-    }
-    repositories.maven("https://repo.racci.dev/snapshots") {
-        name = "RacciSnapshots"
+        url = URI("https://repo.racci.dev/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
         credentials(PasswordCredentials::class)
     }
 

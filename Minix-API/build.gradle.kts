@@ -1,57 +1,77 @@
-import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
-import org.jetbrains.dokka.utilities.cast
+@file:Suppress("UnstableApiUsage")
+
+import groovy.util.Node
+import groovy.util.NodeList
 import java.net.URI
 
-val lib: Configuration by configurations.creating
-val libSlim: Configuration by configurations.creating
+val minixVersion: String by rootProject
+val slim: Configuration by configurations.creating
 
-extensions.getByType<SourceSetContainer>().named(SourceSet.MAIN_SOURCE_SET_NAME) {
-    configurations.getByName(compileClasspathConfigurationName).extendsFrom(lib)
-    configurations.getByName(runtimeClasspathConfigurationName).extendsFrom(lib)
-    configurations.getByName(apiElementsConfigurationName).extendsFrom(lib)
-
-    configurations.getByName(compileClasspathConfigurationName).extendsFrom(libSlim)
-    configurations.getByName(runtimeClasspathConfigurationName).extendsFrom(libSlim)
-    configurations.getByName(apiElementsConfigurationName).extendsFrom(libSlim)
+configurations {
+    compileClasspath.get().extendsFrom(slim)
+    runtimeClasspath.get().extendsFrom(slim)
+    api.get().extendsFrom(slim)
 }
 
 dependencies {
-    // Has to be shaded
-    api(rootProject.libs.minecraft.bstats)
-    // We Shade these two due to the puffer fish conflict
-    api(rootProject.libs.sentry.core)
-    api(rootProject.libs.sentry.kotlin)
-    // Shade these due to conflict with eco
-    libSlim(rootProject.libs.bundles.kotlin)
-    libSlim(rootProject.libs.bundles.kotlinx)
-    libSlim(rootProject.libs.kotlinx.serialization.json)
-    libSlim(rootProject.libs.bundles.exposed)
-    libSlim(rootProject.libs.caffeine)
+    slim("dev.racci:Minix-NMS:$minixVersion")
+
+    // Global log tracker
+    slim(libs.sentry.core)
+    slim(libs.sentry.kotlin)
+
+    // Kotlin libraries
+    slim(libs.bundles.kotlin)
+    slim(libs.bundles.kotlinx)
+    slim(libs.kotlinx.serialization.core)
+
+    // Networking
+    slim(libs.ktor.client.cio)
+    slim(libs.ktor.client.core)
+
+    // Injection Manager
+    slim(libs.koin.core)
+    slim(libs.koin.ktor)
+
     // Because of the kotlin shade
-    libSlim(rootProject.libs.adventure.kotlin)
-    libSlim(rootProject.libs.koin.core)
-    libSlim(rootProject.libs.ktor.client.core)
-    libSlim(rootProject.libs.ktor.client.cio)
-    libSlim(rootProject.libs.cloud.kotlin.extensions)
-    libSlim(rootProject.libs.cloud.kotlin.coroutines)
-    libSlim(rootProject.libs.configurate.extra.kotlin)
+    slim(libs.adventure.kotlin)
 
-    lib(rootProject.libs.adventure.api)
-    lib(rootProject.libs.adventure.minimessage)
-    libSlim(rootProject.libs.adventure.configurate)
+    // Minix Logger
+    slim(libs.mordant)
 
-    libSlim(rootProject.libs.cloud.core)
-    libSlim(rootProject.libs.cloud.minecraft.paper)
-    libSlim(rootProject.libs.cloud.minecraft.extras)
+    // Minix Config
+    slim(libs.configurate)
+    slim(libs.configurate.hocon)
+    slim(libs.configurate.extra.kotlin)
 
-    lib(rootProject.libs.configurate.hocon)
-    libSlim(rootProject.libs.mordant)
+    // Adventure
+    slim(libs.adventure.api)
+    slim(libs.adventure.kotlin)
+    slim(libs.adventure.minimessage)
+    slim(libs.adventure.configurate)
 
-    libSlim("io.github.classgraph:classgraph:4.8.149")
+    // Misc
+    slim(libs.caffeine)
+    slim(libs.minecraft.bstats)
+
+    // Unused Libraries for Minix Consumers
+
+    slim(libs.minecraft.partciels)
+
+    // Supported Command framework
+    slim(libs.cloud.core)
+    slim(libs.cloud.minecraft.paper)
+    slim(libs.cloud.minecraft.extras)
+    slim(libs.cloud.kotlin.extensions)
+    slim(libs.cloud.kotlin.coroutines)
+
+    // Database libraries
+    slim(libs.bundles.exposed)
+    slim(libs.h2)
+
+    // Reflection loading for extensions and more
+    slim(libs.classgraph)
 }
-
-// Lmao this works well as compared to what I was doing before
-rootProject.extensions.getByName("bukkit").cast<BukkitPluginDescription>().libraries = lib.dependencies.map { "${it.group}:${it.name}:${it.version}" }
 
 java.withSourcesJar()
 repositories {
@@ -83,23 +103,25 @@ publishing {
             classifier = "sources"
         }
         pom.withXml {
-            val depNode = groovy.util.Node(asNode(), "dependencies")
-            arrayOf(
-                *configurations["lib"].resolvedConfiguration.firstLevelModuleDependencies.toTypedArray(),
-                *configurations["libSlim"].resolvedConfiguration.firstLevelModuleDependencies.toTypedArray()
-            ).forEach { dep ->
-                depNode.children().cast<groovy.util.NodeList>().firstOrNull {
-                    val node = it as groovy.util.Node
-                    node["groupId"] == dep.moduleGroup &&
-                        node["artifactId"] == dep.moduleName &&
-                        node["version"] == dep.moduleVersion &&
-                        node["scope"] == "compile"
-                } ?: run {
-                    val node = groovy.util.Node(depNode, "dependency")
-                    node.appendNode("groupId", dep.moduleGroup)
-                    node.appendNode("artifactId", dep.moduleName)
-                    node.appendNode("version", dep.moduleVersion)
-                    node.appendNode("scope", "compile")
+            val depNode = Node(asNode(), "dependencies")
+            val nodeList = depNode.children() as NodeList
+
+            fun ResolvedDependency.isPresent() = nodeList.any {
+                val node = it as Node
+                node["groupId"] == this.moduleGroup &&
+                    node["artifactId"] == this.moduleName &&
+                    node["version"] == this.moduleVersion &&
+                    node["scope"] == this.configuration
+            }
+
+            configurations["slim"].resolvedConfiguration.firstLevelModuleDependencies.forEach { dep ->
+                if (dep.isPresent()) return@forEach
+
+                Node(depNode, "dependency").apply {
+                    appendNode("groupId", dep.moduleGroup)
+                    appendNode("artifactId", dep.moduleName)
+                    appendNode("version", dep.moduleVersion)
+                    appendNode("scope", dep.configuration)
                 }
             }
         }

@@ -17,45 +17,18 @@ plugins {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
+// TODO -> Migrate Minix-NMS to Minix instead of Minix-Conventions
 dependencies {
     implementation(project("Minix-Core"))
     implementation(project("Minix-API"))
-    // TODO -> Migrate Minix-NMS to Minix instead of Minix-Conventions
-    implementation("dev.racci:Minix-NMS:$minixVersion")
-    implementation("dev.racci.slimjar:slimjar:1.2.10")
-    // Has to be shaded
-    slim(libs.minecraft.bstats)
-    // We Shade these two due to the puffer fish conflict
-    slim(libs.sentry.core)
-    slim(libs.sentry.kotlin)
-    // Shade these due to conflict with eco
-    slim(libs.bundles.kotlin)
-    slim(libs.bundles.kotlinx)
-    slim(libs.kotlinx.serialization.json)
-    slim(libs.bundles.exposed)
-    slim(libs.caffeine)
-    // Because of the kotlin shade
-    slim(libs.adventure.kotlin)
-    slim(libs.koin.core)
-    slim(libs.ktor.client.core)
-    slim(libs.ktor.client.cio)
-    slim(libs.cloud.kotlin.extensions)
-    slim(libs.cloud.kotlin.coroutines)
-    slim(libs.configurate.extra.kotlin)
+    implementation("dev.racci.slimjar:slimjar:1.2.11")
+    implementation(libs.minecraft.bstats)
 
-    slim(rootProject.libs.adventure.configurate)
 
-    slim(rootProject.libs.cloud.core)
-    slim(rootProject.libs.cloud.minecraft.paper)
-    slim(rootProject.libs.cloud.minecraft.extras)
-
-    slim(rootProject.libs.mordant)
-    slim(rootProject.libs.h2)
-    slim(rootProject.libs.classgraph)
-    slim(rootProject.libs.minecraft.partciels)
 }
 
 kotlin {
@@ -132,6 +105,15 @@ allprojects {
 
 subprojects {
     apply(plugin = "maven-publish")
+
+    afterEvaluate {
+        val subSlim = this.configurations.findByName("slim") ?: return@afterEvaluate
+        subSlim.dependencies.forEach {
+            rootProject.dependencies {
+                slim(it)
+            }
+        }
+    }
 }
 
 fun included(
@@ -152,7 +134,7 @@ tasks {
         dependencyFilter.include {
             it.module.id.module == libs.sentry.core.get().module ||
                 it.module.id.module == libs.sentry.kotlin.get().module ||
-                it.module.id.module == libs.minecraft.bstats.get().module ||
+                it.moduleGroup == libs.minecraft.bstats.get().module.group ||
                 it.moduleGroup == "dev.racci.slimjar" ||
                 it.moduleName == "Minix-Core" ||
                 it.moduleName == "Minix-API" ||

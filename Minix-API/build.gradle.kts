@@ -13,7 +13,13 @@ configurations {
     api.get().extendsFrom(slim)
 }
 
+repositories {
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+}
+
 dependencies {
+    compileOnly(libs.minecraft.api.placeholderAPI)
+
     slim("dev.racci:Minix-NMS:$minixVersion")
 
     // Global log tracker

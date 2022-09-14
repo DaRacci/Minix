@@ -109,18 +109,18 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
 
     override fun loadPlugin(plugin: MinixPlugin) {
         runBlocking {
+            if (plugin.version.isPreRelease) {
+                logger.warn { "Plugin ${plugin.name} is a pre-release version and may not be stable." }
+                plugin.log.setLevel(MinixLogger.LoggingLevel.TRACE)
+                plugin.log.lockLevel()
+            }
+
             plugin.ifOverrides(SusPlugin::handleLoad) {
                 plugin.log.trace { "Running HandleLoad." }
                 plugin.handleLoad()
             }
 
             loadKoinModules(getModule(plugin))
-
-            if (plugin.version.isPreRelease) {
-                plugin.log.setLevel(MinixLogger.LoggingLevel.TRACE)
-                plugin.log.lockLevel()
-            }
-
             loadReflection(plugin)
             loadExtensions(plugin)
 

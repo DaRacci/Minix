@@ -15,3 +15,11 @@ val Int.ticks: Duration get() = (this * 50).toDuration(DurationUnit.MILLISECONDS
 val Long.ticks: Duration get() = (this * 50).toDuration(DurationUnit.MILLISECONDS)
 
 val Double.ticks: Duration get() = (this * 50).toDuration(DurationUnit.MILLISECONDS)
+
+object TimeUtils : UtilObject by UtilObject {
+    fun processTimed(block: () -> Unit): Duration {
+        val start = now()
+        block()
+        return now() - start
+    }
+}

@@ -35,17 +35,6 @@ import kotlin.reflect.jvm.isAccessible
 @API(status = API.Status.EXPERIMENTAL, since = "3.2.0")
 abstract class MinixLogger {
 
-//    override fun isTraceEnabled(): Boolean = isEnabled(LoggingLevel.TRACE)
-//    override fun isTraceEnabled(marker: Marker): Boolean = isEnabled(LoggingLevel.TRACE)
-//    override fun isDebugEnabled(): Boolean = isEnabled(LoggingLevel.DEBUG)
-//    override fun isDebugEnabled(marker: Marker): Boolean = isEnabled(LoggingLevel.DEBUG)
-//    override fun isInfoEnabled(): Boolean = isEnabled(LoggingLevel.INFO)
-//    override fun isInfoEnabled(marker: Marker): Boolean = isEnabled(LoggingLevel.INFO)
-//    override fun isWarnEnabled(): Boolean = isEnabled(LoggingLevel.WARN)
-//    override fun isWarnEnabled(marker: Marker): Boolean = isEnabled(LoggingLevel.WARN)
-//    override fun isErrorEnabled(): Boolean = isEnabled(LoggingLevel.ERROR)
-//    override fun isErrorEnabled(marker: Marker): Boolean = isEnabled(LoggingLevel.ERROR)
-
     @MinixInternal
     private val atomicLock: AtomicBoolean = atomic(false)
 
@@ -94,7 +83,10 @@ abstract class MinixLogger {
      * @return The previous [LoggingLevel] and makes a trace log, or if the same just returns.
      */
     fun setLevel(level: LoggingLevel): LoggingLevel {
-        if (this.atomicLock.value) return this.level
+        if (this.atomicLock.value) {
+            this.debug { "Attempted to change the level of a locked logger." }
+            return this.level
+        }
         if (level == this.level) return level
 
         val previous = this.atomicLevel.getAndSet(level)
@@ -135,7 +127,7 @@ abstract class MinixLogger {
         msg: () -> Any?
     ) = ifLoggable(LoggingLevel.TRACE) {
         val actualScope = scope ?: getCallerScope()
-        log { FormattedMessage(msg, actualScope, LoggingLevel.TRACE, t, TextColors.brightGreen) }
+        log { FormattedMessage(msg, actualScope, LoggingLevel.TRACE, t, TextColors.brightMagenta) }
     }
 
     open fun debug(
@@ -197,7 +189,7 @@ abstract class MinixLogger {
         msg: String? = null
     ) = ifLoggable(LoggingLevel.TRACE) {
         val actualScope = scope ?: getCallerScope()
-        log { FormattedMessage(msg, actualScope, LoggingLevel.TRACE, t, TextColors.brightGreen) }
+        log { FormattedMessage(msg, actualScope, LoggingLevel.TRACE, t, TextColors.brightMagenta) }
     }
 
     open fun debug(

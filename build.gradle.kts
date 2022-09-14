@@ -53,9 +53,8 @@ dependencies {
     slim(rootProject.libs.cloud.minecraft.extras)
 
     slim(rootProject.libs.mordant)
-    slim("com.h2database:h2:2.1.214")
-
-    slim("io.github.classgraph:classgraph:4.8.149")
+    slim(rootProject.libs.h2)
+    slim(rootProject.libs.classgraph)
 }
 
 kotlin {
@@ -97,14 +96,8 @@ allprojects {
         testImplementation(rootProject.libs.bundles.kotlin)
         testImplementation(rootProject.libs.bundles.kotlinx)
         testImplementation(rootProject.libs.bundles.testing)
+        testImplementation(rootProject.libs.koin.test)
         testImplementation(rootProject.libs.minecraft.bstats)
-        testImplementation(rootProject.libs.testing.strikt)
-        testImplementation("io.kotest:kotest-runner-junit5:5.4.1")
-        testImplementation("io.kotest:kotest-property:5.4.1")
-        testImplementation("io.kotest:kotest-assertions-core:5.4.1")
-        testImplementation("io.insert-koin:koin-test:3.2.0")
-        testImplementation("io.insert-koin:koin-test-junit5:3.2.0")
-        testImplementation("io.mockk:mockk:1.12.5")
         testImplementation(project(":Minix-API"))
     }
 
@@ -156,11 +149,13 @@ tasks {
 
     shadowJar {
         dependencyFilter.include {
-            it.moduleGroup == "io.sentry" ||
-                it.moduleGroup == "org.bstats" ||
-                it.moduleGroup == "io.github.slimjar" ||
+            it.module.id.module == libs.sentry.core.get().module ||
+                it.module.id.module == libs.sentry.kotlin.get().module ||
+                it.module.id.module == libs.minecraft.bstats.get().module ||
+                it.moduleGroup == "dev.racci.slimjar" ||
                 it.moduleName == "Minix-Core" ||
-                it.moduleName == "Minix-API"
+                it.moduleName == "Minix-API" ||
+                it.moduleName == "Minix-NMS"
         }
         val prefix = "dev.racci.minix.libs"
         relocate("io.sentry", "$prefix.io.sentry")

@@ -3,10 +3,7 @@ package dev.racci.minix.core.services
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.extension.Extension
-import dev.racci.minix.api.extensions.async
-import dev.racci.minix.api.extensions.deferredAsync
 import dev.racci.minix.api.extensions.event
-import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.extensions.pm
 import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.extensions.taskAsync
@@ -36,7 +33,6 @@ import io.ktor.client.statement.discardRemaining
 import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withTimeout
 import kotlinx.datetime.TimeZone
@@ -71,7 +67,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
     private val updateFolder by lazy { // Ensure the update folder exists whenever we first get its location
         val folder = plugin.dataFolder.resolve(updaterConfig.updateFolder)
         if (!folder.exists() && !folder.mkdirs()) {
-            log.error { "Could not create update folder!" }
+            logger.error { "Could not create update folder!" }
         }
         folder
     }
@@ -86,20 +82,20 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                 val plugin = plugins.find { it.name == holder.id.value } ?: continue
                 val currentName = plugin::class.java.protectionDomain.codeSource.location.file.substringAfterLast("/")
                 val path = server.pluginsFolder.resolve(currentName)
-                log.debug { "Found plugin ${plugin.name} at $path" }
+                logger.debug { "Found plugin ${plugin.name} at $path" }
 
                 when (currentName) {
                     holder.newVersion -> {
-                        log.info { "Plugin ${plugin.name} successfully loaded the new version!" }
+                        logger.info { "Plugin ${plugin.name} successfully loaded the new version!" }
                         val oldFile = path.parentFile.resolve(holder.oldVersion)
                         oldFile.exists().ifTrue {
-                            log.debug { "Moving old version of ${plugin.name}." }
+                            logger.debug { "Moving old version of ${plugin.name}." }
                             oldFile.toPath().moveTo(updateFolder.resolve("old-versions/${holder.oldVersion}").toPath())
                         }
                     }
 
                     holder.oldVersion -> {
-                        log.warn {
+                        logger.warn {
                             """
                             Plugin ${plugin.name} is out of date!
                             Version ${plugin.description.version} has loaded instead of ${
@@ -144,7 +140,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         updaterConfig.pluginUpdaters.forEach(::initUpdater)
 
         if (enabledUpdaters.isNotEmpty()) { // Only debug if we found updater, but we always want to start the task
-            log.debug {
+            logger.debug {
                 "Found ${enabledUpdaters.size} updaters" +
                     "\nUpdaters:\n\t" + enabledUpdaters.joinToString(separator = "\n\t") { updater ->
                     "${updater.name} - ${updater.providers.joinToString(separator = ", ") { it.name }}"
@@ -161,11 +157,11 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
 
         when {
             updater.pluginInstance == null -> {
-                plugin.log.warn { "Couldn't find plugin with the name ${updater.name}" }
+                logger.warn { "Couldn't find plugin with the name ${updater.name}" }
             }
 
             updater.providers.isEmpty() -> {
-                plugin.log.warn { "Updater ${updater.name} has no providers" }
+                logger.warn { "Updater ${updater.name} has no providers" }
             }
 
             else -> enabledUpdaters += updater
@@ -177,7 +173,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
             try {
                 for (updater in enabledUpdaters.toImmutableList()) {
                     if (updater.lastRun != null && now() < (updater.lastRun!! + updaterConfig.interval)) continue
-                    log.debug { "Checking ${updater.name} for updates" }
+                    logger.debug { "Checking ${updater.name} for updates" }
 
                     async {
                         updater.provider.query()
@@ -187,7 +183,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                     }
                 }
             } catch (e: ConcurrentModificationException) {
-                log.error(e) { "Error while checking for updates on ${Thread.currentThread().name}" }
+                logger.error(e) { "Error while checking for updates on ${Thread.currentThread().name}" }
             }
         }
     }
@@ -202,7 +198,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
     override fun checkForUpdate(updater: PluginUpdater): Boolean {
         updater.result = when {
             updater.provider.latestVersion == null -> {
-                plugin.log.warn {
+                logger.warn {
                     """
                         No remote version found for ${updater.name}
                         You should contact the plugin author [${updater.pluginInstance?.description?.authors?.firstOrNull()}] about this!
@@ -212,7 +208,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
             }
 
             updater.localVersion.get().isFailure -> {
-                plugin.log.warn(updater.localVersion.get().exceptionOrNull(), SCOPE) { "Failed to get local version for ${updater.name} - ${updater.pluginInstance?.description?.version}" }
+                logger.warn(updater.localVersion.get().exceptionOrNull(), SCOPE) { "Failed to get local version for ${updater.name} - ${updater.pluginInstance?.description?.version}" }
                 UpdateResult.FAILED_VERSION
             }
 
@@ -241,7 +237,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
     @OptIn(ExperimentalCoroutinesApi::class)
     private suspend fun update(updater: PluginUpdater): UpdateResult = coroutineScope {
         try {
-            log.debug { "Updating ${updater.name} with ${updater.provider.name}" }
+            logger.debug { "Updating ${updater.name} with ${updater.provider.name}" }
             val hashGenerator = updater.provider.providesChecksum.instanceOrNull
             val downloadFile = updateFolder.resolve(updater.provider.latestFileName ?: error("No latest file name found!"))
 
@@ -254,17 +250,17 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
 
             when {
                 backup.getCompleted() != null -> {
-                    log.debug { "Backup failed for ${updater.name} with ${updater.provider.name}" }
+                    logger.debug { "Backup failed for ${updater.name} with ${updater.provider.name}" }
                     updater.result = UpdateResult.FAILED_BACKUP
                 }
 
                 hashCheck.getCompleted() != null -> {
-                    log.debug { "Hash check failed for ${updater.name} with ${updater.provider.name}" }
+                    logger.debug { "Hash check failed for ${updater.name} with ${updater.provider.name}" }
                     updater.result = UpdateResult.FAILED_CHECKSUM
                 }
 
                 updater.result?.name?.startsWith("FAILED") == true -> {
-                    log.warn { "Update failed for ${updater.name} with reason ${updater.provider.name}" }
+                    logger.warn { "Update failed for ${updater.name} with reason ${updater.provider.name}" }
                 }
 
                 else -> {
@@ -273,12 +269,12 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                     updater.result = UpdateResult.SUCCESS
                     enabledUpdaters -= updater
                     disabledUpdaters += updater
-                    if (updaterConfig.announceDownloadProgress) log.info { "${updater.name} has been updated and readied for the next restart / reload." }
+                    if (updaterConfig.announceDownloadProgress) logger.info { "${updater.name} has been updated and readied for the next restart / reload." }
                 }
             }
         } catch (e: Exception) {
             updater.result = UpdateResult.FAILED_NO_FILE
-            log.error(e) { "${updater.name} failed to update!" }
+            logger.error(e) { "${updater.name} failed to update!" }
         }
         updater.result!!
     }
@@ -289,7 +285,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         hashGenerator: MessageDigest?
     ): UpdateResult {
         if (downloadFile.exists()) {
-            log.debug { "File ${downloadFile.name} already exists, skipping download" }
+            logger.debug { "File ${downloadFile.name} already exists, skipping download" }
             return UpdateResult.SUCCESS
         }
 
@@ -308,7 +304,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
             outputStream = downloadFile.outputStream()
 
             if (updaterConfig.announceDownloadProgress) {
-                log.info { "Started downloading update: ${provider.latestVersion}" }
+                logger.info { "Started downloading update: ${provider.latestVersion}" }
             }
 
             withTimeout(15.seconds) {
@@ -319,17 +315,17 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         } catch (e: Exception) {
             return when (e) {
                 is RequestTypeNotAvailableException -> {
-                    log.error(e) { "The update provider supplied invalid capability data!" }
+                    logger.error(e) { "The update provider supplied invalid capability data!" }
                     UpdateResult.FAILED_DOWNLOAD
                 }
 
                 is NotSuccessfullyQueriedException -> {
-                    log.error(e) { "The update provider could not be queried!" }
+                    logger.error(e) { "The update provider could not be queried!" }
                     UpdateResult.FAILED_CONNECTION
                 }
 
                 is IOException -> {
-                    log.error(e) { "The auto-updater tried to download a new update but was unsuccessful." }
+                    logger.error(e) { "The auto-updater tried to download a new update but was unsuccessful." }
                     UpdateResult.FAILED_DOWNLOAD
                 }
 
@@ -359,16 +355,16 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
 
         while (inputStream.read(buffer, 0, BUFFER_SIZE).also { count = it } != -1) {
             downloaded += count
-            log.debug { "Downloading: $downloaded/$size" }
+            logger.debug { "Downloading: $downloaded/$size" }
             outputStream.write(buffer, 0, count)
 
             if (!updaterConfig.announceDownloadProgress || fileLength <= 0) continue
 
             progress = (downloaded * percentPerByte).toInt()
-            log.debug { "Progress: $progress%" }
+            logger.debug { "Progress: $progress%" }
             if (progress % 10 != 0 && progress > lastProgress) {
                 lastProgress = progress
-                log.info { "Downloading update: $progress% ($size)" }
+                logger.info { "Downloading update: $progress% ($size)" }
             }
         }
     }
@@ -420,7 +416,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
             val targetMD5 = updateProvider.latestChecksum?.lowercase()
 
             if (downloadMD5 != targetMD5) {
-                plugin.log.warn {
+                logger.warn {
                     """
                     The downloaded file for ${updateProvider.name} didn't match the expected checksum.
                     Expected: $targetMD5
@@ -428,9 +424,9 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                     """.trimIndent()
                 }
                 if (downloadFile.delete()) {
-                    plugin.log.info { "Deleted corrupted file." }
+                    logger.info { "Deleted corrupted file." }
                 } else {
-                    plugin.log.warn { "Could not delete corrupted file: ${downloadFile.absolutePath}" }
+                    logger.warn { "Could not delete corrupted file: ${downloadFile.absolutePath}" }
                 }
                 return UpdateResult.FAILED_CHECKSUM
             }
@@ -453,13 +449,13 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
 
                     val tempFile = extractEntry(zipFile, zipEntry)
 
-                    if (!file.delete()) plugin.log.warn { "Couldn't delete old download file: ${file.absolutePath}" }
+                    if (!file.delete()) logger.warn { "Couldn't delete old download file: ${file.absolutePath}" }
                     newFile = file.parentFile.resolve(zipEntry.name)
                     tempFile.renameTo(newFile)
                     gotFile = true
                 }
                 if (!gotFile) {
-                    plugin.log.warn {
+                    logger.warn {
                         """
                         Couldn't find a jar file in the zip file.
                         The zip file has been left in ${file.parentFile.absolutePath} for manual extraction.
@@ -468,7 +464,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                 }
                 newFile to UpdateResult.SUCCESS
             } catch (e: IOException) {
-                plugin.log.warn(e) { "The auto-updater was unable to extract the downloaded zip file." }
+                logger.warn(e) { "The auto-updater was unable to extract the downloaded zip file." }
                 null to UpdateResult.FAILED_EXTRACTION
             }
         }
@@ -504,9 +500,9 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
                 }
             }
         } catch (e: ExposedSQLException) {
-            log.error(e) { "There was an error with the database while trying to prepare ${updater.name} for an update." }
+            logger.error(e) { "There was an error with the database while trying to prepare ${updater.name} for an update." }
         } catch (e: IOException) {
-            log.error(e) { "There was an IO error while trying to prepare ${updater.name} for an update." }
+            logger.error(e) { "There was an IO error while trying to prepare ${updater.name} for an update." }
         }
     }
 
@@ -514,14 +510,14 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         val folder = updater.pluginInstance!!.dataFolder
 
         if (!folder.exists()) {
-            plugin.log.debug { "The plugin data folder does not exist: ${folder.absolutePath}" }
+            logger.debug { "The plugin data folder does not exist: ${folder.absolutePath}" }
             return UpdateResult.SUCCESS
         }
 
         val data = Data(folder.size())
 
         if (data > updaterConfig.backups.maxSize) {
-            plugin.log.warn { "${updater.name}'s data folder is too large to backup (${data.humanReadableSize()}" }
+            logger.warn { "${updater.name}'s data folder is too large to backup (${data.humanReadableSize()}" }
             return UpdateResult.FAILED_BACKUP
         }
 
@@ -561,7 +557,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         }
         val supported = versions?.any { MCVersion.currentVersion sameMajor it } ?: false
         if (!supported) {
-            plugin.log.info {
+            logger.info {
                 val builder = StringBuilder()
                 builder.append("An update for ${updater.name} is available, but it isn't compatible with the current version of Minecraft!")
                 if (updaterConfig.verbose) {
@@ -573,14 +569,14 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         }
         supported
     } catch (e: Exception) {
-        plugin.log.warn(e) { "The auto-updater was unable to check the compatibility of the new version." }
+        logger.warn(e) { "The auto-updater was unable to check the compatibility of the new version." }
         updater.result = UpdateResult.FAILED_VERSION_INCOMPATIBLE
         false
     }
 
     private fun versionAppend(mainString: String, updater: PluginUpdater) {
         if (updaterConfig.announceDownloadProgress && !updater.sentAvailable) {
-            plugin.log.info {
+            logger.info {
                 val builder = StringBuilder()
                 builder.append(mainString)
                 if (updaterConfig.verbose) {

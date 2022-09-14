@@ -55,6 +55,7 @@ dependencies {
     slim(rootProject.libs.mordant)
     slim(rootProject.libs.h2)
     slim(rootProject.libs.classgraph)
+    slim(rootProject.libs.minecraft.partciels)
 }
 
 kotlin {

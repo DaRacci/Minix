@@ -13,7 +13,7 @@ plugins {
     kotlin("plugin.atomicfu") version "1.6.20-RC2"
     kotlin("plugin.serialization")
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-    id("dev.racci.slimjar") version "1.3.2"
+    id("dev.racci.slimjar") version "1.3.3"
 }
 
 repositories {

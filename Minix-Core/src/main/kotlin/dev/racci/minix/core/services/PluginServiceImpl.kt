@@ -213,13 +213,15 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
     ): Boolean {
         if (next !in sortedExtensions) return false
 
-        plugin.log.debug { "Missing dependency for ${next.name} in ${plugin.name}, Reordering required dependencies." }
+        plugin.log.trace { "Missing dependency for ${next.name} in ${plugin.name}, Reordering required dependencies." }
         val currentIndex = sortedExtensions.indexOf(next)
         sortedExtensions.removeAt(currentIndex)
 
         val needed = next::class.findAnnotation<MappedExtension>()!!.dependencies
             .filterNot { sortedExtensions.any { ex -> ex::class == it } }
             .mapNotNull { clazz -> extensions.find { it::class == clazz || bindToKClass(it) == clazz } }
+
+        plugin.log.trace { "Found missing dependencies [${needed.joinToString(", ") { it.name }}] for ${next.name}." }
 
         sortedExtensions.addAll(currentIndex, needed)
         sortedExtensions.add(currentIndex + needed.size + 1, next)
@@ -240,12 +242,19 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         sortedExtensions: MutableList<Extension<out MinixPlugin>>
     ): Boolean {
         val annotation = next::class.findAnnotation<MappedExtension>()!!
-        if (next in sortedExtensions ||
-            annotation.dependencies.isNotEmpty() &&
-            annotation.dependencies.all { dep -> sortedExtensions.find { it::class == dep } == null }
-        ) return false
+        if (annotation.dependencies.isEmpty()) {
+            plugin.log.trace { "No dependencies required for ${next.name}, adding to sorted." }
+            return sortedExtensions.add(next)
+        }
 
-        plugin.log.trace { "All dependencies for ${next.name} are loaded, adding to sorted" }
+        if (next in sortedExtensions &&
+            annotation.dependencies.any { dep -> sortedExtensions.find { it::class == dep } == null }
+        ) {
+            plugin.log.trace { "Missing dependencies for ${next.name}, Reordering required dependencies." }
+            return false
+        }
+
+        plugin.log.trace { "All dependencies for ${next.name} are loaded, adding to sorted." }
         return sortedExtensions.add(next)
     }
 
@@ -343,13 +352,13 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
 
     private suspend fun unloadExtension(extension: Extension<*>) {
         if (extension.state.ordinal <= 5) {
-            log.trace { "Unloading extension ${extension.name}." }
+            logger.trace { "Unloading extension ${extension.name}." }
 
             withState(ExtensionState.UNLOADING, extension) {
                 extension.handleUnload()
             }.fold(
-                { log.trace { "Unloaded extension ${extension.name}." } },
-                { log.error(it) { "Extension ${extension.name} threw an error while unloading!" } }
+                { logger.trace { "Unloaded extension ${extension.name}." } },
+                { logger.error(it) { "Extension ${extension.name} threw an error while unloading!" } }
             )
 
             extension.eventListener.unregisterListener()
@@ -368,7 +377,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             withState(ExtensionState.ENABLING, extension) {
                 extension.handleEnable()
             }.fold(
-                { log.trace { "Enabled extension ${extension.name}." } },
+                { logger.trace { "Enabled extension ${extension.name}." } },
                 {
                     errorDependents(extension, extensions, it)
                     unloadExtension(extension)
@@ -385,7 +394,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             withState(ExtensionState.DISABLING, extension) {
                 extension.handleDisable()
             }.fold(
-                { log.trace { "Disabled extension ${extension.name}." } },
+                { logger.trace { "Disabled extension ${extension.name}." } },
                 {
                     errorDependents(extension, extensions, it)
                     unloadExtension(extension)
@@ -404,7 +413,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         try {
             block()
         } catch (e: Throwable) {
-            log.error(e) { "Extension ${extension.name} threw an error while ${state.name.lowercase()}!" }
+            logger.error(e) { "Extension ${extension.name} threw an error while ${state.name.lowercase()}!" }
             return Result.failure(e)
         }
 

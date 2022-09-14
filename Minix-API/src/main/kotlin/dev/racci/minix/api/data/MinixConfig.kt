@@ -61,7 +61,6 @@ abstract class MinixConfig<P : MinixPlugin>(
     ) {
         for ((inst, name, property) in this.getNested<I, R>(baseInstance)) {
             try {
-                log.debug { "Invoking action on $name from class ${inst::class.simpleName}" }
                 property.invoke()
             } catch (e: ClassCastException) {
                 continue
@@ -79,7 +78,6 @@ abstract class MinixConfig<P : MinixPlugin>(
 
             val propInstance = runCatching { property.get(instance) }.getOrNull() ?: continue
             if (propInstance::class.qualifiedName?.startsWith(baseQualifiedName) == true) {
-                log.debug { "Found nested property ${propInstance::class.qualifiedName} in ${baseInstance::class.qualifiedName}" }
                 arrayDeque.addAll(getPairedInstancesOf(propInstance, baseQualifiedName))
             }
 
@@ -93,9 +91,7 @@ abstract class MinixConfig<P : MinixPlugin>(
         if (instance::class.qualifiedName?.startsWith(baseQualifiedName) != true) return emptyList()
 
         return instance::class.declaredMemberProperties.filterIsInstance<KProperty1<Any, R>>()
-            .onEach { log.debug { "Found property ${it.name} of type ${it.returnType} in ${instance::class.qualifiedName}" } }
             .mapNotNull {
-                log.debug { "Checking property ${it.name} of type ${it.returnType} in ${instance::class.qualifiedName}" }
                 runCatching { it.get(instance) }.getOrNull()
             }.flatMap { inst -> inst::class.declaredMemberProperties.filterIsInstance<KProperty1<Any, R>>().map { inst to it } }
     }
@@ -268,7 +264,6 @@ abstract class MinixConfig<P : MinixPlugin>(
 
         fun processLoggingLevel() {
             if (!initialized) return
-            if (plugin.version.isPreRelease) return
 
             val field = with(loggingLevel.uppercase()) { loggingLevel.takeUnless { this != it } ?: this }
 

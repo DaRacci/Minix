@@ -23,13 +23,10 @@ abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
             } else "<prefix_${it.key}>"
         }
 
-        plugin.log.info { "Loaded prefixes: $map" }
         this.onNestedInstance<PropertyFinder<PartialComponent>> {
-            plugin.log.info { "Found property finder: $this" }
             this::class.declaredMemberProperties
                 .filterIsInstance<KProperty1<PropertyFinder<PartialComponent>, PartialComponent>>()
                 .map { it.getter.call(this) }
-                .onEach { plugin.log.info { "Found partial component: $this" } }
                 .forEach { it.formatRaw(map) }
         }
     }

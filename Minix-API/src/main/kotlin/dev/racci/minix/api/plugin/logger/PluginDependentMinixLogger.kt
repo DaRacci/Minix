@@ -1,8 +1,6 @@
 package dev.racci.minix.api.plugin.logger
 
 import com.github.ajalt.mordant.rendering.TextColors
-import dev.racci.minix.api.annotations.MappedExtension
-import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.WithPlugin
 import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.plugin.MinixPlugin
@@ -23,7 +21,6 @@ import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileMan
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
 import java.util.Optional
-import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.staticProperties
 
@@ -89,7 +86,7 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
         }
 
         formatThrowable(throwable).ifPresent { thr ->
-            append(thr, colour)
+            append(thr)
             appended = true
         }
 
@@ -160,7 +157,7 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
                 for ((index, line) in message.split('\n').withIndex()) {
                     if (index > 0) {
                         append('\n')
-                        append("\t".repeat(padding))
+                        append("\t".repeat((padding / 4).coerceAtLeast(1)))
                     }
 
                     append(line.trimEnd())
@@ -180,7 +177,7 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
             repeat(3) { depth ->
                 if (cause == null || cause === lastCause) return@repeat
 
-                if (lastOrNull()?.isWhitespace() == false && last() != '\n') append(' ')
+                if (lastOrNull() != '\n') append('\n')
 
                 if (depth > 0) {
                     append('\n')
@@ -253,21 +250,6 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
 //                append('.')
 //                append(this.nanosecond)
 //        }
-    }
-
-    @OptIn(ExperimentalStdlibApi::class)
-    private fun extensionScope(): String? {
-        return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).walk { stream ->
-//            stream.forEachOrdered { frame ->
-//                println(frame.declaringClass.simpleName + " -> " + frame.methodName)
-//            }
-//
-//            Optional.empty<String>()
-            stream.skip(15).map(StackWalker.StackFrame::getDeclaringClass).filter { it.superclass == Extension::class.java }.findFirst().map { clazz ->
-                val annotation = clazz.getAnnotation(MappedExtension::class.java)
-                annotation.name
-            }
-        }.getOrNull()
     }
 
     private fun addSentryBreadcrumb(message: FormattedMessage) {

@@ -363,9 +363,9 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
     private suspend fun enableExtensions(plugin: MinixPlugin) {
         val extensions = pluginCache[plugin].extensions
         for (extension in extensions) {
-            if (extension.state.ordinal < 2 || extension.state.ordinal > 3) continue
+            if (extension.state.ordinal > 5) continue
 
-            withState(ExtensionState.ENABLED, extension) {
+            withState(ExtensionState.ENABLING, extension) {
                 extension.handleEnable()
             }.fold(
                 { log.trace { "Enabled extension ${extension.name}." } },

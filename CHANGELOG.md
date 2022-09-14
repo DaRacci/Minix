@@ -2,6 +2,40 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v3.4.0](https://github.com/DaRacci/Minix/compare/v3.3.6..v3.4.0) - 2022-09-14
+#### Bug Fixes
+- **(DataService)** Remove clone check since it only causes more issues. - ([a845d2d](https://github.com/DaRacci/Minix/commit/a845d2d80c0e963996398a60f4dbb27e54329d4f)) - [@DaRacci](https://github.com/DaRacci)
+- **(Deps)** Slimjar dependency path + Implement NMS - ([a9cccbc](https://github.com/DaRacci/Minix/commit/a9cccbceee9faf2615c4d3777c6fe63be31aedb2)) - [@DaRacci](https://github.com/DaRacci)
+- No longer need to replace string format for slimjar - ([16b9677](https://github.com/DaRacci/Minix/commit/16b9677b047a5627eb095089e5e383d6b922c454)) - [@DaRacci](https://github.com/DaRacci)
+- Dont clean quickBuild - ([5db19d9](https://github.com/DaRacci/Minix/commit/5db19d92f67eabbe21c15368e5563b112462b327)) - [@DaRacci](https://github.com/DaRacci)
+- Config stuff i don't remember what this does - ([77dec68](https://github.com/DaRacci/Minix/commit/77dec68df08a84799e7170429f2792ad81ef1230)) - [@DaRacci](https://github.com/DaRacci)
+- kotlin.UninitializedPropertyAccessException: lateinit property enabledPlugins has not been initialized - ([86cfbd3](https://github.com/DaRacci/Minix/commit/86cfbd36de46cf4f1f0e7c51a8cc658e706c0f50)) - [@DaRacci](https://github.com/DaRacci)
+- org.koin.core.error.NoBeanDefFoundException: IntegrationService - ([29312de](https://github.com/DaRacci/Minix/commit/29312def1e6714fe648bb0364d0c1d48ed13c88a)) - [@DaRacci](https://github.com/DaRacci)
+- org.koin.core.error.NoBeanDefFoundException: PluginService - ([d3c1c96](https://github.com/DaRacci/Minix/commit/d3c1c96ccd0e394783f1e5b02c7a3eff7c67aeb8)) - [@DaRacci](https://github.com/DaRacci)
+- java.lang.NullPointerException - ([05834d0](https://github.com/DaRacci/Minix/commit/05834d09bc19aa1b18cfba446750d8575aa7ec3d)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- **(Extension)** Each Extension now has its own dispatcher / threads. - ([61ccdfb](https://github.com/DaRacci/Minix/commit/61ccdfb43dcdaaef39f28652f3897543a2a0e6f2)) - [@DaRacci](https://github.com/DaRacci)
+- **(IntegrationService)** Adds an easier way for adding integrations. - ([184d748](https://github.com/DaRacci/Minix/commit/184d748dcf2ddc768cba5f1499a960dfc7ad7ff8)) - [@DaRacci](https://github.com/DaRacci)
+- **(MinixLogger)** Better formatting + enforced async - ([fc4cf70](https://github.com/DaRacci/Minix/commit/fc4cf70ffb254eb0c89ec19fccedd8cf6eaf24fe)) - [@DaRacci](https://github.com/DaRacci)
+- **(RegisterMap)** A Map of Loadable values. - ([97f7adf](https://github.com/DaRacci/Minix/commit/97f7adf3f3ffe460f6466a3547f1a5960347e161)) - [@DaRacci](https://github.com/DaRacci)
+- Experimental concurrent flow options - ([50e20b9](https://github.com/DaRacci/Minix/commit/50e20b95c713492218c82066c297ab2856d93d38)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(Deps)** Update slimjar plugin - ([19f577c](https://github.com/DaRacci/Minix/commit/19f577ca162363f4284d13cf40030f5d3f105f35)) - [@DaRacci](https://github.com/DaRacci)
+- **(Deps)** Plugin version updates - ([08f1402](https://github.com/DaRacci/Minix/commit/08f1402aa74ec418625cfc3c226e02ef7ac196c1)) - [@DaRacci](https://github.com/DaRacci)
+- **(Deps)** Use library - ([a72a0e3](https://github.com/DaRacci/Minix/commit/a72a0e3a566464aa68a655e1fc376fc6a393b4cb)) - [@DaRacci](https://github.com/DaRacci)
+- **(Deps)** Update Minix-Conventions - ([6f5d0e5](https://github.com/DaRacci/Minix/commit/6f5d0e5d1cc4586beca981cea971113b6d9283fd)) - [@DaRacci](https://github.com/DaRacci)
+- **(Deps)** Update slimjar - ([100faa9](https://github.com/DaRacci/Minix/commit/100faa907c72c5f048f12383da478668d407abfe)) - [@DaRacci](https://github.com/DaRacci)
+- **(PluginService)** Add some simple trace logs - ([af98896](https://github.com/DaRacci/Minix/commit/af98896cc8fb947c67c5c3ae0e1aede1dca9c666)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v3.3.6 - ([493a86e](https://github.com/DaRacci/Minix/commit/493a86e957e768ca5f32f4d3b52395f4f2b096e2)) - [@DaRacci](https://github.com/DaRacci)
+- Remove unused command service - ([246595c](https://github.com/DaRacci/Minix/commit/246595c9cef0663545b0fc0341e8dca0135f964e)) - [@DaRacci](https://github.com/DaRacci)
+- Remove some old unused coroutine stuff. - ([150ad60](https://github.com/DaRacci/Minix/commit/150ad60872dfffe440960917a05248ee8e4a96c6)) - [@DaRacci](https://github.com/DaRacci)
+- Remove deprecated for 4.0.0 - ([806098d](https://github.com/DaRacci/Minix/commit/806098d2afefd4d0ae0f8b4ea872609c9f76964f)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(MinixPlugin)** Add Qualifier interface. - ([4ea48b3](https://github.com/DaRacci/Minix/commit/4ea48b3a69a7bee6d5c43d8c972f064e41d5e93c)) - [@DaRacci](https://github.com/DaRacci)
+- PluginService - ([8d0e410](https://github.com/DaRacci/Minix/commit/8d0e41018e5823efe5979c9f4511ec2922a8bcee)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.3.6](https://github.com/DaRacci/Minix/compare/v3.3.5..v3.3.6) - 2022-08-29
 #### Bug Fixes
 - **(InnerLang)** not final. - ([207dca7](https://github.com/DaRacci/Minix/commit/207dca7648735aff3b1bfac90b69703a4a7ead47)) - [@DaRacci](https://github.com/DaRacci)

@@ -79,7 +79,7 @@ tasks {
         dependsOn(compileKotlin)
         dependsOn(shadowJar)
         dependsOn(reobfJar)
-        dependsOn(copyJar)
+        if (System.getProperty("CI") != "true") dependsOn(copyJar)
     }
 }
 

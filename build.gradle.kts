@@ -76,9 +76,9 @@ bukkit {
 tasks {
     val quickBuild by creating {
         this.group = "build"
-        dependsOn(clean)
         dependsOn(compileKotlin)
         dependsOn(shadowJar)
+        dependsOn(reobfJar)
         dependsOn(copyJar)
     }
 }

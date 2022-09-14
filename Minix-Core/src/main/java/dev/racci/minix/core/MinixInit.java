@@ -43,14 +43,12 @@ public class MinixInit extends JavaPlugin {
             builder.logger(new ProcessLogger() {
                 @Override
                 public void log(String s, Object... args) {
-                    final var string = s.replaceAll("\\{\\d+}", "%s");
-                    getLogger().info(String.format(string, args));
+                    getLogger().info(String.format(s, args));
                 }
 
                 @Override
                 public void debug(String s, Object... args) {
-                    final var string = s.replaceAll("\\{\\d+}", "%s");
-                    getLogger().fine(String.format(string, args));
+                    getLogger().fine(String.format(s, args));
                 }
             });
         } catch(ReflectiveOperationException | IOException | URISyntaxException | NoSuchAlgorithmException e) {

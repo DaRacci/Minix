@@ -24,7 +24,6 @@ import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.collections.CollectionUtils.clear
-import dev.racci.minix.api.utils.collections.CollectionUtils.find
 import dev.racci.minix.api.utils.kotlin.doesOverride
 import dev.racci.minix.api.utils.kotlin.ifOverrides
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull

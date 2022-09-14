@@ -75,7 +75,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
             getKoin().get<PluginServiceImpl>()[plugin].configurations.remove(value.kClass.unsafeCast())
         }
-        .build { runBlocking(threadContext.get()) { ConfigData(it) } }
+        .build { key -> runBlocking(threadContext.get()) { ConfigData(key) } }
 
     private val dataSource = lazy {
         HikariConfig().apply {

@@ -1,8 +1,8 @@
 package dev.racci.minix.core;
 
-import io.github.slimjar.app.builder.ApplicationBuilder;
 import io.github.slimjar.app.builder.InjectingApplicationBuilder;
 import io.github.slimjar.logging.ProcessLogger;
+import java.util.logging.Level;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.PluginClassLoader;
 
@@ -16,50 +16,33 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Creating a dummy plugin without any kotlin methods, so we can dynamically load the libraries.
  */
-@SuppressWarnings({"java:S3011", "java:S1171"}) // We need reflection and non-static init.
+@SuppressWarnings({"java:S1171"}) // We need a non-static init.
 public class MinixInit extends JavaPlugin {
 
     {
-        ClassLoader libraryLoader;
-        try {
-            var field = PluginClassLoader.class.getDeclaredField("libraryLoader");
-            field.setAccessible(true);
-            libraryLoader = (ClassLoader) field.get(getClassLoader());
-            field.setAccessible(false);
-        } catch(NoSuchFieldException e) {
-            this.getLogger().severe("Failed to find field 'libraryLoader' in class 'PluginClassLoader', unsupported version?");
-            throw new ReflectingInitializationException(e);
-        } catch(IllegalAccessException e) {
-            this.getLogger().severe("Failed to access field 'libraryLoader' in class 'PluginClassLoader', unsupported version?");
-            throw new ReflectingInitializationException(e);
-        } catch(ClassCastException e) {
-            this.getLogger().severe("Failed to cast field 'libraryLoader' as 'ClassLoader' in class 'PluginClassLoader', unsupported version?");
-            throw new ReflectingInitializationException(e);
-        }
-
-        ApplicationBuilder builder;
-        builder = InjectingApplicationBuilder.createAppending("Minix", libraryLoader);
-        builder.logger(new ProcessLogger() {
+        final var downloadFolder = Path.of(String.format("%s/libraries", getDataFolder()));
+        final var logger = new ProcessLogger() {
             @Override
-            public void log(String s, Object... args) {
-                getLogger().info(String.format(s, args));
+            public void log(String s, Object... objects) {
+                getSLF4JLogger().info(s.formatted(objects));
             }
 
             @Override
-            public void debug(String s, Object... args) {
-                getLogger().fine(String.format(s, args));
+            public void debug(String message, Object... args) {
+                getSLF4JLogger().info(message.formatted(args));
             }
-        });
+        };
 
-        var folder = Path.of(String.format("%s/libraries", getDataFolder()));
-        if(!Files.exists(folder) && !folder.toFile().mkdirs()) {
-            this.getLogger().severe("Error while creating parent directories.");
+        if (!Files.exists(downloadFolder) && !downloadFolder.toFile().mkdirs()) {
+            this.getLogger().log(Level.SEVERE, "Failed to create download folder at {0}!", downloadFolder.toAbsolutePath());
             throw new ReflectingInitializationException(null);
         }
-        builder.downloadDirectoryPath(folder);
 
         try {
-            builder.build();
+            InjectingApplicationBuilder.createAppending("Minix", this.getClassLoader())
+                .downloadDirectoryPath(downloadFolder)
+                .logger(logger)
+                .build();
         } catch(IOException | ReflectiveOperationException | URISyntaxException | NoSuchAlgorithmException | InterruptedException e) {
             this.getLogger().severe("Failed to build application.");
             throw new ReflectingInitializationException(e);

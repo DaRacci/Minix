@@ -56,7 +56,7 @@ dependencies {
 
     // Unused Libraries for Minix Consumers
 
-    slim(libs.minecraft.partciels)
+    slim(libs.minecraft.particles)
 
     // Supported Command framework
     slim(libs.cloud.core)
@@ -105,6 +105,8 @@ publishing {
         pom.withXml {
             val depNode = Node(asNode(), "dependencies")
             val nodeList = depNode.children() as NodeList
+
+            fun ResolvedDependency.getScope() = if (this.configuration == "runtime") "runtimeElements" else this.configuration
 
             fun ResolvedDependency.isPresent() = nodeList.any {
                 val node = it as Node

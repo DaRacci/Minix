@@ -27,8 +27,6 @@ dependencies {
     implementation(project("Minix-API"))
     implementation("dev.racci.slimjar:slimjar:1.2.11")
     implementation(libs.minecraft.bstats)
-
-
 }
 
 kotlin {

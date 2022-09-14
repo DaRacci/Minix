@@ -1,8 +1,6 @@
-
-
 dependencies {
     compileOnly(project(":Minix-API"))
-    compileOnly("dev.racci:slimjar:1.3.1")
+    compileOnly("dev.racci.slimjar:slimjar:1.2.9")
 }
 
 java.withSourcesJar()

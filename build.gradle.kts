@@ -23,7 +23,9 @@ repositories {
 dependencies {
     implementation(project("Minix-Core"))
     implementation(project("Minix-API"))
-    implementation("io.github.slimjar:slimjar:1.2.7")
+    // TODO -> Migrate Minix-NMS to Minix instead of Minix-Conventions
+    implementation("dev.racci:Minix-NMS:$minixVersion")
+    implementation("dev.racci.slimjar:slimjar:1.2.10")
     // Has to be shaded
     slim(libs.minecraft.bstats)
     // We Shade these two due to the puffer fish conflict

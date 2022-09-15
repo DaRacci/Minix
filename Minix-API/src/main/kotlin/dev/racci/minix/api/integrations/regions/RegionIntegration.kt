@@ -35,7 +35,15 @@ interface RegionIntegration : Integration {
         player: Player
     ): Boolean
 
-    /** @return If the given [player] is able to interact with the given [pos]. */
+    /**
+     * If the player is able to interact with the given [pos].
+     * This includes all interactions: opening chests, doors, etc.
+     *
+     * @param pos The position to check.
+     * @param world The world the position is in.
+     * @param player The player to check.
+     * @return If the player is able to interact with the given [pos].
+     */
     fun canInteract(
         pos: BlockPos,
         world: World,

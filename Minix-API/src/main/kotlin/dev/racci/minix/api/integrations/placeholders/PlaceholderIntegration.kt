@@ -1,6 +1,7 @@
 package dev.racci.minix.api.integrations.placeholders
 
 import dev.racci.minix.api.integrations.Integration
+import dev.racci.minix.api.utils.collections.CollectionUtils.getIgnoreCase
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
@@ -11,43 +12,40 @@ abstract class PlaceholderIntegration : PlaceholderExpansion(), Integration {
     private val placeholders = mutableMapOf<String, Triple<(() -> Any)?, (Player.() -> Any)?, (OfflinePlayer.() -> Any)?>>()
 
     /** Registers a placeholder, which doesn't require a player. */
-    @JvmName("registerNoPlayerPlaceholder")
     fun registerPlaceholder(
         placeholder: String,
         value: () -> String
     ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(value, oldTriple?.second, oldTriple?.third) }
 
     /** Registers a placeholder, which doesn't require a player. */
-    @JvmName("registerNoPlayerPlaceholderComponent")
+    @JvmName("registerPlaceholderComponent")
     fun registerPlaceholder(
         placeholder: String,
         value: () -> Component
     ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(value, oldTriple?.second, oldTriple?.third) }
 
     /** Registers a placeholder, which requires an online player. */
-    @JvmName("registerOnlinePlayerPlaceholder")
-    fun registerPlaceholder(
+    fun registerOnlinePlaceholder(
         placeholder: String,
         value: Player.() -> String
     ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(oldTriple?.first, value, oldTriple?.third) }
 
     /** Registers a placeholder, which requires an online player. */
-    @JvmName("registerOnlinePlayerPlaceholderComponent")
-    fun registerPlaceholder(
+    @JvmName("registerOnlinePlaceholderComponent")
+    fun registerOnlinePlaceholder(
         placeholder: String,
         value: Player.() -> Component
     ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(oldTriple?.first, value, oldTriple?.third) }
 
     /** Registers a placeholder, which a player. */
-    @JvmName("registerOfflinePlayerPlaceholder")
-    fun registerPlaceholder(
+    fun registerOfflinePlaceholder(
         placeholder: String,
         value: OfflinePlayer.() -> String
     ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(oldTriple?.first, oldTriple?.second, value) }
 
     /** Registers a placeholder, which a player. */
-    @JvmName("registerOfflinePlayerPlaceholderComponent")
-    fun registerPlaceholder(
+    @JvmName("registerOfflinePlaceholderComponent")
+    fun registerOfflinePlaceholder(
         placeholder: String,
         value: OfflinePlayer.() -> Component
     ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(oldTriple?.first, oldTriple?.second, value) }
@@ -66,7 +64,7 @@ abstract class PlaceholderIntegration : PlaceholderExpansion(), Integration {
         player: OfflinePlayer?,
         params: String
     ): String? {
-        val placeholder = placeholders[params] ?: return null
+        val placeholder = placeholders.getIgnoreCase(params) ?: return null
         return when (player) {
             null -> this.asString(placeholder.first)
             is Player -> this.asString(placeholder.second?.invoke(player))

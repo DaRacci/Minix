@@ -2,6 +2,38 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.0.0](https://github.com/DaRacci/Minix/compare/v3.4.0..v4.0.0) - 2022-09-15
+#### Bug Fixes
+- **(Init)** Use plugin classloader - ([76d1581](https://github.com/DaRacci/Minix/commit/76d158142727a95f74775ba48ba0587cee2e091f)) - [@DaRacci](https://github.com/DaRacci)
+- **(MinixLogger)** Throwable formatting - ([5b2204e](https://github.com/DaRacci/Minix/commit/5b2204ef550844068231560f174daa34491b0322)) - [@DaRacci](https://github.com/DaRacci)
+- **(PlaceholderIntegration)** Overload ambiguity - ([4545946](https://github.com/DaRacci/Minix/commit/4545946a2aac40f24843019823ad4a0ba2ac960e)) - [@DaRacci](https://github.com/DaRacci)
+- **(PluginService)** Fix extensions not enabling - ([d57a65f](https://github.com/DaRacci/Minix/commit/d57a65f24e4ca9c4e38365f65099264409d4e8d2)) - [@DaRacci](https://github.com/DaRacci)
+- **(Workflow)** Unresolved reference: copyJar - ([5d72115](https://github.com/DaRacci/Minix/commit/5d7211587d40514b6c9253497a097f426c2bd3ba)) - [@DaRacci](https://github.com/DaRacci)
+- **(Workflow)** Unresolved reference: copyJar - ([8848a72](https://github.com/DaRacci/Minix/commit/8848a7207d42d0267c2c818d2eac997c589b78cf)) - [@DaRacci](https://github.com/DaRacci)
+- **(Workflow)** Unresolved reference: copyJar - ([5d6bddc](https://github.com/DaRacci/Minix/commit/5d6bddc4ea205378b436986537b53abc4a6fd202)) - [@DaRacci](https://github.com/DaRacci)
+- Transitive dependencies - ([50c89a0](https://github.com/DaRacci/Minix/commit/50c89a03ecd754b15ae4c9fcc0e2dcc7d2738c79)) - [@DaRacci](https://github.com/DaRacci)
+- exceptions are never thrown in body of corresponding - ([7aab75e](https://github.com/DaRacci/Minix/commit/7aab75e88bb835ad10f0bd4954e18f2a96f3e216)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- **(PlaceholderIntegration)** Allows easy and clean placeholder registration - ([fc60ec7](https://github.com/DaRacci/Minix/commit/fc60ec7a41f0060f35097c0e13c1e9807c14777a)) - [@DaRacci](https://github.com/DaRacci)
+- **(TimeUtils)** processTimed - ([cff0f21](https://github.com/DaRacci/Minix/commit/cff0f210c633f173f5c7109ef1e9217a8538f4c2)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(Config)** Remove debug messages - ([12a6004](https://github.com/DaRacci/Minix/commit/12a60046789577f66a312b4024209412e50dcf54)) - [@DaRacci](https://github.com/DaRacci)
+- **(Deps)** Update Minix-Conventions - ([dc345c3](https://github.com/DaRacci/Minix/commit/dc345c31e6b3f2c26be8ce199f6cc54ba09b065d)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v3.4.0 - ([2030046](https://github.com/DaRacci/Minix/commit/2030046c9bb4094ed5cc6e6a5cae7f50bd1f9c11)) - [@DaRacci](https://github.com/DaRacci)
+- Redundant deprecation - ([79c0b25](https://github.com/DaRacci/Minix/commit/79c0b2581ddf4c88f323fd05a26a62e27f9fcf7d)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(Build)** Cleanup build files - ([672e03f](https://github.com/DaRacci/Minix/commit/672e03f16cb299e3209bf97c40809305b7f9dcd2)) - [@DaRacci](https://github.com/DaRacci)
+- **(Integrations)** Integrations are now a WithPlugin - ([3874002](https://github.com/DaRacci/Minix/commit/3874002431104167dddcf00a25571654ecaed4b9)) - [@DaRacci](https://github.com/DaRacci)
+- **(PlaceholderIntegration)** function names and get from map ignoring case - ([721d213](https://github.com/DaRacci/Minix/commit/721d2130ccd62ffe272be9e9b3bb8a67bd7ac2fc)) - [@DaRacci](https://github.com/DaRacci)
+- **(PluginService)** logging stuff - ([69366c5](https://github.com/DaRacci/Minix/commit/69366c52db6bf998d0478c79d632c489460744af)) - [@DaRacci](https://github.com/DaRacci)
+- **(PluginService)** Add warning when using Pre-release versions - ([26ebcde](https://github.com/DaRacci/Minix/commit/26ebcde6e8aaccce974ce1ab98dc3ed1e1590393)) - [@DaRacci](https://github.com/DaRacci)
+- **(RegionManager)** Add missing functions and clarify canInteract docs - ([bc58611](https://github.com/DaRacci/Minix/commit/bc58611fc89a21285a6334265ff9ed4dba413117)) - [@DaRacci](https://github.com/DaRacci)
+- **(WithPlugin)** include extended functions in the interface as defaults. - ([e7973d2](https://github.com/DaRacci/Minix/commit/e7973d287d53d27255bbeddb5ee19aa809f10d2d)) - [@DaRacci](https://github.com/DaRacci)
+#### Style
+- **(MinixLogger)** TRACE colour - ([c9e1b72](https://github.com/DaRacci/Minix/commit/c9e1b72f4affea47526e799d4bd9dba7429fa7fb)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v3.4.0](https://github.com/DaRacci/Minix/compare/v3.3.6..v3.4.0) - 2022-09-14
 #### Bug Fixes
 - **(DataService)** Remove clone check since it only causes more issues. - ([a845d2d](https://github.com/DaRacci/Minix/commit/a845d2d80c0e963996398a60f4dbb27e54329d4f)) - [@DaRacci](https://github.com/DaRacci)

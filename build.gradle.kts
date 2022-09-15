@@ -75,6 +75,9 @@ allprojects {
 
     configurations {
         testImplementation.get().exclude("org.jetbrains.kotlin", "kotlin-test-junit")
+        configureEach {
+            exclude("me.carleslc.Simple-YAML", "Simple-Configuration")
+        }
     }
 
     tasks {

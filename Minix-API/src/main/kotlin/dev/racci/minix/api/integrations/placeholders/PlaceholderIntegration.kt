@@ -30,9 +30,9 @@ abstract class PlaceholderIntegration : PlaceholderExpansion(), Integration {
     ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(oldTriple?.first, oldTriple?.second, value) }
 
     final override fun persist(): Boolean = true
-    final override fun getIdentifier(): String = pluginRegister.name
-    final override fun getVersion(): String = pluginRegister.description.version
-    final override fun getAuthor(): String = pluginRegister.description.authors.first()
+    final override fun getIdentifier(): String = plugin.name
+    final override fun getVersion(): String = plugin.description.version
+    final override fun getAuthor(): String = plugin.description.authors.first()
 
     final override fun onPlaceholderRequest(
         player: Player?,

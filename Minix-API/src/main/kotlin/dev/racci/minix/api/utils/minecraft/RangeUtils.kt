@@ -13,7 +13,8 @@ operator fun PosRange<*, ChunkPos>.contains(other: Chunk) = contains(other.asPos
 operator fun Location.rangeTo(other: Location): PosRange<Location, BlockPos> =
     PosRange(this.asBlockPos(), other.asBlockPos()) {
         RangeIteratorWithFactor<Location, BlockPos>(
-            this, other,
+            this,
+            other,
             { it.asBukkitLocation(world) },
             { it.asBlockPos() }
         )
@@ -22,7 +23,8 @@ operator fun Location.rangeTo(other: Location): PosRange<Location, BlockPos> =
 operator fun Block.rangeTo(other: Block): PosRange<Block, BlockPos> =
     PosRange(this.asPos(), other.asPos()) {
         RangeIteratorWithFactor<Block, BlockPos>(
-            this, other,
+            this,
+            other,
             { it.asBukkitBlock(world) },
             { it.asPos() }
         )
@@ -31,7 +33,8 @@ operator fun Block.rangeTo(other: Block): PosRange<Block, BlockPos> =
 operator fun Chunk.rangeTo(other: Chunk): PosRange<Chunk, ChunkPos> =
     PosRange(this.asPos(), other.asPos()) {
         RangeIteratorWithFactor<Chunk, ChunkPos>(
-            this, other,
+            this,
+            other,
             { it.asBukkitChunk(world) },
             { it.asPos() }
         )
@@ -40,7 +43,7 @@ operator fun Chunk.rangeTo(other: Chunk): PosRange<Chunk, ChunkPos> =
 class PosRange<T, POS : VectorComparable<POS>>(
     val first: POS,
     val last: POS,
-    val buildIterator: () -> Iterator<T>,
+    val buildIterator: () -> Iterator<T>
 ) : ClosedRange<POS>, Iterable<T> {
 
     override val endInclusive: POS get() = last
@@ -61,7 +64,7 @@ class PosRange<T, POS : VectorComparable<POS>>(
 class PosRangeIterator<T : VectorComparable<T>>(
     first: T,
     last: T,
-    val factor: (axis: IntArray) -> T,
+    val factor: (axis: IntArray) -> T
 ) : Iterator<T> {
 
     private val firstAxis = first.axis()
@@ -101,7 +104,7 @@ class RangeIteratorWithFactor<T, POS : VectorComparable<POS>>(
     start: T,
     end: T,
     private val factor: (POS) -> T,
-    posFactor: (T) -> POS,
+    posFactor: (T) -> POS
 ) : Iterator<T> {
 
     val iterator = PosRangeIterator(posFactor(start), posFactor(end), posFactor(start)::factor)

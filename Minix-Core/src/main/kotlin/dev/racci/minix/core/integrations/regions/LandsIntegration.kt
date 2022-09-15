@@ -10,36 +10,63 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.kotlin.ifFalse
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.minecraft.BlockPos
-import dev.racci.minix.api.utils.minecraft.ChunkPos
+import dev.racci.minix.api.utils.unsafeCast
 import me.angeschossen.lands.api.integration.LandsIntegration
-import me.angeschossen.lands.api.land.Land
+import me.angeschossen.lands.api.land.LandArea
 import org.bukkit.World
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.Optional
 
 @MappedIntegration("Lands", Minix::class, RegionManager::class)
-class LandsIntegration(override val pluginRegister: MinixPlugin) : RegionIntegration {
-    private val integration: LandsIntegration = LandsIntegration(pluginRegister)
-    private val landReference = HashBiMap.create<Land, LandRegion>()
+class LandsIntegration(override val plugin: MinixPlugin) : RegionIntegration {
+    private val integration: LandsIntegration = LandsIntegration(plugin)
+    private val areaReference = HashBiMap.create<LandArea, AreaRegion>()
 
     override fun getRegion(
-        pos: ChunkPos,
+        pos: BlockPos,
         world: World
     ): Optional<Region> {
         val land = this.integration.getLand(world, pos.x, pos.z)
         if (land == null || !land.exists()) return Optional.empty()
 
-        val landRegion = this.landReference.computeIfAbsent(land) { LandRegion(it) }
-        return Optional.of(landRegion)
+        val area = land.getArea(pos.asBukkitLocation(world)).unsafeCast<LandArea>()
+        val areaRegion = areaReference.computeIfAbsent(area, ::AreaRegion)
+        return Optional.of(areaRegion)
     }
 
     override fun insideRegion(
-        pos: ChunkPos,
+        pos: BlockPos,
         world: World
     ): Boolean = this.integration.isClaimed(world, pos.x, pos.z)
 
+    override fun canBuild(
+        pos: BlockPos,
+        world: World,
+        player: Player
+    ): Boolean = this.getRegion(pos, world).map { it.canBuild(player) }.orElse(false)
+
+    override fun canBreak(
+        pos: BlockPos,
+        world: World,
+        player: Player
+    ): Boolean = this.getRegion(pos, world).map { it.canBreak(player) }.orElse(false)
+
+    override fun canInteract(
+        pos: BlockPos,
+        world: World,
+        player: Player
+    ): Boolean = this.getRegion(pos, world).map { it.canInteract(player) }.orElse(false)
+
+    override fun canAttack(
+        pos: BlockPos,
+        world: World,
+        player: Player,
+        target: Entity
+    ): Boolean = this.getRegion(pos, world).map { it.canAttack(player, target) }.orElse(false)
+
     override fun ifWilderness(
-        pos: ChunkPos,
+        pos: BlockPos,
         world: World,
         action: () -> Unit
     ): Boolean = this.insideRegion(pos, world).ifFalse(action)

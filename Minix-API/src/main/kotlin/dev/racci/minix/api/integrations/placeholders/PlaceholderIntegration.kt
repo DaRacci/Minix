@@ -14,40 +14,19 @@ abstract class PlaceholderIntegration : PlaceholderExpansion(), Integration {
     /** Registers a placeholder, which doesn't require a player. */
     fun registerPlaceholder(
         placeholder: String,
-        value: () -> String
-    ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(value, oldTriple?.second, oldTriple?.third) }
-
-    /** Registers a placeholder, which doesn't require a player. */
-    @JvmName("registerPlaceholderComponent")
-    fun registerPlaceholder(
-        placeholder: String,
-        value: () -> Component
+        value: () -> Any
     ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(value, oldTriple?.second, oldTriple?.third) }
 
     /** Registers a placeholder, which requires an online player. */
     fun registerOnlinePlaceholder(
         placeholder: String,
-        value: Player.() -> String
-    ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(oldTriple?.first, value, oldTriple?.third) }
-
-    /** Registers a placeholder, which requires an online player. */
-    @JvmName("registerOnlinePlaceholderComponent")
-    fun registerOnlinePlaceholder(
-        placeholder: String,
-        value: Player.() -> Component
+        value: Player.() -> Any
     ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(oldTriple?.first, value, oldTriple?.third) }
 
     /** Registers a placeholder, which a player. */
     fun registerOfflinePlaceholder(
         placeholder: String,
-        value: OfflinePlayer.() -> String
-    ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(oldTriple?.first, oldTriple?.second, value) }
-
-    /** Registers a placeholder, which a player. */
-    @JvmName("registerOfflinePlaceholderComponent")
-    fun registerOfflinePlaceholder(
-        placeholder: String,
-        value: OfflinePlayer.() -> Component
+        value: OfflinePlayer.() -> Any
     ) = placeholders.compute(placeholder) { _, oldTriple -> Triple(oldTriple?.first, oldTriple?.second, value) }
 
     final override fun persist(): Boolean = true
@@ -75,6 +54,10 @@ abstract class PlaceholderIntegration : PlaceholderExpansion(), Integration {
     private fun asString(value: Any?): String? = when (value) {
         is String -> value
         is Component -> LegacyComponentSerializer.legacySection().serialize(value)
-        else -> null
+        null -> null
+        else -> {
+            warning("Placeholder value is not a string or component: ${value::class.qualifiedName}")
+            null
+        }
     }
 }

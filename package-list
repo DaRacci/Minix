@@ -15,6 +15,9 @@ dev.racci.minix.api.exceptions
 dev.racci.minix.api.extension
 dev.racci.minix.api.extensions
 dev.racci.minix.api.flow
+dev.racci.minix.api.integrations
+dev.racci.minix.api.integrations.placeholders
+dev.racci.minix.api.integrations.regions
 dev.racci.minix.api.plugin
 dev.racci.minix.api.plugin.logger
 dev.racci.minix.api.scheduler
@@ -37,5 +40,6 @@ dev.racci.minix.core.builders
 dev.racci.minix.core.coroutine.impl
 dev.racci.minix.core.coroutine.service
 dev.racci.minix.core.data
+dev.racci.minix.core.integrations.regions
 dev.racci.minix.core.scheduler
 dev.racci.minix.core.services

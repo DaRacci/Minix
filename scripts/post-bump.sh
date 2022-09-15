@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# TODO -> Move to dotter and make universal for all projects / Create inputs for repo name and so on
 
 # If previous version and version arent set then exit
 if [ -z "$1" ] || [ -z "$2" ]; then
@@ -17,10 +18,10 @@ sed -i "s/version=.*/version=$2/" ./gradle.properties
 git add gradle.properties
 git commit --amend --no-edit -n -S
 
-git push || exit 1 # There were remote changes not present in the local repo
-git push origin v"${2}" # Push the new version tag
+git tag v"${2}" HEAD # Tag the last commit with the new version
+git push origin v"${2}" || exit 1 # Push the new version tag
 
-./gradlew clean build --stacktrace
+./gradlew clean build test --stacktrace
 
 URL="https://github.com/DaRacci/Minix/compare/v$1..v$2"
 grep -Poz "(?s)(?<=## \\[v$2\\]\\(${URL}\\) - ....-..-..\n).*?(?=- - -)" CHANGELOG.md >> ./.templog.md

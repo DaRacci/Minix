@@ -138,31 +138,35 @@ fun <T : Any> T.clone(replaceArgs: Map<KProperty1<T, *>, Any> = emptyMap()): T =
 }
 
 /** Temporarily make a property accessible and invokes the [action]. */
-inline fun <T : KProperty1<*, R>, R> T.accessReturn(action: T.() -> R): R {
+inline fun <T : KProperty1<*, *>, R> T.accessReturn(action: T.() -> R): R {
+    val originalAccessLevel = isAccessible
     isAccessible = true
     val value = this.action()
-    isAccessible = false
+    isAccessible = originalAccessLevel
     return value
 }
 
 /** Temporarily make a property accessible and invokes the [action]. */
-inline fun <T : KProperty<R>, R> T.accessReturn(action: T.() -> R): R {
+inline fun <T : KProperty<*>, R> T.accessReturn(action: T.() -> R): R {
+    val originalAccessLevel = isAccessible
     isAccessible = true
     val value = this.action()
-    isAccessible = false
+    isAccessible = originalAccessLevel
     return value
 }
 
 /** Temporarily make a property accessible and invokes the [action]. */
 inline fun <T : KProperty1<*, R>, R> T.accessWith(action: T.() -> Unit) {
+    val originalAccessLevel = isAccessible
     isAccessible = true
     this.action()
-    isAccessible = false
+    isAccessible = originalAccessLevel
 }
 
 /** Temporarily make a property accessible and invokes the [action]. */
 inline fun <T : KProperty<R>, R> T.accessWith(action: T.() -> Unit) {
+    val originalAccessLevel = isAccessible
     isAccessible = true
     this.action()
-    isAccessible = false
+    isAccessible = originalAccessLevel
 }

@@ -64,7 +64,7 @@ abstract class BaseOnlineProvider protected constructor(
         return response
     }
 
-    protected open suspend fun requestBuilder(builder: HttpRequestBuilder) {}
+    protected open suspend fun requestBuilder(builder: HttpRequestBuilder) = Unit
 
     companion object {
         @JvmStatic

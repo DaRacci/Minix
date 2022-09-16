@@ -1,5 +1,3 @@
-@file:Suppress("Unused")
-
 package dev.racci.minix.api.serializables
 
 import kotlinx.serialization.KSerializer
@@ -21,7 +19,7 @@ object WorldSerializer : KSerializer<World> {
 
     override fun serialize(
         encoder: Encoder,
-        value: World,
+        value: World
     ) = encoder.encodeString(value.name)
 
     override fun deserialize(decoder: Decoder): World {
@@ -34,7 +32,7 @@ object WorldSerializer : KSerializer<World> {
         override fun serialize(
             type: Type,
             obj: World?,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ) {
             if (obj == null) {
                 node.raw(null); return
@@ -44,7 +42,7 @@ object WorldSerializer : KSerializer<World> {
 
         override fun deserialize(
             type: Type?,
-            node: ConfigurationNode?,
+            node: ConfigurationNode?
         ): World = node?.get<String>()?.let(Bukkit::getWorld) ?: error("No world found")
     }
 }

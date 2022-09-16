@@ -1,5 +1,3 @@
-@file:Suppress("Unused")
-
 package dev.racci.minix.api.serializables
 
 import dev.racci.minix.api.aliases.DoubleRange
@@ -22,7 +20,7 @@ abstract class RangeSerializer<T : ClosedRange<*>> : KSerializer<T> {
 
     override fun serialize(
         encoder: Encoder,
-        value: T,
+        value: T
     ) = encoder.encodeString(value.toStringWithSingleDigit())
 
     abstract class Configurate<T : ClosedRange<*>> : TypeSerializer<T> {
@@ -30,7 +28,7 @@ abstract class RangeSerializer<T : ClosedRange<*>> : KSerializer<T> {
         override fun serialize(
             type: Type,
             obj: T?,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ) {
             if (obj == null) {
                 node.raw(null); return
@@ -54,7 +52,7 @@ object IntRangeSerializer : RangeSerializer<IntRange>() {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): IntRange {
             val (min, max) = node.get<String>()?.let { valuesForRange(it) { toInt() } } ?: throw SerializationException(
                 type,
@@ -79,7 +77,7 @@ object LongRangeSerializer : RangeSerializer<LongRange>() {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): LongRange {
             val (min, max) = node.get<String>()?.let { valuesForRange(it) { toLong() } } ?: throw SerializationException(
                 type,
@@ -104,7 +102,7 @@ object CharRangeSerializer : RangeSerializer<CharRange>() {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): CharRange {
             val (min, max) = node.get<String>()?.let { valuesForRange(it) { get(0) } } ?: throw SerializationException(
                 type,
@@ -129,7 +127,7 @@ object DoubleRangeSerializer : RangeSerializer<DoubleRange>() {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): DoubleRange {
             val (min, max) = node.get<String>()?.let { valuesForRange(it) { toDouble() } } ?: throw SerializationException(
                 type,
@@ -154,7 +152,7 @@ object FloatRangeSerializer : RangeSerializer<FloatRange>() {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): FloatRange {
             val (min, max) = node.get<String>()?.let { valuesForRange(it) { toFloat() } } ?: throw SerializationException(
                 type,
@@ -167,7 +165,7 @@ object FloatRangeSerializer : RangeSerializer<FloatRange>() {
 
 private inline fun <T> valuesForRange(
     string: String,
-    map: String.() -> T,
+    map: String.() -> T
 ): Pair<T, T> {
     val range = string.split("..", " to ").map(map)
 
@@ -175,7 +173,7 @@ private inline fun <T> valuesForRange(
         "Malformed range: $string, must follow format min..max, min to max, or one value for min/max"
     }
 
-    // if only one element first and last will be that one element
+    // if only one element first and last are that one element.
     return range.first() to range.last()
 }
 

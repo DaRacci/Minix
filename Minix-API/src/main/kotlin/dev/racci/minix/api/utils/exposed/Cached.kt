@@ -8,7 +8,7 @@ import kotlin.reflect.KProperty
 fun <T> ExposedDelegate<T>.cached() = CachedExposedDelegate(this)
 
 class CachedExposedDelegate<T>(
-    private val delegate: ExposedDelegate<T>,
+    private val delegate: ExposedDelegate<T>
 ) : ExposedDelegate<T> {
 
     private var cache: T? = null
@@ -16,7 +16,7 @@ class CachedExposedDelegate<T>(
 
     override fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): T {
         if (!isCached) {
             cache = delegate.getValue(entity, desc)
@@ -29,7 +29,7 @@ class CachedExposedDelegate<T>(
     override fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: T,
+        value: T
     ) {
         delegate.setValue(entity, desc, value)
         cache = value

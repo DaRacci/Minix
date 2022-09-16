@@ -18,7 +18,7 @@ object NamespacedKeySerializer : KSerializer<NamespacedKey> {
 
     override fun serialize(
         encoder: Encoder,
-        value: NamespacedKey,
+        value: NamespacedKey
     ) = encoder.encodeString(value.toString())
 
     override fun deserialize(decoder: Decoder): NamespacedKey = NamespacedKey.fromString(decoder.decodeString())!!
@@ -28,7 +28,7 @@ object NamespacedKeySerializer : KSerializer<NamespacedKey> {
         override fun serialize(
             type: Type,
             obj: NamespacedKey?,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ) {
             if (obj == null) {
                 node.raw(null); return
@@ -38,7 +38,7 @@ object NamespacedKeySerializer : KSerializer<NamespacedKey> {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): NamespacedKey = node.get<String>()?.let(NamespacedKey::fromString) ?: error("Null or invalid NamespacedKey: ${node.get<String>()}")
     }
 }

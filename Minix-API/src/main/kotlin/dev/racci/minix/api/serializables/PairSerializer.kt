@@ -13,13 +13,10 @@ object PairSerializer : TypeSerializer<Pair<*, *>> {
 
     override fun deserialize(
         type: Type,
-        node: ConfigurationNode,
+        node: ConfigurationNode
     ): Pair<*, *> {
-        val param = type as ParameterizedType
-        val key = param.actualTypeArguments[0]
-        val value = param.actualTypeArguments[1]
-        val keyMapper = node.options().serializers().get(key).safeCast<TypeSerializer<Any>>() ?: throw SerializationException("No serializer for key type $key")
-        val valueMapper = node.options().serializers().get(value).safeCast<TypeSerializer<Any>>() ?: throw SerializationException("No serializer for value type $value")
+        val (key, value) = this.getTypes(type)
+        val (keyMapper, valueMapper) = this.getMappers(node, key, value)
         val keyNode = BasicConfigurationNode.root(node.options())
 
         val first = keyMapper.deserialize(key, keyNode.node("key")?.get())
@@ -30,19 +27,35 @@ object PairSerializer : TypeSerializer<Pair<*, *>> {
     override fun serialize(
         type: Type,
         obj: Pair<*, *>?,
-        node: ConfigurationNode,
+        node: ConfigurationNode
     ) {
         if (obj == null) {
             node.raw(null)
             return
         }
-        val param = type as ParameterizedType
-        val key = param.actualTypeArguments[0]
-        val value = param.actualTypeArguments[1]
-        val keyMapper = node.options().serializers().get(key).safeCast<TypeSerializer<Any>>() ?: throw SerializationException("No serializer for key type $key")
-        val valueMapper = node.options().serializers().get(value).safeCast<TypeSerializer<Any>>() ?: throw SerializationException("No serializer for value type $value")
+        val (key, value) = this.getTypes(type)
+        val (keyMapper, valueMapper) = this.getMappers(node, key, value)
 
         keyMapper.serialize(key, obj.first, node.node("key"))
         valueMapper.serialize(value, obj.second, node.node("value"))
+    }
+
+    private fun getTypes(type: Type): Pair<Type, Type> {
+        val param = type as ParameterizedType
+        val key = param.actualTypeArguments[0]
+        val value = param.actualTypeArguments[1]
+
+        return key to value
+    }
+
+    private fun getMappers(
+        node: ConfigurationNode,
+        key: Type,
+        value: Type
+    ): Pair<TypeSerializer<Any>, TypeSerializer<Any>> {
+        val keyMapper = node.options().serializers().get(key).safeCast<TypeSerializer<Any>>() ?: throw SerializationException("No serializer for key type $key")
+        val valueMapper = node.options().serializers().get(value).safeCast<TypeSerializer<Any>>() ?: throw SerializationException("No serializer for value type $value")
+
+        return keyMapper to valueMapper
     }
 }

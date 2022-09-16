@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED", "MemberVisibilityCanBePrivate")
-
 package dev.racci.minix.api.utils.minecraft
 
 import dev.racci.minix.api.aliases.ChatInputCallBack

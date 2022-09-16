@@ -12,7 +12,7 @@ import org.koin.mp.KoinPlatformTools
  **/
 fun loadModule(
     createdAtStart: Boolean = false,
-    moduleDeclaration: ModuleDeclaration,
+    moduleDeclaration: ModuleDeclaration
 ): Module {
     val moduleObj = module(createdAtStart, moduleDeclaration)
 

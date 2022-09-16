@@ -13,12 +13,12 @@ fun Entity<*>.offlinePlayer(column: Column<UUID>) = OfflinePlayerExposedDelegate
 fun Entity<*>.nullableOfflinePlayer(column: Column<UUID?>) = OfflinePlayerExposedDelegateNullable(column)
 
 class OfflinePlayerExposedDelegate(
-    val column: Column<UUID>,
+    val column: Column<UUID>
 ) : ExposedDelegate<OfflinePlayer> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): OfflinePlayer {
         val uuid = entity.run { column.getValue(this, desc) }
         return offlinePlayer(uuid)
@@ -27,19 +27,19 @@ class OfflinePlayerExposedDelegate(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: OfflinePlayer,
+        value: OfflinePlayer
     ) {
         entity.apply { column.setValue(this, desc, value.uniqueId) }
     }
 }
 
 class OfflinePlayerExposedDelegateNullable(
-    val column: Column<UUID?>,
+    val column: Column<UUID?>
 ) : ExposedDelegate<OfflinePlayer?> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): OfflinePlayer? {
         val uuid = entity.run { column.getValue(this, desc) }
         return uuid?.let { offlinePlayer(it) }
@@ -48,7 +48,7 @@ class OfflinePlayerExposedDelegateNullable(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: OfflinePlayer?,
+        value: OfflinePlayer?
     ) {
         entity.apply { column.setValue(this, desc, value?.uniqueId) }
     }

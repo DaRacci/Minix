@@ -1,12 +1,9 @@
-@file:Suppress("Unused")
-
 package dev.racci.minix.api.serializables
 
 import dev.racci.minix.api.extensions.inWholeTicks
 import dev.racci.minix.api.extensions.ticks
 import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
@@ -40,7 +37,7 @@ object PotionEffectSerializer : KSerializer<PotionEffect> {
 
     override fun serialize(
         encoder: Encoder,
-        value: PotionEffect,
+        value: PotionEffect
     ) = encoder.encodeStructure(descriptor) {
         encodeStringElement(descriptor, 0, value.type.name)
         encodeSerializableElement(descriptor, 1, DurationSerializer, value.duration.ticks)
@@ -53,7 +50,6 @@ object PotionEffectSerializer : KSerializer<PotionEffect> {
         }
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     override fun deserialize(decoder: Decoder): PotionEffect {
         var type = ""
         var duration = 1.ticks
@@ -87,7 +83,7 @@ object PotionEffectSerializer : KSerializer<PotionEffect> {
             isAmbient,
             particles,
             icon,
-            key,
+            key
         )
     }
 
@@ -96,7 +92,7 @@ object PotionEffectSerializer : KSerializer<PotionEffect> {
         override fun serialize(
             type: Type,
             obj: PotionEffect?,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ) {
             if (obj == null) {
                 node.raw(null); return
@@ -106,7 +102,7 @@ object PotionEffectSerializer : KSerializer<PotionEffect> {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): PotionEffect = node.get<Map<String, Any>>()?.let {
             PotionEffect(
                 PotionEffectType.getByName(it["type"].unsafeCast()) ?: throw SerializationException("Invalid \"type\" while deserializing: ${it["type"]}."),
@@ -124,7 +120,7 @@ object PotionEffectSerializer : KSerializer<PotionEffect> {
                     type,
                     "Invalid \"hasIcon\" while deserializing: ${it["hasIcon"]}"
                 ),
-                it["key"]?.let { str -> NamespacedKey.fromString(str.toString()) },
+                it["key"]?.let { str -> NamespacedKey.fromString(str.toString()) }
             )
         } ?: error("Cannot deserialize null")
     }

@@ -17,7 +17,7 @@ class UnsafeUtil {
 
     fun catch(
         vararg exceptionTypes: KClass<out Any>,
-        callback: Exception.() -> Unit,
+        callback: Exception.() -> Unit
     ) {
         exceptionTypes.forEach {
             exceptionHandlers[it] = callback

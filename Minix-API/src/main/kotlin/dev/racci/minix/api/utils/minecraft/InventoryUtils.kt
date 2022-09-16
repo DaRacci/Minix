@@ -28,6 +28,7 @@ object InventoryUtils : UtilObject by UtilObject {
      */
     fun convertRowColumnToSlot(row: Int, column: Int): Int =
         (row.takeIf { row > 0 } ?: (row * 9)) + (column - 1)
+
     /**
      * Convert a row and column pair into a slot.
      *

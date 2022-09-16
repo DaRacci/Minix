@@ -13,7 +13,7 @@ import kotlin.reflect.typeOf
 class MCVersion private constructor(
     val name: String,
     val versionID: Int,
-    val protocolVersion: Int,
+    val protocolVersion: Int
 ) : Comparable<MCVersion> {
     val ordinal = ordinalInc.getAndIncrement()
 
@@ -94,7 +94,7 @@ class MCVersion private constructor(
 
     class MCVersionDelegate internal constructor(
         private val versionID: Int,
-        private val protocolVersion: Int,
+        private val protocolVersion: Int
     ) {
         operator fun getValue(thisRef: Any?, property: KProperty<*>): MCVersion {
             return MCVersion(property.name, versionID, protocolVersion)

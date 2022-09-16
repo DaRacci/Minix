@@ -15,7 +15,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.TimeZone
 
-class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) constructor(
+class JenkinsUpdateProvider
+@Throws(InvalidUpdateProviderException::class)
+constructor(
     internal val host: String,
     internal val job: String,
     internal val token: String? = null,
@@ -26,8 +28,8 @@ class JenkinsUpdateProvider @Throws(InvalidUpdateProviderException::class) const
     private val url: URL
 
     override val name = "Jenkins"
-    override val latestChecksum get() = lastResult?.checksum // ?: throw NotSuccessfullyQueriedException()
-    override val latestChangelog get() = lastResult?.changelog // ?: throw NotSuccessfullyQueriedException()
+    override val latestChecksum get() = lastResult?.checksum
+    override val latestChangelog get() = lastResult?.changelog
     override val providesChangelog get() = true
     override val providesChecksum get() = ChecksumType.MD5
     override val providesUpdateHistory get() = false // TODO

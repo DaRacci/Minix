@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.api.utils.minecraft
 
 import org.bukkit.entity.Arrow

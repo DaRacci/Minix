@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED", "SameParameterValue", "MemberVisibilityCanBePrivate")
-
 package dev.racci.minix.api.scheduler
 
 import dev.racci.minix.api.plugin.MinixPlugin
@@ -11,6 +9,7 @@ import kotlin.time.Duration
 abstract class CoroutineRunnable {
 
     private var task: CoroutineTask? = null
+    private var taskName: String? = null
 
     /**
      * This should only be used within the [run] stage,
@@ -24,8 +23,6 @@ abstract class CoroutineRunnable {
             checkScheduled()
             return task!!.taskID
         }
-
-    private var taskName: String? = null
 
     val name: String
         get() {

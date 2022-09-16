@@ -6,7 +6,7 @@ object MathUtils : UtilObject by UtilObject {
 
     fun multiplyByPercent(
         value: Double,
-        percent: Double,
+        percent: Double
     ): Double {
         return (value * (percent / 100))
     }

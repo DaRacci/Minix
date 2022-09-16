@@ -34,7 +34,7 @@ object MaterialTagsExtension {
         Material.ROTTEN_FLESH,
         Material.SALMON,
         Material.SPIDER_EYE,
-        Material.TROPICAL_FISH,
+        Material.TROPICAL_FISH
     )
 
     val COOKED_MEATS: MaterialSetTag = MaterialSetTag(keyFor("cooked_meats")).add(
@@ -44,7 +44,7 @@ object MaterialTagsExtension {
         Material.COOKED_MUTTON,
         Material.COOKED_PORKCHOP,
         Material.COOKED_RABBIT,
-        Material.COOKED_SALMON,
+        Material.COOKED_SALMON
     )
 
     val VEGETABLES: MaterialSetTag = MaterialSetTag(keyFor("vegetables")).add(
@@ -57,7 +57,7 @@ object MaterialTagsExtension {
         Material.MUSHROOM_STEW,
         Material.POISONOUS_POTATO,
         Material.POTATO,
-        Material.SUSPICIOUS_STEW,
+        Material.SUSPICIOUS_STEW
     )
 
     val FRUITS: MaterialSetTag = MaterialSetTag(keyFor("fruits")).add(
@@ -68,7 +68,7 @@ object MaterialTagsExtension {
         Material.GLOW_BERRIES,
         Material.MELON_SLICE,
         Material.PUMPKIN_PIE,
-        Material.SWEET_BERRIES,
+        Material.SWEET_BERRIES
     )
 
     val CARBS: MaterialSetTag = MaterialSetTag(keyFor("carbs")).add(

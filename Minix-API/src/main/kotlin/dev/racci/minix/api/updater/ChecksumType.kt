@@ -6,16 +6,13 @@ import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
 enum class ChecksumType(
-    /**
-     * The algorithm for the [java.security.MessageDigest].
-     */
+    /** The algorithm for the [java.security.MessageDigest]. */
     val algorithm: String? = null,
-    /**
-     * @return true if the checksum type is supported.
-     */
-    var isSupported: Boolean = false,
+
+    /** If the checksum type is supported. */
+    var isSupported: Boolean = false
 ) {
-    NONE(),
+    NONE,
     MD5("MD5"),
     SHA1("SHA1"),
     SHA224("SHA-224"),
@@ -53,10 +50,7 @@ enum class ChecksumType(
     val instanceOrNull: MessageDigest?
         get() {
             if (!isSupported) return null
-            try {
-                return instance
-            } catch (ignored: NoSuchAlgorithmException) {
-            }
+            runCatching { return instance }
             return null
         }
 }

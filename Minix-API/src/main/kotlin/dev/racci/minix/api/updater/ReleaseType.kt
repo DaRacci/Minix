@@ -1,33 +1,21 @@
 package dev.racci.minix.api.updater
 
 enum class ReleaseType {
-    /**
-     * An Alpha build.
-     */
+    /** An Alpha build. */
     ALPHA,
 
-    /**
-     * A Beta build.
-     */
+    /** A Beta build. */
     BETA,
 
-    /**
-     * A Release build.
-     */
+    /** A Release build. */
     RELEASE,
 
-    /**
-     * A Snapshot build.
-     */
+    /** A Snapshot build. */
     SNAPSHOT,
 
-    /**
-     * A Release Candidate build.
-     */
+    /** A Release Candidate build. */
     RC,
 
-    /**
-     * An unknown build.
-     */
+    /** An unknown build. */
     UNKNOWN
 }

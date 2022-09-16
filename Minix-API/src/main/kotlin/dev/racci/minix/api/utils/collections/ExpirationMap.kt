@@ -18,34 +18,34 @@ fun <K, V> WithPlugin<*>.expirationMapOf() = plugin.expirationMapOf<K, V>()
 fun <K, V> expirationMapOf(
     expireTime: Long,
     plugin: MinixPlugin,
-    vararg elements: Pair<K, V>,
+    vararg elements: Pair<K, V>
 ) = plugin.expirationMapOf<K, V>().apply { elements.forEach { (key, value) -> put(key, value, expireTime) } }
 
 fun <K, V> MinixPlugin.expirationMapOf(
     expireTime: Long,
-    vararg elements: Pair<K, V>,
+    vararg elements: Pair<K, V>
 ) = expirationMapOf(expireTime, this, elements = elements)
 
 fun <K, V> WithPlugin<*>.expirationMapOf(
     expireTime: Long,
-    vararg elements: Pair<K, V>,
+    vararg elements: Pair<K, V>
 ) = plugin.expirationMapOf(expireTime, *elements)
 
 fun <K, V> expirationMapOf(
     expireTime: Long,
     plugin: MinixPlugin,
-    vararg elements: Triple<K, V, OnExpireMapCallback<K, V>>,
+    vararg elements: Triple<K, V, OnExpireMapCallback<K, V>>
 ) = plugin.expirationMapOf<K, V>()
     .apply { elements.forEach { (key, value, onExpire) -> put(key, value, expireTime, onExpire) } }
 
 fun <K, V> MinixPlugin.expirationMapOf(
     expireTime: Long,
-    vararg elements: Triple<K, V, OnExpireMapCallback<K, V>>,
+    vararg elements: Triple<K, V, OnExpireMapCallback<K, V>>
 ) = expirationMapOf(expireTime, this, elements = elements)
 
 fun <K, V> WithPlugin<*>.expirationMapOf(
     expireTime: Long,
-    vararg elements: Triple<K, V, OnExpireMapCallback<K, V>>,
+    vararg elements: Triple<K, V, OnExpireMapCallback<K, V>>
 ) = plugin.expirationMapOf(expireTime, *elements)
 
 interface ExpirationMap<K, V> : MutableMap<K, V>, WithPlugin<MinixPlugin> {
@@ -63,7 +63,7 @@ interface ExpirationMap<K, V> : MutableMap<K, V>, WithPlugin<MinixPlugin> {
      */
     fun expire(
         key: K,
-        time: Long,
+        time: Long
     ): Boolean
 
     /**
@@ -76,7 +76,7 @@ interface ExpirationMap<K, V> : MutableMap<K, V>, WithPlugin<MinixPlugin> {
     fun expire(
         key: K,
         time: Long,
-        callback: OnExpireMapCallback<K, V>,
+        callback: OnExpireMapCallback<K, V>
     ): Boolean
 
     /**
@@ -88,7 +88,7 @@ interface ExpirationMap<K, V> : MutableMap<K, V>, WithPlugin<MinixPlugin> {
     fun put(
         key: K,
         value: V,
-        time: Long,
+        time: Long
     ): V?
 
     /**
@@ -104,13 +104,13 @@ interface ExpirationMap<K, V> : MutableMap<K, V>, WithPlugin<MinixPlugin> {
         key: K,
         value: V,
         time: Long,
-        callback: OnExpireMapCallback<K, V>,
+        callback: OnExpireMapCallback<K, V>
     ): V?
 }
 
 class ExpirationMapImpl<K, V>(
     override val plugin: MinixPlugin,
-    val initialMap: MutableMap<K, V> = WeakHashMap(),
+    val initialMap: MutableMap<K, V> = WeakHashMap()
 ) : ExpirationMap<K, V>, MutableMap<K, V> by initialMap {
 
     private val putTime: MutableMap<K, Long> = mutableMapOf()
@@ -130,7 +130,7 @@ class ExpirationMapImpl<K, V>(
 
     private fun exp(
         key: K,
-        time: Long,
+        time: Long
     ) {
         putTime[key] = now().toEpochMilliseconds()
         expiration[key] = time
@@ -138,14 +138,14 @@ class ExpirationMapImpl<K, V>(
 
     private fun whenEx(
         key: K,
-        callback: OnExpireMapCallback<K, V>,
+        callback: OnExpireMapCallback<K, V>
     ) {
         whenExpire[key] = callback
     }
 
     override fun expire(
         key: K,
-        time: Long,
+        time: Long
     ): Boolean = if (containsKey(key)) {
         exp(key, time)
         true
@@ -154,7 +154,7 @@ class ExpirationMapImpl<K, V>(
     override fun expire(
         key: K,
         time: Long,
-        callback: OnExpireMapCallback<K, V>,
+        callback: OnExpireMapCallback<K, V>
     ): Boolean = if (expire(key, time)) {
         whenEx(key, callback)
         true
@@ -162,7 +162,7 @@ class ExpirationMapImpl<K, V>(
 
     override fun put(
         key: K,
-        value: V,
+        value: V
     ): V? {
         val result = initialMap.put(key, value)
         generateTask()
@@ -172,7 +172,7 @@ class ExpirationMapImpl<K, V>(
     override fun put(
         key: K,
         value: V,
-        time: Long,
+        time: Long
     ): V? {
         require(time <= 0) { "expiration time can't be negative or zero" }
         val result = put(key, value)
@@ -184,7 +184,7 @@ class ExpirationMapImpl<K, V>(
         key: K,
         value: V,
         time: Long,
-        callback: OnExpireMapCallback<K, V>,
+        callback: OnExpireMapCallback<K, V>
     ): V? {
         require(time <= 0) { "expiration time can't be negative or zero" }
         val result = put(key, value)
@@ -205,7 +205,7 @@ class ExpirationMapImpl<K, V>(
 
     private fun checkTime(
         current: Long,
-        key: K,
+        key: K
     ) = current - putTime.getOrPut(key) { current } / 1000 - (expiration[key] ?: 0) >= 0
 
     private fun generateTask() {

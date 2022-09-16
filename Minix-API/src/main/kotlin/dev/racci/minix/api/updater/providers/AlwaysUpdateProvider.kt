@@ -7,7 +7,7 @@ import java.net.MalformedURLException
 import java.net.URL
 
 /**
- * An update provider that returns an very high version so that the file gets downloaded every time.
+ * An update provider that returns a very high version so that the file gets downloaded every time.
  * The file to download is specified in the constructor.
  * This provider should only be used for preview builds that will always download the newest build from a server.
  */

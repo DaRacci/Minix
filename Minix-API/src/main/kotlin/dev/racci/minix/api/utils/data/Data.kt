@@ -59,7 +59,7 @@ data class Data(val bytes: Long) : Comparable<Data> {
     object Serializer : TypeSerializer<Data> {
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): Data {
             val match = node.get<String>()?.let(regex::matchEntire)
             return when (match?.groups?.get("identifier")?.value?.lowercase()) {
@@ -83,7 +83,7 @@ data class Data(val bytes: Long) : Comparable<Data> {
         override fun serialize(
             type: Type,
             obj: Data?,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ) {
             if (obj == null) { node.raw(null); return }
             when {

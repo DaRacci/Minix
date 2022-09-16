@@ -20,12 +20,12 @@ fun Entity<*>.itemStack(column: Column<ExposedBlob>) = ItemStackExposedDelegate(
 fun Entity<*>.nullableItemStack(column: Column<ExposedBlob?>) = ItemStackExposedDelegateNullable(column)
 
 class ItemStackExposedDelegate(
-    val column: Column<ExposedBlob>,
+    val column: Column<ExposedBlob>
 ) : ExposedDelegate<ItemStack> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): ItemStack {
         val blob = entity.run { column.getValue(this, desc) }
         return toItemStack(blob.bytes)
@@ -34,7 +34,7 @@ class ItemStackExposedDelegate(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: ItemStack,
+        value: ItemStack
     ) {
         val byteArray = toByteArray(value)
         val blob = ExposedBlob(byteArray)
@@ -43,12 +43,12 @@ class ItemStackExposedDelegate(
 }
 
 class ItemStackExposedDelegateNullable(
-    val column: Column<ExposedBlob?>,
+    val column: Column<ExposedBlob?>
 ) : ExposedDelegate<ItemStack?> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): ItemStack? {
         val blob = entity.run { column.getValue(this, desc) }
         return blob?.bytes?.let { toItemStack(it) }
@@ -57,7 +57,7 @@ class ItemStackExposedDelegateNullable(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: ItemStack?,
+        value: ItemStack?
     ) {
         val byteArray = value?.let { toByteArray(it) }
         val blob = byteArray?.let { ExposedBlob(it) }

@@ -16,7 +16,7 @@ import java.net.MalformedURLException
 import java.net.URL
 
 /**
- * This update provider allows to check github for new releases.
+ * This update provider allows checking GitHub for new releases.
  */
 class GithubUpdateProvider(
     internal val projectOwner: String,
@@ -100,7 +100,7 @@ class GithubUpdateProvider(
      * @return The md5 hash. Empty string if no hash was found.
      */
     private suspend fun getMD5FromUrl(url: String): String {
-        try {
+        runCatching {
             val response = connect(URL(url))!!
             response.body<BufferedReader>().use { reader ->
                 var line: String
@@ -109,8 +109,8 @@ class GithubUpdateProvider(
                     if (assetJarPattern.matches(match.groups["file"]!!.value)) return match.groups["hash"]!!.value
                 }
             }
-        } catch (ignored: Exception) {
         }
+
         return ""
     }
 

@@ -12,12 +12,12 @@ fun Entity<*>.world(column: Column<String>) = WorldExposedDelegate(column)
 fun Entity<*>.nullableWorld(column: Column<String?>) = WorldExposedDelegateNullable(column)
 
 class WorldExposedDelegate(
-    val column: Column<String>,
+    val column: Column<String>
 ) : ExposedDelegate<World> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): World {
         val data = entity.run { column.getValue(this, desc) }
         return Bukkit.getWorld(data)!!
@@ -26,19 +26,19 @@ class WorldExposedDelegate(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: World,
+        value: World
     ) {
         entity.apply { column.setValue(this, desc, value.name) }
     }
 }
 
 class WorldExposedDelegateNullable(
-    val column: Column<String?>,
+    val column: Column<String?>
 ) : ExposedDelegate<World?> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): World? {
         val data = entity.run { column.getValue(this, desc) }
         return data?.let { Bukkit.getWorld(it) }
@@ -47,7 +47,7 @@ class WorldExposedDelegateNullable(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: World?,
+        value: World?
     ) {
         entity.apply { column.setValue(this, desc, value?.name) }
     }

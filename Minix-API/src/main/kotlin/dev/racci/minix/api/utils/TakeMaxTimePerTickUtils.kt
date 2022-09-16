@@ -15,14 +15,14 @@ internal val coroutineContextTakes = ConcurrentHashMap<CoroutineContext, TakeVal
 
 internal data class TakeValues(
     val startTimeMilliseconds: Long,
-    val takeTimeMillisecond: Long,
+    val takeTimeMillisecond: Long
 ) {
 
     fun wasTimeExceeded() = System.currentTimeMillis() - startTimeMilliseconds - takeTimeMillisecond >= 0
 }
 
 suspend fun WithPlugin<*>.takeMaxPerTick(
-    time: Duration,
+    time: Duration
 ) = plugin.takeMaxPerTick(time)
 
 suspend fun MinixPlugin.takeMaxPerTick(time: Duration) {
@@ -45,18 +45,18 @@ suspend fun MinixPlugin.takeMaxPerTick(time: Duration) {
 }
 
 internal fun getTakeValuesOrNull(
-    coroutineContext: CoroutineContext,
+    coroutineContext: CoroutineContext
 ): TakeValues? = coroutineContextTakes[coroutineContext]
 
 internal fun registerCoroutineContextTakes(
     coroutineContext: CoroutineContext,
-    time: Duration,
+    time: Duration
 ) {
     coroutineContextTakes[coroutineContext] = TakeValues(System.currentTimeMillis(), time.inWholeMilliseconds)
 }
 
 internal fun unregisterCoroutineContext(
-    coroutineContext: CoroutineContext,
+    coroutineContext: CoroutineContext
 ) {
     coroutineContextTakes.remove(coroutineContext)
 }

@@ -532,7 +532,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
 
             val kClass = classInfo.loadClass().kotlin.unsafeCast<KClass<out Integration>>()
             val annotation = kClass.findAnnotation<MappedIntegration>()!!
-            val managerKClass = annotation.IntegrationManager
+            val managerKClass = annotation.integrationManager
             val manager = managerKClass.objectInstance.safeCast<IntegrationManager<Integration>>()
 
             if (manager == null) {

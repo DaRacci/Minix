@@ -22,7 +22,7 @@ object PatternSerializer : KSerializer<Pattern> {
 
     override fun serialize(
         encoder: Encoder,
-        value: Pattern,
+        value: Pattern
     ) {
         val (colour, type) = value
         encoder.encodeString("$colour:$type")
@@ -38,7 +38,7 @@ object PatternSerializer : KSerializer<Pattern> {
         override fun serialize(
             type: Type,
             obj: Pattern?,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ) {
             if (obj == null) {
                 node.raw(null); return
@@ -48,7 +48,7 @@ object PatternSerializer : KSerializer<Pattern> {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): Pattern = node.get<String>()?.split(':', limit = 2)?.let { Pattern(DyeColor.valueOf(it[0]), PatternType.valueOf(it[1])) }
             ?: error("Invalid pattern, expected [colour:pattern]")
     }

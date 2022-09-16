@@ -15,6 +15,6 @@ sealed class SerializableRecipeIngredients {
     abstract fun toRecipe(
         key: NamespacedKey,
         result: ItemStack,
-        group: String = "",
+        group: String = ""
     ): Recipe
 }

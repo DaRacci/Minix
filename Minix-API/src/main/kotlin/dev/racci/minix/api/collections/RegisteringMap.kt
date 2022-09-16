@@ -76,12 +76,6 @@ class RegisteringMap<D : Any, R : Any> : Map<D, Loadable<R>> {
         }
     }
 
-//    suspend fun clear() {
-//        internalMap.clear { _, loadable ->
-//            loadable.unload()
-//        }
-//    }
-
     /** @return All registered values in this map. */
     fun getRegistered(): ImmutableSet<R> {
         val set = mutableSetOf<R>()

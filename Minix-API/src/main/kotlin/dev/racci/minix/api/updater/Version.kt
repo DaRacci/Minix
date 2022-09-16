@@ -5,7 +5,9 @@ import dev.racci.minix.api.utils.kotlin.ifTrue
 import org.intellij.lang.annotations.Language
 import java.util.concurrent.ConcurrentHashMap
 
-class Version @Throws(InvalidVersionStringException::class) constructor(
+class Version
+@Throws(InvalidVersionStringException::class)
+constructor(
     rawVersion: String,
     ignoreTags: Boolean = false
 ) : Comparable<Version> {
@@ -22,7 +24,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
     val patch: Int get() = version.getOrElse(2) { 0 }
 
     /**
-     * Returns the original version string. But without the optional "v" at the start.
+     * Returns the original version string. But without the optional “v” at the start.
      *
      * @return The string representing this version.
      */
@@ -33,7 +35,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
      * If given a string it will try to parse it as a version.
      *
      * @param other The other version to compare with.
-     * @return True if the versions are equal, false otherwise.
+     * @return If the versions are equal.
      * @throws InvalidVersionStringException If the given string is not a valid version string.
      */
     @Throws(InvalidVersionStringException::class)
@@ -63,7 +65,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
             !isPreRelease && other.isPreRelease -> return 1
         }
 
-        if (version.size != other.version.size) { // If both version are the different length, the version that has more digits (>0) probably is the newer one.
+        if (version.size != other.version.size) { // If both versions are the different length, the version that has more digits (>0) probably is the newer one.
             val otherLonger = other.version.size > version.size
             val longer = if (otherLonger) other.version else version
 
@@ -77,7 +79,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
             return timestamp.compareTo(other.timestamp)
         }
 
-        (buildNumber > 0 && other.buildNumber > 0).ifTrue { // If both versions still can't be distinguished we can use the build number (if available)
+        (buildNumber > 0 && other.buildNumber > 0).ifTrue { // If both versions still can't be distinguished, we can use the build number (if available)
             return buildNumber.compareTo(other.buildNumber)
         }
 
@@ -130,7 +132,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
             this.isPreRelease = this.tags.isNotEmpty()
             this.rawVersion = rawVersion.dropWhile { !it.isDigit() }
 
-            // Convert string to int array, if pre-release add an extra -1 to be defined later.
+            // Convert string to an int array, if pre-release add an extra -1 to be defined later.
             val size = if (this.tags.isEmpty()) comps.size else comps.size + 1
             this.version = IntArray(size) { comps.getOrNull(it)?.toInt() ?: 0 }
 
@@ -171,7 +173,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
 
     private fun getTags(
         rawVersion: String,
-        startingIndex: Int,
+        startingIndex: Int
     ) = tagRegex.findAll(rawVersion.substring(startingIndex))
         .map { it.groups["grouped"]?.value?.replace("\\s|-".toRegex(), "") ?: it.value }
         .toList()
@@ -214,7 +216,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
 
         if (last < 1) return
 
-        // I'll be honest, I don't know why this works. Hence the method name.
+        // I'll be honest, I don't know why this works. Hence, the method name.
         for (i in this.version.lastIndex downTo 0) {
             if (this.version[i] > 0 || i == 0) {
                 this.version[i]--
@@ -242,7 +244,7 @@ class Version @Throws(InvalidVersionStringException::class) constructor(
                 val matcher = searchPattern.find(tag) ?: continue
                 try {
                     return matcher.groups["number"]?.value?.toLong() ?: continue
-                } catch (ignored: NumberFormatException) { }
+                } catch (ignored: NumberFormatException) { /* Ignored */ }
             }
             return -1
         }

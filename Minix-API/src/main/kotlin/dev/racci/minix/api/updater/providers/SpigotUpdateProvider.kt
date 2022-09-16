@@ -15,11 +15,13 @@ import kotlinx.coroutines.withContext
 import java.net.URL
 
 /**
- * This update provider allows to query spigotmc.org for plugin updates.
- * Only plugins hosted on spigotmc.org can be downloaded automatically. Plugins hosted externally, that are only listed on spigotmc.org will only provide metadata.
+ * This update provider allows querying spigotmc.org for plugin updates.
+ * Only plugins hosted on spigotmc.org can be downloaded automatically.
+ * Plugins hosted externally, that are only listed on spigotmc.org will only provide metadata.
  *
  * Creates an update provider for spigotmc.org.
- * Spigot doesn't provide a fileName. It will be assumed that the file is a .jar file
+ * Spigot doesn't provide a fileName.
+ * It will be assumed that the file is a .jar file.
  *
  */
 // TODO: Add support for noticing redirects to another valid update provider type

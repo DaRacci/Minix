@@ -31,7 +31,7 @@ object LocationSerializer : KSerializer<Location> {
 
     override fun serialize(
         encoder: Encoder,
-        value: Location,
+        value: Location
     ) = encoder.encodeStructure(descriptor) {
         encodeDoubleElement(descriptor, 0, value.x)
         encodeDoubleElement(descriptor, 1, value.y)
@@ -69,7 +69,7 @@ object LocationSerializer : KSerializer<Location> {
         override fun serialize(
             type: Type,
             obj: Location?,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ) {
             if (obj == null) {
                 node.raw(null); return
@@ -79,7 +79,7 @@ object LocationSerializer : KSerializer<Location> {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): Location = node.get<Map<String, Any>>()?.let(Location::deserialize) ?: error("Could not deserialize location")
     }
 }

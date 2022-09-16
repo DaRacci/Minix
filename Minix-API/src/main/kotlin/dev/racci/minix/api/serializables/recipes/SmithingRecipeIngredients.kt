@@ -17,13 +17,13 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 @SerialName("smithing")
 class SmithingRecipeIngredients(
     val input: SerializableItemStack,
-    val addition: SerializableItemStack,
+    val addition: SerializableItemStack
 ) : SerializableRecipeIngredients() {
 
     override fun toRecipe(
         key: NamespacedKey,
         result: ItemStack,
-        group: String,
+        group: String
     ): Recipe = SmithingRecipe(
         key,
         result,

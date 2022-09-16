@@ -19,7 +19,7 @@ object EnchantSerializer : KSerializer<Enchantment> {
 
     override fun serialize(
         encoder: Encoder,
-        value: Enchantment,
+        value: Enchantment
     ) = encoder.encodeString(value.key.toString())
 
     override fun deserialize(decoder: Decoder): Enchantment {
@@ -34,7 +34,7 @@ object EnchantSerializer : KSerializer<Enchantment> {
         override fun serialize(
             type: Type,
             obj: Enchantment?,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ) {
             if (obj == null) {
                 node.raw(null); return
@@ -44,7 +44,7 @@ object EnchantSerializer : KSerializer<Enchantment> {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): Enchantment = node.get<String>()?.let(::fromString) ?: error("Cannot deserialize null.")
     }
 

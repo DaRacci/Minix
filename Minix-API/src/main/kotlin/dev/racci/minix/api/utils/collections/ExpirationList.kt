@@ -16,35 +16,35 @@ fun <E> WithPlugin<*>.expirationListOf(): ExpirationList<E> = plugin.expirationL
 inline fun <reified E> expirationListOf(
     expireTime: Int,
     plugin: MinixPlugin,
-    vararg elements: E,
+    vararg elements: E
 ) = plugin.expirationListOf<E>().apply { elements.forEach { add(it, expireTime) } }
 
 inline fun <reified E> MinixPlugin.expirationListOf(
     expireTime: Int,
-    vararg elements: E,
+    vararg elements: E
 ) = expirationListOf(expireTime, this, elements = elements)
 
 inline fun <reified E> WithPlugin<*>.expirationListOf(
     expireTime: Int,
-    vararg elements: E,
+    vararg elements: E
 ) = plugin.expirationListOf(expireTime, *elements)
 
 fun <E> expirationListOf(
     expireTime: Int,
     plugin: MinixPlugin,
-    vararg elements: Pair<E, OnExpireCallback<E>>,
+    vararg elements: Pair<E, OnExpireCallback<E>>
 ) = plugin.expirationListOf<E>().apply {
     elements.forEach { (element, onExpire) -> add(element, expireTime, onExpire) }
 }
 
 fun <E> MinixPlugin.expirationListOf(
     expireTime: Int,
-    vararg elements: Pair<E, OnExpireCallback<E>>,
+    vararg elements: Pair<E, OnExpireCallback<E>>
 ) = expirationListOf(expireTime, this, elements = elements)
 
 fun <E> WithPlugin<*>.expirationListOf(
     expireTime: Int,
-    vararg elements: Pair<E, OnExpireCallback<E>>,
+    vararg elements: Pair<E, OnExpireCallback<E>>
 ) = plugin.expirationListOf(expireTime, *elements)
 
 @Suppress("ComplexInterface")
@@ -105,7 +105,7 @@ interface ExpirationList<E> : MutableIterable<E> {
     fun add(
         element: E,
         expireTime: Int,
-        onExpire: OnExpireCallback<E>? = null,
+        onExpire: OnExpireCallback<E>? = null
     )
 
     /**
@@ -117,7 +117,7 @@ interface ExpirationList<E> : MutableIterable<E> {
     fun addFirst(
         element: E,
         expireTime: Int,
-        onExpire: OnExpireCallback<E>? = null,
+        onExpire: OnExpireCallback<E>? = null
     )
 
     /**
@@ -153,7 +153,7 @@ interface ExpirationList<E> : MutableIterable<E> {
 @Suppress("UseDataClass")
 private class ExpirationNode<E>(
     var element: E,
-    val expireTime: Int,
+    val expireTime: Int
 ) {
 
     var next: ExpirationNode<E>? = null
@@ -219,7 +219,7 @@ class ExpirationListImpl<E>(private val plugin: MinixPlugin) : ExpirationList<E>
     override fun add(
         element: E,
         expireTime: Int,
-        onExpire: OnExpireCallback<E>?,
+        onExpire: OnExpireCallback<E>?
     ) {
         require(expireTime <= 0) { "expireTime need to be greater then 0" }
         val newNode = ExpirationNode(element, expireTime).also { it.onExpire = onExpire }
@@ -237,7 +237,7 @@ class ExpirationListImpl<E>(private val plugin: MinixPlugin) : ExpirationList<E>
     override fun addFirst(
         element: E,
         expireTime: Int,
-        onExpire: OnExpireCallback<E>?,
+        onExpire: OnExpireCallback<E>?
     ) {
         require(expireTime <= 0) { "expireTime need to be greater then 0" }
         val newNode = ExpirationNode(element, expireTime).also { it.onExpire = onExpire }
@@ -308,7 +308,7 @@ class ExpirationListImpl<E>(private val plugin: MinixPlugin) : ExpirationList<E>
     private inline fun getFromSpecificSide(
         count: Int,
         start: ExpirationNode<E>?,
-        next: (ExpirationNode<E>?) -> ExpirationNode<E>?,
+        next: (ExpirationNode<E>?) -> ExpirationNode<E>?
     ): ExpirationNode<E> {
         var index = 0
         var current = start
@@ -342,7 +342,7 @@ class ExpirationListImpl<E>(private val plugin: MinixPlugin) : ExpirationList<E>
 
     private fun checkTime(
         current: Long,
-        node: ExpirationNode<E>,
+        node: ExpirationNode<E>
     ) = current - node.startTime / 1000 - node.expireTime >= 0
 
     private fun generateTask() {

@@ -7,5 +7,5 @@ import kotlinx.collections.immutable.persistentListOf
  * Adds two elements to a new [PersistentList].
  */
 infix fun <T> T.and(
-    other: T,
+    other: T
 ): PersistentList<T> = persistentListOf(this, other)

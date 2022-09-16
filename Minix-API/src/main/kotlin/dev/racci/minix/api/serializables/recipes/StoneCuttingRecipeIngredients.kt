@@ -16,13 +16,13 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 @ConfigSerializable
 @SerialName("stonecutting")
 class StoneCuttingRecipeIngredients(
-    val input: SerializableItemStack,
+    val input: SerializableItemStack
 ) : SerializableRecipeIngredients() {
 
     override fun toRecipe(
         key: NamespacedKey,
         result: ItemStack,
-        group: String,
+        group: String
     ): Recipe {
         val recipe = StonecuttingRecipe(key, result, RecipeChoice.ExactChoice(input.toItemStack()))
 

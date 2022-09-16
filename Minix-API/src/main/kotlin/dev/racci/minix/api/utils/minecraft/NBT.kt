@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.api.utils.minecraft
 
 import org.bukkit.NamespacedKey
@@ -23,7 +21,7 @@ object ItemNBT {
     fun setString(
         itemStack: ItemStack,
         key: String,
-        value: String,
+        value: String
     ): ItemStack? = nbt.setString(itemStack, key, value)
 
     /**
@@ -35,7 +33,7 @@ object ItemNBT {
      */
     fun getString(
         itemStack: ItemStack,
-        key: String,
+        key: String
     ): String? = nbt.getString(itemStack, key)
 
     /**
@@ -50,7 +48,7 @@ object ItemNBT {
     fun setBoolean(
         itemStack: ItemStack,
         key: String,
-        value: Boolean,
+        value: Boolean
     ): ItemStack? = nbt.setBoolean(itemStack, key, value)
 
     /**
@@ -62,7 +60,7 @@ object ItemNBT {
      */
     fun removeTag(
         itemStack: ItemStack,
-        key: String,
+        key: String
     ): ItemStack? = nbt.removeTag(itemStack, key)
 
     private fun selectNbt(): NbtWrapper = Pdc()
@@ -81,7 +79,7 @@ interface NbtWrapper {
     fun setString(
         itemStack: ItemStack,
         key: String?,
-        value: String?,
+        value: String?
     ): ItemStack?
 
     /**
@@ -93,7 +91,7 @@ interface NbtWrapper {
      */
     fun removeTag(
         itemStack: ItemStack,
-        key: String?,
+        key: String?
     ): ItemStack?
 
     /**
@@ -108,7 +106,7 @@ interface NbtWrapper {
     fun setBoolean(
         itemStack: ItemStack,
         key: String?,
-        value: Boolean,
+        value: Boolean
     ): ItemStack?
 
     /**
@@ -120,7 +118,7 @@ interface NbtWrapper {
      */
     fun getString(
         itemStack: ItemStack,
-        key: String?,
+        key: String?
     ): String?
 }
 
@@ -137,7 +135,7 @@ class Pdc : NbtWrapper {
     override fun setString(
         itemStack: ItemStack,
         key: String?,
-        value: String?,
+        value: String?
     ): ItemStack {
         val meta = itemStack.itemMeta ?: return itemStack
         meta.persistentDataContainer.set(NamespacedKey(PLUGIN, key!!), PersistentDataType.STRING, value!!)
@@ -154,7 +152,7 @@ class Pdc : NbtWrapper {
      */
     override fun removeTag(
         itemStack: ItemStack,
-        key: String?,
+        key: String?
     ): ItemStack {
         val meta = itemStack.itemMeta ?: return itemStack
         meta.persistentDataContainer.remove(NamespacedKey(PLUGIN, key!!))
@@ -174,7 +172,7 @@ class Pdc : NbtWrapper {
     override fun setBoolean(
         itemStack: ItemStack,
         key: String?,
-        value: Boolean,
+        value: Boolean
     ): ItemStack {
         val meta = itemStack.itemMeta ?: return itemStack
         meta.persistentDataContainer.set(
@@ -195,7 +193,7 @@ class Pdc : NbtWrapper {
      */
     override fun getString(
         itemStack: ItemStack,
-        key: String?,
+        key: String?
     ): String? {
         val meta = itemStack.itemMeta ?: return null
         return meta.persistentDataContainer.get(NamespacedKey(PLUGIN, key!!), PersistentDataType.STRING)

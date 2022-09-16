@@ -7,12 +7,12 @@ interface ExposedDelegate<T> {
 
     operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): T
 
     operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: T,
+        value: T
     )
 }

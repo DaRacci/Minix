@@ -18,13 +18,13 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 class FurnaceRecipeIngredients(
     val input: SerializableItemStack,
     val experience: Float,
-    val cookingTime: Int,
+    val cookingTime: Int
 ) : SerializableRecipeIngredients() {
 
     override fun toRecipe(
         key: NamespacedKey,
         result: ItemStack,
-        group: String,
+        group: String
     ): Recipe {
         val recipe = FurnaceRecipe(key, result, RecipeChoice.ExactChoice(input.toItemStack()), experience, cookingTime)
 

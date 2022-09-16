@@ -12,21 +12,21 @@ fun Entity<*>.nullableChunkPos(column: Column<String?>) = ChunkPosExposedDelegat
 
 fun Entity<*>.chunkPos(
     xColumn: Column<Int>,
-    zColumn: Column<Int>,
+    zColumn: Column<Int>
 ) = ChunkPosMultiColumnExposedDelegate(xColumn, zColumn)
 
 fun Entity<*>.chunkPos(
     xColumn: Column<Int?>,
-    zColumn: Column<Int?>,
+    zColumn: Column<Int?>
 ) = ChunkPosMultiColumnExposedDelegateNullable(xColumn, zColumn)
 
 class ChunkPosExposedDelegate(
-    val column: Column<String>,
+    val column: Column<String>
 ) : ExposedDelegate<ChunkPos> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): ChunkPos {
         val data = entity.run { column.getValue(this, desc) }
         val slices = data.split(";")
@@ -39,7 +39,7 @@ class ChunkPosExposedDelegate(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: ChunkPos,
+        value: ChunkPos
     ) {
         val parsed = value.run { "$x;$z" }
         entity.apply { column.setValue(this, desc, parsed) }
@@ -47,12 +47,12 @@ class ChunkPosExposedDelegate(
 }
 
 class ChunkPosExposedDelegateNullable(
-    val column: Column<String?>,
+    val column: Column<String?>
 ) : ExposedDelegate<ChunkPos?> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): ChunkPos? {
         val data = entity.run { column.getValue(this, desc) }
         val slices = data?.split(";")
@@ -67,7 +67,7 @@ class ChunkPosExposedDelegateNullable(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: ChunkPos?,
+        value: ChunkPos?
     ) {
         val parsed = value?.run { "$x;$z" }
         entity.apply { column.setValue(this, desc, parsed) }
@@ -76,12 +76,12 @@ class ChunkPosExposedDelegateNullable(
 
 class ChunkPosMultiColumnExposedDelegate(
     val xColumn: Column<Int>,
-    val zColumn: Column<Int>,
+    val zColumn: Column<Int>
 ) : ExposedDelegate<ChunkPos> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): ChunkPos {
         val x = entity.run { xColumn.getValue(this, desc) }
         val z = entity.run { zColumn.getValue(this, desc) }
@@ -92,7 +92,7 @@ class ChunkPosMultiColumnExposedDelegate(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: ChunkPos,
+        value: ChunkPos
     ) {
         entity.apply {
             value.apply {
@@ -105,12 +105,12 @@ class ChunkPosMultiColumnExposedDelegate(
 
 class ChunkPosMultiColumnExposedDelegateNullable(
     val xColumn: Column<Int?>,
-    val zColumn: Column<Int?>,
+    val zColumn: Column<Int?>
 ) : ExposedDelegate<ChunkPos?> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): ChunkPos? {
         val x = entity.run { xColumn.getValue(this, desc) }
         val z = entity.run { zColumn.getValue(this, desc) }
@@ -118,14 +118,15 @@ class ChunkPosMultiColumnExposedDelegateNullable(
         return if (
             x != null && z != null
         ) ChunkPos(
-            x, z
+            x,
+            z
         ) else null
     }
 
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: ChunkPos?,
+        value: ChunkPos?
     ) {
         entity.apply {
             xColumn.setValue(entity, desc, value?.x)

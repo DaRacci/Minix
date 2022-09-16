@@ -10,7 +10,6 @@ interface HeadBuilder : BaseItemBuilder<HeadBuilder, SkullMeta> {
      * Set the texture of the head.
      * Has a defined UUID to be consistent.
      */
-    @Suppress("CastToNullableType", "UNCHECKED_CAST")
     var texture: String
 
     /**

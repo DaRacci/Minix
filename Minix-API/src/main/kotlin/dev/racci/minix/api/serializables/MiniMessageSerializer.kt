@@ -17,10 +17,10 @@ object MiniMessageSerializer : KSerializer<Component> {
 
     override fun serialize(
         encoder: Encoder,
-        value: Component,
+        value: Component
     ) = encoder.encodeString(miniMessage().serializeOrNull(value)!!)
 
     override fun deserialize(
-        decoder: Decoder,
+        decoder: Decoder
     ): Component = miniMessage().parse(decoder.decodeString())
 }

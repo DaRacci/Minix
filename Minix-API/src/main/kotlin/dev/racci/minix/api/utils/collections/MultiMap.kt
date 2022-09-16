@@ -7,7 +7,7 @@ import org.jetbrains.annotations.ApiStatus
 @Serializable
 class MultiMap<K, V> internal constructor(
     @ApiStatus.Internal
-    val map: MutableMap<K, MutableCollection<V>?> = mutableMapOf(),
+    val map: MutableMap<K, MutableCollection<V>?> = mutableMapOf()
 ) {
 
     /**
@@ -45,7 +45,7 @@ class MultiMap<K, V> internal constructor(
      */
     fun put(
         key: K,
-        value: V,
+        value: V
     ) {
         if (map[key] == null) {
             map[key] = ArrayList()
@@ -59,7 +59,7 @@ class MultiMap<K, V> internal constructor(
      */
     fun putIfAbsent(
         key: K,
-        value: V,
+        value: V
     ) {
         if (map[key] == null) {
             map[key] = ArrayList()
@@ -76,7 +76,7 @@ class MultiMap<K, V> internal constructor(
      */
     fun addAll(
         key: K,
-        vararg values: V,
+        vararg values: V
     ) {
         if (map[key] == null) {
             map[key] = ArrayList()
@@ -127,7 +127,7 @@ class MultiMap<K, V> internal constructor(
      */
     fun remove(
         key: K,
-        value: V,
+        value: V
     ): Boolean = if (map[key] != null) {
         map[key]!!.remove(value)
         true
@@ -140,7 +140,7 @@ class MultiMap<K, V> internal constructor(
     fun replace(
         key: K,
         oldValue: V,
-        newValue: V,
+        newValue: V
     ): Boolean = if (map[key] != null && map[key]!!.remove(oldValue)) {
         map[key]!!.add(newValue)
         true

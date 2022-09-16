@@ -10,7 +10,7 @@ fun String.centralize(
     length: Int,
     spacer: String = " ",
     prefix: String = "",
-    suffix: String = "",
+    suffix: String = ""
 ): String {
     if (this.length >= length) return this
     val part = prefix + spacer.repeat((length - this.length) / 2) + suffix

@@ -1,7 +1,6 @@
 package dev.racci.minix.api.serializables
 
 import dev.racci.minix.api.utils.primitive.EnumUtils
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
@@ -31,7 +30,7 @@ object AttributeModifierSerializer : KSerializer<AttributeModifier> {
 
     override fun serialize(
         encoder: Encoder,
-        value: AttributeModifier,
+        value: AttributeModifier
     ) = encoder.encodeStructure(descriptor) {
         encodeSerializableElement(descriptor, 0, UUIDSerializer, value.uniqueId)
         encodeStringElement(descriptor, 1, value.name)
@@ -42,7 +41,6 @@ object AttributeModifierSerializer : KSerializer<AttributeModifier> {
         }
     }
 
-    @OptIn(ExperimentalSerializationApi::class)
     override fun deserialize(decoder: Decoder): AttributeModifier {
         var uuid: UUID? = null
         var name: String? = null
@@ -67,7 +65,7 @@ object AttributeModifierSerializer : KSerializer<AttributeModifier> {
             amount ?: error("Amount cannot be null for AttributeModifier"),
             EnumUtils.getByName<AttributeModifier.Operation>(operation)
                 ?: error("Operation cannot be null for AttributeModifier"),
-            EnumUtils.getByName<EquipmentSlot>(slot),
+            EnumUtils.getByName<EquipmentSlot>(slot)
         )
     }
 
@@ -75,7 +73,7 @@ object AttributeModifierSerializer : KSerializer<AttributeModifier> {
         override fun serialize(
             type: Type,
             obj: AttributeModifier?,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ) {
             if (obj == null) { node.raw(null); return }
             node.set(obj.serialize())
@@ -83,7 +81,7 @@ object AttributeModifierSerializer : KSerializer<AttributeModifier> {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): AttributeModifier = node.get<Map<String, Any>>()?.let(AttributeModifier::deserialize) ?: throw SerializationException(type, "AttributeModifier cannot be null")
     }
 }

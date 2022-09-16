@@ -20,13 +20,13 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 @SerialName("shaped")
 class ShapedRecipeIngredients(
     val items: Map<String, SerializableItemStack>,
-    val configuration: String = "",
+    val configuration: String = ""
 ) : SerializableRecipeIngredients() {
 
     override fun toRecipe(
         key: NamespacedKey,
         result: ItemStack,
-        group: String,
+        group: String
     ): Recipe {
         val recipe = ShapedRecipe(key, result)
 

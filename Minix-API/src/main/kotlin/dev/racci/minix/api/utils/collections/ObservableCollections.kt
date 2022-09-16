@@ -15,20 +15,26 @@ typealias ObservableListenerEntry<K, V> = (K, V, ObservableAction) -> Unit
 enum class ObservableAction { ADD, ADD_ALL, SET, REPLACE, REMOVE, REMOVE_ALL, CLEAR }
 
 @MinixExperimental fun <T> observableListOf(vararg items: T) = ObservableList(items.toMutableList())
+
 @MinixExperimental fun <T> observableSetOf(vararg items: T) = ObservableSet(items.toMutableSet())
+
 @MinixExperimental fun <K, V> observableMapOf(vararg items: Pair<K, V>) = ObservableMap(mutableMapOf(*items))
 
 @MinixExperimental fun <T> observableListOf(mutableList: MutableList<T>) = mutableList.asObservable()
+
 @MinixExperimental fun <T> observableSetOf(mutableSet: MutableSet<T>) = mutableSet.asObservable()
+
 @MinixExperimental fun <K, V> observableMapOf(mutableMap: MutableMap<K, V>) = mutableMap.asObservable()
 
 @MinixExperimental fun <T> MutableList<T>.asObservable() = ObservableList(this)
+
 @MinixExperimental fun <T> MutableSet<T>.asObservable() = ObservableSet(this)
+
 @MinixExperimental fun <K, V> MutableMap<K, V>.asObservable() = ObservableMap(this)
 
 @MinixExperimental
 class ObservableList<T> internal constructor(
-    private val list: MutableList<T>,
+    private val list: MutableList<T>
 ) : MutableList<T> by list, ObservableCollection<T>() {
 
     override val listeners = multiMapOf<Function<Unit>, ObservableAction?>()
@@ -40,7 +46,7 @@ class ObservableList<T> internal constructor(
 
     override fun add(
         index: Int,
-        element: T,
+        element: T
     ) {
         runListeners<ObservableListenerIndex<T>>(element, index, ObservableAction.ADD)
         return list.add(index, element)
@@ -48,7 +54,7 @@ class ObservableList<T> internal constructor(
 
     override fun addAll(
         index: Int,
-        elements: Collection<T>,
+        elements: Collection<T>
     ): Boolean {
         runListeners<ObservableListenerCollectionIndex<T>>(elements, index, ObservableAction.ADD_ALL)
         return list.addAll(index, elements)
@@ -97,7 +103,7 @@ class ObservableList<T> internal constructor(
 
     override fun set(
         index: Int,
-        element: T,
+        element: T
     ): T = list.set(index, element).apply {
         runListeners<ObservableListenerIndex<T>>(element, index, ObservableAction.SET)
     }
@@ -106,7 +112,7 @@ class ObservableList<T> internal constructor(
 @MinixExperimental
 class ObservableMutableListIterator<T>(
     private val iterator: MutableListIterator<T>,
-    private val runListeners: ObservableListener<T>,
+    private val runListeners: ObservableListener<T>
 ) : MutableListIterator<T> by iterator {
 
     override fun add(element: T) {
@@ -127,7 +133,7 @@ class ObservableMutableListIterator<T>(
 
 @MinixExperimental
 class ObservableSet<T> internal constructor(
-    private val set: MutableSet<T>,
+    private val set: MutableSet<T>
 ) : MutableSet<T> by set, ObservableCollection<T>() {
 
     override val listeners = multiMapOf<Function<Unit>, ObservableAction?>()
@@ -146,7 +152,7 @@ class ObservableSet<T> internal constructor(
     }
 
     override fun iterator(): MutableIterator<T> = ObservableMutableIterator(
-        set.iterator(),
+        set.iterator()
     ) { value, action -> runListeners<ObservableListener<T>>(value, action) }
 
     override fun remove(element: T): Boolean = set.remove(element).ifTrue {
@@ -167,7 +173,7 @@ class ObservableSet<T> internal constructor(
 @MinixExperimental
 class ObservableMutableIterator<T>(
     private val iterator: MutableIterator<T>,
-    private val runListeners: ObservableListener<T>,
+    private val runListeners: ObservableListener<T>
 ) : MutableIterator<T> by iterator {
 
     override fun remove() {
@@ -178,7 +184,7 @@ class ObservableMutableIterator<T>(
 
 @MinixExperimental
 class ObservableMap<K, V> internal constructor(
-    private val map: MutableMap<K, V>,
+    private val map: MutableMap<K, V>
 ) : MutableMap<K, V> by map, ObservableHolder<Pair<K, V>>() {
 
     override val listeners = multiMapOf<Function<Unit>, ObservableAction?>()
@@ -190,7 +196,7 @@ class ObservableMap<K, V> internal constructor(
 
     override fun put(
         key: K,
-        value: V,
+        value: V
     ): V? {
         val old = map.put(key, value)
         runListeners<ObservableListenerEntry<K, V>>(key, value, old, ObservableAction.ADD)
@@ -204,7 +210,7 @@ class ObservableMap<K, V> internal constructor(
 
     override fun putIfAbsent(
         key: K,
-        value: V,
+        value: V
     ): V? {
         var v = get(key)
         if (v == null) {
@@ -222,7 +228,7 @@ class ObservableMap<K, V> internal constructor(
 
     override fun remove(
         key: K,
-        value: V,
+        value: V
     ): Boolean {
         val bool = map.remove(key, value)
         bool.ifTrue { runListeners<ObservableListenerEntry<K, V>>(key, bool, ObservableAction.REMOVE) }
@@ -232,7 +238,7 @@ class ObservableMap<K, V> internal constructor(
     override fun replace(
         key: K,
         first: V,
-        second: V,
+        second: V
     ): Boolean {
         val bool = map.replace(key, first, second)
         bool.ifTrue { runListeners<ObservableListenerEntry<K, V>>(key, bool, ObservableAction.REMOVE) }
@@ -241,7 +247,7 @@ class ObservableMap<K, V> internal constructor(
 
     override fun replace(
         key: K,
-        value: V,
+        value: V
     ): V? {
         var curValue: V?
         if (get(key).also { curValue = it } != null || containsKey(key)) {
@@ -262,7 +268,7 @@ abstract class ObservableHolder<T> {
 
     inline fun <reified F : Function<Unit>> observe(
         vararg action: ObservableAction?,
-        listener: F,
+        listener: F
     ) = listeners.addAll(listener, *action)
 
     // TODO: Improve efficiency, this is currently current inefficient and with multiple listeners it builds up a lot of garbage

@@ -15,23 +15,23 @@ fun Entity<*>.block(
     worldColumn: Column<String>,
     xColumn: Column<Int>,
     yColumn: Column<Int>,
-    zColumn: Column<Int>,
+    zColumn: Column<Int>
 ) = BlockMultiColumnExposedDelegate(worldColumn, xColumn, yColumn, zColumn)
 
 fun Entity<*>.nullableBlock(
     worldColumn: Column<String?>,
     xColumn: Column<Int?>,
     yColumn: Column<Int?>,
-    zColumn: Column<Int?>,
+    zColumn: Column<Int?>
 ) = BlockMultiColumnExposedDelegateNullable(worldColumn, xColumn, yColumn, zColumn)
 
 class BlockExposedDelegate(
-    val column: Column<String>,
+    val column: Column<String>
 ) : ExposedDelegate<Block> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): Block {
         val data = entity.run { column.getValue(this, desc) }
         val slices = data.split(";")
@@ -45,7 +45,7 @@ class BlockExposedDelegate(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: Block,
+        value: Block
     ) {
         val parsed = value.run { "${world.name};$x;$y;$z" }
         entity.apply { column.setValue(this, desc, parsed) }
@@ -53,12 +53,12 @@ class BlockExposedDelegate(
 }
 
 class BlockExposedDelegateNullable(
-    val column: Column<String?>,
+    val column: Column<String?>
 ) : ExposedDelegate<Block?> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): Block? {
         val data = entity.run { column.getValue(this, desc) }
         val slices = data?.split(";")
@@ -74,7 +74,7 @@ class BlockExposedDelegateNullable(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: Block?,
+        value: Block?
     ) {
         val parsed = value?.run { "${world.name};$x;$y;$z" }
         entity.apply { column.setValue(this, desc, parsed) }
@@ -85,12 +85,12 @@ class BlockMultiColumnExposedDelegate(
     val worldColumn: Column<String>,
     val xColumn: Column<Int>,
     val yColumn: Column<Int>,
-    val zColumn: Column<Int>,
+    val zColumn: Column<Int>
 ) : ExposedDelegate<Block> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): Block {
         val worldName = entity.run { worldColumn.getValue(this, desc) }
         val x = entity.run { xColumn.getValue(this, desc) }
@@ -103,7 +103,7 @@ class BlockMultiColumnExposedDelegate(
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: Block,
+        value: Block
     ) {
         entity.apply {
             value.apply {
@@ -120,12 +120,12 @@ class BlockMultiColumnExposedDelegateNullable(
     val worldColumn: Column<String?>,
     val xColumn: Column<Int?>,
     val yColumn: Column<Int?>,
-    val zColumn: Column<Int?>,
+    val zColumn: Column<Int?>
 ) : ExposedDelegate<Block?> {
 
     override operator fun <ID : Comparable<ID>> getValue(
         entity: Entity<ID>,
-        desc: KProperty<*>,
+        desc: KProperty<*>
     ): Block? {
         val worldName = entity.run { worldColumn.getValue(this, desc) }
         val x = entity.run { xColumn.getValue(this, desc) }
@@ -136,14 +136,16 @@ class BlockMultiColumnExposedDelegateNullable(
             worldName != null &&
             x != null && y != null && z != null
         ) Bukkit.getWorld(worldName)?.getBlockAt(
-            x, y, z
+            x,
+            y,
+            z
         ) else null
     }
 
     override operator fun <ID : Comparable<ID>> setValue(
         entity: Entity<ID>,
         desc: KProperty<*>,
-        value: Block?,
+        value: Block?
     ) {
         entity.apply {
             worldColumn.setValue(entity, desc, value?.world?.name)

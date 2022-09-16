@@ -52,7 +52,7 @@ interface CoroutineScheduler {
      */
     fun runTask(
         plugin: MinixPlugin,
-        coroutineTask: CoroutineTask,
+        coroutineTask: CoroutineTask
     ): CoroutineTask
 
     /**
@@ -66,7 +66,7 @@ interface CoroutineScheduler {
     fun runTask(
         plugin: MinixPlugin,
         name: String? = null,
-        task: CoroutineBlock,
+        task: CoroutineBlock
     ): CoroutineTask
 
     /**
@@ -79,7 +79,7 @@ interface CoroutineScheduler {
      */
     fun runTask(
         plugin: MinixPlugin,
-        runnable: CoroutineRunnable,
+        runnable: CoroutineRunnable
     ): CoroutineTask
 
     /**
@@ -95,7 +95,7 @@ interface CoroutineScheduler {
     fun runTaskLater(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
-        delay: Duration,
+        delay: Duration
     ): CoroutineTask
 
     /**
@@ -112,7 +112,7 @@ interface CoroutineScheduler {
         plugin: MinixPlugin,
         name: String? = null,
         task: CoroutineBlock,
-        delay: Duration,
+        delay: Duration
     ): CoroutineTask
 
     /**
@@ -128,7 +128,7 @@ interface CoroutineScheduler {
     fun runTaskLater(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
-        delay: Duration,
+        delay: Duration
     ): CoroutineTask
 
     /**
@@ -147,7 +147,7 @@ interface CoroutineScheduler {
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
         delay: Duration,
-        period: Duration,
+        period: Duration
     ): CoroutineTask
 
     /**
@@ -167,7 +167,7 @@ interface CoroutineScheduler {
         name: String? = null,
         task: CoroutineBlock,
         delay: Duration,
-        period: Duration,
+        period: Duration
     ): CoroutineTask
 
     /**
@@ -186,7 +186,7 @@ interface CoroutineScheduler {
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
         delay: Duration,
-        period: Duration,
+        period: Duration
     ): CoroutineTask
 
     /**
@@ -199,7 +199,7 @@ interface CoroutineScheduler {
      */
     fun runAsyncTask(
         plugin: MinixPlugin,
-        coroutineTask: CoroutineTask,
+        coroutineTask: CoroutineTask
     ): CoroutineTask
 
     /**
@@ -213,7 +213,7 @@ interface CoroutineScheduler {
     fun runAsyncTask(
         plugin: MinixPlugin,
         name: String? = null,
-        task: CoroutineBlock,
+        task: CoroutineBlock
     ): CoroutineTask
 
     /**
@@ -227,7 +227,7 @@ interface CoroutineScheduler {
     fun runAsyncTask(
         plugin: MinixPlugin,
         name: String? = null,
-        runnable: CoroutineRunnable,
+        runnable: CoroutineRunnable
     ): CoroutineTask
 
     /**
@@ -243,7 +243,7 @@ interface CoroutineScheduler {
     fun runAsyncTaskLater(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
-        delay: Duration,
+        delay: Duration
     ): CoroutineTask
 
     /**
@@ -260,7 +260,7 @@ interface CoroutineScheduler {
         plugin: MinixPlugin,
         name: String? = null,
         task: CoroutineBlock,
-        delay: Duration,
+        delay: Duration
     ): CoroutineTask
 
     /**
@@ -276,7 +276,7 @@ interface CoroutineScheduler {
     fun runAsyncTaskLater(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
-        delay: Duration,
+        delay: Duration
     ): CoroutineTask
 
     /**
@@ -295,7 +295,7 @@ interface CoroutineScheduler {
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
         delay: Duration,
-        period: Duration,
+        period: Duration
     ): CoroutineTask
 
     /**
@@ -315,7 +315,7 @@ interface CoroutineScheduler {
         name: String? = null,
         task: CoroutineBlock,
         delay: Duration,
-        period: Duration,
+        period: Duration
     ): CoroutineTask
 
     /**
@@ -334,7 +334,7 @@ interface CoroutineScheduler {
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
         delay: Duration,
-        period: Duration,
+        period: Duration
     ): CoroutineTask
 
     companion object : CoroutineScheduler by getKoin().get()

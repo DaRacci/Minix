@@ -17,7 +17,7 @@ object BlockUtils {
         start: Block,
         materials: List<Material>,
         blocks: ArrayList<Block>,
-        limit: Int,
+        limit: Int
     ): ArrayList<Block> {
         for (face in BlockFace.values()) {
             val block = start.getRelative(face)
@@ -42,7 +42,7 @@ object BlockUtils {
     fun getVein(
         start: Block,
         materials: List<Material>,
-        limit: Int,
+        limit: Int
     ): ArrayList<Block> = getNearbyBlocks(start, materials, ArrayList(), limit)
 
     /**
@@ -97,7 +97,7 @@ object BlockUtils {
      */
     fun getPlacedAgainstFace(
         existing: Block,
-        newBlock: Block?,
+        newBlock: Block?
     ): BlockFace {
         for (blockFace in BlockFace.values()) {
             if (existing.getRelative(blockFace) == newBlock) return blockFace

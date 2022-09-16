@@ -1,5 +1,3 @@
-@file:Suppress("Unused", "MemberVisibilityCanBePrivate", "UseDataClass")
-
 package dev.racci.minix.api.serializables
 
 import com.destroystokyo.paper.profile.CraftPlayerProfile
@@ -32,9 +30,9 @@ import java.util.UUID
 
 /**
  * A wrapper for [ItemStack] that uses [kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
- * Allows for easy-to-use serialization to JSON (or YAML with kaml).
+ * Allows for easy-to-use serialization to JSON (or YAML with kml).
  *
- * Currently missing many things spigot's item serialization contains, but way cleaner to use!
+ * Currently, missing many things spigot's item serialization contains, but way cleaner to use!
  */
 @Serializable
 @ConfigSerializable
@@ -43,7 +41,7 @@ class SerializableItemStack(
     @SerialName("Amount") var amount: Int = 1,
     @SerialName("Meta") var meta: SerializableItemMeta? = null,
     @SerialName("SkullMeta") var skullMeta: SerializableSkullMeta? = null,
-    @SerialName("Tag") var tag: String = "",
+    @SerialName("Tag") var tag: String = ""
 //    @SerialName("PDC") var tag: ImmutableMap<
 //          @Serializable(with = NamespacedKeySerializer::class) NamespacedKey, String>? = null,
 ) {
@@ -98,7 +96,7 @@ class SerializableItemMeta(
     var attributeModifiers: MultiMap<Attribute,
         /*@Serializable(with = AttributeModifierSerializer::class)*/ @Contextual AttributeModifier>? = null,
     @SerialName("Damage")
-    var damage: Int? = null,
+    var damage: Int? = null
 )
 
 fun SerializableItemMeta.Companion.dsl(block: SerializableItemMeta.() -> Unit): SerializableItemMeta {
@@ -111,12 +109,13 @@ fun SerializableItemMeta.Companion.dsl(block: SerializableItemMeta.() -> Unit): 
 @ConfigSerializable
 class SerializableSkullMeta {
 
-    @SerialName("Owner")
-    var owner: @Serializable(with = UUIDSerializer::class) UUID? = null
+    @[SerialName("Owner") Serializable(with = UUIDSerializer::class)]
+    var owner: UUID? = null
 
     @SerialName("Texture")
     var texture: String? = null
 
+    @Suppress("DEPRECATION")
     fun applyTo(meta: ItemMeta) {
         if (meta !is SkullMeta) return
         if (meta.playerProfile == null) {
@@ -144,7 +143,6 @@ fun ItemStack.toSerializable(): SerializableItemStack {
         amount = this@toSerializable.amount
         meta = SerializableItemMeta.dsl {
             displayName = itemMeta.displayName()
-            localizedName = itemMeta.localizedName
             lore = itemMeta.lore()?.toImmutableList()
             customModelData = itemMeta.customModelData
             enchants = itemMeta.enchants.toImmutableMap()

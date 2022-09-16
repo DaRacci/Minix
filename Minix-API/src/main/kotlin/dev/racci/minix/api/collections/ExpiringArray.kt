@@ -2,8 +2,10 @@ package dev.racci.minix.api.collections
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import org.apiguardian.api.API
 import kotlin.time.Duration
 
+@API(status = API.Status.MAINTAINED, since = "3.2.1")
 class ExpiringArray<T>(val duration: Duration) : HashSet<T>() {
 
     /**

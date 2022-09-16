@@ -63,7 +63,7 @@ abstract class UpdateProvider : KoinComponent {
     abstract val latestFileName: String?
 
     /**
-     * Get the latest version's name (such as "Project v1.0").
+     * Get the latest version's name (such as “Project v1.0").
      *
      * @return latest version's name.
      * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
@@ -73,7 +73,7 @@ abstract class UpdateProvider : KoinComponent {
     open val latestName: String? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a name!")
 
     /**
-     * Get the latest version's game version (such as "CB 1.7.2-R0.3" or "1.9").
+     * Get the latest version's game version (such as “CB 1.7.2-R0.3" or "1.9").
      *
      * @return latest version's game version.
      * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
@@ -83,7 +83,7 @@ abstract class UpdateProvider : KoinComponent {
     open val latestMinecraftVersion: String? get() = throw RequestTypeNotAvailableException("The $name update provider does not provide a minecraft version!")
 
     /**
-     * Get the latest version's compatible game versions as an string array (each element is a compatible version such as "CB 1.7.2-R0.3" or "1.9").
+     * Get the latest version's compatible game versions as a string array (each element is a compatible version such as “CB 1.7.2-R0.3" or "1.9").
      *
      * @return latest version's game version.
      * @throws RequestTypeNotAvailableException If the provider doesn't support the request type
@@ -95,7 +95,7 @@ abstract class UpdateProvider : KoinComponent {
     /**
      * Get the latest version's release type.
      *
-     * @return latest version's release type.
+     * @return the latest version's release type.
      *
      * @throws NotSuccessfullyQueriedException  If the provider has not been queried successfully before
      */
@@ -151,7 +151,7 @@ abstract class UpdateProvider : KoinComponent {
     open val providesDependencies: Boolean get() = false
 
     /**
-     * Make a connection to the provider an requests the file's details.
+     * Make a connection to the provider a requests the file's details.
      *
      * @return The update result from the query.
      */

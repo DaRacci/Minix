@@ -11,7 +11,6 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
-@Suppress("ComplexInterface")
 interface BaseItemBuilder<B : BaseItemBuilder<B, M>, M : ItemMeta> {
 
     var itemStack: ItemStack
@@ -19,7 +18,7 @@ interface BaseItemBuilder<B : BaseItemBuilder<B, M>, M : ItemMeta> {
     var meta: M
 
     /**
-     * Get or set the amount of items in the stack.
+     * Get or set the number of items in the stack.
      */
     var amount: Int
 
@@ -39,7 +38,7 @@ interface BaseItemBuilder<B : BaseItemBuilder<B, M>, M : ItemMeta> {
     var model: Int?
 
     /**
-     * Get or add to these items flags.
+     * Get or add to these item flags.
      */
     var itemFlags: Set<ItemFlag>
 
@@ -49,8 +48,7 @@ interface BaseItemBuilder<B : BaseItemBuilder<B, M>, M : ItemMeta> {
     var isUnbreakable: Boolean
 
     /**
-     * A glowing item is an item with a dummy enchant like unbreaking 1 and
-     * the hide enchants flag.
+     * Makes this item glow by applying [Enchantment.DURABILITY] and [ItemFlag.HIDE_ENCHANTS]
      * ## Warning this will override any enchants on your item.
      */
     var glowing: Boolean

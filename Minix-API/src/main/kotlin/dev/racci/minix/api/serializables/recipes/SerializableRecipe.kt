@@ -13,7 +13,7 @@ class SerializableRecipe(
     val key: String,
     val ingredients: SerializableRecipeIngredients,
     val result: SerializableItemStack,
-    val group: String = "",
+    val group: String = ""
 ) {
 
     fun toCraftingRecipe() =

@@ -19,13 +19,13 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable
 @ConfigSerializable
 @SerialName("shapeless")
 class ShapelessRecipeIngredients(
-    val items: List<SerializableItemStack>,
+    val items: List<SerializableItemStack>
 ) : SerializableRecipeIngredients() {
 
     override fun toRecipe(
         key: NamespacedKey,
         result: ItemStack,
-        group: String,
+        group: String
     ): Recipe {
         val recipe = ShapelessRecipe(key, result)
         recipe.group = group

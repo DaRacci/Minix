@@ -39,7 +39,7 @@ interface ItemBuilderDSL {
      * banner specific methods.
      *
      * @param itemStack an existing banner [ItemStack]
-     * if none is supplied a new [Material.WHITE_BANNER] [ItemStack] is created
+     * if none is supplied a new [Material.WHITE_BANNER] [ItemStack] is created.
      * @param builder the dsl block.
      * @return A new [BannerBuilder]
      */
@@ -55,7 +55,7 @@ interface ItemBuilderDSL {
      * book specific methods.
      *
      * @param itemStack an existing book [ItemStack],
-     * if none is supplied a new [Material.WRITTEN_BOOK] [ItemStack] is created
+     * if none is supplied a new [Material.WRITTEN_BOOK] [ItemStack] is created.
      * @param builder the dsl block.
      * @return A new [BookBuilder]
      */
@@ -71,7 +71,7 @@ interface ItemBuilderDSL {
      * firework specific methods.
      *
      * @param itemStack an existing firework [ItemStack]
-     * if none is supplied a new [Material.FIREWORK_ROCKET] [ItemStack] is created
+     * if none is supplied a new [Material.FIREWORK_ROCKET] [ItemStack] is created.
      * @param builder the dsl block.
      * @return A new [FireworkBuilder]
      */
@@ -87,7 +87,7 @@ interface ItemBuilderDSL {
      * map specific methods.
      *
      * @param itemStack An existing map [ItemStack]
-     * if none is supplied a new [Material.MAP] [ItemStack] is created
+     * if none is supplied a new [Material.MAP] [ItemStack] is created.
      * @param builder the dsl block.
      * @return A new [MapBuilder]
      */
@@ -103,7 +103,7 @@ interface ItemBuilderDSL {
      * player head specific methods.
      *
      * @param itemStack An existing player head [ItemStack]
-     * if none is supplied a new [Material.PLAYER_HEAD] [ItemStack] is created
+     * if none is supplied a new [Material.PLAYER_HEAD] [ItemStack] is created.
      * @param builder the dsl block.
      * @return A new [HeadBuilder]
      */

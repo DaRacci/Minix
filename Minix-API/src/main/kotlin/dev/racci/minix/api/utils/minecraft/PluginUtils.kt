@@ -17,12 +17,12 @@ object PluginUtils : UtilObject by UtilObject {
      * otherwise, returns null.
      */
     inline fun <reified T : Plugin> MinixPlugin.softDepend(
-        pluginName: String,
+        pluginName: String
     ) = softDepend(T::class, pluginName)
 
     fun <T : Plugin> MinixPlugin.softDepend(
         type: KClass<T>,
-        pluginName: String,
+        pluginName: String
     ) = SoftDependencyDelegate(pluginName, type)
 
     /**
@@ -30,17 +30,17 @@ object PluginUtils : UtilObject by UtilObject {
      * is not available.
      */
     inline fun <reified T : Plugin> MinixPlugin.depend(
-        pluginName: String,
+        pluginName: String
     ) = depend(T::class, pluginName)
 
     fun <T : Plugin> MinixPlugin.depend(
         type: KClass<T>,
-        pluginName: String,
+        pluginName: String
     ) = DependencyDelegate(pluginName, type)
 
     class DependencyDelegate<T : Plugin>(
         val pluginName: String,
-        val type: KClass<T>,
+        val type: KClass<T>
     ) : ReadOnlyProperty<MinixPlugin, T> {
 
         // private var isDisabled = false
@@ -49,7 +49,7 @@ object PluginUtils : UtilObject by UtilObject {
         @Suppress("UNCHECKED_CAST")
         override fun getValue(
             thisRef: MinixPlugin,
-            property: KProperty<*>,
+            property: KProperty<*>
         ): T {
             if (cache == null) {
                 val plugin = pm.getPlugin(pluginName)
@@ -74,7 +74,7 @@ object PluginUtils : UtilObject by UtilObject {
 
     class SoftDependencyDelegate<T : Plugin>(
         val pluginName: String,
-        val type: KClass<T>,
+        val type: KClass<T>
     ) : ReadOnlyProperty<MinixPlugin, T?> {
 
         private var alreadySearch: Boolean = false
@@ -83,7 +83,7 @@ object PluginUtils : UtilObject by UtilObject {
         @Suppress("UNCHECKED_CAST")
         override fun getValue(
             thisRef: MinixPlugin,
-            property: KProperty<*>,
+            property: KProperty<*>
         ): T? {
             if (!alreadySearch) {
                 val plugin = pm.getPlugin(pluginName) ?: return null

@@ -11,13 +11,13 @@ object LoggingLevelSerializer : TypeSerializer<Level> {
 
     override fun deserialize(
         type: Type,
-        node: ConfigurationNode,
+        node: ConfigurationNode
     ): Level = node.get<String>()?.let(Level::parse) ?: throw SerializationException(type, "Invalid logging level: ${node.get<String>()}")
 
     override fun serialize(
         type: Type,
         obj: Level?,
-        node: ConfigurationNode,
+        node: ConfigurationNode
     ) {
         if (obj == null) { node.raw(null); return }
         node.set(obj.name)

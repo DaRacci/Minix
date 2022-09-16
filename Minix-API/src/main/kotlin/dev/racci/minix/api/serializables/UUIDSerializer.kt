@@ -1,5 +1,3 @@
-@file:Suppress("Unused")
-
 package dev.racci.minix.api.serializables
 
 import kotlinx.serialization.KSerializer
@@ -16,7 +14,7 @@ object UUIDSerializer : KSerializer<UUID> {
 
     override fun serialize(
         encoder: Encoder,
-        value: UUID,
+        value: UUID
     ) = encoder.encodeString(value.toString())
 
     override fun deserialize(decoder: Decoder): UUID =

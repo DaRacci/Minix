@@ -1,5 +1,3 @@
-@file:Suppress("Unused")
-
 package dev.racci.minix.api.serializables
 
 import kotlinx.serialization.KSerializer
@@ -22,7 +20,7 @@ object VectorSerializer : KSerializer<Vector> {
 
     override fun serialize(
         encoder: Encoder,
-        value: Vector,
+        value: Vector
     ) = with(value) {
         encoder.encodeSerializableValue(serializer, listOf(x, y, z))
     }
@@ -37,7 +35,7 @@ object VectorSerializer : KSerializer<Vector> {
         override fun serialize(
             type: Type,
             obj: Vector?,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ) {
             if (obj == null) {
                 node.raw(null); return
@@ -47,7 +45,7 @@ object VectorSerializer : KSerializer<Vector> {
 
         override fun deserialize(
             type: Type,
-            node: ConfigurationNode,
+            node: ConfigurationNode
         ): Vector = node.get<Map<String, Any>>()?.let(Vector::deserialize) ?: throw SerializationException(type, "Cannot deserialize null")
     }
 }

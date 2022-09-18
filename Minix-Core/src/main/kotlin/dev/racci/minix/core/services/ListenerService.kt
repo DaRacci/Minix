@@ -21,8 +21,9 @@ import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.extensions.pluginManager
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.utils.accessWith
+import dev.racci.minix.api.utils.accessReturn
 import dev.racci.minix.api.utils.classConstructor
+import dev.racci.minix.api.utils.collections.CollectionUtils.first
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.unsafeCast
 import org.bukkit.Material
@@ -247,15 +248,18 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
         @Suppress("UnstableApiUsage")
         event<PluginEnableEvent> {
             if (this.plugin.name != "eco") return@event
-            val graph = SimplePluginManager::class.declaredMemberProperties.first { it.name == "dependencyGraph" }.accessWith { get(pluginManager.unsafeCast()) }.unsafeCast<MutableGraph<String>>()
+
+            val graph = SimplePluginManager::class.declaredMemberProperties
+                .first("dependencyGraph")
+                .accessReturn { get(pluginManager.unsafeCast()) } as MutableGraph<String>
             val patched = Graphs.reachableNodes(graph, this.plugin.description.name).contains("Minix")
 
             if (!patched) {
-                log.error { "Eco doesn't appear to be patched to work with Minix, Please obtain the patch or disable all Eco plugins." }
+                logger.error { "Eco doesn't appear to be patched to work with Minix, Please obtain the patch or disable all Eco plugins." }
                 pluginManager.disablePlugin(this.plugin)
             }
 
-            log.info { "Eco is patched, hopefully no linkage errors!" }
+            logger.info { "Eco is patched, hopefully no linkage errors!" }
         }
     }
 

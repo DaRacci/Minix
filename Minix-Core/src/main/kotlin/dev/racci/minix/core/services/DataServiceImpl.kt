@@ -19,14 +19,11 @@ import dev.racci.minix.api.serializables.Serializer
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.Companion.nonVirtualNode
-import dev.racci.minix.api.utils.Closeable
 import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.ifInitialized
 import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
-import kotlinx.coroutines.newSingleThreadContext
+import io.papermc.paper.configuration.constraint.Constraint
 import kotlinx.coroutines.runBlocking
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer
 import org.bukkit.plugin.Plugin
@@ -56,17 +53,11 @@ import kotlin.reflect.full.hasAnnotation
 
 @MappedExtension(Minix::class, "Data Service", bindToKClass = DataService::class)
 class DataServiceImpl(override val plugin: Minix) : DataService() {
-    @OptIn(DelicateCoroutinesApi::class)
-    private val threadContext = object : Closeable<ExecutorCoroutineDispatcher>() {
-        override fun create() = newSingleThreadContext("Data Service Thread")
-        override fun onClose() { value.value?.close() }
-    }
-
     val configDataHolder: LoadingCache<KClass<out MinixConfig<*>>, ConfigData<out MinixConfig<*>>> = Caffeine.newBuilder()
-        .executor(threadContext.get().executor)
+        .executor(dispatcher.get().executor)
         .removalListener<KClass<*>, ConfigData<*>> { key, value, cause ->
             if (key == null || value == null || cause == RemovalCause.REPLACED) return@removalListener
-            log.info { "Saving and disposing configurate class ${key.simpleName}." }
+            logger.info { "Saving and disposing configurate class ${key.simpleName}." }
 
             value.configInstance.handleUnload()
             if (value.configLoader.canSave()) {
@@ -75,7 +66,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
             getKoin().get<PluginServiceImpl>()[plugin].configurations.remove(value.kClass.unsafeCast())
         }
-        .build { key -> runBlocking(threadContext.get()) { ConfigData(key) } }
+        .build { key -> runBlocking(dispatcher.get()) { ConfigData(key) } }
 
     private val dataSource = lazy {
         HikariConfig().apply {

@@ -7,6 +7,7 @@ import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty
+import kotlin.reflect.KProperty1
 
 /**
  * Utilities for Generic Collections.
@@ -80,6 +81,32 @@ object CollectionUtils : UtilObject by UtilObject {
         name: String,
         ignoreCase: Boolean = false
     ): KFunction<T>? = find { it.name.equals(name, ignoreCase) }
+
+    fun <T> Collection<T>.first(
+        name: String,
+        ignoreCase: Boolean = false,
+        selector: (T) -> String
+    ): T = first { selector(it).equals(name, ignoreCase) }
+
+    fun Collection<String>.first(
+        name: String,
+        ignoreCase: Boolean = false
+    ): String = first { it.equals(name, ignoreCase) }
+
+    fun <T> Collection<KProperty<T>>.first(
+        name: String,
+        ignoreCase: Boolean = false
+    ): KProperty<T> = first { it.name.equals(name, ignoreCase) }
+
+    fun <R : Any, T> Collection<KProperty1<R, T>>.first(
+        name: String,
+        ignoreCase: Boolean = false
+    ): KProperty1<R, T> = first { it.name.equals(name, ignoreCase) }
+
+    fun <T> Collection<KFunction<T>>.first(
+        name: String,
+        ignoreCase: Boolean = false
+    ): KFunction<T> = first { it.name.equals(name, ignoreCase) }
 
     fun <T> Collection<T>.find(
         name: String,

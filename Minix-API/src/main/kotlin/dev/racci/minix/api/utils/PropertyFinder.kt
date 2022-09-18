@@ -8,23 +8,27 @@ import kotlin.reflect.full.declaredMemberProperties
 abstract class PropertyFinder<R> {
     @Transient
     @kotlinx.serialization.Transient
-    private val propertyMap: PersistentMap<String, KProperty1<Any, R>>
+    val propertyMap: PersistentMap<String, KProperty1<Any, R>>
 
-    operator fun get(key: String): R = propertyMap[key]?.get(this) ?: throw IllegalArgumentException("No property found for $key")
+    open operator fun get(key: String): R {
+        return propertyMap[formatString(key)]?.get(this) ?: throw IllegalArgumentException("Property $key not found")
+    }
 
     init {
         val properties = this::class.declaredMemberProperties.filterIsInstance<KProperty1<Any, R>>()
-        propertyMap = properties.associateBy { property ->
-            buildString {
-                for ((index, char) in property.name.withIndex()) {
-                    if (index == 0 || char.isLowerCase()) {
-                        append(char)
-                        continue
-                    }
+        propertyMap = properties.associateBy { property -> formatString(property.name) }.toPersistentMap()
+    }
 
-                    append('.').append(char.lowercaseChar())
+    companion object {
+        fun formatString(string: String) = buildString {
+            for ((index, char) in string.withIndex()) {
+                if (index == 0 || char.isLowerCase()) {
+                    append(char)
+                    continue
                 }
+
+                append('.').append(char.lowercaseChar())
             }
-        }.toPersistentMap()
+        }
     }
 }

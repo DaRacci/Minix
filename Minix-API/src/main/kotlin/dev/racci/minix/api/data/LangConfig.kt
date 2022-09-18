@@ -13,29 +13,28 @@ import kotlin.reflect.full.declaredMemberProperties
 @ConfigSerializable
 abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
 
-    open val prefixes: Map<String, String> = mapOf()
+    abstract val prefixes: Map<String, String>
 
     override fun load() {
         super.load()
         val map = prefixes.mapKeys {
-            if (it.key.startsWith("<prefix_") && it.key.endsWith(">")) {
+            if (it.key.startsWith("<prefix:") && it.key.endsWith(">")) {
                 it.key
-            } else "<prefix_${it.key}>"
+            } else "<prefix:${it.key}>"
         }
 
-        this.onNestedInstance<PropertyFinder<PartialComponent>> {
-            this::class.declaredMemberProperties
-                .filterIsInstance<KProperty1<PropertyFinder<PartialComponent>, PartialComponent>>()
-                .map { it.getter.call(this) }
-                .forEach { it.formatRaw(map) }
-        }
+        this.onNestedInstance<PartialComponent> { formatRaw(map) }
     }
 
     operator fun get(key: String, vararg placeholder: Pair<String, () -> Any>): Component {
-        val keys = key.split(".")
+        val keys = PropertyFinder.formatString(key).split(".")
         if (keys.size <= 1) return MiniMessage.miniMessage().deserialize("Invalid key: $key")
 
-        val prop = LangConfig::class.declaredMemberProperties.find { it.name == keys[0] } ?: return MiniMessage.miniMessage().deserialize("No Property found for $key")
+        val prop = this::class.declaredMemberProperties
+            .filterIsInstance<KProperty1<LangConfig<P>, Any>>()
+            .onEach { logger.debug { "Checking property ${it.name} for key $key" } }
+            .find { it.name == keys[0] } ?: return MiniMessage.miniMessage().deserialize("No Property found for $key")
+
         val value = prop.get(this).safeCast<PropertyFinder<PartialComponent>>() ?: return MiniMessage.miniMessage().deserialize("$key's return type is not a property finder class.")
 
         return value[key.substringAfter('.')].get(*placeholder)

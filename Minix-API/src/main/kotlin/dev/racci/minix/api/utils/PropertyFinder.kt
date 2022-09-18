@@ -22,12 +22,16 @@ abstract class PropertyFinder<R> {
     companion object {
         fun formatString(string: String) = buildString {
             for ((index, char) in string.withIndex()) {
-                if (index == 0 || char.isLowerCase()) {
+                if (index == 0 || char.isLowerCase() || !char.isLetter()) {
                     append(char)
                     continue
                 }
 
-                append('.').append(char.lowercaseChar())
+                if (lastOrNull() != null && last() != '.') {
+                    append('.')
+                }
+
+                append(char.lowercaseChar())
             }
         }
     }

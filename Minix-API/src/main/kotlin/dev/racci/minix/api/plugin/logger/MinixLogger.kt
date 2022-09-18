@@ -90,7 +90,7 @@ abstract class MinixLogger {
         if (level == this.level) return level
 
         val previous = this.atomicLevel.getAndSet(level)
-        this.debug { "${this.atomicLevel} -> $level" }
+        this.trace { "$previous -> ${this.atomicLevel.value}" }
 
         return previous
     }
@@ -330,8 +330,8 @@ abstract class MinixLogger {
      * This allows for easy filtering using [Int] comparisons.
      */
     @API(status = API.Status.STABLE, since = "3.2.0")
-    enum class LoggingLevel {
-        FATAL, ERROR, WARN, INFO, DEBUG, TRACE;
+    enum class LoggingLevel(val level: Int) {
+        FATAL(0), ERROR(2), WARN(4), INFO(6), DEBUG(8), TRACE(10);
 
         inline fun <reified T : Any> convert(): T {
             return when {

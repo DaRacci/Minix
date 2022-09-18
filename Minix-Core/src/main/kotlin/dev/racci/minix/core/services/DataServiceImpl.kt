@@ -38,13 +38,16 @@ import org.spongepowered.configurate.CommentedConfigurationNode
 import org.spongepowered.configurate.ConfigurateException
 import org.spongepowered.configurate.NodePath.path
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader
+import org.spongepowered.configurate.kotlin.dataClassFieldDiscoverer
 import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.kotlin.extensions.set
-import org.spongepowered.configurate.kotlin.objectMapperFactory
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
+import org.spongepowered.configurate.objectmapping.ObjectMapper
+import org.spongepowered.configurate.objectmapping.meta.NodeResolver
 import org.spongepowered.configurate.serialize.TypeSerializer
 import org.spongepowered.configurate.serialize.TypeSerializerCollection
 import org.spongepowered.configurate.transformation.ConfigurationTransformation
+import org.spongepowered.configurate.util.NamingSchemes
 import java.io.File
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
@@ -156,7 +159,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
                 options.acceptsType(kClass.java)
                 options.shouldCopyDefaults(true)
                 options.serializers { serializerBuilder ->
-                    serializerBuilder.registerAnnotatedObjects(objectMapperFactory())
+                    serializerBuilder.registerAnnotatedObjects(objectMapper)
                         .registerAll(TypeSerializerCollection.defaults())
                         .registerAll(ConfigurateComponentSerializer.builder().build().serializers())
                         .registerAll(UpdateProvider.UpdateProviderSerializer.serializers)
@@ -218,6 +221,19 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
             }
 
             getKoin().get<PluginServiceImpl>()[plugin].configurations.add(kClass.unsafeCast())
+        }
+
+        private companion object {
+            val objectMapper: ObjectMapper.Factory = ObjectMapper.factoryBuilder()
+                .addDiscoverer(dataClassFieldDiscoverer())
+                .addNodeResolver { name, _ ->
+                    if (name == "\$\$delegate_0") {
+                        NodeResolver.SKIP_FIELD
+                    } else null
+                }
+                .addConstraint(Constraint::class.java, Constraint.Factory())
+                .defaultNamingScheme(NamingSchemes.CAMEL_CASE)
+                .build()
         }
     }
 

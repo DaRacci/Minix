@@ -112,8 +112,6 @@ buildNumber.properties
 
 # Common working directory
 run/
-/build/
 .gradle/
-/Minix-Core/build/
-/Minix-API/build/
+*build/
 gradle/

@@ -6,11 +6,13 @@ pluginManagement {
         maven("https://repo.racci.dev/releases")
         maven("https://papermc.io/repo/repository/maven-public/")
     }
+
     plugins {
         val kotlinVersion: String by settings
         kotlin("plugin.serialization") version kotlinVersion
         id("org.jetbrains.dokka") version kotlinVersion
     }
+
     val minixConventions: String by settings
     resolutionStrategy {
         eachPlugin {
@@ -34,5 +36,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "Minix"
 
-include("Minix-Core")
-include("Minix-API")
+include(":Minix-API")
+include(":Minix-Core")
+
+include(":minix-core")
+include(":minix-core:core-integrations")

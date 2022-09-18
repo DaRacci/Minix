@@ -19,8 +19,8 @@ import org.bukkit.entity.Player
 import java.util.Optional
 
 @MappedIntegration("Lands", Minix::class, RegionManager::class)
-class LandsIntegration(override val plugin: MinixPlugin) : RegionIntegration {
-    private val integration: LandsIntegration = LandsIntegration(plugin)
+class LandsRegionIntegration(override val plugin: MinixPlugin) : RegionIntegration {
+    private val integration = LandsIntegration(plugin)
     private val areaReference = HashBiMap.create<LandArea, AreaRegion>()
 
     override fun getRegion(

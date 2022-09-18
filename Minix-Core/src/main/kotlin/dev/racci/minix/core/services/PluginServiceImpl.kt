@@ -305,7 +305,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
     internal fun getModule(instance: Any): org.koin.core.module.Module {
         val module = module {
             val bind = bindToKClass(instance)
-            val binds = setOf(instance::class, bind).toTypedArray()
+            val binds = setOf(instance::class, bind).distinct().toTypedArray()
             single { instance }.binds(binds)
         }
 
@@ -443,6 +443,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             .enableAnnotationInfo()
             .disableNestedJarScanning()
             .disableRuntimeInvisibleAnnotations()
+            .rejectClasses(PluginServiceImpl::class.qualifiedName)
             .scan(4)
 
         if (plugin !is MinixImpl) plugin.log.info { "Ignore the following warning, this is expected behavior." }

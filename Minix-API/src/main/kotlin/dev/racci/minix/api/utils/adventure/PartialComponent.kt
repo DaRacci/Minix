@@ -46,6 +46,10 @@ class PartialComponent private constructor(private var raw: String) {
         _value = tmp
     }
 
+    override fun toString(): String {
+        return "PartialComponent(raw='$raw', _value='$_value', dirty=$dirty, cache=$cache)"
+    }
+
     companion object {
 
         fun of(raw: String): PartialComponent {

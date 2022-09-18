@@ -12,6 +12,7 @@ import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.exceptions.MissingAnnotationException
 import dev.racci.minix.api.exceptions.MissingPluginException
 import dev.racci.minix.api.extensions.log
+import dev.racci.minix.api.extensions.reflection.ifInitialised
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.logger.MinixLogger
@@ -20,7 +21,6 @@ import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.Companion.nonVirtualNode
 import dev.racci.minix.api.utils.getKoin
-import dev.racci.minix.api.utils.kotlin.ifInitialized
 import dev.racci.minix.api.utils.safeCast
 import dev.racci.minix.api.utils.unsafeCast
 import io.papermc.paper.configuration.constraint.Constraint
@@ -68,7 +68,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         }
         .build { key -> runBlocking(dispatcher.get()) { ConfigData(key) } }
 
-    private val dataSource = lazy {
+    private val dataSource by lazy {
         HikariConfig().apply {
             jdbcUrl = "jdbc:sqlite:${plugin.dataFolder.path}/database.db"
             connectionTestQuery = "SELECT 1"
@@ -77,16 +77,20 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
             addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
         }.let(::HikariDataSource)
     }
-    val database by lazy { Database.connect(dataSource.value) }
+    val database by lazy { Database.connect(dataSource) }
 
     override suspend fun handleLoad() {
         if (!plugin.dataFolder.exists() && !plugin.dataFolder.mkdirs()) {
-            log.error { "Failed to create data folder!" }
+            logger.error { "Failed to create data folder!" }
         }
     }
 
     override suspend fun handleUnload() {
-        dataSource.ifInitialized(HikariDataSource::close)
+        ::dataSource.ifInitialised {
+            logger.info { "Closing database connection." }
+            close()
+        }
+        dataSource::class
         configDataHolder.invalidateAll()
     }
 

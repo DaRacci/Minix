@@ -3,11 +3,13 @@ package dev.racci.minix.api.utils.reflection
 import dev.racci.minix.api.utils.PropertyFinder
 import dev.racci.minix.api.utils.UtilObject
 import dev.racci.minix.api.utils.accessReturn
+import org.apiguardian.api.API
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.isSubclassOf
 
+@API(status = API.Status.EXPERIMENTAL, since = "4.1.0")
 object NestedUtils : UtilObject by UtilObject {
 
     /**
@@ -48,40 +50,9 @@ object NestedUtils : UtilObject by UtilObject {
         clazz: KClass<*>,
         baseInstance: Any,
         curDepth: Int = 0,
-        maxDepth: Int = 9,
-        qualifier: String? = null
+        maxDepth: Int = 9
     ): Sequence<R> {
         if (curDepth > maxDepth) return emptySequence()
-
-        logger.trace { "Nested classes of ${clazz.qualifiedName} -> ${getNestedClasses(clazz).joinToString(", ") { it.qualifiedName!! }}" }
-
-//        if (curDepth > 0 && instance::class.qualifiedName?.startsWith(qualifier) == false) {
-//            logger.trace { "Skipping ${instance::class.qualifiedName} because it doesn't start with $qualifier" }
-//            return emptySequence()
-//        }
-
-//        val queue = Queues.newSynchronousQueue<Any>()
-//
-//        return sequence {
-//            while (queue.isNotEmpty()) {
-//                val instance = queue.remove()
-//
-//                if (instance::class.qualifiedName?.startsWith(qualifier) == false) {
-//                    logger.trace { "Skipping ${instance::class.qualifiedName} because it doesn't start with $qualifier" }
-//                    continue
-//                }
-//
-//                val nonNulls = instance::class.declaredMemberProperties
-//                    .filterIsInstance<KProperty1<Any, Any?>>()
-//                    .mapNotNull { it.accessReturn { get(instance) } }
-//
-//                try {
-//                    yield(instance as R)
-//                } catch (e: ClassCastException) { logger.trace(e) }
-//
-//                queue.addAll(nonNulls)
-//            }
-//        }
 
         return sequence {
             when {

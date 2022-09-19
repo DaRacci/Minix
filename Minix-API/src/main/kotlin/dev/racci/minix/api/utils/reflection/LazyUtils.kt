@@ -6,9 +6,11 @@ import org.apiguardian.api.API
 import kotlin.reflect.KProperty0
 import kotlin.reflect.KProperty1
 
-@Suppress("NOTHING_TO_INLINE")
-@API(status = API.Status.EXPERIMENTAL, since = "4.1.0")
-object LazyUtil : UtilObject by UtilObject {
+@[
+    API(status = API.Status.EXPERIMENTAL, since = "4.1.0")
+    Suppress("NOTHING_TO_INLINE")
+]
+object LazyUtils : UtilObject by UtilObject {
 
     @JvmName("isLazy0")
     inline fun isLazy(

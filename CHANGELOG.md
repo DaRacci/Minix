@@ -2,6 +2,44 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.1.0](https://github.com/DaRacci/Minix/compare/v4.0.0..v4.1.0) - 2022-09-19
+#### Bug Fixes
+- **(DataService)** Delegate ignoring objectMapper + constrains - ([725b683](https://github.com/DaRacci/Minix/commit/725b68312977a4a1a94bc7af9ed64fecace47d01)) - [@DaRacci](https://github.com/DaRacci)
+- **(ListenerService)** accessReturn instead of accessWith - ([d4f7f2e](https://github.com/DaRacci/Minix/commit/d4f7f2e67e9f2f0e1d13c56d6d0c80370d360f51)) - [@DaRacci](https://github.com/DaRacci)
+- **(Logger)** Previous value in trace message - ([256ee2a](https://github.com/DaRacci/Minix/commit/256ee2aa9a2a35e14293aec5a3b79e75d6527013)) - [@DaRacci](https://github.com/DaRacci)
+- **(PluginService)** Don't create another pluginService from reflection - ([28e6226](https://github.com/DaRacci/Minix/commit/28e6226247c7e5a2b996e91da8d1df7fa415b641)) - [@DaRacci](https://github.com/DaRacci)
+- **(PropertyFinder)** formatString - ([5feba76](https://github.com/DaRacci/Minix/commit/5feba769e563e0b17986238cbba03cfe3ef4297e)) - [@DaRacci](https://github.com/DaRacci)
+- **(build)** Implement integrations with the core module - ([4c0fc29](https://github.com/DaRacci/Minix/commit/4c0fc29cf50122a9024908ca3f5d304781fb2424)) - [@DaRacci](https://github.com/DaRacci)
+- **(scripts)** Properly tag the commit when releasing - ([a18bd78](https://github.com/DaRacci/Minix/commit/a18bd78d670bad896bfe9db574a21d9b192109d7)) - [@DaRacci](https://github.com/DaRacci)
+- ExAny cast extensions cant be reified - ([84e2973](https://github.com/DaRacci/Minix/commit/84e2973d875c3f308589295e8e74583fec833492)) - [@DaRacci](https://github.com/DaRacci)
+- Fix onNested things for configs and other stuff - ([19848ff](https://github.com/DaRacci/Minix/commit/19848ffd6ebab5cf8d0ff70c79d2c6f90cc1187e)) - [@DaRacci](https://github.com/DaRacci)
+- This was meant to be removed already. - ([b3f0ff5](https://github.com/DaRacci/Minix/commit/b3f0ff503d82863cef29e5c4c5eccbf555187996)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- **(API)** Lazy property utilities - ([84a6389](https://github.com/DaRacci/Minix/commit/84a6389b13b3577f1bcd8b22e36fc647e8a0dcf7)) - [@DaRacci](https://github.com/DaRacci)
+- **(AccessUtils)** Better Access functions. - ([5b50385](https://github.com/DaRacci/Minix/commit/5b50385594b8be3449fc25f2d6b857c242fd9052)) - [@DaRacci](https://github.com/DaRacci)
+- **(CastUtils)** Allows easy casting helper - ([2b08957](https://github.com/DaRacci/Minix/commit/2b08957f56fbc98bdc06aed824c15ee669c7dbca)) - [@DaRacci](https://github.com/DaRacci)
+- **(Integration)** Server utils integration - ([7c90881](https://github.com/DaRacci/Minix/commit/7c90881797ab41b16ebbdf074f5dea6ca32f15ff)) - [@DaRacci](https://github.com/DaRacci)
+- **(Integration)** Add Minix Placeholder - ([f6663ed](https://github.com/DaRacci/Minix/commit/f6663ed3967733687184b5f2417b5be2cd1c460b)) - [@DaRacci](https://github.com/DaRacci)
+- **(NestedUtils)** Made initially for Config but its a good util anyway - ([e19b954](https://github.com/DaRacci/Minix/commit/e19b954d7ecb4ba1e95eb36fffe46df729295f9c)) - [@DaRacci](https://github.com/DaRacci)
+- **(OverrideUtils)** Easy override finding. - ([f50f5c3](https://github.com/DaRacci/Minix/commit/f50f5c3a4e872bcabd5f566690033365de815320)) - [@DaRacci](https://github.com/DaRacci)
+- **(RecursionUtils)** allowing for easy recursive functions - ([e479f32](https://github.com/DaRacci/Minix/commit/e479f32a4641ec0f88808a89fba47d1421cc52a3)) - [@DaRacci](https://github.com/DaRacci)
+- Extension methods for reflection utils - ([321e89a](https://github.com/DaRacci/Minix/commit/321e89a3bd3ec8973125ccc66ad24338b35fcde2)) - [@DaRacci](https://github.com/DaRacci)
+#### Formatting
+- Format and other style things - ([8498d54](https://github.com/DaRacci/Minix/commit/8498d5440d384b12b329afbfa44dc0a780b953c8)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(LazyUtils)** Rename - ([6e95757](https://github.com/DaRacci/Minix/commit/6e95757d6e7ab0de113bffea85f94b7a428a0a09)) - [@DaRacci](https://github.com/DaRacci)
+- **(build)** Add soft depends for integrations - ([816cbe0](https://github.com/DaRacci/Minix/commit/816cbe08934023852601bc367e605c46b986cdf4)) - [@DaRacci](https://github.com/DaRacci)
+- Separate integrations into another module - ([1de42b0](https://github.com/DaRacci/Minix/commit/1de42b028d0f3be05def3bbf634fa38b705f7181)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(DataService)** Use new lazy utils - ([e5ce2d8](https://github.com/DaRacci/Minix/commit/e5ce2d8b7cc14838abcd0d99c437cbe7f311534d)) - [@DaRacci](https://github.com/DaRacci)
+- **(DataService)** Use extension dispatcher - ([64dd2ae](https://github.com/DaRacci/Minix/commit/64dd2ae6d22a6e423c9a1308a64976942dcbcea9)) - [@DaRacci](https://github.com/DaRacci)
+- **(Integration)** Integration improvements and fixes - ([d4e3168](https://github.com/DaRacci/Minix/commit/d4e316846ba91e1458f46e0ac7a26040f2ea9ed1)) - [@DaRacci](https://github.com/DaRacci)
+- **(OverrideUtils)** Changes to functions - ([6dd1fab](https://github.com/DaRacci/Minix/commit/6dd1fab3406478e04a88feca6e67f94d519f00f2)) - [@DaRacci](https://github.com/DaRacci)
+- **(ReflectionUtils)** Reset to previous access level not false - ([91fddb5](https://github.com/DaRacci/Minix/commit/91fddb5d3f5d3e337fbcc61b3568deb37c2446e6)) - [@DaRacci](https://github.com/DaRacci)
+- **(UtilObject)** Add logger function - ([9304eee](https://github.com/DaRacci/Minix/commit/9304eee8a0291539cf55e62f377239f1c9703479)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.0.0](https://github.com/DaRacci/Minix/compare/v3.4.0..v4.0.0) - 2022-09-15
 #### Bug Fixes
 - **(Init)** Use plugin classloader - ([76d1581](https://github.com/DaRacci/Minix/commit/76d158142727a95f74775ba48ba0587cee2e091f)) - [@DaRacci](https://github.com/DaRacci)

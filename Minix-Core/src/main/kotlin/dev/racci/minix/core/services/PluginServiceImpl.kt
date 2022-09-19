@@ -59,6 +59,7 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.jvm.isAccessible
 
+// TODO -> Separate Extensions, Integrations and Config into their own services and make a base class for them.
 @MappedExtension(Minix::class, "Plugin Manager", bindToKClass = PluginService::class)
 @OptIn(MinixInternal::class)
 class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<Minix>() {
@@ -135,7 +136,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         runBlocking {
             loadedPlugins -= plugin::class
 
-            val isFullUnload = server.isStopping // TODO -> Support ServerUtils
+            val isFullUnload = server.isStopping || pluginCache.getIfPresent(plugin)?.wantsFullUnload == true
             if (isFullUnload) {
                 plugin.log.debug { "Running full unload." }
             }
@@ -169,7 +170,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
 
             CoroutineScheduler.activateTasks(plugin)?.takeIf(IntArray::isNotEmpty)?.let {
                 plugin.log.trace { "Cancelling ${it.size} tasks." }
-                it.forEach { id -> CoroutineScheduler.cancelTask(id) }
+                it.forEach { id -> CoroutineScheduler.shutdownTask(id) }
             }
 
             if (!isFullUnload) return@runBlocking
@@ -534,18 +535,20 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             val kClass = classInfo.loadClass().kotlin.unsafeCast<KClass<out Integration>>()
             val annotation = kClass.findAnnotation<MappedIntegration>()!!
             val managerKClass = annotation.integrationManager
-            val manager = managerKClass.objectInstance.safeCast<IntegrationManager<Integration>>()
 
-            if (manager == null) {
-                plugin.log.error { "Failed to obtain singleton instance of ${managerKClass.qualifiedName}." }
-                continue
+            when {
+                managerKClass == IntegrationManager::class -> plugin.log.trace { "Integration [${kClass.simpleName}] is self-acting." }
+                managerKClass.objectInstance.safeCast<IntegrationManager<out Integration>>() == null -> {
+                    plugin.log.error { "Failed to obtain singleton instance of ${managerKClass.qualifiedName}." }
+                    continue
+                }
             }
 
             IntegrationService.IntegrationLoader(annotation.pluginName) {
                 val constructor = kClass.primaryConstructor!!
                 when (constructor.parameters.size) {
                     0 -> constructor.call()
-                    else -> constructor.call(get(StringQualifier(plugin.name)))
+                    else -> constructor.call(plugin)
                 }
             }.let(integrationService::registerIntegration)
         }

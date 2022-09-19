@@ -105,6 +105,15 @@ class RegisteringMap<D : Any, R : Any> : Map<D, Loadable<R>> {
         return loadable.get(false)
     }
 
+    suspend fun registerAll() {
+        for (value in internalMap.values) {
+            if (value.loaded) continue
+            println("Registering $value")
+
+            value.load(false)
+        }
+    }
+
     /**
      * Attempts to register the value with the given descriptor.
      *

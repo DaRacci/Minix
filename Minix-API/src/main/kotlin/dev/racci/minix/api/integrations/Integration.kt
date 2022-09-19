@@ -22,6 +22,9 @@ interface Integration : WithPlugin<MinixPlugin> {
     /** Called when the integration is registered. */
     suspend fun handleLoad() = Unit
 
+    /** Called when your plugin is enabled. */
+    suspend fun handleEnable() = Unit
+
     /** Called when the integration is unregistered. */
     suspend fun handleUnload() = Unit
 }

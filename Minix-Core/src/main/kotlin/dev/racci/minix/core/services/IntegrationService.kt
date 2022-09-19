@@ -24,10 +24,13 @@ class IntegrationService(override val plugin: Minix) : Extension<Minix>() {
         this.enabledPlugins = pluginManager.plugins
             .associateBy { it.name.lowercase() }
             .toPersistentHashMap()
+
+        this.integrations.registerAll()
     }
 
     override suspend fun handleEnable() {
         this.registerEvents()
+        this.integrations.filter { it.value.loaded }.forEach { it.value.get().getOrThrow().handleEnable() }
     }
 
     override suspend fun handleUnload() {
@@ -45,21 +48,25 @@ class IntegrationService(override val plugin: Minix) : Extension<Minix>() {
         descriptor: String,
         integrationLoader: IntegrationLoader
     ): Loadable<Integration> = object : Loadable<Integration>() {
-        override fun predicateLoadable() = enabledPlugins.contains(descriptor)
+        override fun predicateLoadable() = ::enabledPlugins.isInitialized && enabledPlugins.contains(descriptor)
         override suspend fun onLoad(): Integration {
-            plugin.log.info { "Loading integration with ${integrationLoader.pluginName}" }
-            return integrationLoader.callback.invoke(enabledPlugins[descriptor]!!).also { integration -> integration.handleLoad() }
+            logger.info { "Loading integration with ${integrationLoader.pluginName}" }
+            val integration = integrationLoader.callback.invoke(enabledPlugins[descriptor]!!)
+            integration.handleLoad()
+            return integration
         }
         override suspend fun onUnload(value: Integration) {
-            plugin.log.info { "Unloading integration with ${integrationLoader.pluginName}" }
+            logger.info { "Unloading integration with ${integrationLoader.pluginName}" }
             value.handleUnload()
         }
     }
 
     private fun registerEvents() {
         event<PluginEnableEvent> {
-            enabledPlugins = enabledPlugins.put(this.plugin.name.lowercase(), this.plugin)
-            integrations.register(this.plugin.name.lowercase())
+            val descriptor = this.plugin.name.lowercase()
+            enabledPlugins = enabledPlugins.put(descriptor, this.plugin)
+            integrations.register(descriptor)
+            integrations[descriptor]?.get(false)?.onSuccess { it.handleEnable() }
         }
 
         event<PluginDisableEvent> {

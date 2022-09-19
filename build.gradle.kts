@@ -42,6 +42,7 @@ bukkit {
     main = "dev.racci.minix.core.MinixInit"
     load = PluginLoadOrder.STARTUP
     loadBefore = listOf("eco")
+    softDepend = listOf("PlaceholderAPI", "Lands", "ServerUtils")
     website = "https://github.com/DaRacci/Minix"
 }
 
@@ -139,7 +140,8 @@ tasks {
                 it.moduleGroup == "dev.racci.slimjar" ||
                 it.moduleName == "Minix-Core" ||
                 it.moduleName == "Minix-API" ||
-                it.moduleName == "Minix-NMS"
+                it.moduleName == "Minix-NMS" ||
+                it.moduleName == "core-integrations"
         }
         val prefix = "dev.racci.minix.libs"
         relocate("io.sentry", "$prefix.io.sentry")

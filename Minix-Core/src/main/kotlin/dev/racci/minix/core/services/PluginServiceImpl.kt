@@ -23,6 +23,7 @@ import dev.racci.minix.api.plugin.SusPlugin
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
+import dev.racci.minix.api.utils.RecursionUtils
 import dev.racci.minix.api.utils.collections.CollectionUtils.clear
 import dev.racci.minix.api.utils.kotlin.doesOverride
 import dev.racci.minix.api.utils.kotlin.ifOverrides
@@ -43,12 +44,10 @@ import kotlinx.coroutines.runBlocking
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.PluginClassLoader
-import org.koin.core.component.get
 import org.koin.core.component.inject
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 import org.koin.core.error.NoBeanDefFoundException
-import org.koin.core.qualifier.StringQualifier
 import org.koin.dsl.binds
 import org.koin.dsl.module
 import org.koin.ext.getFullName
@@ -288,10 +287,10 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         extensions: List<Extension<*>>,
         error: Throwable? = null
     ) {
-        val dependents = getRecursiveDependencies(failedExtension, extensions.reversed(), hashSetOf())
+        val dependents = getRecursiveDependencies(failedExtension, extensions.reversed())
         dependents.forEach { unloadExtension(it) }
 
-        log.error(error) {
+        logger.error(error) {
             val builder = StringBuilder()
             builder.append("There was an error while loading / enabling extension ${failedExtension::class.getFullName()}!")
             builder.append("\nThis is not a fatal error, but it may cause other extensions to fail to load.")
@@ -556,19 +555,29 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
 
     private fun getRecursiveDependencies(
         requiredExt: Extension<*>,
-        allExtensions: List<Extension<*>>,
-        currentDependents: HashSet<Extension<*>>
+        allExtensions: List<Extension<*>>
     ): HashSet<Extension<*>> {
-        for (extension in allExtensions) {
-            val annotation = extension::class.findAnnotation<MappedExtension>()!!
-            if (annotation.dependencies.isEmpty()) continue
-            if (annotation.dependencies.none { it == bindToKClass(requiredExt) || it == requiredExt::class }) continue
-            if (extension in currentDependents) continue
-
-            currentDependents += extension
-            currentDependents += getRecursiveDependencies(extension, allExtensions, currentDependents)
-        }
-
-        return currentDependents
+        return RecursionUtils.recursiveFinder(
+            requiredExt,
+            0,
+            9,
+            { allExtensions },
+            {
+                val annotation = this::class.findAnnotation<MappedExtension>()!!
+                annotation.dependencies.isNotEmpty() && annotation.dependencies.none { it == bindToKClass(requiredExt) || it == requiredExt::class }
+            }
+        )
+//
+//        for (extension in allExtensions) {
+//            val annotation = extension::class.findAnnotation<MappedExtension>()!!
+//            if (annotation.dependencies.isEmpty()) continue
+//            if (annotation.dependencies.none { it == bindToKClass(requiredExt) || it == requiredExt::class }) continue
+//            if (extension in currentDependents) continue
+//
+//            currentDependents += extension
+//            currentDependents += getRecursiveDependencies(extension, allExtensions, currentDependents)
+//        }
+//
+//        return currentDependents
     }
 }

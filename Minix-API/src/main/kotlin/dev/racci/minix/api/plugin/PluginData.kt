@@ -1,5 +1,6 @@
 package dev.racci.minix.api.plugin
 
+import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionStateEvent
@@ -16,6 +17,9 @@ import kotlin.reflect.jvm.isAccessible
 typealias ExtensionUnit<P> = (P) -> Extension<*>
 
 class PluginData<P : MinixPlugin>(val plugin: P) {
+
+    @MinixInternal
+    var wantsFullUnload: Boolean = false
 
     @Suppress("UNCHECKED_CAST")
     operator fun <T : Any?> getValue(

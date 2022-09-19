@@ -3,6 +3,7 @@
 package dev.racci.minix.api.utils
 
 import dev.racci.minix.api.utils.kotlin.catchAndReturn
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import java.lang.reflect.Constructor
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
@@ -48,62 +49,30 @@ fun <R> readInstanceProperty(
     it.name.equals(propertyName, ignoreCase)
 }?.also { it.isAccessible = true }.safeCast<KProperty1<Any, *>>()?.get(instance) as? R
 
-/**
- * Makes a safe cast using reflection
- *
- * @param T The type to cast to.
- * @param type The type to cast to.
- * @return The casted property.
- */
+@ScheduledForRemoval(inVersion = "4.5.0")
+@Deprecated("Use new safeCast function", ReplaceWith("this.safeCast<T>()", "dev.racci.minix.api.extensions.reflection.ExAny"))
 fun <T> Any?.safeCast(type: Class<T>): T? = catchAndReturn<ClassCastException, T>({}) { type.cast(this) }
 
-/**
- * Makes a safe cast from an inline type to a different type.
- *
- * @param T The type to cast to.
- * @param type The type to cast to.
- * @return The casted property.
- */
+@ScheduledForRemoval(inVersion = "4.5.0")
+@Deprecated("Use new safeCast function", ReplaceWith("this.safeCast<T>()", "dev.racci.minix.api.extensions.reflection.ExAny"))
 inline fun <reified T : Any> Any?.safeCast(type: KClass<T> = T::class): T? = this.safeCast(type.java)
 
-/**
- * Makes an unsafe cast of a property to a different type.
- *
- * @param T The type to cast to.
- * @return The casted property.
- * @throws ClassCastException If the property is not of the correct type.
- */
+@ScheduledForRemoval(inVersion = "4.5.0")
+@Deprecated("Use new castOrThrow function", ReplaceWith("this.castOrThrow<T>()", "dev.racci.minix.api.extensions.reflection.ExAny"))
 @Throws(ClassCastException::class)
 fun <T> Any?.unsafeCast(): T = this as T
 
-/**
- * Makes an unsafe cast of a property to a different type using reflection.
- *
- * @param T The type to cast to.
- * @param type The type to cast to.
- * @return The casted property.
- * @throws ClassCastException If the property is not of the correct type.
- */
+@ScheduledForRemoval(inVersion = "4.5.0")
+@Deprecated("Use new castOrThrow function", ReplaceWith("this.castOrThrow<T>()", "dev.racci.minix.api.extensions.reflection.ExAny"))
 @Throws(ClassCastException::class)
 fun <T> Any?.unsafeCast(type: Class<T>): T = type.cast(this)
 
-/**
- * Makes an unsafe cast from an inline type to a different type using reflection.
- *
- * @param T The type to cast to.
- * @param type The type to cast to.
- * @return The casted property.
- * @throws ClassCastException If the property is not of the correct type.
- */
+@ScheduledForRemoval(inVersion = "4.5.0")
+@Deprecated("Use new castOrThrow function", ReplaceWith("this.castOrThrow<T>()", "dev.racci.minix.api.extensions.reflection.ExAny"))
 inline fun <reified T : Any> Any?.unsafeCast(type: KClass<T> = T::class): T = this.unsafeCast(type.java)
 
-/**
- * Makes a safe cast and invokes the function if successful.
- *
- * @param T The type to cast to.
- * @param block The function to invoke if successful.
- * @return If the cast was successful.
- */
+@ScheduledForRemoval(inVersion = "4.5.0")
+@Deprecated("Use new withCast function", ReplaceWith("this.withCast<T>(block)", "dev.racci.minix.api.extensions.reflection.ExAny"))
 inline fun <reified T> Any?.tryCast(block: T.() -> Unit): Boolean = if (this is T) {
     block()
     true

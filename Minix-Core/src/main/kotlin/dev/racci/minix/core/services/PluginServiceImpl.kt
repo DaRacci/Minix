@@ -11,7 +11,7 @@ import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionState
-import dev.racci.minix.api.extensions.log
+import dev.racci.minix.api.extensions.reflection.callIfOverridden
 import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.extensions.unregisterListener
 import dev.racci.minix.api.integrations.Integration
@@ -115,19 +115,13 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
                 plugin.log.lockLevel()
             }
 
-            plugin.ifOverrides(SusPlugin::handleLoad) {
-                plugin.log.trace { "Running HandleLoad." }
-                plugin.handleLoad()
-            }
+            plugin::handleLoad.callIfOverridden(plugin::class)
 
             loadKoinModules(getModule(plugin))
             loadReflection(plugin)
             loadExtensions(plugin)
 
-            plugin.ifOverrides(SusPlugin::handleAfterLoad) {
-                plugin.log.trace { "Running HandleAfterLoad." }
-                plugin.handleAfterLoad()
-            }
+            plugin::handleAfterLoad.callIfOverridden(plugin::class)
         }
     }
 

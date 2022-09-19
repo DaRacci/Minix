@@ -3,23 +3,23 @@ package dev.racci.minix.api.extensions.reflection
 import dev.racci.minix.api.utils.reflection.CastUtils
 
 /** @see [CastUtils.safeCast] */
-inline fun <reified T : Any> Any?.safeCast(): T? = CastUtils.safeCast(this, T::class)
+inline fun <T : Any> Any?.safeCast(): T? = this as? T
 
 /** @see [CastUtils.castOr] */
-inline fun <reified T : Any> Any?.castOr(
+inline fun <T : Any> Any?.castOr(
     default: T
-): T = CastUtils.castOr(this, T::class, default)
+): T = this.safeCast() ?: default
 
 /** @see [CastUtils.castOrElse] */
-inline fun <reified T : Any> Any?.castOrElse(
+inline fun <T : Any> Any?.castOrElse(
     default: () -> T
-): T = CastUtils.castOrElse(this, T::class, default)
+): T = this.safeCast<T>() ?: default()
 
 /** @see [CastUtils.castOrThrow] */
-@Throws(TypeCastException::class)
-inline fun <reified T : Any> Any?.castOrThrow(): T = CastUtils.castOrThrow(this, T::class)
+@Throws(ClassCastException::class)
+inline fun <T : Any> Any?.castOrThrow(): T = this as T
 
 /** @see [CastUtils.withCast] */
-inline fun <reified T : Any, R> Any?.withCast(
+inline fun <T : Any, R> Any?.withCast(
     block: T.() -> R
-): R? = CastUtils.withCast(this, T::class, block)
+): R? = this.safeCast<T>()?.block()

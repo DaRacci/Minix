@@ -18,6 +18,8 @@ tasks.withType<GenerateModuleMetadata> {
 dependencies {
     compileOnly(rootProject.libs.minecraft.api.landsAPI)
     compileOnly(rootProject.libs.bundles.cloud.kotlin)
+
+    implementation(project(":minix-core:core-integrations"))
 }
 
 publishing {

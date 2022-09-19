@@ -2,25 +2,46 @@
 
 package dev.racci.minix.api.extensions.reflection
 
-import dev.racci.minix.api.utils.reflection.LazyUtil
+import dev.racci.minix.api.utils.reflection.AccessUtils
+import dev.racci.minix.api.utils.reflection.LazyUtils
+import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty0
 
-inline val KProperty0<*>.isLazy: Boolean get() = LazyUtil.isLazy(this)
+// Lazy Extensions
 
-inline val KProperty0<*>.isInitialised: Boolean get() = LazyUtil.isInitialised(this)
+/** @see LazyUtils.isLazy */
+inline val KProperty0<*>.isLazy: Boolean get() = LazyUtils.isLazy(this)
 
-inline val <R> KProperty0<R>.orNull: R? get() = LazyUtil.getOrNull(this)
+/** @see LazyUtils.isInitialised */
+inline val KProperty0<*>.isLazyInitialised: Boolean get() = LazyUtils.isInitialised(this)
 
-inline val <R> KProperty0<R>.orThrow: R get() = LazyUtil.getOrThrow(this)
+/** @see LazyUtils.getOrNull */
+inline val <R> KProperty0<R>.orNull: R? get() = LazyUtils.getOrNull(this)
 
+/** @see LazyUtils.getOrThrow */
+inline val <R> KProperty0<R>.orThrow: R get() = LazyUtils.getOrThrow(this)
+
+/** @see LazyUtils.getOrElse */
 inline fun <R> KProperty0<R>.getOrElse(
     defaultValue: () -> R
-): R = LazyUtil.getOrElse(this, defaultValue)
+): R = LazyUtils.getOrElse(this, defaultValue)
 
+/** @see LazyUtils.getOrDefault */
 inline fun <R> KProperty0<R>.getOrDefault(
     defaultValue: R
-): R = LazyUtil.getOrDefault(this, defaultValue)
+): R = LazyUtils.getOrDefault(this, defaultValue)
 
+/** @see LazyUtils.ifInitialised */
 inline fun <R> KProperty0<R>.ifInitialised(
     action: R.() -> Unit
-): Unit = LazyUtil.ifInitialised(this, action)
+): Unit = LazyUtils.ifInitialised(this, action)
+
+// Access Extensions
+
+/** @see AccessUtils.accessGet */
+inline val <R> KProperty0<R>.accessGet: R get() = AccessUtils.accessGet(this)
+
+/** @see AccessUtils.accessSet */
+inline fun <R> KProperty0<R>.accessSet(
+    value: R
+) { if (this is KMutableProperty0<R>) AccessUtils.accessSet(this, value) }

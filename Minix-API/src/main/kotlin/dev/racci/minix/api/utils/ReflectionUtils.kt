@@ -38,15 +38,8 @@ fun <T> classConstructor(
     vararg args: Any?
 ): T = constructor.newInstance(*args)
 
-/**
- * Reads and returns the value of a property from this instance.
- *
- * @param R The type of the property.
- * @param instance The instance to read from.
- * @param propertyName The name of the property to read.
- * @param ignoreCase Whether to ignore case when searching for the property.
- * @return The value of the property.
- */
+@ScheduledForRemoval(inVersion = "4.5.0")
+@Deprecated("Use new accessGet function", ReplaceWith("instance.accessGet<R>()", "dev.racci.minix.api.extensions.reflection.KCallable"))
 fun <R> readInstanceProperty(
     instance: Any,
     propertyName: String,
@@ -137,7 +130,8 @@ fun <T : Any> T.clone(replaceArgs: Map<KProperty1<T, *>, Any> = emptyMap()): T =
     }
 }
 
-/** Temporarily make a property accessible and invokes the [action]. */
+@ScheduledForRemoval(inVersion = "4.5.0")
+@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<R, T>(block)", "dev.racci.minix.api.extensions.reflection.KCallable"))
 inline fun <T : KProperty1<*, *>, R> T.accessReturn(action: T.() -> R): R {
     val originalAccessLevel = isAccessible
     isAccessible = true
@@ -146,7 +140,8 @@ inline fun <T : KProperty1<*, *>, R> T.accessReturn(action: T.() -> R): R {
     return value
 }
 
-/** Temporarily make a property accessible and invokes the [action]. */
+@ScheduledForRemoval(inVersion = "4.5.0")
+@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<R, T>(block)", "dev.racci.minix.api.extensions.reflection.KCallable"))
 inline fun <T : KProperty<*>, R> T.accessReturn(action: T.() -> R): R {
     val originalAccessLevel = isAccessible
     isAccessible = true
@@ -155,7 +150,8 @@ inline fun <T : KProperty<*>, R> T.accessReturn(action: T.() -> R): R {
     return value
 }
 
-/** Temporarily make a property accessible and invokes the [action]. */
+@ScheduledForRemoval(inVersion = "4.5.0")
+@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<R, T>(block)", "dev.racci.minix.api.extensions.reflection.KCallable"))
 inline fun <T : KProperty1<*, R>, R> T.accessWith(action: T.() -> Unit) {
     val originalAccessLevel = isAccessible
     isAccessible = true
@@ -163,7 +159,8 @@ inline fun <T : KProperty1<*, R>, R> T.accessWith(action: T.() -> Unit) {
     isAccessible = originalAccessLevel
 }
 
-/** Temporarily make a property accessible and invokes the [action]. */
+@ScheduledForRemoval(inVersion = "4.5.0")
+@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<R, T>(block)", "dev.racci.minix.api.extensions.reflection.KCallable"))
 inline fun <T : KProperty<R>, R> T.accessWith(action: T.() -> Unit) {
     val originalAccessLevel = isAccessible
     isAccessible = true

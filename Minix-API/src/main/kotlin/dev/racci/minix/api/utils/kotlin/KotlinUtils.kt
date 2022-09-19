@@ -94,6 +94,7 @@ inline fun <reified T : Any> T.invokeIfOverrides(
     return false
 }
 
+@Deprecated("Use new api instead", ReplaceWith("function.ifOverriddenIn(this, action)"))
 inline fun <reified T : Any> T.ifOverrides(
     function: KFunction<*>,
     action: () -> Unit

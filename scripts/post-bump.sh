@@ -12,16 +12,10 @@ if [ -f temp ]; then
   rm temp
 fi
 
-sed -i "s/version=.*/version=$2/" ./gradle.properties
+#git tag v"${2}" HEAD -f # Tag the last commit with the new version
+#git push origin v"${2}" -f || exit 1 # Push the new version tag
 
-# Add the modified properties file to the version change commit
-git add gradle.properties
-git commit --amend --no-edit -n -S
-
-git tag v"${2}" HEAD # Tag the last commit with the new version
-git push origin v"${2}" || exit 1 # Push the new version tag
-
-./gradlew clean build test --stacktrace
+./gradlew clean build test
 
 URL="https://github.com/DaRacci/Minix/compare/v$1..v$2"
 grep -Poz "(?s)(?<=## \\[v$2\\]\\(${URL}\\) - ....-..-..\n).*?(?=- - -)" CHANGELOG.md >> ./.templog.md

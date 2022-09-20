@@ -12,4 +12,10 @@ if ! ./gradlew test --info;
    exit 1;
 fi
 
+sed -i "s/version=.*/version=$2/" ./gradle.properties
+
+# Add the modified properties file to the version change commit
+git add gradle.properties
+git commit --amend --no-edit -n -S
+
 echo "Bumping from v${1} to v${2}!"

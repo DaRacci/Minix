@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.1.1](https://github.com/DaRacci/Minix/compare/v4.1.0..v4.1.1) - 2022-09-20
+#### Miscellaneous Chores
+- **(version)** v4.1.0 - ([320beaf](https://github.com/DaRacci/Minix/commit/320beaf65cf8a9d40114985062c005a483f0b102)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(IntegrationManager)** Allows checking for registered integration by class - ([32e2e23](https://github.com/DaRacci/Minix/commit/32e2e235ae004ef020d2d35349d386c847338cae)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.1.0](https://github.com/DaRacci/Minix/compare/v4.0.0..v4.1.0) - 2022-09-19
 #### Bug Fixes
 - **(DataService)** Delegate ignoring objectMapper + constrains - ([725b683](https://github.com/DaRacci/Minix/commit/725b68312977a4a1a94bc7af9ed64fecace47d01)) - [@DaRacci](https://github.com/DaRacci)

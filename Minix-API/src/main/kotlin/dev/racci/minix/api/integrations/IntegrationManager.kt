@@ -5,7 +5,7 @@ import org.apiguardian.api.API
 import java.util.Optional
 
 @[API(status = API.Status.EXPERIMENTAL, since = "4.0.0") OptIn(MinixInternal::class)]
-abstract class IntegrationManager<I : Integration> {
+open class IntegrationManager<I : Integration> {
     @MinixInternal val REGISTERED: MutableSet<I> = mutableSetOf()
 
     @MinixInternal val UNREGISTERED: MutableSet<I> = mutableSetOf()
@@ -32,6 +32,10 @@ abstract class IntegrationManager<I : Integration> {
 
         return Optional.ofNullable(result)
     }
+
+    inline fun <reified T : Integration> isRegistered(): Boolean = this.REGISTERED
+        .filterIsInstance<T>()
+        .isNotEmpty()
 
     companion object {
         internal val MANAGERS: MutableSet<IntegrationManager<*>> = mutableSetOf()

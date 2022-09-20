@@ -46,5 +46,6 @@ dev.racci.minix.core.data
 dev.racci.minix.core.scheduler
 dev.racci.minix.core.services
 module:core-integrations
+dev.racci.minix.core.integrations
 dev.racci.minix.core.integrations.placeholderapi
 dev.racci.minix.core.integrations.regions

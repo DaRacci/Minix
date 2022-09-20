@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.1.2](https://github.com/DaRacci/Minix/compare/v4.1.1..v4.1.2) - 2022-09-20
+#### Bug Fixes
+- **(script)** Push tags - ([5bc71c5](https://github.com/DaRacci/Minix/commit/5bc71c5bba7a363bfa12e74028397ac0343ef531)) - [@DaRacci](https://github.com/DaRacci)
+- **(script)** sed version in pre-bump - ([958035f](https://github.com/DaRacci/Minix/commit/958035f19222737bda1a2c208ae2024afe3547ae)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.1.1](https://github.com/DaRacci/Minix/compare/v4.1.0..v4.1.1) - 2022-09-20
 #### Miscellaneous Chores
 - **(version)** v4.1.0 - ([320beaf](https://github.com/DaRacci/Minix/commit/320beaf65cf8a9d40114985062c005a483f0b102)) - [@DaRacci](https://github.com/DaRacci)

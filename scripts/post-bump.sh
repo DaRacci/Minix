@@ -12,8 +12,7 @@ if [ -f temp ]; then
   rm temp
 fi
 
-#git tag v"${2}" HEAD -f # Tag the last commit with the new version
-#git push origin v"${2}" -f || exit 1 # Push the new version tag
+git push origin v"${2}" || exit 1 # Push the new version tag
 
 ./gradlew clean build test
 

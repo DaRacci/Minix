@@ -165,7 +165,6 @@ object CollectionUtils : UtilObject by UtilObject {
 
     @ScheduledForRemoval(inVersion = "4.5.0")
     @Deprecated("", ReplaceWith(""))
-
     fun <T> Array<T>.find(
         name: String,
         ignoreCase: Boolean = false,
@@ -281,28 +280,28 @@ object CollectionUtils : UtilObject by UtilObject {
 
     object If {
         @JvmName("ifEmptyCollection")
-        inline fun <R> ifEmpty(
-            collection: Collection<*>?,
-            action: () -> R
-        ): Option<R> = if (!collection.isNullOrEmpty()) Some(action()) else None
+        suspend inline fun <R, C : Collection<*>> ifEmpty(
+            collection: C?,
+            crossinline action: suspend C.() -> R
+        ): Option<R> = if (!collection.isNullOrEmpty()) Some(action(collection)) else None
 
         @JvmName("ifEmptyArray")
-        inline fun <R> ifEmpty(
-            collection: Array<*>?,
-            action: () -> R
-        ): Option<R> = if (!collection.isNullOrEmpty()) Some(action()) else None
+        suspend inline fun <R, T> ifEmpty(
+            array: Array<T>,
+            crossinline action: suspend Array<T>.() -> R
+        ): Option<R> = if (array.isNotEmpty()) Some(action(array)) else None
 
         @JvmName("ifNotEmptyCollection")
-        inline fun <R> ifNotEmpty(
-            collection: Collection<*>?,
-            action: () -> R
-        ): Option<R> = if (collection.isNullOrEmpty()) Some(action()) else None
+        suspend inline fun <R, C : Collection<*>> ifNotEmpty(
+            collection: C,
+            crossinline action: suspend C.() -> R
+        ): Option<R> = if (collection.isEmpty()) Some(action(collection)) else None
 
         @JvmName("ifNotEmptyArray")
-        inline fun <R> ifNotEmpty(
-            collection: Array<*>?,
-            action: () -> R
-        ): Option<R> = if (collection.isNullOrEmpty()) Some(action()) else None
+        suspend inline fun <R, T> ifNotEmpty(
+            array: Array<T>,
+            crossinline action: suspend Array<T>.() -> R
+        ): Option<R> = if (array.isEmpty()) Some(action(array)) else None
     }
 
     object Contains {

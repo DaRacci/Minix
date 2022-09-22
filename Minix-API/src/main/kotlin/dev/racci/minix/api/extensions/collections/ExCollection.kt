@@ -6,13 +6,13 @@ import dev.racci.minix.api.utils.collections.CollectionUtils
 import kotlin.reflect.KCallable
 
 /** @see CollectionUtils.If.ifEmpty */
-inline fun <R> Collection<*>?.ifEmpty(
-    action: () -> R
+suspend inline fun <R, C : Collection<*>> C.ifEmpty(
+    crossinline action: suspend C.() -> R
 ): Option<R> = CollectionUtils.If.ifEmpty(this, action)
 
 /** @see CollectionUtils.If.ifNotEmpty */
-inline fun <R> Collection<*>?.ifNotEmpty(
-    action: () -> R
+suspend inline fun <R, C : Collection<*>> C.ifNotEmpty(
+    crossinline action: suspend C.() -> R
 ): Option<R> = CollectionUtils.If.ifNotEmpty(this, action)
 
 /** @see CollectionUtils.Contains.containsString */

@@ -18,7 +18,7 @@ suspend inline fun <R, C : Collection<*>> C.ifNotEmpty(
 /** @see CollectionUtils.Contains.containsString */
 inline fun Collection<String>.contains(
     value: String,
-    ignoreCase: Boolean
+    ignoreCase: Boolean = false
 ): Boolean = CollectionUtils.Contains.containsString(this, value, ignoreCase)
 
 /** @see CollectionUtils.Get.getCast */
@@ -29,5 +29,5 @@ inline fun <T : Any> Collection<*>.getCast(
 /** @see CollectionUtils.Find.findKCallable */
 inline fun <T : KCallable<*>> Collection<T>.findKCallable(
     name: String,
-    ignoreCase: Boolean
+    ignoreCase: Boolean = false
 ): Option<T> = CollectionUtils.Find.findKCallable(this, name, ignoreCase)

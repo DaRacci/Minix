@@ -6,13 +6,13 @@ import dev.racci.minix.api.utils.collections.MapUtils
 /** @see MapUtils.containsKeyIgnoreCase */
 inline fun Map<String, *>.contains(
     key: String,
-    ignoreCase: Boolean
+    ignoreCase: Boolean = false
 ): Boolean = MapUtils.containsKeyIgnoreCase(this, key, ignoreCase)
 
 /** @see MapUtils.getValueIgnoreCase */
 inline fun <V> Map<String, V>.get(
     key: String,
-    ignoreCase: Boolean
+    ignoreCase: Boolean = false
 ): Option<V> = MapUtils.getValueIgnoreCase(this, key, ignoreCase)
 
 /** @see MapUtils.clear */

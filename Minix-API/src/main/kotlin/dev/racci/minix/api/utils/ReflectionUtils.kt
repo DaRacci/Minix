@@ -2,6 +2,8 @@
 
 package dev.racci.minix.api.utils
 
+import dev.racci.minix.api.extensions.reflection.accessGet
+import dev.racci.minix.api.extensions.reflection.accessSet
 import dev.racci.minix.api.utils.kotlin.catchAndReturn
 import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import java.lang.reflect.Constructor
@@ -50,29 +52,29 @@ fun <R> readInstanceProperty(
 }?.also { it.isAccessible = true }.safeCast<KProperty1<Any, *>>()?.get(instance) as? R
 
 @ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use new safeCast function", ReplaceWith("this.safeCast<T>()", "dev.racci.minix.api.extensions.reflection.ExAny"))
+@Deprecated("Use new safeCast function", ReplaceWith("this.safeCast<T>()", "dev.racci.minix.api.extensions.reflection.safeCast"))
 fun <T> Any?.safeCast(type: Class<T>): T? = catchAndReturn<ClassCastException, T>({}) { type.cast(this) }
 
 @ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use new safeCast function", ReplaceWith("this.safeCast<T>()", "dev.racci.minix.api.extensions.reflection.ExAny"))
+@Deprecated("Use new safeCast function", ReplaceWith("this.safeCast<T>()", "dev.racci.minix.api.extensions.reflection.safeCast"))
 inline fun <reified T : Any> Any?.safeCast(type: KClass<T> = T::class): T? = this.safeCast(type.java)
 
 @ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use new castOrThrow function", ReplaceWith("this.castOrThrow<T>()", "dev.racci.minix.api.extensions.reflection.ExAny"))
+@Deprecated("Use new castOrThrow function", ReplaceWith("this.castOrThrow<T>()", "import dev.racci.minix.api.extensions.reflection.castOrThrow"))
 @Throws(ClassCastException::class)
 fun <T> Any?.unsafeCast(): T = this as T
 
 @ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use new castOrThrow function", ReplaceWith("this.castOrThrow<T>()", "dev.racci.minix.api.extensions.reflection.ExAny"))
+@Deprecated("Use new castOrThrow function", ReplaceWith("this.castOrThrow<T>()", "dev.racci.minix.api.extensions.reflection.castOrThrow"))
 @Throws(ClassCastException::class)
 fun <T> Any?.unsafeCast(type: Class<T>): T = type.cast(this)
 
 @ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use new castOrThrow function", ReplaceWith("this.castOrThrow<T>()", "dev.racci.minix.api.extensions.reflection.ExAny"))
+@Deprecated("Use new castOrThrow function", ReplaceWith("this.castOrThrow<T>()", "dev.racci.minix.api.extensions.reflection.castOrThrow"))
 inline fun <reified T : Any> Any?.unsafeCast(type: KClass<T> = T::class): T = this.unsafeCast(type.java)
 
 @ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use new withCast function", ReplaceWith("this.withCast<T>(block)", "dev.racci.minix.api.extensions.reflection.ExAny"))
+@Deprecated("Use new withCast function", ReplaceWith("this.withCast<T>(block)", "dev.racci.minix.api.extensions.reflection.withCast"))
 inline fun <reified T> Any?.tryCast(block: T.() -> Unit): Boolean = if (this is T) {
     block()
     true
@@ -90,11 +92,11 @@ fun <T : Any> T.clone(replaceArgs: Map<KProperty1<T, *>, Any> = emptyMap()): T =
     val mutableProperties = memberProperties.filterIsInstance<KMutableProperty1<T, Any?>>()
     val allValues = memberProperties
         .filter { it in mutableProperties || it.name in consParams.map(KParameter::name) }
-        .associate { it.name to (replaceArgs[it] ?: it.accessWith { get(this@clone) }) }
+        .associate { it.name to (replaceArgs[it] ?: it.accessGet(this@clone)) }
     // Safe to say this isn't null, because we checked it above
     primaryConstructor!!.callBy(consParams.associateWith { allValues[it.name] }).also { newInstance ->
         for (prop in mutableProperties) {
-            prop.accessWith { set(newInstance, allValues[prop.name]) }
+            prop.accessSet(newInstance, allValues[prop.name])
         }
     }
 }

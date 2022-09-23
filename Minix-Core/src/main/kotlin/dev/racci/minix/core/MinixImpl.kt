@@ -10,11 +10,13 @@ import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.providers.GithubUpdateProvider
+import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.data.MinixConfig
 import dev.racci.minix.core.services.PluginServiceImpl
+import dev.racci.minix.core.services.mapped.ExtensionService
 import io.sentry.Sentry
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -65,9 +67,12 @@ class MinixImpl : Minix() {
             single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class
         }
 
-        val service = PluginServiceImpl(this)
-        loadKoinModules(service.getModule(service))
-        service.loadExtension(service, mutableListOf())
+        val pluginService = PluginServiceImpl(this)
+        val extensionService = ExtensionService(this)
+
+        loadKoinModules(listOf(KoinUtils.getModule(pluginService), KoinUtils.getModule(extensionService)))
+        extensionService.loadExtension(extensionService, mutableListOf())
+        extensionService.loadExtension(pluginService, mutableListOf())
     }
 
     private fun startSentry() {

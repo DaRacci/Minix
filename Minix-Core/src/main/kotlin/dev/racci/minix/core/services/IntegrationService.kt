@@ -1,22 +1,34 @@
 package dev.racci.minix.core.services
 
 import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.annotations.MappedIntegration
 import dev.racci.minix.api.collections.RegisteringMap
-import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.pluginManager
+import dev.racci.minix.api.extensions.reflection.castOrThrow
+import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.integrations.Integration
+import dev.racci.minix.api.integrations.IntegrationManager
 import dev.racci.minix.api.plugin.Minix
+import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.Loadable
+import dev.racci.minix.core.services.mapped.MapperService
+import io.github.classgraph.ClassInfo
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentHashMapOf
 import kotlinx.collections.immutable.toPersistentHashMap
 import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.event.server.PluginEnableEvent
 import org.bukkit.plugin.Plugin
+import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.primaryConstructor
 
 @MappedExtension(Minix::class, "Integration Service")
-class IntegrationService(override val plugin: Minix) : Extension<Minix>() {
+class IntegrationService : MapperService(
+    Integration::class,
+    MappedIntegration::class
+) {
     private lateinit var enabledPlugins: PersistentMap<String, Plugin>
     private val integrations = RegisteringMap<String, Integration>()
 
@@ -36,6 +48,28 @@ class IntegrationService(override val plugin: Minix) : Extension<Minix>() {
     override suspend fun handleUnload() {
         this.integrations.unregisterAll()
         this.enabledPlugins = persistentHashMapOf()
+    }
+
+    override fun registerMapped(
+        classInfo: ClassInfo,
+        plugin: MinixPlugin
+    ) {
+        val kClass = classInfo.loadClass().kotlin.castOrThrow<KClass<out Integration>>()
+        val annotation = kClass.findAnnotation<MappedIntegration>()!!
+        val managerKClass = annotation.integrationManager
+
+        when {
+            managerKClass == IntegrationManager::class -> plugin.log.trace { "Integration [${kClass.simpleName}] is self-acting." }
+            managerKClass.objectInstance.safeCast<IntegrationManager<out Integration>>() == null -> return plugin.log.error { "Failed to obtain singleton instance of ${managerKClass.qualifiedName}." }
+        }
+
+        IntegrationLoader(annotation.pluginName) {
+            val constructor = kClass.primaryConstructor!!
+            when (constructor.parameters.size) {
+                0 -> constructor.call()
+                else -> constructor.call(plugin)
+            }
+        }.let(this::registerIntegration)
     }
 
     internal fun registerIntegration(integration: IntegrationLoader) {

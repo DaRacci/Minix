@@ -19,6 +19,7 @@ repositories {
 
 dependencies {
     compileOnly(libs.minecraft.api.placeholderAPI)
+    compileOnly(platform("io.arrow-kt:arrow-stack:1.1.3"))
 
     slim("dev.racci:Minix-NMS:$minixVersion")
 
@@ -59,6 +60,8 @@ dependencies {
     // Misc
     slim(libs.caffeine)
     slim(libs.minecraft.bstats)
+    slim("io.arrow-kt:arrow-core:1.1.3")
+    slim("io.arrow-kt:arrow-fx-coroutines:1.1.3")
 
     // Unused Libraries for Minix Consumers
 

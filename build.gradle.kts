@@ -15,7 +15,7 @@ plugins {
     kotlin("kapt") version "1.7.10"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
     id("dev.racci.slimjar") version "1.3.3"
-    id("io.arrow-kt.analysis.kotlin") version "2.0"
+//    id("io.arrow-kt.analysis.kotlin") version "2.0"
 }
 
 repositories {
@@ -110,7 +110,7 @@ allprojects {
 subprojects {
     apply(plugin = "maven-publish")
     apply(plugin = "kotlin-kapt")
-    apply(plugin = "io.arrow-kt.analysis.kotlin")
+//    apply(plugin = "io.arrow-kt.analysis.kotlin")
 
     afterEvaluate {
         val subSlim = this.configurations.findByName("slim") ?: return@afterEvaluate
@@ -119,14 +119,6 @@ subprojects {
                 slim(it)
             }
         }
-    }
-
-    dependencies {
-        compileOnly(platform("io.arrow-kt:arrow-stack:1.1.3"))
-
-        compileOnly("io.arrow-kt:arrow-core")
-        compileOnly("io.arrow-kt:arrow-fx-coroutines")
-        kapt("io.arrow-kt:arrow-meta")
     }
 }
 

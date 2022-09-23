@@ -58,13 +58,16 @@ tasks {
     }
 }
 
-allprojects {
+subprojects {
 
     apply(plugin = "dev.racci.minix.kotlin")
     apply(plugin = "dev.racci.minix.purpurmc")
     apply(plugin = "dev.racci.minix.nms")
     apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
     apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "maven-publish")
+    apply(plugin = "kotlin-kapt")
+//    apply(plugin = "io.arrow-kt.analysis.kotlin")
 
     dependencies {
         testImplementation(platform(kotlin("bom")))
@@ -105,12 +108,6 @@ allprojects {
             }
         }
     }
-}
-
-subprojects {
-    apply(plugin = "maven-publish")
-    apply(plugin = "kotlin-kapt")
-//    apply(plugin = "io.arrow-kt.analysis.kotlin")
 
     afterEvaluate {
         val subSlim = this.configurations.findByName("slim") ?: return@afterEvaluate

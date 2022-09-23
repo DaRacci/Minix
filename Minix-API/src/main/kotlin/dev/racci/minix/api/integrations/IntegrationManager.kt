@@ -37,7 +37,7 @@ open class IntegrationManager<I : Integration> {
         .filterIsInstance<T>()
         .isNotEmpty()
 
-    companion object {
+    companion object : IntegrationManager<Integration>() {
         internal val MANAGERS: MutableSet<IntegrationManager<*>> = mutableSetOf()
     }
 }

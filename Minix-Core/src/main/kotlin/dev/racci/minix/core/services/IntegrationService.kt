@@ -21,6 +21,7 @@ import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.event.server.PluginEnableEvent
 import org.bukkit.plugin.Plugin
 import kotlin.reflect.KClass
+import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 
@@ -87,6 +88,11 @@ class IntegrationService : MapperService(
             logger.info { "Loading integration with ${integrationLoader.pluginName}" }
             val integration = integrationLoader.callback.invoke(enabledPlugins[descriptor]!!)
             integration.handleLoad()
+
+            val managerKClass = integration::class.findAnnotation<MappedIntegration>()!!.integrationManager
+            val manager = (managerKClass.objectInstance ?: managerKClass.companionObjectInstance) as IntegrationManager<Integration>
+            manager.register(integration)
+
             return integration
         }
         override suspend fun onUnload(value: Integration) {

@@ -31,3 +31,8 @@ inline fun <T : KCallable<*>> Collection<T>.findKCallable(
     name: String,
     ignoreCase: Boolean = false
 ): Option<T> = CollectionUtils.Find.findKCallable(this, name, ignoreCase)
+
+/** @see CollectionUtils.Mutate.clear */
+suspend inline fun <V> MutableCollection<V>.clear(
+    crossinline onRemove: suspend V.() -> Unit
+): Unit = CollectionUtils.Mutate.clear(this, onRemove)

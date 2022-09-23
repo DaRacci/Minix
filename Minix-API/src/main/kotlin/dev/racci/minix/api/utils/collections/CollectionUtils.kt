@@ -349,4 +349,15 @@ object CollectionUtils : UtilObject by UtilObject {
             ignoreCase: Boolean
         ): Option<T> = collection.find { it.name.equals(name, ignoreCase) }.toOption()
     }
+
+    object Mutate {
+        @JvmName("clearCollection")
+        suspend inline fun <T> clear(
+            collection: MutableCollection<T>,
+            crossinline action: suspend T.() -> Unit
+        ): Unit = collection.forEach { item ->
+            item.action()
+            collection.remove(item)
+        }
+    }
 }

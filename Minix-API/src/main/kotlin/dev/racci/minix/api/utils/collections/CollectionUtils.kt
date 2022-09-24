@@ -281,27 +281,27 @@ object CollectionUtils : UtilObject by UtilObject {
     object If {
         @JvmName("ifEmptyCollection")
         suspend inline fun <R, C : Collection<*>> ifEmpty(
-            collection: C?,
+            collection: C,
             crossinline action: suspend C.() -> R
-        ): Option<R> = if (!collection.isNullOrEmpty()) Some(action(collection)) else None
+        ): Option<R> = if (!collection.isEmpty()) Some(action(collection)) else None
 
         @JvmName("ifEmptyArray")
         suspend inline fun <R, T> ifEmpty(
             array: Array<T>,
             crossinline action: suspend Array<T>.() -> R
-        ): Option<R> = if (array.isNotEmpty()) Some(action(array)) else None
+        ): Option<R> = if (array.isEmpty()) Some(action(array)) else None
 
         @JvmName("ifNotEmptyCollection")
         suspend inline fun <R, C : Collection<*>> ifNotEmpty(
             collection: C,
             crossinline action: suspend C.() -> R
-        ): Option<R> = if (collection.isEmpty()) Some(action(collection)) else None
+        ): Option<R> = if (collection.isNotEmpty()) Some(action(collection)) else None
 
         @JvmName("ifNotEmptyArray")
         suspend inline fun <R, T> ifNotEmpty(
             array: Array<T>,
             crossinline action: suspend Array<T>.() -> R
-        ): Option<R> = if (array.isEmpty()) Some(action(array)) else None
+        ): Option<R> = if (array.isNotEmpty()) Some(action(array)) else None
     }
 
     object Contains {

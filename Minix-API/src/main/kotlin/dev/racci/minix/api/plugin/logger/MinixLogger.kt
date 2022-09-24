@@ -73,7 +73,7 @@ abstract class MinixLogger {
      * @param level The [LoggingLevel] to test.
      * @return `true` if the given [LoggingLevel] can display.
      */
-    fun isEnabled(level: LoggingLevel): Boolean = level.ordinal <= this.level.ordinal
+    fun isEnabled(level: LoggingLevel): Boolean = level <= this.level
 
     /**
      * Sets the [LoggingLevel] of this logger.
@@ -262,11 +262,11 @@ abstract class MinixLogger {
     @OptIn(ExperimentalStdlibApi::class)
     protected fun getCallerScope(): String? {
         return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).walk { walker ->
-            walker.filter { frame ->
-                frame.declaringClass.superclass == Extension::class.java
-            }.map { frame ->
-                frame.declaringClass.getAnnotation(MappedExtension::class.java).name
-            }.findFirst()
+            walker.skip(4)
+                .filter { frame -> frame.declaringClass.superclass == Extension::class.java }
+                .filter { frame -> frame.declaringClass.isAnnotationPresent(MappedExtension::class.java) }
+                .map { frame -> frame.declaringClass.getAnnotation(MappedExtension::class.java).name }
+                .findFirst()
         }.getOrNull()
     }
 

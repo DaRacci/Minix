@@ -26,7 +26,7 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 
 @MappedExtension(Minix::class, "Integration Service")
-class IntegrationService : MapperService(
+class IntegrationService(override val plugin: Minix) : MapperService(
     Integration::class,
     MappedIntegration::class
 ) {
@@ -51,7 +51,7 @@ class IntegrationService : MapperService(
         this.enabledPlugins = persistentHashMapOf()
     }
 
-    override fun registerMapped(
+    override suspend fun registerMapped(
         classInfo: ClassInfo,
         plugin: MinixPlugin
     ) {

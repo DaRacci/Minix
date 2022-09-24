@@ -12,6 +12,7 @@ import io.github.classgraph.ClassInfo
 import io.github.classgraph.ScanResult
 import org.koin.core.component.inject
 import kotlin.reflect.KClass
+import kotlin.reflect.full.isSuperclassOf
 
 abstract class MapperService internal constructor(
     private val superclass: KClass<out Any>,
@@ -19,12 +20,12 @@ abstract class MapperService internal constructor(
 ) : Extension<Minix>() {
     override val plugin: Minix by inject()
 
-    abstract fun registerMapped(
+    abstract suspend fun registerMapped(
         classInfo: ClassInfo,
         plugin: MinixPlugin
     )
 
-    fun processMapped(
+    suspend fun processMapped(
         plugin: MinixPlugin,
         scanResult: ScanResult,
         binds: Array<KClass<out Any>>
@@ -33,9 +34,9 @@ abstract class MapperService internal constructor(
             .map { MappedResult(it, binds) }
             .forEach { result ->
                 when (result.message) {
-                    is Some -> plugin.log.error(msg = result.message.castOrThrow<Some<() -> String>>().value)
+                    is Some -> logger.error(msg = result.message.castOrThrow<Some<() -> String>>().value)
                     is None -> {
-                        plugin.log.trace { "Registering ${targetAnnotation.simpleName} [${plugin.name}:${result.classInfo.simpleName}]" }
+                        logger.trace { "Registering ${targetAnnotation.simpleName} [${plugin.name}:${result.classInfo.simpleName}]" }
                         this.registerMapped(result.classInfo, plugin)
                     }
                 }
@@ -71,7 +72,7 @@ abstract class MapperService internal constructor(
         private fun checkSuperclass() {
             when (message) {
                 is Some -> None
-                is None -> when (classInfo.extendsSuperclass(superclass.java)) {
+                is None -> when (superclass.isSuperclassOf(classInfo.loadClass().kotlin)) {
                     true -> None
                     false -> message = Some { "Class ${classInfo.name} does not extend ${superclass.simpleName}." }
                 }

@@ -62,7 +62,7 @@ abstract class MinixConfig<P : MinixPlugin>(
         baseInstance: I,
         invoke: R.() -> Unit
     ) {
-        for (property in NestedUtils.getNestedInstances<R>(I::class, baseInstance)) {
+        for (property in NestedUtils.getNestedInstances<R>(baseInstance::class, baseInstance)) {
             try {
                 property.invoke()
             } catch (_: ClassCastException) { continue }

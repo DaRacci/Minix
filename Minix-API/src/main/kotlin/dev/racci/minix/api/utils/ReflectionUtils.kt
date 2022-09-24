@@ -102,7 +102,7 @@ fun <T : Any> T.clone(replaceArgs: Map<KProperty1<T, *>, Any> = emptyMap()): T =
 }
 
 @ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<R, T>(block)", "dev.racci.minix.api.extensions.reflection.KCallable"))
+@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<T, R>(action)", "dev.racci.minix.api.extensions.reflection.accessWith"))
 inline fun <T : KProperty1<*, *>, R> T.accessReturn(action: T.() -> R): R {
     val originalAccessLevel = isAccessible
     isAccessible = true
@@ -112,7 +112,7 @@ inline fun <T : KProperty1<*, *>, R> T.accessReturn(action: T.() -> R): R {
 }
 
 @ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<R, T>(block)", "dev.racci.minix.api.extensions.reflection.KCallable"))
+@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<T, R>(action)", "dev.racci.minix.api.extensions.reflection.accessWith"))
 inline fun <T : KProperty<*>, R> T.accessReturn(action: T.() -> R): R {
     val originalAccessLevel = isAccessible
     isAccessible = true
@@ -122,7 +122,7 @@ inline fun <T : KProperty<*>, R> T.accessReturn(action: T.() -> R): R {
 }
 
 @ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<R, T>(block)", "dev.racci.minix.api.extensions.reflection.KCallable"))
+@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<T, R>(action)", "dev.racci.minix.api.extensions.reflection.accessWith"))
 inline fun <T : KProperty1<*, R>, R> T.accessWith(action: T.() -> Unit) {
     val originalAccessLevel = isAccessible
     isAccessible = true
@@ -131,7 +131,7 @@ inline fun <T : KProperty1<*, R>, R> T.accessWith(action: T.() -> Unit) {
 }
 
 @ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<R, T>(block)", "dev.racci.minix.api.extensions.reflection.KCallable"))
+@Deprecated("Use new accessWith function", ReplaceWith("this.accessWith<R, T>(action)", "dev.racci.minix.api.extensions.reflection.accessWith"))
 inline fun <T : KProperty<R>, R> T.accessWith(action: T.() -> Unit) {
     val originalAccessLevel = isAccessible
     isAccessible = true

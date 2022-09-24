@@ -1,8 +1,8 @@
 package dev.racci.minix.api.utils.reflection
 
+import dev.racci.minix.api.extensions.reflection.accessGet
 import dev.racci.minix.api.utils.PropertyFinder
 import dev.racci.minix.api.utils.UtilObject
-import dev.racci.minix.api.utils.accessReturn
 import org.apiguardian.api.API
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
@@ -58,14 +58,14 @@ object NestedUtils : UtilObject by UtilObject {
             when {
                 baseInstance::class.java.isAnonymousClass -> logger.trace { "${baseInstance::class.qualifiedName} is anonymous." } // Inner anon object
                 baseInstance::class.isSubclassOf(clazz) -> logger.trace { "${baseInstance::class.qualifiedName} is a subclass of ${clazz.qualifiedName}" } // Inner class
-                baseInstance::class.java.`package`.name.startsWith(clazz.java.`package`.name) -> logger.trace { "${baseInstance::class.qualifiedName} is in the same package as ${clazz.qualifiedName}" } // Same package
+                baseInstance::class.java.packageName.startsWith(clazz.java.packageName) -> logger.trace { "${baseInstance::class.qualifiedName} is in the same package as ${clazz.qualifiedName}" } // Same package
                 baseInstance is PropertyFinder<*> -> logger.trace { "${baseInstance::class.qualifiedName} is a property finder." } // Property finder
-                else -> return@sequence logger.trace { "Skipping ${baseInstance::class.qualifiedName}" }
+                else -> return@sequence // Ignore
             }
 
             val nonNulls = baseInstance::class.declaredMemberProperties
                 .filterIsInstance<KProperty1<Any, Any?>>()
-                .mapNotNull { it.accessReturn { get(baseInstance) } }
+                .mapNotNull { it.accessGet(baseInstance) }
 
             for (instance in nonNulls) {
                 try {

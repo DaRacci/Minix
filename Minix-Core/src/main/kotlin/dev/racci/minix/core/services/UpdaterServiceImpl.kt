@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services
 
+import com.google.common.io.Files
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.extension.Extension
@@ -20,12 +21,10 @@ import dev.racci.minix.api.updater.providers.NullUpdateProvider
 import dev.racci.minix.api.updater.providers.RequestTypeNotAvailableException
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.utils.data.Data
-import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.minecraft.MCVersion
 import dev.racci.minix.api.utils.minecraft.MCVersion.Companion.sameMajor
 import dev.racci.minix.api.utils.now
 import dev.racci.minix.api.utils.size
-import dev.racci.minix.api.utils.unsafeCast
 import dev.racci.minix.core.data.UpdaterConfig
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
@@ -40,8 +39,6 @@ import kotlinx.datetime.toLocalDateTime
 import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.event.server.PluginEnableEvent
 import org.jetbrains.exposed.exceptions.ExposedSQLException
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.component.get
 import java.io.BufferedInputStream
 import java.io.File
@@ -56,7 +53,6 @@ import java.util.Collections
 import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
-import kotlin.io.path.moveTo
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -74,42 +70,38 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
     override val enabledUpdaters: MutableList<PluginUpdater> = Collections.synchronizedList(mutableListOf<PluginUpdater>())
     override val disabledUpdaters: MutableList<PluginUpdater> = Collections.synchronizedList(mutableListOf<PluginUpdater>())
 
+    @Suppress("UnstableApiUsage")
     override suspend fun handleLoad() {
         val plugins = pm.plugins
-        transaction(DataService.getService().unsafeCast<DataServiceImpl>().database) {
-            SchemaUtils.createMissingTablesAndColumns(DataServiceImpl.DataHolder.table)
+
+        get<DataService>().withDatabase {
             for (holder in DataServiceImpl.DataHolder.all()) {
-                val plugin = plugins.find { it.name == holder.id.value } ?: continue
-                val currentName = plugin::class.java.protectionDomain.codeSource.location.file.substringAfterLast("/")
-                val path = server.pluginsFolder.resolve(currentName)
-                logger.debug { "Found plugin ${plugin.name} at $path" }
+                val enabledPlugin = plugins.find { it.name == holder.id.value } ?: continue
+                val currentName = enabledPlugin::class.java.protectionDomain.codeSource.location.file.substringAfterLast("/")
+
+                logger.debug { "Found plugin ${enabledPlugin.name} with current file name $currentName" }
 
                 when (currentName) {
                     holder.newVersion -> {
-                        logger.info { "Plugin ${plugin.name} successfully loaded the new version!" }
-                        val oldFile = path.parentFile.resolve(holder.oldVersion)
-                        oldFile.exists().ifTrue {
+                        logger.info { "Plugin ${enabledPlugin.name} successfully updated to version ${holder.newVersion}" }
+
+                        val oldFile = server.pluginsFolder.resolve(holder.oldVersion)
+                        if (oldFile.exists()) {
                             logger.debug { "Moving old version of ${plugin.name}." }
-                            oldFile.toPath().moveTo(updateFolder.resolve("old-versions/${holder.oldVersion}").toPath())
+                            Files.move(oldFile, updateFolder.resolve("old-versions/${holder.oldVersion}"))
                         }
-                    }
 
-                    holder.oldVersion -> {
-                        logger.warn {
-                            """
+                        holder.delete()
+                    }
+                    holder.oldVersion -> logger.warn {
+                        """
                             Plugin ${plugin.name} is out of date!
-                            Version ${plugin.description.version} has loaded instead of ${
-                            holder.newVersion.split("^${holder.id.value}-?".toRegex()).first()
-                            }.
+                            Version ${plugin.description.version} has loaded instead of ${holder.newVersion.split("^${holder.id.value}-?".toRegex()).first()}.
                             Please manually update the plugin to the latest version.
-                            """.trimIndent()
-                        }
+                        """.trimIndent()
                     }
-
-                    else -> {} // We can assume that the plugin was updated manually.
+                    else -> holder.delete()
                 }
-
-                holder.delete()
             }
         }
     }
@@ -485,7 +477,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
         return tempFile
     }
 
-    private fun readyPlugin(
+    private suspend fun readyPlugin(
         updater: PluginUpdater,
         file: File
     ) {
@@ -493,7 +485,7 @@ class UpdaterServiceImpl(override val plugin: Minix) : Extension<Minix>(), Updat
             val newPath = file.copyTo(server.pluginsFolder.resolve(file.name), false)
             if (newPath.exists() && newPath.size() == file.size()) file.delete()
 
-            transaction(DataServiceImpl.getService().database) {
+            get<DataService>().withDatabase {
                 DataServiceImpl.DataHolder.new(updater.pluginInstance!!.name) {
                     newVersion = newPath.name
                     oldVersion = updater.localFile.substringAfterLast("/")

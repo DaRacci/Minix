@@ -50,7 +50,7 @@ class MinixImpl : Minix() {
         }
     }
 
-    override suspend fun handleLoad() {
+    override suspend fun handleAfterLoad() {
         this.startSentry()
     }
 

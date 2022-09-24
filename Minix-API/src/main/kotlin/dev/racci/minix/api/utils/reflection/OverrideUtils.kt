@@ -42,13 +42,13 @@ object OverrideUtils : UtilObject by UtilObject {
     inline fun doesOverrideFunction(
         kClass: KClass<*>,
         function: KFunction<*>
-    ): Boolean = this.doesOverrideFunctionSelector(kClass) { this == function }
+    ): Boolean = this.doesOverrideFunctionSelector(kClass) { this.name == function.name }
 
     @JvmName("doesOverrideKProperty")
     inline fun <T : Any, R> doesOverrideProperty(
         kClass: KClass<T>,
         property: KProperty<R>
-    ): Boolean = this.doesOverridePropertySelector(kClass) { this == property }
+    ): Boolean = this.doesOverridePropertySelector(kClass) { this.name == property.name }
 
     @JvmName("ifOverridesKFunction")
     inline fun <T : Any, C : KFunction<*>, R> ifOverridesFunction(

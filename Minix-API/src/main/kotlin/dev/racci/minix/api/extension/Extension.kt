@@ -31,7 +31,13 @@ import kotlin.time.Duration.Companion.seconds
 @OptIn(MinixInternal::class, DelicateCoroutinesApi::class)
 abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
 
+    final override val value get() = name
+
     final override var state = ExtensionState.UNLOADED
+
+    final override val loaded get() = state < ExtensionState.UNLOADED
+
+    final override val supervisor by lazy { CoroutineScope(SupervisorJob()) }
 
     /** This extensions local isolated thread context. */
     override val dispatcher = object : Closeable<ExecutorCoroutineDispatcher>() {
@@ -49,8 +55,6 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
         override val plugin: P get() = this@Extension.plugin
     }
 
-    final override val loaded get() = state == ExtensionState.LOADED || state == ExtensionState.ENABLED
-
     final override val name by lazy {
         buildString {
             append(plugin.name)
@@ -59,16 +63,35 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
         }
     }
 
-    final override val supervisor by lazy { CoroutineScope(SupervisorJob()) }
-
-    final override val value get() = name
-
     suspend fun setState(state: ExtensionState) {
         send(plugin, ExtensionStateEvent(this, state))
         this.state = state
     }
 
-    final override fun toString(): String = "${plugin.name}:$value"
+    final override fun toString(): String = "Extension(name='$name', state='$state')"
+
+    final override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Extension<*>) return false
+
+        if (name != other.name) return false
+        if (state != other.state) return false
+        if (supervisor != other.supervisor) return false
+        if (dispatcher != other.dispatcher) return false
+        if (eventListener != other.eventListener) return false
+
+        return true
+    }
+
+    final override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + state.hashCode()
+        result = 31 * result + supervisor.hashCode()
+        result = 31 * result + dispatcher.hashCode()
+        result = 31 * result + eventListener.hashCode()
+        return result
+    }
 
     /**
      * Designed to be applied to a companion object of a class extending

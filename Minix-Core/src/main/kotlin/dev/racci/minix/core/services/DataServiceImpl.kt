@@ -82,12 +82,6 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
     }
     val database by lazy { Database.connect(dataSource) }
 
-    override suspend fun handleLoad() {
-        if (!plugin.dataFolder.exists() && !plugin.dataFolder.mkdirs()) {
-            logger.error { "Failed to create data folder!" }
-        }
-    }
-
     override suspend fun handleUnload() {
         ::dataSource.ifInitialised {
             logger.info { "Closing database connection." }

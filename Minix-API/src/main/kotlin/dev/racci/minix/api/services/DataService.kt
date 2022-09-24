@@ -8,7 +8,7 @@ import org.apiguardian.api.API
 import kotlin.reflect.KClass
 
 @API(status = API.Status.MAINTAINED, since = "2.3.1")
-abstract class DataService : Extension<Minix>() {
+abstract class DataService : Extension<Minix>(), StorageService<Minix> {
 
     abstract fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T?
 

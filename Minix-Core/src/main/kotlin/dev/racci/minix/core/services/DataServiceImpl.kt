@@ -3,8 +3,6 @@ package dev.racci.minix.core.services
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import com.github.benmanes.caffeine.cache.RemovalCause
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MinixInternal
@@ -12,7 +10,6 @@ import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.exceptions.MissingAnnotationException
 import dev.racci.minix.api.exceptions.MissingPluginException
 import dev.racci.minix.api.extensions.reflection.castOrThrow
-import dev.racci.minix.api.extensions.reflection.ifInitialised
 import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
@@ -20,6 +17,7 @@ import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.serializables.Serializer
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
+import dev.racci.minix.api.services.StorageService
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.Companion.nonVirtualNode
 import dev.racci.minix.api.utils.getKoin
@@ -32,8 +30,11 @@ import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.Table
 import org.koin.core.component.KoinComponent
+import org.koin.core.context.loadKoinModules
+import org.koin.dsl.bind
+import org.koin.dsl.module
 import org.spongepowered.configurate.CommentedConfigurationNode
 import org.spongepowered.configurate.ConfigurateException
 import org.spongepowered.configurate.NodePath.path
@@ -55,7 +56,11 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 
 @MappedExtension(Minix::class, "Data Service", [PluginService::class], DataService::class)
-class DataServiceImpl(override val plugin: Minix) : DataService() {
+class DataServiceImpl(
+    override val plugin: Minix
+) : StorageService<Minix>, DataService() {
+    override val managedTable: Table = PluginData
+
     val configDataHolder: LoadingCache<KClass<out MinixConfig<*>>, ConfigData<out MinixConfig<*>>> = Caffeine.newBuilder()
         .executor(dispatcher.get().executor)
         .removalListener<KClass<*>, ConfigData<*>> { key, value, cause ->
@@ -71,27 +76,12 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         }
         .build { key -> runBlocking(dispatcher.get()) { ConfigData(key) } }
 
-    private val dataSource by lazy {
-        HikariConfig().apply {
-            jdbcUrl = "jdbc:sqlite:${plugin.dataFolder.path}/database.db"
-            connectionTestQuery = "SELECT 1"
-            addDataSourceProperty("cachePrepStmts", true)
-            addDataSourceProperty("prepStmtCacheSize", "250")
-            addDataSourceProperty("prepStmtCacheSqlLimit", "2048")
-        }.let(::HikariDataSource)
-    }
-    val database by lazy { Database.connect(dataSource) }
-
     override suspend fun handleUnload() {
-        ::dataSource.ifInitialised {
-            logger.info { "Closing database connection." }
-            close()
-        }
-        dataSource::class
+        super<StorageService>.handleUnload()
         configDataHolder.invalidateAll()
     }
 
-    override fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T? = configDataHolder[kClass].configInstance as? T
+    override fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T? = configDataHolder[kClass].configInstance.safeCast()
 
     @OptIn(MinixInternal::class)
     class ConfigData<T : MinixConfig<out MinixPlugin>>(val kClass: KClass<T>) {
@@ -100,7 +90,6 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         val file: File
         val node: CommentedConfigurationNode
         val configLoader: HoconConfigurationLoader
-//        val configClone: T
 
         fun save() {
             this.node.set(this.kClass, this.configInstance)
@@ -204,9 +193,8 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
                 }
 
                 this.configInstance.load()
-//                this.configClone = this.configInstance.clone().unsafeCast()
 
-                if (!this.file.exists()) { // || this.configInstance != this.configClone) {
+                if (!this.file.exists()) {
                     this.save()
                 }
             } catch (e: ConfigurateException) {
@@ -215,6 +203,11 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
             }
 
             getKoin().get<PluginServiceImpl>()[plugin].configurations.add(kClass.castOrThrow())
+            loadKoinModules(
+                module {
+                    single<MinixConfig<*>> { configInstance } bind kClass.castOrThrow()
+                }
+            )
         }
 
         private companion object {

@@ -1,4 +1,5 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URL
 
 val minixVersion: String by project
@@ -90,6 +91,10 @@ subprojects {
 
         withType<Test>().configureEach {
             useJUnitPlatform()
+        }
+
+        withType<KotlinCompile>().configureEach {
+            kotlinOptions.freeCompilerArgs += "-opt-in=dev.racci.minix.api.annotations.MinixInternal"
         }
 
         dokkaHtml.get().dokkaSourceSets.configureEach {

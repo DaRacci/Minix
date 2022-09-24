@@ -9,7 +9,6 @@ import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.collections.findKCallable
-import dev.racci.minix.api.extensions.collections.ifNotEmpty
 import dev.racci.minix.api.extensions.reflection.accessGet
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.server
@@ -25,7 +24,7 @@ import dev.racci.minix.core.MinixImpl
 import dev.racci.minix.core.MinixInit
 import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
 import dev.racci.minix.core.services.mapped.ConfigurationMapper
-import dev.racci.minix.core.services.mapped.ExtensionService
+import dev.racci.minix.core.services.mapped.ExtensionMapper
 import io.github.classgraph.ClassGraph
 import kotlinx.coroutines.runBlocking
 import org.bstats.bukkit.Metrics
@@ -72,7 +71,8 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             logRunning(plugin, plugin::handleLoad)
 
             loadReflection(plugin)
-            get<ExtensionService>().loadExtensions(plugin)
+
+            get<ExtensionMapper>().loadExtensions(plugin)
 
             logRunning(plugin, plugin::handleAfterLoad)
         }
@@ -84,7 +84,10 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             logRunning(plugin, plugin::handleEnable)
 
             registerStats(plugin)
-            get<ExtensionService>().enableExtensions(plugin)
+
+            get<ExtensionMapper>().enableExtensions(plugin)
+//            val sorted = extensionMapper.sortUnloaded(plugin)
+//            sorted.forEach { extensionMapper.enableExtension(it, snapshot) }
 
             logRunning(plugin, plugin::handleAfterEnable)
             loadedPlugins += plugin::class to plugin
@@ -97,19 +100,26 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             loadedPlugins -= plugin::class
             val isFullUnload = isFullUnload()
 
+            logger.debug { "Unloading plugin ${plugin.name} (full unload: $isFullUnload)" }
+
             logRunning(plugin, plugin::handleDisable)
             if (isFullUnload) logRunning(plugin, plugin::handleUnload)
 
             pluginCache.getIfPresent(plugin)?.apply {
-                this.configurations.ifNotEmpty(DataServiceImpl.getService().configDataHolder::invalidateAll)
+                val dataService = get<DataServiceImpl>()
+                val extensionMapper = get<ExtensionMapper>()
+//                val snapshot = this.extensions.reversed().toImmutableList()
 
-                val extensionService = get<ExtensionService>()
-                this.extensions.ifNotEmpty(extensionService::disableExtensions)
-                this.extensions.takeIf { isFullUnload }?.ifNotEmpty(extensionService::unloadExtensions)
+                dataService.configDataHolder.invalidateAll(this.configurations)
+                extensionMapper.disableExtensions(plugin)
+                if (isFullUnload) extensionMapper.unloadExtensions(plugin)
+
+//                for (extension in snapshot) { extensionMapper.disableExtension(extension, snapshot) }
+//                if (isFullUnload) for (extension in snapshot) { extensionMapper.unloadExtension(extension) }
             }
 
             CoroutineScheduler.activateTasks(plugin)?.takeIf(IntArray::isNotEmpty)?.let {
-                plugin.log.trace { "Cancelling ${it.size} tasks." }
+                logger.trace { "Cancelling ${it.size} tasks." }
                 it.forEach { id -> CoroutineScheduler.shutdownTask(id) }
             }
 
@@ -151,7 +161,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
     ) {
         if (!OverrideUtils.doesOverrideFunction(plugin::class, func)) return
 
-        plugin.log.trace { "Running [${plugin.name}:${func.name}]." }
+        logger.trace { "Running [${plugin.name}:${func.name}]." }
         func.invoke()
     }
 
@@ -160,7 +170,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
 
         if (id == null || id == 0) return
 
-        plugin.log.info { "Registering bStats." }
+        logger.info { "Registering bStats." }
         pluginCache[plugin].metrics = Metrics(plugin, id)
     }
 
@@ -177,7 +187,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         return loader!!
     }
 
-    private fun loadReflection(plugin: MinixPlugin) {
+    private suspend fun loadReflection(plugin: MinixPlugin) {
         var int = 0
         val packageName = plugin::class.java.`package`.name.takeWhile { it != '.' || int++ < 2 }
         val scanResult = ClassGraph()
@@ -188,12 +198,15 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             .enableAnnotationInfo()
             .disableNestedJarScanning()
             .disableRuntimeInvisibleAnnotations()
-            .rejectClasses(PluginServiceImpl::class.qualifiedName)
+            .rejectClasses(
+                PluginServiceImpl::class.qualifiedName,
+                ExtensionMapper::class.qualifiedName
+            )
             .scan(4)
 
         if (plugin !is MinixImpl) plugin.log.info { "Ignore the following warning, this is expected behavior." }
 
-        get<ExtensionService>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
+        get<ExtensionMapper>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
         get<ConfigurationMapper>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
         get<IntegrationService>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
 

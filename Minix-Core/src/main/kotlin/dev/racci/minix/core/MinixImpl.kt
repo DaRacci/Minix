@@ -10,13 +10,12 @@ import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.providers.GithubUpdateProvider
-import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.data.MinixConfig
 import dev.racci.minix.core.services.PluginServiceImpl
-import dev.racci.minix.core.services.mapped.ExtensionService
+import dev.racci.minix.core.services.mapped.ExtensionMapper
 import io.sentry.Sentry
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -25,7 +24,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.core.KoinApplication
 import org.koin.core.component.get
-import org.koin.core.context.loadKoinModules
 import org.koin.core.context.startKoin
 import org.koin.dsl.bind
 import org.koin.mp.KoinPlatformTools
@@ -67,12 +65,10 @@ class MinixImpl : Minix() {
             single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class
         }
 
-        val pluginService = PluginServiceImpl(this)
-        val extensionService = ExtensionService(this)
-
-        loadKoinModules(listOf(KoinUtils.getModule(pluginService), KoinUtils.getModule(extensionService)))
-        extensionService.loadExtension(extensionService, mutableListOf())
-        extensionService.loadExtension(pluginService, mutableListOf())
+        val extensionMapper = ExtensionMapper(this)
+        arrayOf(PluginServiceImpl(this), extensionMapper)
+            .onEach { extensionMapper.registerMapped(it, this) }
+            .onEach { extensionMapper.loadExtension(it, mutableListOf()) }
     }
 
     private fun startSentry() {

@@ -11,18 +11,18 @@ import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.exceptions.MissingAnnotationException
 import dev.racci.minix.api.exceptions.MissingPluginException
-import dev.racci.minix.api.extensions.log
+import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.reflection.ifInitialised
+import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.serializables.Serializer
 import dev.racci.minix.api.services.DataService
+import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.Companion.nonVirtualNode
 import dev.racci.minix.api.utils.getKoin
-import dev.racci.minix.api.utils.safeCast
-import dev.racci.minix.api.utils.unsafeCast
 import io.papermc.paper.configuration.constraint.Constraint
 import kotlinx.coroutines.runBlocking
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer
@@ -54,20 +54,20 @@ import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 
-@MappedExtension(Minix::class, "Data Service", bindToKClass = DataService::class)
+@MappedExtension(Minix::class, "Data Service", [PluginService::class], DataService::class)
 class DataServiceImpl(override val plugin: Minix) : DataService() {
     val configDataHolder: LoadingCache<KClass<out MinixConfig<*>>, ConfigData<out MinixConfig<*>>> = Caffeine.newBuilder()
         .executor(dispatcher.get().executor)
         .removalListener<KClass<*>, ConfigData<*>> { key, value, cause ->
             if (key == null || value == null || cause == RemovalCause.REPLACED) return@removalListener
-            logger.info { "Saving and disposing configurate class ${key.simpleName}." }
+            logger.info { "Saving and disposing configurate class [${value.configInstance.plugin}:${key.simpleName}]." }
 
             value.configInstance.handleUnload()
             if (value.configLoader.canSave()) {
                 value.save()
             }
 
-            getKoin().get<PluginServiceImpl>()[plugin].configurations.remove(value.kClass.unsafeCast())
+            getKoin().get<PluginServiceImpl>()[plugin].configurations.remove(value.kClass.castOrThrow())
         }
         .build { key -> runBlocking(dispatcher.get()) { ConfigData(key) } }
 
@@ -101,7 +101,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
     @OptIn(MinixInternal::class)
     class ConfigData<T : MinixConfig<out MinixPlugin>>(val kClass: KClass<T>) {
-        val mappedConfig: MappedConfig = this.kClass.findAnnotation() ?: throw MissingAnnotationException(this.kClass, MappedConfig::class.unsafeCast())
+        val mappedConfig: MappedConfig = this.kClass.findAnnotation() ?: throw MissingAnnotationException(this.kClass, MappedConfig::class.castOrThrow())
         val configInstance: T
         val file: File
         val node: CommentedConfigurationNode
@@ -122,7 +122,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
 
                 val endVersion = trans.version(node)
                 if (startVersion != endVersion) { // we might not have made any changes
-                    configInstance.log.info { "Updated config schema from $startVersion to $endVersion" }
+                    configInstance.logger.info { "Updated config schema from $startVersion to $endVersion" }
                 }
             }
 
@@ -174,7 +174,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
             while (extraSerializers.hasNext()) {
                 val nextClazz = extraSerializers.next()
                 val serializer = extraSerializers.runCatching {
-                    next().unsafeCast<KClass<TypeSerializer<*>>>().let {
+                    next().castOrThrow<KClass<TypeSerializer<*>>>().let {
                         it.objectInstance ?: it.createInstance()
                     }
                 }.getOrNull() ?: continue
@@ -191,7 +191,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
         }
 
         init {
-            if (!this.kClass.hasAnnotation<ConfigSerializable>()) throw MissingAnnotationException(this.kClass, ConfigSerializable::class.unsafeCast())
+            if (!this.kClass.hasAnnotation<ConfigSerializable>()) throw MissingAnnotationException(this.kClass, ConfigSerializable::class.castOrThrow())
 
             val plugin = getKoin().getOrNull<MinixPlugin>(this.mappedConfig.parent) ?: throw MissingPluginException("Could not find plugin instance for ${this.mappedConfig.parent}")
             this.file = plugin.dataFolder.resolve(this.mappedConfig.file)
@@ -220,7 +220,7 @@ class DataServiceImpl(override val plugin: Minix) : DataService() {
                 throw e
             }
 
-            getKoin().get<PluginServiceImpl>()[plugin].configurations.add(kClass.unsafeCast())
+            getKoin().get<PluginServiceImpl>()[plugin].configurations.add(kClass.castOrThrow())
         }
 
         private companion object {

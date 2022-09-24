@@ -10,10 +10,12 @@ import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.providers.GithubUpdateProvider
-import dev.racci.minix.api.utils.loadModule
+import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.data.MinixConfig
+import dev.racci.minix.core.loggers.KoinProxy
+import dev.racci.minix.core.loggers.SentryProxy
 import dev.racci.minix.core.services.PluginServiceImpl
 import dev.racci.minix.core.services.mapped.ExtensionMapper
 import io.sentry.Sentry
@@ -22,10 +24,12 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.koin.core.KoinApplication
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.get
 import org.koin.core.context.startKoin
 import org.koin.dsl.bind
+import org.koin.dsl.binds
+import org.koin.dsl.module
 import org.koin.mp.KoinPlatformTools
 import kotlin.time.Duration.Companion.seconds
 
@@ -58,15 +62,26 @@ class MinixImpl : Minix() {
     }
 
     private suspend fun startKoin() {
-        startKoin(KoinApplication.init())
-        loadModule {
-            single { log } bind MinixLogger::class
-            single { CoroutineServiceImpl() } bind CoroutineService::class
-            single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class
+        startKoin {
+            modules(
+                module {
+                    single { log } bind MinixLogger::class
+                    single { CoroutineServiceImpl() } bind CoroutineService::class
+                    single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class
+
+                    val pls = PluginServiceImpl(this@MinixImpl)
+                    val ems = ExtensionMapper(this@MinixImpl)
+                    single { pls } binds KoinUtils.getBinds(pls)
+                    single { ems } binds KoinUtils.getBinds(ems)
+                }
+            )
+
+            this.printLogger(log.level.toKoin())
+            this.logger(KoinProxy())
         }
 
-        val extensionMapper = ExtensionMapper(this)
-        arrayOf(PluginServiceImpl(this), extensionMapper)
+        val extensionMapper = get<ExtensionMapper>()
+        arrayOf(get<PluginServiceImpl>(), extensionMapper)
             .onEach { extensionMapper.registerMapped(it, this) }
             .onEach { extensionMapper.loadExtension(it, mutableListOf()) }
     }
@@ -81,6 +96,7 @@ class MinixImpl : Minix() {
             options.environment = if (version.isPreRelease) "pre-release" else "release"
             options.environment = "production"
             options.inAppIncludes += "dev.racci"
+            options.setLogger(SentryProxy())
             options.setBeforeSend { event, _ ->
                 event.setTag("TPS-AVG", server.tps.average().toString())
                 event.setTag("TPS-CUR", server.tps.last().toString())

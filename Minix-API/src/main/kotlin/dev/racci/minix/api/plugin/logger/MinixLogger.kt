@@ -10,10 +10,10 @@ import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.exceptions.LevelConversionException
 import dev.racci.minix.api.exceptions.NoTraceException
 import dev.racci.minix.api.extension.Extension
+import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.utils.Loadable
 import dev.racci.minix.api.utils.kotlin.fromOrdinal
 import dev.racci.minix.api.utils.kotlin.toSafeString
-import dev.racci.minix.api.utils.unsafeCast
 import kotlinx.atomicfu.AtomicBoolean
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import org.apache.logging.log4j.spi.StandardLevel
 import org.apiguardian.api.API
-import org.checkerframework.checker.units.qual.t
 import java.util.logging.Level
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KFunction
@@ -282,7 +281,7 @@ abstract class MinixLogger {
         init {
             val func = Terminal::class.declaredMemberFunctions.first { it.name == "rawPrintln" }
             func.isAccessible = true
-            rawPrintln = func.unsafeCast()
+            rawPrintln = func.castOrThrow()
         }
     }
 
@@ -361,6 +360,15 @@ abstract class MinixLogger {
             val ordinal = ((this.ordinal + 1) * 100)
             val standardLevel = StandardLevel.getStandardLevel(ordinal).name
             return org.apache.logging.log4j.Level.getLevel(standardLevel)
+        }
+
+        fun toKoin(): org.koin.core.logger.Level = when (this) {
+            FATAL -> org.koin.core.logger.Level.ERROR
+            ERROR -> org.koin.core.logger.Level.ERROR
+            WARN -> org.koin.core.logger.Level.INFO
+            INFO -> org.koin.core.logger.Level.INFO
+            DEBUG -> org.koin.core.logger.Level.DEBUG
+            TRACE -> org.koin.core.logger.Level.DEBUG
         }
 
         companion object {

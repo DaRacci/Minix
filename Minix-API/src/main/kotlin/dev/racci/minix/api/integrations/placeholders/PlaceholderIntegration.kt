@@ -1,7 +1,7 @@
 package dev.racci.minix.api.integrations.placeholders
 
+import dev.racci.minix.api.extensions.collections.get
 import dev.racci.minix.api.integrations.Integration
-import dev.racci.minix.api.utils.collections.CollectionUtils.getIgnoreCase
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
@@ -37,18 +37,29 @@ abstract class PlaceholderIntegration : PlaceholderExpansion(), Integration {
     final override fun onPlaceholderRequest(
         player: Player?,
         params: String
-    ): String? = super.onPlaceholderRequest(player, params)
+    ): String? = onRequest(player, params)
 
     final override fun onRequest(
         player: OfflinePlayer?,
         params: String
     ): String? {
-        val placeholder = placeholders.getIgnoreCase(params) ?: return null
-        return when (player) {
+        logger.debug { placeholders }
+        logger.debug { "Placeholder request: $params" }
+        val placeholder = placeholders.get(params, true).orNull() ?: return null
+
+        val result = when (player) {
             null -> this.asString(placeholder.first)
             is Player -> this.asString(placeholder.second?.invoke(player))
             else -> this.asString(placeholder.third?.invoke(player))
         }
+
+        logger.debug { "Placeholder result: $result" }
+
+        return result
+    }
+
+    final override suspend fun handleLoad() {
+        this.register()
     }
 
     private fun asString(value: Any?): String? = when (value) {

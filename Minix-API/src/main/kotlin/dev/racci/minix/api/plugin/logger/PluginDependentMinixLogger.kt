@@ -1,12 +1,13 @@
 package dev.racci.minix.api.plugin.logger
 
+import arrow.core.handleError
 import com.github.ajalt.mordant.rendering.TextColors
 import dev.racci.minix.api.extensions.WithPlugin
+import dev.racci.minix.api.extensions.collections.findKCallable
+import dev.racci.minix.api.extensions.reflection.accessGet
+import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.utils.accessReturn
-import dev.racci.minix.api.utils.collections.CollectionUtils.find
-import dev.racci.minix.api.utils.unsafeCast
 import io.sentry.Breadcrumb
 import io.sentry.Sentry
 import io.sentry.SentryLevel
@@ -21,11 +22,11 @@ import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileMan
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
 import java.util.Optional
-import kotlin.reflect.KProperty1
+import kotlin.reflect.KProperty0
 import kotlin.reflect.full.staticProperties
 
 @OptIn(DelicateCoroutinesApi::class)
-class PluginDependentMinixLogger<T : MinixPlugin>(
+class PluginDependentMinixLogger<T : MinixPlugin> private constructor(
     override val plugin: T,
     loggingLevel: LoggingLevel = LoggingLevel.INFO
 ) : MinixLogger(loggingLevel), WithPlugin<T> {
@@ -266,13 +267,17 @@ class PluginDependentMinixLogger<T : MinixPlugin>(
         Sentry.addBreadcrumb(breadcrumb)
     }
 
-    private companion object {
-        val NEWLINE: ByteArray = "\n".encodeToByteArray()
-        val TERMINAL: Terminal = TerminalBuilder.builder().build()
-        val ROLLING_MANAGER: RollingRandomAccessFileManager = AbstractManager::class.staticProperties
-            .unsafeCast<Collection<KProperty1<AbstractManager, Map<String, AbstractManager>>>>()
-            .find("MAP")!!.accessReturn {
-            this.getter.call()
-        }["logs/latest.log"].unsafeCast()
+    companion object {
+        private val NEWLINE: ByteArray = "\n".encodeToByteArray()
+        private val TERMINAL: Terminal = TerminalBuilder.builder().build()
+        private val EXISTING: MutableMap<MinixPlugin, PluginDependentMinixLogger<*>> = mutableMapOf()
+        private val ROLLING_MANAGER: RollingRandomAccessFileManager = AbstractManager::class.staticProperties
+            .filterIsInstance<KProperty0<Map<String, AbstractManager>>>()
+            .findKCallable("MAP")
+            .map { it.accessGet }
+            .handleError { error("Failed to get instance of rolling manager") }
+            .orNull()!!["logs/latest.log"].castOrThrow()
+
+        fun getLogger(plugin: MinixPlugin) = EXISTING.getOrPut(plugin) { PluginDependentMinixLogger(plugin) }
     }
 }

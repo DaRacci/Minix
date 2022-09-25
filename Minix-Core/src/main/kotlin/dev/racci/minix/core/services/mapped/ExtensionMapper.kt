@@ -48,7 +48,6 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
             extension::class.findAnnotation<MappedExtension>()!!.dependencies.forEach { dependencyClazz ->
                 val dependency = getKoin().get<Extension<*>>(dependencyClazz)
                 graph.putEdge(extension, dependency)
-                logger.debug { "Added dependency ${dependency.name} to ${extension.name}" }
             }
         }
 //
@@ -57,12 +56,12 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         // Create a list of extensions that are not dependent on any other extensions
         val independentExtensions = extensions.filter { extension ->
             graph.inDegree(extension) == 0
-        }.onEach { logger.debug { "Independent extension: ${it.name}" } }
+        }
 
         // Create a list of extensions that are dependent on other extensions
         val dependentExtensions = extensions.filter { extension ->
             graph.inDegree(extension) != 0
-        }.onEach { logger.debug { "Dependent extension: ${it.name}" } }
+        }
 
         // Create a list of extensions that are dependent on other extensions
         val orderedExtensions = mutableListOf<Extension<*>>()
@@ -83,13 +82,9 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
                 return@forEach
             }
 
-            logger.debug { "Adding ${extension.name} to index $index" }
-
             // Add the extension to the ordered list
             orderedExtensions.add(index, extension)
         }
-
-        logger.debug { "Ordered extensions: ${orderedExtensions.map { it.name }}" }
 
         // Reverse the list so that the extensions are in the correct order
         orderedExtensions.reverse()
@@ -107,8 +102,6 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         plugin: MinixPlugin
     ) {
         loadKoinModules(KoinUtils.getModule(extension))
-
-        logger.fatal { "Registering extension ${extension.name} for plugin ${plugin.name}" }
 
 //        val graph = extensionGraph.computeIfAbsent(plugin::class) { GraphBuilder.directed().build() }
         val graph = extensionGraph
@@ -133,16 +126,12 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         }
 
         topoSorted.remove(plugin::class)
-
-        logger.fatal { extensionGraph }
     }
 
     override suspend fun registerMapped(
         classInfo: ClassInfo,
         plugin: MinixPlugin
     ) {
-        logger.info { "Registering extension ${classInfo.name} for plugin ${plugin.name}" }
-
         val kClass = classInfo.loadClass().kotlin.castOrThrow<KClass<Extension<*>>>()
         val constructor = kClass.primaryConstructor!!
 
@@ -223,14 +212,14 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         withState(ExtensionState.UNLOADING, extension) {
             extension.handleUnload()
         }.fold(
-            { println("Unloaded extension ${extension.name}.") },
+            { logger.trace { "Unloaded extension ${extension.name}." } },
             { err -> logger.error(err) { "Extension ${extension.name} threw an error while unloading!" } }
         )
 
         extension.eventListener.unregisterListener()
         extension.supervisor.coroutineContext.job.castOrThrow<CompletableJob>().complete()
         extension.dispatcher.close()
-        extensionGraph.removeNode(extension)
+        runCatching { extensionGraph.removeNode(extension) }.onFailure { logger.error(it) { "Failed to remove extension ${extension.name} from graph!" } }
         unloadKoinModules(KoinUtils.getModule(extension))
     }
 

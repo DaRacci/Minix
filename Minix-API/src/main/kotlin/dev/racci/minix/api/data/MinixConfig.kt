@@ -1,21 +1,19 @@
-@file:OptIn(MinixInternal::class)
-
 package dev.racci.minix.api.data
 
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.configuration.constraint.MinixConstraints
 import dev.racci.minix.api.extensions.WithPlugin
+import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.utils.kotlin.doesOverride
 import dev.racci.minix.api.utils.reflection.NestedUtils
-import dev.racci.minix.api.utils.unsafeCast
 import io.papermc.paper.configuration.constraint.Constraint
+import kotlinx.coroutines.runBlocking
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.transformation.ConfigurationTransformation
-import java.lang.ClassCastException
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
@@ -38,7 +36,7 @@ abstract class MinixConfig<P : MinixPlugin>(
     open fun handleUnload() = Unit
 
     /** If overridden make sure to call super. */
-    open fun load() {
+    open suspend fun load() {
         if (!this::class.doesOverride(MinixConfig<P>::plugin)) {
             val annotation = this::class.findAnnotation<MappedConfig>() ?: throw IllegalStateException("${this::class.qualifiedName} is not annotated with @MappedConfig")
             val parentKClass = annotation.parent
@@ -54,19 +52,20 @@ abstract class MinixConfig<P : MinixPlugin>(
         handleLoad()
     }
 
-    protected inline fun <reified T : Any> onNestedInstance(action: T.() -> Unit) {
-        this.onNested(this, action)
-    }
+    protected suspend inline fun <reified T : Any> onNestedInstance(
+        crossinline action: T.() -> Unit
+    ) = this.onNested(this, action)
 
-    protected inline fun <reified I : Any, reified R : Any> onNested(
+    protected suspend inline fun <reified I : Any, reified R : Any> onNested(
         baseInstance: I,
-        invoke: R.() -> Unit
+        crossinline invoke: R.() -> Unit
     ) {
-        for (property in NestedUtils.getNestedInstances<R>(baseInstance::class, baseInstance)) {
-            try {
-                property.invoke()
-            } catch (_: ClassCastException) { continue }
-        }
+        NestedUtils.getNestedInstances<R>(baseInstance::class, baseInstance)
+            .collect { instance ->
+                try {
+                    instance.invoke()
+                } catch (_: ClassCastException) { return@collect }
+            }
     }
 
     final override fun getKoin() = super.getKoin()
@@ -74,7 +73,7 @@ abstract class MinixConfig<P : MinixPlugin>(
     final override fun toString(): String {
         val entries = mutableListOf<Pair<String, Any?>>()
         this::class.declaredMemberProperties.forEach {
-            entries.add(it.name to it.unsafeCast<KProperty1<MinixConfig<P>, *>>().get(this))
+            entries.add(it.name to it.castOrThrow<KProperty1<MinixConfig<P>, *>>().get(this))
         }
 
         return this::class.qualifiedName + entries.joinToString(", ", "=[", "]") { "${it.first}=${it.second}" }
@@ -95,8 +94,10 @@ abstract class MinixConfig<P : MinixPlugin>(
     final override fun hashCode(): Int {
         var result = plugin.hashCode()
         result = 31 * result + versionTransformations.hashCode()
-        onNestedInstance<Any> {
-            result = 31 * result + this.hashCode()
+        runBlocking {
+            onNestedInstance<Any> {
+                result = 31 * result + this.hashCode()
+            }
         }
         return result
     }

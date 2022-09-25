@@ -192,7 +192,7 @@ class DataServiceImpl(
                     instance.processLoggingLevel()
                 }
 
-                this.configInstance.load()
+                runBlocking { configInstance.load() }
 
                 if (!this.file.exists()) {
                     this.save()

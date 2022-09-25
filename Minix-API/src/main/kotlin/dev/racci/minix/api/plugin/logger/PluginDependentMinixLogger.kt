@@ -14,6 +14,7 @@ import io.sentry.SentryLevel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -274,7 +275,7 @@ class PluginDependentMinixLogger<T : MinixPlugin> private constructor(
         private val ROLLING_MANAGER: RollingRandomAccessFileManager = AbstractManager::class.staticProperties
             .filterIsInstance<KProperty0<Map<String, AbstractManager>>>()
             .findKCallable("MAP")
-            .map { it.accessGet }
+            .map { runBlocking { it.accessGet() } }
             .handleError { error("Failed to get instance of rolling manager") }
             .orNull()!!["logs/latest.log"].castOrThrow()
 

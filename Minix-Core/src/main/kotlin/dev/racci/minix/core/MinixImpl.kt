@@ -24,7 +24,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.get
 import org.koin.core.context.startKoin
 import org.koin.dsl.bind

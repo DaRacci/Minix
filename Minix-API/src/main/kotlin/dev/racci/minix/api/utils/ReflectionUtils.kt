@@ -87,7 +87,7 @@ inline fun <reified T> Any?.tryCast(block: T.() -> Unit): Boolean = if (this is 
  * @param replaceArgs A map of property names to values to replace.
  * @return The new copy of the instance.
  */
-fun <T : Any> T.clone(replaceArgs: Map<KProperty1<T, *>, Any> = emptyMap()): T = javaClass.kotlin.run {
+suspend fun <T : Any> T.clone(replaceArgs: Map<KProperty1<T, *>, Any> = emptyMap()): T = javaClass.kotlin.run {
     val consParams = primaryConstructor?.parameters ?: error("No primary constructor found")
     val mutableProperties = memberProperties.filterIsInstance<KMutableProperty1<T, Any?>>()
     val allValues = memberProperties

@@ -8,8 +8,6 @@ import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.coroutine.contract.CoroutineSession
 import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.extension.Extension
-import dev.racci.minix.api.extensions.collections.findKCallable
-import dev.racci.minix.api.extensions.reflection.accessGet
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.plugin.Minix
@@ -28,7 +26,6 @@ import dev.racci.minix.core.services.mapped.ExtensionMapper
 import io.github.classgraph.ClassGraph
 import kotlinx.coroutines.runBlocking
 import org.bstats.bukkit.Metrics
-import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.PluginClassLoader
 import org.koin.core.component.get
 import org.koin.core.context.loadKoinModules
@@ -36,7 +33,6 @@ import org.koin.core.context.unloadKoinModules
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 import kotlin.reflect.KSuspendFunction0
-import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
 
 @MappedExtension(Minix::class, "Plugin Manager", bindToKClass = PluginService::class)
@@ -86,8 +82,6 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             registerStats(plugin)
 
             get<ExtensionMapper>().enableExtensions(plugin)
-//            val sorted = extensionMapper.sortUnloaded(plugin)
-//            sorted.forEach { extensionMapper.enableExtension(it, snapshot) }
 
             logRunning(plugin, plugin::handleAfterEnable)
             loadedPlugins += plugin::class to plugin
@@ -108,14 +102,10 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             pluginCache.getIfPresent(plugin)?.apply {
                 val dataService = get<DataServiceImpl>()
                 val extensionMapper = get<ExtensionMapper>()
-//                val snapshot = this.extensions.reversed().toImmutableList()
 
                 dataService.configDataHolder.invalidateAll(this.configurations)
                 extensionMapper.disableExtensions(plugin)
                 if (isFullUnload) extensionMapper.unloadExtensions(plugin)
-
-//                for (extension in snapshot) { extensionMapper.disableExtension(extension, snapshot) }
-//                if (isFullUnload) for (extension in snapshot) { extensionMapper.unloadExtension(extension) }
             }
 
             CoroutineScheduler.activateTasks(plugin)?.takeIf(IntArray::isNotEmpty)?.let {
@@ -143,9 +133,9 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             }.getOrNull()
     }
 
-    override fun fromClassloader(classLoader: ClassLoader): MinixPlugin? {
+    override suspend fun fromClassloader(classLoader: ClassLoader): MinixPlugin? {
         for (plugin in loadedPlugins.values) {
-            if (pluginCache[plugin].loader != classLoader) continue
+            if (pluginCache[plugin].getClassLoader() != classLoader) continue
             return plugin
         }
         return null
@@ -174,26 +164,13 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         pluginCache[plugin].metrics = Metrics(plugin, id)
     }
 
-    private fun getClassLoader(plugin: MinixPlugin): ClassLoader {
-        var loader = pluginCache.getIfPresent(plugin)?.loader
-        if (loader != null) return loader
-
-        JavaPlugin::class.declaredMemberProperties.findKCallable("classLoader")
-            .fold(
-                { error("Could not find classLoader property in JavaPlugin.") },
-                { prop -> loader = prop.accessGet(plugin).castOrThrow() }
-            )
-
-        return loader!!
-    }
-
     private suspend fun loadReflection(plugin: MinixPlugin) {
         var int = 0
         val packageName = plugin::class.java.`package`.name.takeWhile { it != '.' || int++ < 2 }
         val scanResult = ClassGraph()
             .acceptPackages(packageName)
             .addClassLoader(plugin::class.java.classLoader)
-            .addClassLoader(getClassLoader(plugin))
+            .addClassLoader(pluginCache[plugin].getClassLoader())
             .enableClassInfo()
             .enableAnnotationInfo()
             .disableNestedJarScanning()

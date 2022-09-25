@@ -1,9 +1,9 @@
 package dev.racci.minix.api.data
 
+import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.PropertyFinder
 import dev.racci.minix.api.utils.adventure.PartialComponent
-import dev.racci.minix.api.utils.safeCast
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
@@ -15,7 +15,7 @@ abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
 
     abstract val prefixes: Map<String, String>
 
-    override fun load() {
+    override suspend fun load() {
         super.load()
         val map = prefixes.mapKeys {
             if (it.key.startsWith("<prefix:") && it.key.endsWith(">")) {

@@ -12,15 +12,15 @@ fun Entity<*>.blockPos(column: Column<String>) = BlockPosExposedDelegate(column)
 fun Entity<*>.blockPos(column: Column<String?>) = BlockPosExposedDelegateNullable(column)
 
 fun Entity<*>.blockPos(
-    xColumn: Column<Int>,
-    yColumn: Column<Int>,
-    zColumn: Column<Int>
+    xColumn: Column<Double>,
+    yColumn: Column<Double>,
+    zColumn: Column<Double>
 ) = BlockPosMultiColumnExposedDelegate(xColumn, yColumn, zColumn)
 
 fun Entity<*>.nullableBlockPos(
-    xColumn: Column<Int?>,
-    yColumn: Column<Int?>,
-    zColumn: Column<Int?>
+    xColumn: Column<Double?>,
+    yColumn: Column<Double?>,
+    zColumn: Column<Double?>
 ) = BlockPosMultiColumnExposedDelegateNullable(xColumn, yColumn, zColumn)
 
 class BlockPosExposedDelegate(
@@ -80,9 +80,9 @@ class BlockPosExposedDelegateNullable(
 }
 
 class BlockPosMultiColumnExposedDelegate(
-    val xColumn: Column<Int>,
-    val yColumn: Column<Int>,
-    val zColumn: Column<Int>
+    val xColumn: Column<Double>,
+    val yColumn: Column<Double>,
+    val zColumn: Column<Double>
 ) : ExposedDelegate<BlockPos> {
 
     override operator fun <ID : Comparable<ID>> getValue(
@@ -112,9 +112,9 @@ class BlockPosMultiColumnExposedDelegate(
 }
 
 class BlockPosMultiColumnExposedDelegateNullable(
-    val xColumn: Column<Int?>,
-    val yColumn: Column<Int?>,
-    val zColumn: Column<Int?>
+    val xColumn: Column<Double?>,
+    val yColumn: Column<Double?>,
+    val zColumn: Column<Double?>
 ) : ExposedDelegate<BlockPos?> {
 
     override operator fun <ID : Comparable<ID>> getValue(

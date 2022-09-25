@@ -24,6 +24,7 @@ object Serializer {
             .registerExact(Data.Serializer)
             .registerExact(LoggingLevelSerializer)
             .registerExact(PartialComponent.Serializer)
+            .registerExact(BlockPosSerializer)
             .register(PairSerializer)
             .build()
     }

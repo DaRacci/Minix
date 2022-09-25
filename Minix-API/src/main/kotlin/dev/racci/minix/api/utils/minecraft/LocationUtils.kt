@@ -37,23 +37,59 @@ fun Location.asPos() = locationPosOf(x, y, z, yaw, pitch)
 fun Chunk.asPos() = ChunkPos(x, z)
 
 data class BlockPos(
-    val x: Int,
-    val y: Int,
-    val z: Int
+    val x: Double,
+    val y: Double,
+    val z: Double
 ) : VectorComparable<BlockPos> {
 
-    override fun axis(): DoubleArray = doubleArrayOf(x.toDouble(), y.toDouble(), z.toDouble())
+    constructor(
+        x: Int,
+        y: Int,
+        z: Int
+    ) : this(x.toDouble(), y.toDouble(), z.toDouble())
+
+    override fun axis(): DoubleArray = doubleArrayOf(x, y, z)
     override fun factor(axis: IntArray) = BlockPos(axis[0], axis[1], axis[2])
 
-    fun asBukkitBlock(world: World) = world.getBlockAt(x, y, z)
+    fun asBukkitBlock(world: World) = world.getBlockAt(x.toInt(), y.toInt(), z.toInt())
 
-    fun asBukkitLocation(world: World) = Location(world, x.toDouble(), y.toDouble(), z.toDouble())
+    fun asBukkitLocation(world: World) = Location(world, x, y, z)
 
-    fun asLocationPos() = LocationPos(x.toDouble(), y.toDouble(), z.toDouble(), 0f, 0f)
+    fun asLocationPos() = LocationPos(x, y, z, 0f, 0f)
 
-    fun asChunkPos() = ChunkPos(x shr 4, z shr 4)
+    fun asChunkPos() = ChunkPos(x.toInt() shr 4, z.toInt() shr 4)
 
-    fun toVec3() = Vec3(x.toDouble(), y.toDouble(), z.toDouble())
+    fun toVec3() = Vec3(x, y, z)
+
+    override fun toString(): String = "BlockPos(x=$x, y=$y, z=$z)"
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as BlockPos
+
+        if (x != other.x) return false
+        if (y != other.y) return false
+        if (z != other.z) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = x.hashCode()
+        result = 31 * result + y.hashCode()
+        result = 31 * result + z.hashCode()
+        return result
+    }
+
+    override fun compareTo(other: BlockPos): Int {
+        val x = x.compareTo(other.x)
+        if (x != 0) return x
+        val y = y.compareTo(other.y)
+        if (y != 0) return y
+        return z.compareTo(other.z)
+    }
 }
 
 data class LocationPos(

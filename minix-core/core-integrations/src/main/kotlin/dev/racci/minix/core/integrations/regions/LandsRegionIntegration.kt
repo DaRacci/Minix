@@ -2,6 +2,7 @@ package dev.racci.minix.core.integrations.regions
 
 import com.google.common.collect.HashBiMap
 import dev.racci.minix.api.annotations.MappedIntegration
+import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.integrations.regions.Region
 import dev.racci.minix.api.integrations.regions.RegionIntegration
 import dev.racci.minix.api.integrations.regions.RegionManager
@@ -10,7 +11,6 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.kotlin.ifFalse
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.minecraft.BlockPos
-import dev.racci.minix.api.utils.unsafeCast
 import me.angeschossen.lands.api.integration.LandsIntegration
 import me.angeschossen.lands.api.land.LandArea
 import org.bukkit.World
@@ -27,10 +27,10 @@ class LandsRegionIntegration(override val plugin: MinixPlugin) : RegionIntegrati
         pos: BlockPos,
         world: World
     ): Optional<Region> {
-        val land = this.integration.getLand(world, pos.x, pos.z)
+        val land = this.integration.getLand(world, pos.x.toInt(), pos.z.toInt())
         if (land == null || !land.exists()) return Optional.empty()
 
-        val area = land.getArea(pos.asBukkitLocation(world)).unsafeCast<LandArea>()
+        val area = land.getArea(pos.asBukkitLocation(world)).castOrThrow<LandArea>()
         val areaRegion = areaReference.computeIfAbsent(area, ::AreaRegion)
         return Optional.of(areaRegion)
     }
@@ -38,7 +38,7 @@ class LandsRegionIntegration(override val plugin: MinixPlugin) : RegionIntegrati
     override fun insideRegion(
         pos: BlockPos,
         world: World
-    ): Boolean = this.integration.isClaimed(world, pos.x, pos.z)
+    ): Boolean = this.integration.isClaimed(world, pos.x.toInt(), pos.z.toInt())
 
     override fun canBuild(
         pos: BlockPos,
@@ -76,7 +76,7 @@ class LandsRegionIntegration(override val plugin: MinixPlugin) : RegionIntegrati
         player: Player,
         action: () -> Unit
     ): Boolean {
-        val area = this.integration.getArea(player.world, pos.x, pos.y, pos.z)
+        val area = this.integration.getArea(player.world, pos.x.toInt(), pos.y.toInt(), pos.z.toInt())
         return area != null && area.isTrusted(player.uniqueId).ifFalse(action)
     }
 
@@ -85,7 +85,7 @@ class LandsRegionIntegration(override val plugin: MinixPlugin) : RegionIntegrati
         player: Player,
         action: () -> Unit
     ): Boolean {
-        val area = this.integration.getArea(player.world, pos.x, pos.y, pos.z)
+        val area = this.integration.getArea(player.world, pos.x.toInt(), pos.y.toInt(), pos.z.toInt())
         return (area == null || area.isTrusted(player.uniqueId)).ifTrue(action)
     }
 }

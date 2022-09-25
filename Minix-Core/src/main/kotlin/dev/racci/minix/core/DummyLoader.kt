@@ -1,15 +1,16 @@
 package dev.racci.minix.core
 
+import arrow.core.filterIsInstance
+import dev.racci.minix.api.extensions.collections.findKCallable
 import dev.racci.minix.api.extensions.pluginManager
-import dev.racci.minix.api.extensions.reflection.accessGet
-import dev.racci.minix.api.extensions.reflection.accessSet
 import dev.racci.minix.api.extensions.reflection.castOrThrow
-import dev.racci.minix.api.utils.collections.CollectionUtils.first
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.SimplePluginManager
 import org.bukkit.plugin.java.PluginClassLoader
+import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.full.memberProperties
+import kotlin.reflect.jvm.isAccessible
 
 class DummyLoader {
 
@@ -42,13 +43,20 @@ class DummyLoader {
         }.start()
     }
 
-    private inline fun <reified T : Any, R> getValue(
+    private inline fun <reified T : Any, R : Any> getValue(
         field: String,
         obj: T
-    ): R = T::class.memberProperties.first(field).accessGet(obj).castOrThrow()
+    ): R = T::class.memberProperties.findKCallable(field, false)
+        .tap { it.isAccessible = true }
+        .map { it.get(obj).castOrThrow<R>() to it }
+        .tap { it.second.isAccessible = false }
+        .orNull()!!.first
 
     private inline fun <reified T : Any, reified V> T.setValue(
         field: String,
         value: V
-    ) = T::class.memberProperties.first(field).accessSet(this, value)
+    ) = T::class.memberProperties.findKCallable(field)
+        .tap { it.isAccessible = true }
+        .filterIsInstance<KMutableProperty1<*, *>>()
+        .map { it.setter.call(this, value) }
 }

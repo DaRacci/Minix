@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services
 
+import arrow.core.handleErrorWith
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import dev.racci.minix.api.annotations.MappedExtension
@@ -24,6 +25,7 @@ import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
 import dev.racci.minix.core.services.mapped.ConfigurationMapper
 import dev.racci.minix.core.services.mapped.ExtensionMapper
 import io.github.classgraph.ClassGraph
+import io.github.slimjar.app.builder.InjectingApplicationBuilder
 import kotlinx.coroutines.runBlocking
 import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.PluginClassLoader
@@ -62,6 +64,8 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
                 plugin.log.setLevel(MinixLogger.LoggingLevel.TRACE)
                 plugin.log.lockLevel()
             }
+
+            loadDependencies(plugin)
 
             loadKoinModules(KoinUtils.getModule(plugin))
             logRunning(plugin, plugin::handleLoad)
@@ -189,5 +193,24 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         get<IntegrationService>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
 
         scanResult.close()
+    }
+
+    private suspend fun loadDependencies(plugin: MinixPlugin) {
+        val classLoader = pluginCache[plugin].getClassLoader()
+        logger.debug { "Loading dependencies for ${plugin.name}, with class ${plugin::class}, with loader ${classLoader.name}" }
+
+        val preResFile = plugin::class.java.getResource("slimjar-resolutions.json")
+        val depFile = plugin::class.java.getResource("slimjar.json")
+        val dlPath = this.plugin.dataFolder.resolve("libraries")
+
+        InjectingApplicationBuilder.createAppending(plugin.name, pluginCache[this.plugin].getClassLoader())
+            .preResolutionFileUrl(preResFile)
+            .dependencyFileUrl(depFile)
+            .downloadDirectoryPath(dlPath.toPath())
+            .logger { s, anies -> logger.info { String.format(s, *anies) } }
+            .runCatching { build() }.handleErrorWith {
+                logger.error(it) { "Failed to load dependencies for ${plugin.name}." }
+                return
+            }
     }
 }

@@ -3,6 +3,13 @@ package dev.racci.minix.api.utils.reflection
 import dev.racci.minix.api.extensions.reflection.accessGet
 import dev.racci.minix.api.utils.PropertyFinder
 import dev.racci.minix.api.utils.UtilObject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.mapNotNull
 import org.apiguardian.api.API
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
@@ -19,20 +26,20 @@ object NestedUtils : UtilObject by UtilObject {
      * @param baseKClass The starting class.
      * @param curDepth The current search depth.
      * @param maxDepth The maximum search depth.
-     * @return A sequence of nested classes.
+     * @return A flow of nested classes.
      */
     fun getNestedClasses(
         baseKClass: KClass<*>,
         curDepth: Int = 0,
         maxDepth: Int = 9
-    ): Sequence<KClass<*>> {
-        if (curDepth > maxDepth) return emptySequence()
+    ): Flow<KClass<*>> {
+        if (curDepth > maxDepth) return emptyFlow()
 
-        return sequence {
-            yield(baseKClass)
-            yieldAll(baseKClass.nestedClasses)
+        return flow {
+            emit(baseKClass)
             baseKClass.nestedClasses.forEach { nested ->
-                yieldAll(getNestedClasses(nested, curDepth + 1, maxDepth))
+                emit(nested)
+                emitAll(getNestedClasses(nested, curDepth + 1, maxDepth))
             }
         }
     }
@@ -44,36 +51,58 @@ object NestedUtils : UtilObject by UtilObject {
      * @param curDepth The current search depth.
      * @param maxDepth The maximum search depth.
      * @param R The instance type to find.
-     * @return
+     * @return A flow of instances of [R].
      */
     fun <R : Any> getNestedInstances(
         clazz: KClass<*>,
         baseInstance: Any,
         curDepth: Int = 0,
         maxDepth: Int = 9
-    ): Sequence<R> {
-        if (curDepth > maxDepth) return emptySequence()
+    ): Flow<R> {
+        if (curDepth > maxDepth) return emptyFlow()
 
-        return sequence {
+        return flow {
             when {
                 baseInstance::class.java.isAnonymousClass -> logger.trace { "${baseInstance::class.qualifiedName} is anonymous." } // Inner anon object
                 baseInstance::class.isSubclassOf(clazz) -> logger.trace { "${baseInstance::class.qualifiedName} is a subclass of ${clazz.qualifiedName}" } // Inner class
                 baseInstance::class.java.packageName.startsWith(clazz.java.packageName) -> logger.trace { "${baseInstance::class.qualifiedName} is in the same package as ${clazz.qualifiedName}" } // Same package
                 baseInstance is PropertyFinder<*> -> logger.trace { "${baseInstance::class.qualifiedName} is a property finder." } // Property finder
-                else -> return@sequence // Ignore
+                else -> return@flow // Ignore
             }
 
-            val nonNulls = baseInstance::class.declaredMemberProperties
+            baseInstance::class.declaredMemberProperties.asFlow()
                 .filterIsInstance<KProperty1<Any, Any?>>()
                 .mapNotNull { it.accessGet(baseInstance) }
+                .collect { instance ->
+                    try {
+                        emit(instance as R)
+                    } catch (e: ClassCastException) { logger.trace(e) }
 
-            for (instance in nonNulls) {
-                try {
-                    yield(instance as R)
-                } catch (e: ClassCastException) { logger.trace(e) }
-
-                yieldAll(getNestedInstances(clazz, instance, curDepth + 1, maxDepth))
-            }
+                    emitAll(getNestedInstances(clazz, instance, curDepth + 1, maxDepth))
+                }
         }
+
+//        return sequence {
+//            when {
+//                baseInstance::class.java.isAnonymousClass -> logger.trace { "${baseInstance::class.qualifiedName} is anonymous." } // Inner anon object
+//                baseInstance::class.isSubclassOf(clazz) -> logger.trace { "${baseInstance::class.qualifiedName} is a subclass of ${clazz.qualifiedName}" } // Inner class
+//                baseInstance::class.java.packageName.startsWith(clazz.java.packageName) -> logger.trace { "${baseInstance::class.qualifiedName} is in the same package as ${clazz.qualifiedName}" } // Same package
+//                baseInstance is PropertyFinder<*> -> logger.trace { "${baseInstance::class.qualifiedName} is a property finder." } // Property finder
+//                else -> return@sequence // Ignore
+//            }
+//
+//            val nonNulls = baseInstance::class.declaredMemberProperties.asFlow()
+//                .filterIsInstance<KProperty1<Any, Any?>>()
+//                .mapNotNull { it.accessGet(baseInstance) }
+//                .flowOn()
+//
+//            nonNulls.collect { instance ->
+//                try {
+//                    yield(instance as R)
+//                } catch (e: ClassCastException) { logger.trace(e) }
+//
+//                yieldAll(getNestedInstances(clazz, instance, curDepth + 1, maxDepth))
+//            }
+//        }
     }
 }

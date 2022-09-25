@@ -116,6 +116,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             if (!isFullUnload) return@runBlocking
             coroutineService.disable(plugin)
             unloadKoinModules(KoinUtils.getModule(plugin))
+            pluginCache.invalidate(plugin)
         }
     }
 

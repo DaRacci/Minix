@@ -10,11 +10,24 @@ plugins {
     id("dev.racci.minix.copyjar")
     id("dev.racci.minix.purpurmc")
     id("dev.racci.minix.nms")
+
     id("org.jetbrains.dokka") version "1.7.10"
     kotlin("plugin.atomicfu") version "1.7.20"
     kotlin("plugin.serialization")
+
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
     id("dev.racci.slimjar") version "1.3.3"
+    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.1"
+}
+
+apiValidation {
+    ignoredProjects = subprojects.first { it.name == "minix-core" }.subprojects.map(Project::getName).toMutableSet()
+    ignoredProjects += "Minix"
+    ignoredProjects += "Minix-Core"
+    ignoredProjects += "minix-core"
+
+    ignoredPackages.add("dev.racci.minix.core")
+    nonPublicMarkers.add("dev.racci.minix.api.MinixInternal")
 }
 
 repositories {

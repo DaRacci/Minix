@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # TODO -> Move to dotter and make universal for all projects / Create inputs for repo name and so on
+# TODO -> Yummy rust cli tool.... maybe....
 
 # If previous version and version arent set then exit
 if [ -z "$1" ] || [ -z "$2" ]; then

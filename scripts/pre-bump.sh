@@ -6,8 +6,7 @@ if [ -z "$1" ] || [ -z "$2" ]; then
   exit 1
 fi
 
-if ! ./gradlew test --info;
- then
+if ! ./gradlew check --info; then
    echo "Tests failed, aborting"
    exit 1;
 fi

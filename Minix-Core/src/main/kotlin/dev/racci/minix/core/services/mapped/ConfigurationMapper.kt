@@ -8,6 +8,7 @@ import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.core.services.DataServiceImpl
 import io.github.classgraph.ClassInfo
+import org.koin.core.component.get
 import org.koin.core.error.NoBeanDefFoundException
 
 @MappedExtension(Minix::class, "Configuration Mapper")
@@ -20,7 +21,7 @@ class ConfigurationMapper(override val plugin: Minix) : MapperService(
         plugin: MinixPlugin
     ) {
         try {
-            DataServiceImpl.getService().configDataHolder.get(classInfo.loadClass().kotlin.castOrThrow())
+            get<DataServiceImpl>().configDataHolder[classInfo.loadClass().kotlin.castOrThrow()]
         } catch (e: NoBeanDefFoundException) {
             logger.error(e) { "Failed to register config [${plugin.name}:${classInfo.name}]" }
         } catch (e: Exception) {

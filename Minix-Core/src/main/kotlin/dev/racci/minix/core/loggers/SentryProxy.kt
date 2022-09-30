@@ -6,7 +6,7 @@ import io.sentry.SentryLevel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
-class SentryProxy : ILogger, KoinComponent {
+object SentryProxy : ILogger, KoinComponent {
 
     override fun log(
         level: SentryLevel,

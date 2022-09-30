@@ -219,7 +219,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         extension.eventListener.unregisterListener()
         extension.supervisor.coroutineContext.job.castOrThrow<CompletableJob>().complete()
         extension.dispatcher.close()
-        runCatching { extensionGraph.removeNode(extension) }.onFailure { logger.error(it) { "Failed to remove extension ${extension.name} from graph!" } }
+        runCatching { extensionGraph.removeNode(extension) }.onFailure { logger.error { "Failed to remove extension ${extension.name} from graph!" } }
         unloadKoinModules(KoinUtils.getModule(extension))
     }
 

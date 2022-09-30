@@ -76,7 +76,7 @@ class MinixImpl : Minix() {
             )
 
             this.printLogger(log.level.toKoin())
-            this.logger(KoinProxy())
+            this.logger(KoinProxy)
         }
 
         val extensionMapper = get<ExtensionMapper>()
@@ -95,7 +95,7 @@ class MinixImpl : Minix() {
             options.environment = if (version.isPreRelease) "pre-release" else "release"
             options.environment = "production"
             options.inAppIncludes += "dev.racci"
-            options.setLogger(SentryProxy())
+            options.setLogger(SentryProxy)
             options.setBeforeSend { event, _ ->
                 event.setTag("TPS-AVG", server.tps.average().toString())
                 event.setTag("TPS-CUR", server.tps.last().toString())

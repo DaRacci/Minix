@@ -2,20 +2,27 @@ package dev.racci.minix.api.extension
 
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MinixInternal
+import dev.racci.minix.api.coroutine.launch
+import dev.racci.minix.api.coroutine.minecraftDispatcher
 import dev.racci.minix.api.extensions.KListener
+import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.utils.Closeable
-import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.companionParent
 import dev.racci.minix.api.utils.now
-import dev.racci.minix.api.utils.unsafeCast
+import kotlinx.atomicfu.AtomicRef
+import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.update
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.newFixedThreadPoolContext
 import kotlinx.datetime.Instant
+import org.koin.core.component.KoinComponent
+import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.findAnnotation
@@ -68,6 +75,19 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
         this.state = state
     }
 
+    final override fun launch(
+        dispatcher: CoroutineContext,
+        block: suspend CoroutineScope.() -> Unit
+    ): Job = this.plugin.launch(dispatcher, this.supervisor, block)
+
+    final override fun sync(
+        block: suspend CoroutineScope.() -> Unit
+    ): Job = this.plugin.launch(plugin.minecraftDispatcher, this.supervisor, block)
+
+    final override fun async(
+        block: suspend CoroutineScope.() -> Unit
+    ): Job = this.plugin.launch(this.dispatcher.get(), this.supervisor, block)
+
     final override fun toString(): String = "Extension(name='$name', state='$state')"
 
     final override fun equals(other: Any?): Boolean {
@@ -104,20 +124,25 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
      * @param E The type of the extension. (The class that extends [Extension])
      * @see [DataService.Companion]
      */
-    abstract class ExtensionCompanion<E : Extension<*>> {
-        private var cached: Pair<E, Instant>? = null
+    abstract class ExtensionCompanion<E : Extension<*>> : KoinComponent {
+        private val cached: AtomicRef<Pair<E, Instant>> by lazy { atomic(Pair(getKoin().get(getParent()), now())) }
 
         operator fun getValue(thisRef: ExtensionCompanion<E>, property: KProperty<*>): E = thisRef.getService()
 
         fun getService(): E {
-            if (cached == null || (cached!!.second + 5.seconds) < now()) {
-                cached = Pair(getKoin().get(getParent()), now())
+            cached.update { (extension, ts) ->
+                if (ts + 5.seconds < now()) {
+                    Pair(getKoin().get(getParent()), now())
+                } else {
+                    Pair(extension, ts)
+                }
             }
-            return cached!!.first
+
+            return cached.value.first
         }
 
         fun inject(): Lazy<E> = lazy { getKoin().get(getParent()) }
 
-        private fun getParent() = this::class.companionParent.unsafeCast<KClass<Extension<*>>>()
+        private fun getParent() = this::class.companionParent.castOrThrow<KClass<Extension<*>>>()
     }
 }

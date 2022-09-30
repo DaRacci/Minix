@@ -16,6 +16,7 @@ import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.data.MinixConfig
 import dev.racci.minix.core.loggers.KoinProxy
 import dev.racci.minix.core.loggers.SentryProxy
+import dev.racci.minix.core.loggers.SlimJarProxy
 import dev.racci.minix.core.services.PluginServiceImpl
 import dev.racci.minix.core.services.mapped.ExtensionMapper
 import io.sentry.Sentry
@@ -47,6 +48,7 @@ class MinixImpl : Minix() {
     override fun onLoad() {
         runBlocking {
             startKoin()
+            MinixApplicationBuilder.logger = SlimJarProxy
             get<PluginService>().loadPlugin(this@MinixImpl)
         }
     }

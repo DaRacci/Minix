@@ -7,6 +7,7 @@ import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional
 import org.bukkit.block.data.Waterlogged
+import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 
 /**
  * Utilities for Blocks.
@@ -45,14 +46,8 @@ object BlockUtils {
         limit: Int
     ): ArrayList<Block> = getNearbyBlocks(start, materials, ArrayList(), limit)
 
-    /**
-     * Returns the opposite BlockFace for a given BlockFace.
-     * E.g. EAST_NORTH_EAST will return WEST_SOUTH_WEST. SELF will return SELF.
-     *
-     * @param face Original BlockFace
-     * @return Opposite BlockFace
-     */
-    @Suppress("ComplexMethod")
+    @ScheduledForRemoval(inVersion = "4.5.0")
+    @Deprecated("Use BlockFace#getOppositeFace instead", ReplaceWith("face.oppositeFace", "org.bukkit.block.BlockFace"))
     fun getOpposite(face: BlockFace): BlockFace = when (face) {
         BlockFace.UP -> BlockFace.DOWN
         BlockFace.DOWN -> BlockFace.UP
@@ -83,7 +78,7 @@ object BlockUtils {
      */
     fun getSupportingBlock(directional: Block): Block {
         if (directional.blockData is Directional) {
-            return directional.getRelative(getOpposite((directional.blockData as Directional).facing))
+            return directional.getRelative((directional.blockData as Directional).facing.oppositeFace)
         }
         throw IllegalArgumentException("Provided Block's BlockData is not an instance of Directional")
     }

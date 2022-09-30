@@ -124,6 +124,11 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         }
     }
 
+    override fun reloadPlugin(plugin: MinixPlugin) {
+        val cache = pluginCache[plugin] ?: return
+        get<DataServiceImpl>().configDataHolder.refreshAll(cache.configurations) // Loads data from disk without saving.
+    }
+
     @OptIn(ExperimentalStdlibApi::class)
     override fun firstNonMinixPlugin(): MinixPlugin? {
         return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)

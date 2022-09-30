@@ -25,6 +25,8 @@ interface PluginService {
 
     fun unloadPlugin(plugin: MinixPlugin)
 
+    fun reloadPlugin(plugin: MinixPlugin)
+
     suspend fun fromClassloader(classLoader: ClassLoader): MinixPlugin?
 
     fun firstNonMinixPlugin(): MinixPlugin?

@@ -10,13 +10,11 @@ plugins {
     id("dev.racci.minix.copyjar")
     id("dev.racci.minix.purpurmc")
     id("dev.racci.minix.nms")
-    id("org.jetbrains.dokka")
-    kotlin("plugin.atomicfu") version "1.6.20-RC2"
+    id("org.jetbrains.dokka") version "1.7.10"
+    kotlin("plugin.atomicfu") version "1.7.20"
     kotlin("plugin.serialization")
-    kotlin("kapt") version "1.7.10"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
     id("dev.racci.slimjar") version "1.3.3"
-//    id("io.arrow-kt.analysis.kotlin") version "2.0"
 }
 
 repositories {
@@ -67,8 +65,6 @@ subprojects {
     apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
     apply(plugin = "org.jetbrains.dokka")
     apply(plugin = "maven-publish")
-    apply(plugin = "kotlin-kapt")
-//    apply(plugin = "io.arrow-kt.analysis.kotlin")
 
     dependencies {
         testImplementation(platform(kotlin("bom")))
@@ -78,13 +74,6 @@ subprojects {
         testImplementation(rootProject.libs.koin.test)
         testImplementation(rootProject.libs.minecraft.bstats)
         testImplementation(project(":Minix-API"))
-    }
-
-    configurations {
-        testImplementation.get().exclude("org.jetbrains.kotlin", "kotlin-test-junit")
-        configureEach {
-            exclude("me.carleslc.Simple-YAML", "Simple-Configuration")
-        }
     }
 
     tasks {
@@ -161,5 +150,18 @@ tasks {
 
     withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask> {
         outputDirectory.set(File("$rootDir/docs"))
+    }
+}
+
+allprojects {
+    configurations {
+        testImplementation.get().exclude("org.jetbrains.kotlin", "kotlin-test-junit")
+
+        // These refuse to resolve sometimes
+        configureEach {
+            exclude("me.carleslc.Simple-YAML", "Simple-Configuration")
+            exclude("me.carleslc.Simple-YAML", "Simple-Yaml")
+            exclude("com.github.technove", "Flare")
+        }
     }
 }

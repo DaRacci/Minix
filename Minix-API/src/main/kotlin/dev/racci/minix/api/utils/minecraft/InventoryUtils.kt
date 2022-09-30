@@ -5,7 +5,7 @@ import dev.racci.minix.api.utils.UtilObject
 /**
  * Utilities for Inventories.
  */
-object InventoryUtils : UtilObject by UtilObject {
+object InventoryUtils : UtilObject {
 
     /**
      * Convert 0-53 slot into a row and column pair.

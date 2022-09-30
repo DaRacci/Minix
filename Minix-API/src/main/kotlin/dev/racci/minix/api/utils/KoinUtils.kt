@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
-object KoinUtils : UtilObject by UtilObject {
+object KoinUtils : UtilObject {
     private val bindCache = Caffeine.newBuilder()
         .maximumSize(100)
         .expireAfterWrite(30, TimeUnit.SECONDS)

@@ -17,7 +17,7 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.isSubclassOf
 
 @API(status = API.Status.EXPERIMENTAL, since = "4.1.0")
-object NestedUtils : UtilObject by UtilObject {
+object NestedUtils : UtilObject {
 
     /**
      * Returns a sequence of nested classes from the given class

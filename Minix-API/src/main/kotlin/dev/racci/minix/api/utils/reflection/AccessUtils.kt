@@ -15,7 +15,7 @@ import kotlin.reflect.KProperty2
 import kotlin.reflect.jvm.isAccessible
 
 @API(status = API.Status.EXPERIMENTAL, since = "4.1.0")
-object AccessUtils : UtilObject by UtilObject {
+object AccessUtils : UtilObject {
     @PublishedApi
     internal val lockMap = ConcurrentHashMap<Any, Mutex>()
 

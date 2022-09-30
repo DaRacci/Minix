@@ -17,7 +17,7 @@ import kotlin.reflect.full.memberProperties
     API(status = API.Status.EXPERIMENTAL, since = "4.1.0")
     Suppress("NOTHING_TO_INLINE")
 ]
-object OverrideUtils : UtilObject by UtilObject {
+object OverrideUtils : UtilObject {
 
     /**
      * Does override function selector

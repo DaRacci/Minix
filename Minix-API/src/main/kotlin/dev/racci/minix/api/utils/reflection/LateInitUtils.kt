@@ -8,7 +8,7 @@ import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty0
 
 @API(status = API.Status.EXPERIMENTAL, since = "4.2.0")
-object LateInitUtils : UtilObject by UtilObject {
+object LateInitUtils : UtilObject {
 
     suspend inline fun <T> getLateInit(
         prop: KProperty0<T>

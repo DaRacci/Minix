@@ -10,7 +10,7 @@ import kotlin.reflect.safeCast
     API(status = API.Status.EXPERIMENTAL, since = "4.1.0")
     Suppress("NOTHING_TO_INLINE")
 ]
-object CastUtils : UtilObject by UtilObject {
+object CastUtils : UtilObject {
 
     /**
      * Casts the given [obj] to [T] or returns null if the cast fails.

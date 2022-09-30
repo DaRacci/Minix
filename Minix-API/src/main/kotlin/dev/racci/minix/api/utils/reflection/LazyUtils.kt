@@ -8,7 +8,7 @@ import kotlin.reflect.KProperty0
 import kotlin.reflect.KProperty1
 
 @API(status = API.Status.EXPERIMENTAL, since = "4.1.0")
-object LazyUtils : UtilObject by UtilObject {
+object LazyUtils : UtilObject {
 
     @JvmName("isLazy0")
     suspend inline fun isLazy(

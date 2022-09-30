@@ -1,6 +1,6 @@
 package dev.racci.minix.api.utils
 
-object RecursionUtils : UtilObject by UtilObject {
+object RecursionUtils : UtilObject {
 
     /**
      * Recursive finder

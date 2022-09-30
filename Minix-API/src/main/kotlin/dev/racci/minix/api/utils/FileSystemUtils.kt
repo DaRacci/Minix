@@ -4,7 +4,7 @@ import java.io.File
 import java.io.IOException
 import java.nio.file.Path
 
-object FileSystemUtils : UtilObject by UtilObject {
+object FileSystemUtils : UtilObject {
 
     /**
      * Calculates the size of a file / directory.
@@ -46,7 +46,7 @@ object FileSystemUtils : UtilObject by UtilObject {
                     else -> size += next.length()
                 }
             } catch (e: IOException) {
-                minix.log.debug(e) { "Could not enter file" }
+                logger.debug(e) { "Could not enter file" }
             }
         }
         return size

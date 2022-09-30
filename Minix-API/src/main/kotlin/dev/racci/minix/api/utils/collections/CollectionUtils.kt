@@ -22,7 +22,7 @@ import kotlin.reflect.KProperty1
  * Utilities for Generic Collections.
  */
 @API(status = API.Status.MAINTAINED, since = "4.2.0")
-object CollectionUtils : UtilObject by UtilObject {
+object CollectionUtils : UtilObject {
 
     @ScheduledForRemoval(inVersion = "4.5.0")
     @Deprecated("Use moved function", ReplaceWith("this.containsIgnoreCase(element)", "dev.racci.minix.api.extensions.collections.containsIgnoreCase"))

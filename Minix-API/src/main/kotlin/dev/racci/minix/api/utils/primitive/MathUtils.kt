@@ -2,7 +2,7 @@ package dev.racci.minix.api.utils.primitive
 
 import dev.racci.minix.api.utils.UtilObject
 
-object MathUtils : UtilObject by UtilObject {
+object MathUtils : UtilObject {
 
     fun multiplyByPercent(
         value: Double,

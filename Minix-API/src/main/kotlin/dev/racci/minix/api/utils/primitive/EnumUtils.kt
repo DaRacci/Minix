@@ -2,7 +2,7 @@ package dev.racci.minix.api.utils.primitive
 
 import dev.racci.minix.api.utils.UtilObject
 
-object EnumUtils : UtilObject by UtilObject {
+object EnumUtils : UtilObject {
 
     /**
      * Returns `true` if enum T contains an entry with the specified name.

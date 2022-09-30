@@ -10,7 +10,7 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
-object PluginUtils : UtilObject by UtilObject {
+object PluginUtils : UtilObject {
 
     /**
      * Delegate that returns the plugin dependency if the plugin is installed in the server

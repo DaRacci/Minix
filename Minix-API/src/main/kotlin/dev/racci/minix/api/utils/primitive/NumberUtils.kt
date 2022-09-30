@@ -3,7 +3,7 @@ package dev.racci.minix.api.utils.primitive
 import dev.racci.minix.api.utils.UtilObject
 import java.util.TreeMap
 
-object NumberUtils : UtilObject by UtilObject {
+object NumberUtils : UtilObject {
 
     private val map by lazy {
         object : TreeMap<Int, String>() {

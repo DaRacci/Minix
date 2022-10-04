@@ -136,12 +136,16 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         plugin: MinixPlugin
     ) {
         val kClass = classInfo.loadClass().kotlin.castOrThrow<KClass<Extension<*>>>()
-        val constructor = kClass.primaryConstructor!!
 
-        val extension = when (constructor.parameters.size) {
-            0 -> constructor.call()
-            else -> constructor.call(plugin)
-        }
+        val extension = getKoin().getOrNull<Extension<*>>(kClass::class).toOption()
+            .getOrElse {
+                val constructor = kClass.primaryConstructor ?: error("No primary constructor found for extension ${kClass.qualifiedName}")
+                val hasPluginParam = constructor.findParameterByName("plugin")?.type?.isSubtypeOf(MinixPlugin::class.starProjectedType) ?: false
+                val res = if (hasPluginParam) constructor.call(getKoin().get<MinixPlugin>(plugin::class)) else constructor.call()
+
+                loadKoinModules(KoinUtils.getModule(res))
+                res
+            }
 
         registerMapped(extension, plugin)
     }

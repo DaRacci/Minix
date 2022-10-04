@@ -4,6 +4,7 @@ import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
 import arrow.core.Validated
+import arrow.core.filterIsInstance
 import arrow.core.toOption
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
@@ -343,11 +344,11 @@ object CollectionUtils : UtilObject {
         ): Option<T> = collection.find { it.name.equals(name, ignoreCase) }.toOption()
 
         @JvmName("findKCallableArray")
-        fun <T : KCallable<*>> findKCallable(
+        fun <T : KCallable<*>, R> findKCallable(
             collection: Array<T>,
             name: String,
             ignoreCase: Boolean
-        ): Option<T> = collection.find { it.name.equals(name, ignoreCase) }.toOption()
+        ): Option<KCallable<R>> = collection.find { it.name.equals(name, ignoreCase) }.toOption().filterIsInstance()
     }
 
     object Mutate {

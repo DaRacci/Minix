@@ -2,6 +2,7 @@ package dev.racci.minix.api.utils.collections
 
 import arrow.core.Option
 import dev.racci.minix.api.extensions.reflection.safeCast
+import kotlinx.coroutines.runBlocking
 
 object MapUtils {
 
@@ -19,14 +20,14 @@ object MapUtils {
 
     inline fun <K, V> clear(
         map: MutableMap<K, V>,
-        onRemove: (K, V) -> Unit
-    ): Unit = map.entries.forEach { onRemove(it.key, it.value) }.also { map.clear() }
+        crossinline onRemove: suspend (K, V) -> Unit
+    ): Unit = runBlocking { map.entries.forEach { onRemove(it.key, it.value) }.also { map.clear() } }
 
     inline fun <K, V> computeAndRemove(
         map: MutableMap<K, V>,
         key: K,
-        crossinline onRemove: V.() -> Unit
-    ): Boolean = map.computeIfPresent(key) { _, v -> v.onRemove(); null } != null
+        crossinline onRemove: suspend V.() -> Unit
+    ): Boolean = map.computeIfPresent(key) { _, v -> runBlocking { v.onRemove() }; null } != null
 
     inline fun <reified T : Any, K> getCast(
         map: Map<K, *>,

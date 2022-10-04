@@ -1,7 +1,10 @@
+@file:OptIn(ExperimentalTypeInference::class)
+
 package dev.racci.minix.api.extensions.collections
 
 import arrow.core.Option
 import dev.racci.minix.api.utils.collections.MapUtils
+import kotlin.experimental.ExperimentalTypeInference
 
 /** @see MapUtils.containsKeyIgnoreCase */
 inline fun Map<String, *>.contains(
@@ -17,13 +20,13 @@ inline fun <V> Map<String, V>.get(
 
 /** @see MapUtils.clear */
 inline fun <K, V> MutableMap<K, V>.clear(
-    onRemove: (K, V) -> Unit
+    crossinline onRemove: suspend (K, V) -> Unit
 ): Unit = MapUtils.clear(this, onRemove)
 
 /** @see MapUtils.computeAndRemove */
 inline fun <K, V> MutableMap<K, V>.computeAndRemove(
     key: K,
-    crossinline onRemove: V.() -> Unit
+    crossinline onRemove: suspend V.() -> Unit
 ): Boolean = MapUtils.computeAndRemove(this, key, onRemove)
 
 /** @see MapUtils.getCast */

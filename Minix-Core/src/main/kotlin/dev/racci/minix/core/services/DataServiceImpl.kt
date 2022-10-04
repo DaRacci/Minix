@@ -20,7 +20,6 @@ import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.services.StorageService
 import dev.racci.minix.api.updater.providers.UpdateProvider
 import dev.racci.minix.api.updater.providers.UpdateProvider.UpdateProviderSerializer.Companion.nonVirtualNode
-import dev.racci.minix.api.utils.getKoin
 import io.papermc.paper.configuration.constraint.Constraint
 import kotlinx.coroutines.runBlocking
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer

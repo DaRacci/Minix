@@ -27,7 +27,7 @@ inline fun <T : Any> Array<*>.getCast(
 ): Validated<Throwable, T> = CollectionUtils.Get.getCast(this, index)
 
 /** @see CollectionUtils.Find.findKCallable */
-inline fun <T : KCallable<*>> Array<T>.findKCallable(
+inline fun <T : KCallable<*>, R> Array<T>.findKCallable(
     name: String,
     ignoreCase: Boolean = false
-): Option<T> = CollectionUtils.Find.findKCallable(this, name, ignoreCase)
+): Option<KCallable<R>> = CollectionUtils.Find.findKCallable(this, name, ignoreCase)

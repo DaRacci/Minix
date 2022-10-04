@@ -149,7 +149,8 @@ tasks {
                 it.moduleName == "Minix-Core" ||
                 it.moduleName == "Minix-API" ||
                 it.moduleName == "Minix-NMS" ||
-                it.moduleName == "core-integrations"
+                it.moduleName == "core-integrations" ||
+                it.moduleName == "jvm-driver"
         }
         val prefix = "dev.racci.minix.libs"
         relocate("io.sentry", "$prefix.io.sentry")

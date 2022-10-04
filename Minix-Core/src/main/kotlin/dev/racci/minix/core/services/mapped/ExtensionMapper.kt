@@ -3,6 +3,8 @@ package dev.racci.minix.core.services.mapped
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
+import arrow.core.getOrElse
+import arrow.core.toOption
 import com.google.common.graph.GraphBuilder
 import com.google.common.graph.MutableGraph
 import dev.racci.minix.api.annotations.MappedExtension
@@ -12,6 +14,7 @@ import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.unregisterListener
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.plugin.PluginData
 import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.api.utils.RecursionUtils
 import io.github.classgraph.ClassInfo
@@ -26,7 +29,10 @@ import org.koin.ext.getFullName
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.findParameterByName
+import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
+import kotlin.reflect.full.starProjectedType
 
 @Suppress("UnstableApiUsage")
 @MappedExtension(Minix::class, "Extension Mapper")
@@ -38,7 +44,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
     private fun orderExtensions(g: MutableGraph<Extension<*>>): ImmutableList<Extension<*>> {
         val extensions = g.nodes().toList()
         // Create a graph of the extensions
-        var graph: MutableGraph<Extension<*>> = GraphBuilder.directed().build()
+        val graph: MutableGraph<Extension<*>> = GraphBuilder.directed().build()
 
         // Add all the extensions to the graph
         extensions.forEach { graph.addNode(it) }
@@ -101,9 +107,6 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         extension: Extension<*>,
         plugin: MinixPlugin
     ) {
-        loadKoinModules(KoinUtils.getModule(extension))
-
-//        val graph = extensionGraph.computeIfAbsent(plugin::class) { GraphBuilder.directed().build() }
         val graph = extensionGraph
         graph.addNode(extension)
 
@@ -141,6 +144,20 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         }
 
         registerMapped(extension, plugin)
+    }
+
+    override suspend fun forgetMapped(
+        plugin: MinixPlugin,
+        cache: PluginData<*>
+    ) {
+        extensionGraph.nodes()
+            .filter { it.plugin == plugin }
+            .onEach(extensionGraph::removeNode)
+            .onEach { unloadKoinModules(KoinUtils.getModule(it)) }
+            .forEach(KoinUtils::clearBinds)
+
+        neededEdges.keys.removeAll { it.plugin == plugin }
+        topoSorted.remove(plugin::class)
     }
 
     suspend fun loadExtensions(plugin: MinixPlugin) {

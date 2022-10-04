@@ -88,7 +88,8 @@ jobs:
         uses: getsentry/action-release@v1.2.0
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: MXN
+          SENTRY_ORG: racci
+          SENTRY_PROJECT: minix
         with:
           version: ${{ needs.build.outputs.version }}
           environment: ${{ steps.env.outputs.value }}

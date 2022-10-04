@@ -70,6 +70,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - uses: haya14busa/action-cond@v1
+        id: condval
+        with:
+          cond: contains(needs.build.outputs.version, 'SNAPSHOT')
+          if_true: "development"
+          if_false: "production"
+
       - name: Sentry Release
         uses: getsentry/action-release@v1.2.0
         env:
@@ -78,5 +85,5 @@ jobs:
           SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
         with:
           version: ${{ needs.build.outputs.version }}
-          environment: ${{ needs.build.outputs.version.contains('SNAPSHOT') && 'development' || 'production' }}
+          environment: ${{ steps.condval.outputs.value }}
           finalize: ${{ needs.build.outputs.version.contains('SNAPSHOT') && 'false' || 'true' }}

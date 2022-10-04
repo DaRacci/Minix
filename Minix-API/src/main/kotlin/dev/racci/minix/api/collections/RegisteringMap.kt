@@ -1,7 +1,7 @@
 package dev.racci.minix.api.collections
 
+import dev.racci.minix.api.extensions.collections.computeAndRemove
 import dev.racci.minix.api.utils.Loadable
-import dev.racci.minix.api.utils.collections.CollectionUtils.computeAndRemove
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
 import org.apiguardian.api.API
@@ -71,9 +71,7 @@ class RegisteringMap<D : Any, R : Any> : Map<D, Loadable<R>> {
      * @return True if the entry was removed, false if the entry does not exist.
      */
     suspend fun remove(descriptor: D): Boolean {
-        return internalMap.computeAndRemove(descriptor) { _, loadable ->
-            loadable.unload()
-        }
+        return internalMap.computeAndRemove(descriptor) { this.unload() }
     }
 
     /** @return All registered values in this map. */

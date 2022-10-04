@@ -1338,8 +1338,8 @@ public final class dev/racci/minix/api/extensions/collections/ExCollectionKt {
 }
 
 public final class dev/racci/minix/api/extensions/collections/ExMapKt {
-	public static final fun clear (Ljava/util/Map;Lkotlin/jvm/functions/Function2;)V
-	public static final fun computeAndRemove (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Z
+	public static final fun clear (Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
+	public static final fun computeAndRemove (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Z
 	public static final fun contains (Ljava/util/Map;Ljava/lang/String;Z)Z
 	public static synthetic fun contains$default (Ljava/util/Map;Ljava/lang/String;ZILjava/lang/Object;)Z
 	public static final fun get (Ljava/util/Map;Ljava/lang/String;Z)Larrow/core/Option;
@@ -1615,7 +1615,6 @@ public abstract class dev/racci/minix/api/plugin/logger/MinixLogger {
 	protected fun format (Ljava/lang/String;Ljava/lang/String;Ldev/racci/minix/api/plugin/logger/MinixLogger$LoggingLevel;Ljava/lang/Throwable;Lcom/github/ajalt/mordant/rendering/TextColors;)Ljava/lang/String;
 	protected final fun getCallerScope ()Ljava/lang/String;
 	public final fun getLevel ()Ldev/racci/minix/api/plugin/logger/MinixLogger$LoggingLevel;
-	protected final fun ifLoggable (Ldev/racci/minix/api/plugin/logger/MinixLogger$LoggingLevel;Lkotlin/jvm/functions/Function0;)V
 	public fun info (Ljava/lang/Throwable;Ljava/lang/String;Ljava/lang/String;)V
 	public fun info (Ljava/lang/Throwable;Ljava/lang/String;Lkotlin/jvm/functions/Function0;)V
 	public static synthetic fun info$default (Ldev/racci/minix/api/plugin/logger/MinixLogger;Ljava/lang/Throwable;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)V
@@ -1698,6 +1697,7 @@ public final class dev/racci/minix/api/plugin/logger/PluginDependentMinixLogger 
 }
 
 public final class dev/racci/minix/api/plugin/logger/PluginDependentMinixLogger$Companion {
+	public final fun getEXISTING ()Ljava/util/Map;
 	public final fun getLogger (Ldev/racci/minix/api/plugin/MinixPlugin;)Ldev/racci/minix/api/plugin/logger/PluginDependentMinixLogger;
 }
 
@@ -2944,26 +2944,17 @@ public final class dev/racci/minix/api/utils/KoinKt {
 	public static synthetic fun loadModule$default (ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/module/Module;
 }
 
-public final class dev/racci/minix/api/utils/KoinUtils : dev/racci/minix/api/utils/UtilObject {
+public final class dev/racci/minix/api/utils/KoinUtils {
 	public static final field INSTANCE Ldev/racci/minix/api/utils/KoinUtils;
-	public fun async (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
-	public fun completableAsync (Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
-	public fun completableSync (Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
-	public fun deferredAsync (Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
-	public fun deferredSync (Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
-	public fun deleteProperty (Ljava/lang/String;)V
+	public final fun clearBinds (Ljava/lang/Object;)V
+	public final fun createBindArray (Ljava/lang/Object;)[Lkotlin/reflect/KClass;
 	public final fun getBinds (Ljava/lang/Object;)[Lkotlin/reflect/KClass;
-	public fun getKoin ()Lorg/koin/core/Koin;
-	public fun getLogger ()Ldev/racci/minix/api/plugin/logger/MinixLogger;
-	public final fun getModule (Ljava/lang/Object;)Lorg/koin/core/module/Module;
-	public fun getPlugin ()Ldev/racci/minix/api/plugin/Minix;
-	public synthetic fun getPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
-	public fun getProperty (Ljava/lang/String;)Ljava/lang/Object;
-	public fun getProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun launch (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
-	public fun registerEvents ([Lorg/bukkit/event/Listener;)V
-	public fun setProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun sync (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public final fun getReference ()Ljava/util/concurrent/ConcurrentHashMap;
+}
+
+public final class dev/racci/minix/api/utils/KoinUtils$sam$i$java_util_function_BiFunction$0 : java/util/function/BiFunction {
+	public fun <init> (Lkotlin/jvm/functions/Function2;)V
+	public final synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract class dev/racci/minix/api/utils/Loadable {
@@ -3361,8 +3352,8 @@ public final class dev/racci/minix/api/utils/collections/ExpirationMapKt {
 
 public final class dev/racci/minix/api/utils/collections/MapUtils {
 	public static final field INSTANCE Ldev/racci/minix/api/utils/collections/MapUtils;
-	public final fun clear (Ljava/util/Map;Lkotlin/jvm/functions/Function2;)V
-	public final fun computeAndRemove (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Z
+	public final fun clear (Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
+	public final fun computeAndRemove (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Z
 	public final fun containsKeyIgnoreCase (Ljava/util/Map;Ljava/lang/String;Z)Z
 	public final fun getValueIgnoreCase (Ljava/util/Map;Ljava/lang/String;Z)Larrow/core/Option;
 }

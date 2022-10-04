@@ -14,6 +14,7 @@ import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.utils.Loadable
 import dev.racci.minix.api.utils.kotlin.fromOrdinal
 import dev.racci.minix.api.utils.kotlin.toSafeString
+import io.sentry.Sentry
 import kotlinx.atomicfu.AtomicBoolean
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
@@ -124,7 +125,7 @@ abstract class MinixLogger {
         t: Throwable? = null,
         scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.TRACE) {
+    ) = postSentryAndTryLog(t, LoggingLevel.TRACE) {
         val actualScope = scope ?: getCallerScope()
         log { FormattedMessage(msg, actualScope, LoggingLevel.TRACE, t, TextColors.brightMagenta) }
     }
@@ -133,7 +134,7 @@ abstract class MinixLogger {
         t: Throwable? = null,
         scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.DEBUG) {
+    ) = postSentryAndTryLog(t, LoggingLevel.DEBUG) {
         val actualScope = scope ?: getCallerScope()
         log { FormattedMessage(msg, actualScope, LoggingLevel.DEBUG, t, TextColors.brightBlue) }
     }
@@ -142,7 +143,7 @@ abstract class MinixLogger {
         t: Throwable? = null,
         scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.INFO) {
+    ) = postSentryAndTryLog(t, LoggingLevel.INFO) {
         val actualScope = scope ?: getCallerScope()
         log { FormattedMessage(msg, actualScope, LoggingLevel.INFO, t, TextColors.cyan) }
     }
@@ -151,7 +152,7 @@ abstract class MinixLogger {
         t: Throwable? = null,
         scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.WARN) {
+    ) = postSentryAndTryLog(t, LoggingLevel.WARN) {
         val actualScope = scope ?: getCallerScope()
         log { FormattedMessage(msg, actualScope, LoggingLevel.WARN, t, TextColors.yellow) }
     }
@@ -160,7 +161,7 @@ abstract class MinixLogger {
         t: Throwable? = null,
         scope: String? = null,
         msg: () -> Any?
-    ) = ifLoggable(LoggingLevel.ERROR) {
+    ) = postSentryAndTryLog(t, LoggingLevel.ERROR) {
         val actualScope = scope ?: getCallerScope()
         log { FormattedMessage(msg, actualScope, LoggingLevel.ERROR, t, TextColors.red) }
     }
@@ -186,7 +187,7 @@ abstract class MinixLogger {
         t: Throwable? = null,
         scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.TRACE) {
+    ) = postSentryAndTryLog(t, LoggingLevel.TRACE) {
         val actualScope = scope ?: getCallerScope()
         log { FormattedMessage(msg, actualScope, LoggingLevel.TRACE, t, TextColors.brightMagenta) }
     }
@@ -195,7 +196,7 @@ abstract class MinixLogger {
         t: Throwable? = null,
         scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.DEBUG) {
+    ) = postSentryAndTryLog(t, LoggingLevel.DEBUG) {
         val actualScope = scope ?: getCallerScope()
         log { FormattedMessage(msg, actualScope, LoggingLevel.DEBUG, t, TextColors.brightBlue) }
     }
@@ -204,7 +205,7 @@ abstract class MinixLogger {
         t: Throwable? = null,
         scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.INFO) {
+    ) = postSentryAndTryLog(t, LoggingLevel.INFO) {
         val actualScope = scope ?: getCallerScope()
         log { FormattedMessage(msg, actualScope, LoggingLevel.INFO, t, TextColors.cyan) }
     }
@@ -213,7 +214,7 @@ abstract class MinixLogger {
         t: Throwable? = null,
         scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.WARN) {
+    ) = postSentryAndTryLog(t, LoggingLevel.WARN) {
         val actualScope = scope ?: getCallerScope()
         log { FormattedMessage(msg, actualScope, LoggingLevel.WARN, t, TextColors.yellow) }
     }
@@ -222,7 +223,7 @@ abstract class MinixLogger {
         t: Throwable? = null,
         scope: String? = null,
         msg: String? = null
-    ) = ifLoggable(LoggingLevel.ERROR) {
+    ) = postSentryAndTryLog(t, LoggingLevel.ERROR) {
         val actualScope = scope ?: getCallerScope()
         log { FormattedMessage(msg, actualScope, LoggingLevel.ERROR, t, TextColors.red) }
     }
@@ -249,10 +250,12 @@ abstract class MinixLogger {
      * @param level The [LoggingLevel] to test.
      * @param action The action to run.
      */
-    protected fun ifLoggable(
+    private fun postSentryAndTryLog(
+        err: Throwable?,
         level: LoggingLevel,
         action: () -> Unit
     ) {
+        if (err != null) Sentry.captureException(err)
         if (!isEnabled(level)) return
 
         action()

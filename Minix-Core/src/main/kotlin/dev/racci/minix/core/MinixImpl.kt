@@ -7,6 +7,7 @@ import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.logger.MinixLogger
+import dev.racci.minix.api.plugin.logger.PluginDependentMinixLogger
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.providers.GithubUpdateProvider
@@ -27,8 +28,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.get
 import org.koin.core.context.startKoin
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
-import org.koin.dsl.binds
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatformTools
 import kotlin.time.Duration.Companion.seconds
@@ -64,27 +65,37 @@ class MinixImpl : Minix() {
 
     private suspend fun startKoin() {
         startKoin {
-            modules(
-                module {
-                    single { log } bind MinixLogger::class
-                    single { CoroutineServiceImpl() } bind CoroutineService::class
-                    single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class
+            this.allowOverride(false)
 
-                    val pls = PluginServiceImpl(this@MinixImpl)
-                    val ems = ExtensionMapper(this@MinixImpl)
-                    single { pls } binds KoinUtils.getBinds(pls)
-                    single { ems } binds KoinUtils.getBinds(ems)
+            this.modules(
+                KoinUtils.getModule(this@MinixImpl),
+                module { single { PluginDependentMinixLogger.getLogger(get<MinixImpl>()) } bind MinixLogger::class }
+            )
+
+            this.logger(KoinProxy)
+
+            this.modules(
+                module {
+                    singleOf(::CoroutineServiceImpl) bind CoroutineService::class
+                    single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class
                 }
             )
 
-            this.printLogger(log.level.toKoin())
-            this.logger(KoinProxy)
+            this.modules(
+                KoinUtils.getModule(PluginServiceImpl(get())),
+                KoinUtils.getModule(ExtensionMapper(get()))
+            )
         }
 
-        val extensionMapper = get<ExtensionMapper>()
-        arrayOf(get<PluginServiceImpl>(), extensionMapper)
-            .onEach { extensionMapper.registerMapped(it, this) }
-            .onEach { extensionMapper.loadExtension(it, mutableListOf()) }
+        with(get<ExtensionMapper>()) {
+            val psi = get<PluginServiceImpl>()
+
+            registerMapped(psi, this@MinixImpl)
+            registerMapped(this, this@MinixImpl)
+
+            loadExtension(psi, mutableListOf())
+            loadExtension(this, mutableListOf())
+        }
     }
 
     private fun startSentry() {

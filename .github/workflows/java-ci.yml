@@ -60,3 +60,23 @@ jobs:
 
       - name: Test
         run: ./gradlew clean test
+
+  sentry:
+    name: Sentry
+    runs-on: ubuntu-latest
+    needs: [ build, test ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Sentry Release
+        uses: getsentry/action-release@v1.2.0
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          version: ${{ needs.build.outputs.version }}
+          environment: ${{ needs.build.outputs.version.contains('SNAPSHOT') && 'development' || 'production' }}
+          finalize: ${{ needs.build.outputs.version.contains('SNAPSHOT') && 'false' || 'true' }}

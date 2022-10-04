@@ -2,6 +2,7 @@ package dev.racci.minix.api.plugin.logger
 
 import arrow.core.handleError
 import com.github.ajalt.mordant.rendering.TextColors
+import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.extensions.WithPlugin
 import dev.racci.minix.api.extensions.collections.findKCallable
 import dev.racci.minix.api.extensions.reflection.accessGet
@@ -18,10 +19,10 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import net.minecrell.terminalconsole.TerminalConsoleAppender
 import org.apache.logging.log4j.core.appender.AbstractManager
 import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager
 import org.jline.terminal.Terminal
-import org.jline.terminal.TerminalBuilder
 import java.util.Optional
 import kotlin.reflect.KProperty0
 import kotlin.reflect.full.staticProperties
@@ -270,14 +271,16 @@ class PluginDependentMinixLogger<T : MinixPlugin> private constructor(
 
     companion object {
         private val NEWLINE: ByteArray = "\n".encodeToByteArray()
-        private val TERMINAL: Terminal = TerminalBuilder.builder().build()
-        private val EXISTING: MutableMap<MinixPlugin, PluginDependentMinixLogger<*>> = mutableMapOf()
+        private val TERMINAL: Terminal = TerminalConsoleAppender.getTerminal()!!
         private val ROLLING_MANAGER: RollingRandomAccessFileManager = AbstractManager::class.staticProperties
             .filterIsInstance<KProperty0<Map<String, AbstractManager>>>()
             .findKCallable("MAP")
             .map { runBlocking { it.accessGet() } }
             .handleError { error("Failed to get instance of rolling manager") }
             .orNull()!!["logs/latest.log"].castOrThrow()
+
+        @MinixInternal
+        val EXISTING: MutableMap<MinixPlugin, PluginDependentMinixLogger<*>> = mutableMapOf()
 
         fun getLogger(plugin: MinixPlugin) = EXISTING.getOrPut(plugin) { PluginDependentMinixLogger(plugin) }
     }

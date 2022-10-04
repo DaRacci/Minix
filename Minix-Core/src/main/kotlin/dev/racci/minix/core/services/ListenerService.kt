@@ -3,7 +3,6 @@ package dev.racci.minix.core.services
 import com.google.common.graph.Graphs
 import com.google.common.graph.MutableGraph
 import dev.racci.minix.api.annotations.MappedExtension
-import dev.racci.minix.api.coroutine.coroutineService
 import dev.racci.minix.api.coroutine.launchAsync
 import dev.racci.minix.api.events.AbstractComboEvent
 import dev.racci.minix.api.events.BlockData
@@ -20,7 +19,6 @@ import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.extensions.pluginManager
 import dev.racci.minix.api.plugin.Minix
-import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.accessReturn
 import dev.racci.minix.api.utils.classConstructor
 import dev.racci.minix.api.utils.collections.CollectionUtils.first
@@ -43,7 +41,6 @@ import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
-import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.event.server.PluginEnableEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
@@ -238,11 +235,6 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
                 null,
                 null
             ).callEvent().ifTrue(::cancel)
-        }
-
-        event<PluginDisableEvent> {
-            val minixPlugin = this.plugin as? MinixPlugin ?: return@event
-            coroutineService.disable(minixPlugin)
         }
 
         @Suppress("UnstableApiUsage")

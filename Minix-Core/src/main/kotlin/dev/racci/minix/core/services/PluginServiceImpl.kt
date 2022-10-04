@@ -175,9 +175,8 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
 
     private suspend fun loadReflection(plugin: MinixPlugin) {
         var int = 0
-        val packageName = plugin::class.java.`package`.name.takeWhile { it != '.' || int++ < 2 }
         val scanResult = ClassGraph()
-            .acceptPackages(packageName)
+            .acceptJars(plugin::class.java.protectionDomain.codeSource.location.path.substringAfterLast('/'))
             .addClassLoader(plugin::class.java.classLoader)
             .addClassLoader(pluginCache[plugin].getClassLoader())
             .enableClassInfo()

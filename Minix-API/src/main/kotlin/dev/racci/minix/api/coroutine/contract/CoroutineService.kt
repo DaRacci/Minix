@@ -3,6 +3,7 @@ package dev.racci.minix.api.coroutine.contract
 import dev.racci.minix.api.plugin.MinixPlugin
 import org.koin.core.component.KoinComponent
 
+// TODO -> Deprecate this
 interface CoroutineService : KoinComponent {
 
     /**

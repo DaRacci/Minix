@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -32,6 +33,9 @@ internal class CoroutineSessionImpl(override val plugin: MinixPlugin) : WithPlug
         disposed = true
         scope.coroutineContext.cancelChildren()
         wakeUpBlockService.dispose()
+
+        dispatcherMinecraft.cancel()
+        dispatcherAsync.cancel()
     }
 
     override fun launch(

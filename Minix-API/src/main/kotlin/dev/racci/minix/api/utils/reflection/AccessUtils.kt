@@ -4,6 +4,7 @@ import dev.racci.minix.api.utils.UtilObject
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.apiguardian.api.API
+import org.koin.core.component.get
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KCallable
 import kotlin.reflect.KMutableProperty0

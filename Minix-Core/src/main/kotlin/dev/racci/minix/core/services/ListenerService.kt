@@ -4,23 +4,24 @@ import com.google.common.graph.Graphs
 import com.google.common.graph.MutableGraph
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.launchAsync
-import dev.racci.minix.api.events.AbstractComboEvent
-import dev.racci.minix.api.events.BlockData
-import dev.racci.minix.api.events.LiquidType
-import dev.racci.minix.api.events.LiquidType.Companion.liquidType
-import dev.racci.minix.api.events.PlayerEnterLiquidEvent
-import dev.racci.minix.api.events.PlayerExitLiquidEvent
-import dev.racci.minix.api.events.PlayerMoveFullXYZEvent
-import dev.racci.minix.api.events.PlayerMoveXYZEvent
+import dev.racci.minix.api.data.enums.LiquidType
+import dev.racci.minix.api.data.enums.LiquidType.Companion.liquidType
+import dev.racci.minix.api.events.keybind.ComboEvent
+import dev.racci.minix.api.events.keybind.OffhandComboEvent
+import dev.racci.minix.api.events.player.PlayerLiquidEnterEvent
+import dev.racci.minix.api.events.player.PlayerLiquidExitEvent
+import dev.racci.minix.api.events.player.PlayerMoveFullXYZEvent
+import dev.racci.minix.api.events.player.PlayerMoveXYZEvent
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.callEvent
 import dev.racci.minix.api.extensions.cancel
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.extensions.pluginManager
+import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.plugin.Minix
+import dev.racci.minix.api.services.PlayerService
 import dev.racci.minix.api.utils.accessReturn
-import dev.racci.minix.api.utils.classConstructor
 import dev.racci.minix.api.utils.collections.CollectionUtils.first
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.unsafeCast
@@ -45,7 +46,10 @@ import org.bukkit.event.server.PluginEnableEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.SimplePluginManager
+import org.koin.core.component.get
+import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.primaryConstructor
 
 @MappedExtension(Minix::class, "Listener Service")
 class ListenerService(override val plugin: Minix) : Extension<Minix>() {
@@ -82,8 +86,8 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
             ) return@event
 
             val type = if (fromLiquid != LiquidType.NON && toLiquid == LiquidType.NON) {
-                PlayerExitLiquidEvent::class
-            } else PlayerEnterLiquidEvent::class
+                PlayerLiquidExitEvent::class
+            } else PlayerLiquidEnterEvent::class
 
             callEvent(type) {
                 mapOf(
@@ -132,11 +136,11 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
             liquidEvent(block, block.liquidType, LiquidType.NON, true)
         }
 
-        event<PlayerEnterLiquidEvent> {
+        event<PlayerLiquidEnterEvent> {
             log.debug { "Player ${player.name} is entering liquid ${newType.name} from the previous ${previousType.name}" }
         }
 
-        event<PlayerExitLiquidEvent> {
+        event<PlayerLiquidExitEvent> {
             log.debug { "Player ${player.name} is exiting liquid ${newType.name} from the previous ${previousType.name}" }
         }
 
@@ -149,18 +153,12 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
                 player.inventory.itemInOffHand.type == Material.AIR
             ) return@event
 
-            val bd = if (clickedBlock != null) BlockData(clickedBlock!!, blockFace) else null
-            val shift = if (player.isSneaking) "Shift" else ""
-            val (click, double) = if (action.isLeftClick) {
-                "Left" to if (PlayerServiceImpl.getService()[player.uniqueId].isDoubleAttack) "Double" else ""
-            } else "Right" to if (PlayerServiceImpl.getService()[player.uniqueId].isDoubleInteract) "Double" else ""
-            val clazz = Class.forName("dev.racci.minix.api.events.Player$shift$double${click}ClickEvent").unsafeCast<Class<AbstractComboEvent>>()
-
-            classConstructor(
-                clazz.getConstructor(Player::class.java, ItemStack::class.java, BlockData::class.java, Entity::class.java),
+            getComboEvent<ComboEvent>(
+                action,
                 player,
                 item,
-                bd,
+                null,
+                clickedBlock?.let { ComboEvent.BlockData(it, blockFace) },
                 null
             ).callEvent().ifTrue(::cancel)
         }
@@ -170,71 +168,50 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
             ignoreCancelled = true,
             forceAsync = true
         ) {
-            val shift = if (player.isSneaking) "Shift" else ""
-            val double = if (PlayerServiceImpl.getService()[player.uniqueId].isDoubleInteract) "Double" else ""
-            val clazz = Class.forName("dev.racci.minix.api.events.Player${shift}${double}RightClickEvent").unsafeCast<Class<AbstractComboEvent>>()
-
-            classConstructor(
-                clazz.getConstructor(
-                    Player::class.java,
-                    ItemStack::class.java,
-                    BlockData::class.java,
-                    Entity::class.java
-                ),
+            getComboEvent<ComboEvent>(
+                Action.RIGHT_CLICK_AIR,
                 player,
-                player.inventory.getItem(hand),
+                player.inventory.itemInMainHand,
+                null,
                 null,
                 rightClicked
             ).callEvent().ifTrue(::cancel)
         }
 
         event<EntityDamageByEntityEvent>(
-            EventPriority.LOW,
+            EventPriority.MONITOR,
             ignoreCancelled = true,
             forceAsync = true
         ) {
-            val p = damager as? Player ?: return@event
-            val shift = if (p.isSneaking) "Shift" else ""
-            val double = if (PlayerServiceImpl.getService()[p.uniqueId].isDoubleAttack) "Double" else ""
-            val clazz = Class.forName("dev.racci.minix.api.events.Player${shift}${double}LeftClickEvent").unsafeCast<Class<AbstractComboEvent>>()
-
-            classConstructor(
-                clazz.getConstructor(
-                    Player::class.java,
-                    ItemStack::class.java,
-                    BlockData::class.java,
-                    Entity::class.java
-                ),
-                p,
-                p.inventory.itemInMainHand,
+            val player = damager as? Player ?: return@event
+            getComboEvent<ComboEvent>(
+                Action.LEFT_CLICK_AIR,
+                player,
+                player.inventory.itemInMainHand,
+                null,
                 null,
                 entity
             ).callEvent().ifTrue(::cancel)
         }
 
         event<PlayerSwapHandItemsEvent>(
-            EventPriority.LOW,
+            EventPriority.MONITOR,
             ignoreCancelled = true,
             forceAsync = true
         ) {
-            val shift = if (player.isSneaking) "Shift" else ""
-            val double = if (PlayerServiceImpl.getService()[player.uniqueId].isDoubleOffhand) "Double" else ""
-            val clazz = Class.forName("dev.racci.minix.api.events.Player${shift}${double}OffhandEvent").unsafeCast<Class<AbstractComboEvent>>()
-
-            classConstructor(
-                clazz.getConstructor(
-                    Player::class.java,
-                    ItemStack::class.java,
-                    ItemStack::class.java,
-                    BlockData::class.java,
-                    Entity::class.java
-                ),
+            val rayTraceResult = player.rayTraceBlocks(16.0)
+            getComboEvent<OffhandComboEvent>(
+                Action.LEFT_CLICK_AIR,
                 player,
-                mainHandItem,
-                offHandItem,
-                null,
-                null
-            ).callEvent().ifTrue(::cancel)
+                player.inventory.itemInMainHand,
+                player.inventory.itemInOffHand,
+                rayTraceResult?.hitBlock?.let { ComboEvent.BlockData(it, rayTraceResult.hitBlockFace!!) },
+                rayTraceResult?.hitEntity
+            ).callEvent().ifTrue {
+                val item = player.inventory.itemInMainHand
+                player.inventory.setItemInMainHand(player.inventory.itemInOffHand)
+                player.inventory.setItemInOffHand(item)
+            }
         }
 
         @Suppress("UnstableApiUsage")
@@ -253,6 +230,37 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
             logger.info { "Eco is patched, hopefully no linkage errors!" }
         }
+    }
+
+    private inline fun <reified K : ComboEvent> getComboEvent(
+        action: Action?,
+        player: Player,
+        item: ItemStack?,
+        offhandItem: ItemStack?,
+        bData: ComboEvent.BlockData?,
+        entity: Entity?
+    ): K {
+        val args = when {
+            K::class.java.isAssignableFrom(ComboEvent::class.java) -> arrayOf(player, item, offhandItem, bData, entity)
+            else -> arrayOf(player, item, bData, entity)
+        }
+
+        val (button, double) = when {
+            action == null -> "Offhand" to get<PlayerService>()[player].isDoubleOffhand
+            action.isLeftClick -> "Primary" to get<PlayerService>()[player].isDoubleAttack
+            else -> "Secondary" to get<PlayerService>()[player].isDoubleInteract
+        }
+
+        val classString = buildString {
+            append(KEYBIND_PREFIX)
+            if (player.isSneaking) append("Sneak")
+            if (double) append("Double")
+            append(button)
+            append("Event")
+        }
+
+        val kClass = Class.forName(classString).kotlin.castOrThrow<KClass<K>>()
+        return kClass.primaryConstructor!!.call(*args)
     }
 
     // Maybe some sort of cache?
@@ -280,5 +288,9 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
                 PlayerServiceImpl.getService()[player.uniqueId].liquidType = new
             }
         }
+    }
+
+    private companion object {
+        const val KEYBIND_PREFIX = "dev.racci.minix.api.events.keybind.Player"
     }
 }

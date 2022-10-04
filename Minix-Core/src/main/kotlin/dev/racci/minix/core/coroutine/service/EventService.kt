@@ -1,8 +1,7 @@
 package dev.racci.minix.core.coroutine.service
 
 import dev.racci.minix.api.annotations.RunAsync
-import dev.racci.minix.api.coroutine.contract.CoroutineSession
-import dev.racci.minix.api.coroutine.contract.EventService
+import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.core.coroutine.extension.invokeSuspend
 import kotlinx.coroutines.Dispatchers
@@ -25,10 +24,10 @@ import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import kotlin.reflect.full.hasAnnotation
 
-internal class EventServiceImpl(
+internal class EventService(
     private val plugin: MinixPlugin,
     private val coroutineSession: CoroutineSession
-) : EventService {
+) {
     private val eventListenersMethod by lazy { SimplePluginManager::class.java.getDeclaredMethod("getEventListeners", Class::class.java).apply { isAccessible = true } }
 
     override fun registerSuspendListener(listener: Listener) {

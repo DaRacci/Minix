@@ -1,7 +1,8 @@
-package dev.racci.minix.api.events
+package dev.racci.minix.api.events.player
 
+import dev.racci.minix.api.events.CompanionEventHandler
+import dev.racci.minix.api.events.KEvent
 import org.bukkit.entity.Player
-import org.bukkit.event.HandlerList
 import java.util.UUID
 
 /**
@@ -20,8 +21,7 @@ class PlayerUnloadEvent(
     operator fun component1(): Player? = player
     operator fun component2(): UUID = uuid
 
-    companion object {
-        @JvmStatic
-        fun getHandlerList(): HandlerList = handlerMap[PlayerUnloadEvent::class]
+    companion object : CompanionEventHandler() {
+        @JvmStatic override fun getHandlerList() = super.getHandlerList()
     }
 }

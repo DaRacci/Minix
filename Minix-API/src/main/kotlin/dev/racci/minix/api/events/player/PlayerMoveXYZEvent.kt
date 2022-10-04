@@ -1,8 +1,8 @@
-package dev.racci.minix.api.events
+package dev.racci.minix.api.events.player
 
+import dev.racci.minix.api.events.CompanionEventHandler
 import org.bukkit.Location
 import org.bukkit.entity.Player
-import org.bukkit.event.HandlerList
 
 /**
  * This event is fired only when the player moves, this means that unlike the normal PlayerMoveEvent it does not fire when the player looks around.
@@ -25,9 +25,8 @@ class PlayerMoveXYZEvent(
     operator fun component2(): Location = from
     operator fun component3(): Location = to
 
-    companion object {
-        @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerMoveXYZEvent::class]
+    companion object : CompanionEventHandler() {
+        @JvmStatic override fun getHandlerList() = super.getHandlerList()
     }
 }
 
@@ -49,8 +48,7 @@ class PlayerMoveFullXYZEvent(
     operator fun component2(): Location = from
     operator fun component3(): Location = to
 
-    companion object {
-        @JvmStatic
-        fun getHandlerList(): HandlerList = KEvent.handlerMap[PlayerMoveFullXYZEvent::class]
+    companion object : CompanionEventHandler() {
+        @JvmStatic override fun getHandlerList() = super.getHandlerList()
     }
 }

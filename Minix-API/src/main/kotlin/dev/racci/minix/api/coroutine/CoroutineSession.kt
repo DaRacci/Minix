@@ -1,4 +1,4 @@
-package dev.racci.minix.api.coroutine.contract
+package dev.racci.minix.api.coroutine
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -10,16 +10,6 @@ interface CoroutineSession {
      * Gets the scope.
      */
     val scope: CoroutineScope
-
-    /**
-     * Gets the event service.
-     */
-    val eventService: EventService
-
-    /**
-     * Gets the wakeup service.
-     */
-    val wakeUpBlockService: WakeUpBlockService
 
     /**
      * Gets the minecraft dispatcher.

@@ -73,7 +73,7 @@ jobs:
       - uses: haya14busa/action-cond@v1
         id: env
         with:
-          cond: contains(needs.build.outputs.version, 'SNAPSHOT')
+          cond: ${{ contains(needs.build.outputs.version, 'SNAPSHOT') }}
           if_true: "development"
           if_false: "production"
 

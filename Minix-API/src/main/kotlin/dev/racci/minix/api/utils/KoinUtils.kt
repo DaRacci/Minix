@@ -1,28 +1,51 @@
 package dev.racci.minix.api.utils
 
-import com.github.benmanes.caffeine.cache.Caffeine
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MappedPlugin
+import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.plugin.logger.MinixLogger
 import org.koin.core.module.Module
 import org.koin.dsl.binds
 import org.koin.dsl.module
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
-object KoinUtils : UtilObject {
-    private val bindCache = Caffeine.newBuilder()
-        .maximumSize(100)
-        .expireAfterWrite(30, TimeUnit.SECONDS)
-        .build<KClass<*>, Array<KClass<*>>>()
+object KoinUtils {
+    @PublishedApi
+    internal val reference = ConcurrentHashMap<KClass<*>, Pair<Module?, Array<KClass<*>>>>()
 
-    fun getModule(instance: Any): Module = module {
-        single { instance } binds getBinds(instance)
-    }
+    inline fun <reified T : Any> getModule(instance: T): Module = reference.compute(instance::class) { _, pair ->
+        val module = { binds: Array<KClass<*>> ->
+            module {
+                single { instance } binds binds
+            }
+        }
 
-    fun getBinds(instance: Any): Array<KClass<*>> = bindCache.get(instance::class) {
+        when {
+            pair == null -> {
+                val binds = createBindArray(instance)
+                module(binds) to binds
+            }
+
+            pair.first == null -> module(pair.second) to pair.second
+            else -> pair
+        }
+    }!!.first!!
+
+    fun getBinds(instance: Any): Array<KClass<*>> = reference.computeIfAbsent(instance::class) { clazz ->
+        val binds = createBindArray(instance)
+        // Won't be ready until after this is called a few times.
+        println("Binding ${instance::class} to ${binds.joinToString(", ") { clazz.simpleName!! }}")
+        getKoin().getOrNull<MinixLogger>()?.debug { "Binding ${instance::class} to ${binds.joinToString(", ") { clazz.simpleName!! }}" }
+
+        null to binds
+    }.second
+
+    @PublishedApi
+    internal fun createBindArray(instance: Any): Array<KClass<*>> {
         val initBind = when (instance) {
             is Extension<*> -> instance::class.findAnnotation<MappedExtension>()!!.bindToKClass.takeUnless { it == Extension::class } ?: instance::class
             is MinixPlugin -> instance::class.findAnnotation<MappedPlugin>()!!.bindToKClass.takeUnless { it == MinixPlugin::class } ?: instance::class
@@ -30,5 +53,11 @@ object KoinUtils : UtilObject {
         }
 
         setOf(initBind, instance::class).toTypedArray()
+        return setOf(initBind, instance::class).toTypedArray()
+    }
+
+    @MinixInternal
+    fun clearBinds(instance: Any) {
+        reference.remove(instance::class)
     }
 }

@@ -30,7 +30,7 @@ jobs:
           echo "::set-output name=version::$version"
 
       - name: Build
-        run: ./gradlew build -Pversion=${{ steps.version.outputs.version }}
+        run: ./gradlew quickBuild -Pversion=${{ steps.version.outputs.version }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3.0.0

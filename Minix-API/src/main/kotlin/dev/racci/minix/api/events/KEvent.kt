@@ -31,4 +31,3 @@ abstract class KEvent(
         val handlerMap: LoadingCache<KClass<out Event>, HandlerList> = Caffeine.newBuilder().build { HandlerList() }
     }
 }
-

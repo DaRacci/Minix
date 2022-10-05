@@ -77,4 +77,3 @@ typealias PlayerShiftDoubleRightClickEvent = dev.racci.minix.api.events.keybind.
 
 @Deprecated("Use moved class", ReplaceWith("PlayerSneakDoubleOffhandEvent", "dev.racci.minix.api.events.keybind.PlayerSneakDoubleOffhandEvent"))
 typealias PlayerShiftDoubleOffhandEvent = dev.racci.minix.api.events.keybind.PlayerSneakDoubleOffhandEvent
-

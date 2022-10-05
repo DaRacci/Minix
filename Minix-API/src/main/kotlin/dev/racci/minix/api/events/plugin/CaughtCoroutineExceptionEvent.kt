@@ -5,7 +5,8 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import org.bukkit.event.Cancellable
 
 class CaughtCoroutineExceptionEvent(
-    plugin: MinixPlugin
+    plugin: MinixPlugin,
+    err: Throwable
 ) : KPluginEvent(plugin), Cancellable {
     companion object : CompanionEventHandler() {
         @JvmStatic

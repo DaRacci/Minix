@@ -85,3 +85,5 @@ inline fun <reified R> Collection<KMutableProperty2<*, *, *>>.findKProperty(
 suspend inline fun <V> MutableCollection<V>.clear(
     crossinline onRemove: suspend V.() -> Unit
 ): Unit = CollectionUtils.Mutate.clear(this, onRemove)
+
+fun <K, V> Multimap<K, V>.toMultiMap(): MutableMultiMap<K, V> = MutableMultiMap<K, V>(this.asMap())

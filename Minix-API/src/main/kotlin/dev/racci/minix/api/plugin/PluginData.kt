@@ -13,22 +13,14 @@ import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.plugin.java.PluginClassLoader
 import kotlin.reflect.KClass
-import kotlin.reflect.KProperty
 import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.memberProperties
 
-@OptIn(MinixInternal::class)
 class PluginData<P : MinixPlugin>(val plugin: P) {
     @PublishedApi
     internal lateinit var classLoader: PluginClassLoader
 
     @MinixInternal
     var wantsFullUnload: Boolean = false
-
-    operator fun <T : Any?> getValue(
-        thisRef: P,
-        property: KProperty<*>
-    ): T = this::class.memberProperties.find { it.name == property.name }?.getter?.call(thisRef).castOrThrow()
 
     val extensionEvents: MutableSharedFlow<ExtensionStateEvent> by lazy(::MutableSharedFlow)
 

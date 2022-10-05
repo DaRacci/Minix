@@ -1,5 +1,6 @@
 package dev.racci.minix.api.extensions.reflection
 
+import dev.racci.minix.api.utils.reflection.AccessUtils
 import dev.racci.minix.api.utils.reflection.OverrideUtils
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -41,3 +42,9 @@ inline fun <reified T : Any, R> KFunction0<R>.callIfOverridden() = this.callIfOv
 
 @JvmName("callIfOverriddenKSuspendFunction0Reified")
 inline fun <reified T : Any, R> KSuspendFunction0<R>.callIfOverridden() = this.callIfOverridden(T::class)
+
+/** @see AccessUtils.accessInvoke */
+suspend inline fun <R> KFunction<R>.accessInvoke(vararg args: Any?): R = AccessUtils.accessInvoke(this, *args)
+
+/** @see AccessUtils.accessInvoke */
+suspend inline fun <R> KFunction0<R>.accessInvoke(): R = AccessUtils.accessInvoke(this)

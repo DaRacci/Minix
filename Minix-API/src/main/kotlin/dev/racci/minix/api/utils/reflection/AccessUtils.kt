@@ -4,9 +4,10 @@ import dev.racci.minix.api.utils.UtilObject
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.apiguardian.api.API
-import org.koin.core.component.get
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KCallable
+import kotlin.reflect.KFunction
+import kotlin.reflect.KFunction0
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KMutableProperty2
@@ -76,4 +77,15 @@ object AccessUtils : UtilObject {
         objD: D,
         value: R
     ) = this.accessWith(property) { this.set(objT, objD, value) }
+
+    @JvmName("accessInvoke")
+    suspend inline fun <R> accessInvoke(
+        function: KFunction<R>,
+        vararg args: Any?
+    ): R = this.accessWith(function) { this.call(*args) }
+
+    @JvmName("accessInvoke0")
+    suspend inline fun <R> accessInvoke(
+        function: KFunction0<R>
+    ): R = this.accessWith(function) { this.call() }
 }

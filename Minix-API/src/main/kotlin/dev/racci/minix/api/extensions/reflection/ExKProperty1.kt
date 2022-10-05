@@ -30,8 +30,6 @@ suspend inline fun <T : Any, R> KProperty1<T, R>.ifInitialised(
 
 // Access Extensions
 
-// TODO -> Multiple accessors will break this, must be lockable or atomic.
-
 /** @see AccessUtils.accessGet */
 suspend inline fun <T : Any, R> KProperty1<T, R>.accessGet(
     obj: T

@@ -3,8 +3,14 @@ package dev.racci.minix.api.extensions.collections
 import arrow.core.Option
 import arrow.core.Validated
 import arrow.core.filterIsInstance
+import com.google.common.collect.Multimap
 import dev.racci.minix.api.utils.collections.CollectionUtils
+import dev.racci.minix.api.utils.collections.muiltimap.MutableMultiMap
 import kotlin.reflect.KCallable
+import kotlin.reflect.KFunction
+import kotlin.reflect.KFunction0
+import kotlin.reflect.KFunction1
+import kotlin.reflect.KFunction2
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KMutableProperty2
@@ -80,6 +86,34 @@ inline fun <reified R> Collection<KMutableProperty2<*, *, *>>.findKProperty(
     name: String,
     ignoreCase: Boolean = false
 ): Option<KMutableProperty2<*, *, R>> = CollectionUtils.Find.findKCallable(this, name, ignoreCase).filterIsInstance()
+
+/** @see CollectionUtils.Find.findKCallable */
+@JvmName("findKFunction")
+inline fun <reified R> Collection<KFunction<*>>.findKFunction(
+    name: String,
+    ignoreCase: Boolean = false
+): Option<KFunction<R>> = CollectionUtils.Find.findKCallable(this, name, ignoreCase).filterIsInstance()
+
+/** @see CollectionUtils.Find.findKCallable */
+@JvmName("findKFunction0")
+inline fun <reified R> Collection<KFunction0<*>>.findKFunction(
+    name: String,
+    ignoreCase: Boolean = false
+): Option<KFunction0<R>> = CollectionUtils.Find.findKCallable(this, name, ignoreCase).filterIsInstance()
+
+/** @see CollectionUtils.Find.findKCallable */
+@JvmName("findKFunction1")
+inline fun <reified R> Collection<KFunction1<*, *>>.findKFunction(
+    name: String,
+    ignoreCase: Boolean = false
+): Option<KFunction1<Any, R>> = CollectionUtils.Find.findKCallable(this, name, ignoreCase).filterIsInstance()
+
+/** @see CollectionUtils.Find.findKCallable */
+@JvmName("findKFunction2")
+inline fun <reified R> Collection<KFunction2<*, *, *>>.findKFunction(
+    name: String,
+    ignoreCase: Boolean = false
+): Option<KFunction2<*, *, R>> = CollectionUtils.Find.findKCallable(this, name, ignoreCase).filterIsInstance()
 
 /** @see CollectionUtils.Mutate.clear */
 suspend inline fun <V> MutableCollection<V>.clear(

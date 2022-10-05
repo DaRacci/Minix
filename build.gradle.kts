@@ -62,11 +62,18 @@ bukkit {
 
 tasks {
     val quickBuild by creating {
-        this.group = "build"
+        group = "build"
         dependsOn(compileKotlin)
         dependsOn(shadowJar)
         dependsOn(reobfJar)
         findByName("copyJar")?.let { dependsOn(it) }
+    }
+
+    val quickTest by creating {
+        group = "verification"
+        dependsOn(ktlintFormat)
+        dependsOn(ktlintCheck)
+        dependsOn(apiCheck)
     }
 }
 

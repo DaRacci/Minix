@@ -1,9 +1,7 @@
 package dev.racci.minix.core.services
 
-import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.utils.kotlin.fromOrdinal
-import io.mockk.mockk
 import io.mockk.mockkClass
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -19,11 +17,11 @@ internal class PluginServiceImplTest {
         mockkClass(clazz)
     }
 
-    @Test
-    fun `returns all layered extensions`() {
-        mockk<PluginServiceImpl>()
-        mockk<Extension<*>>()
-    }
+//    @Test
+//    fun `returns all layered extensions`() {
+//        mockk<PluginServiceImpl>()
+//        mockk<Extension<*>>()
+//    }
 
     @Test
     fun fromLog4J() {

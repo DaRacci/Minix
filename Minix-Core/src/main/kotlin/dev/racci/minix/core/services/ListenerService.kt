@@ -49,6 +49,7 @@ import org.bukkit.plugin.SimplePluginManager
 import org.koin.core.component.get
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 
 @MappedExtension(Minix::class, "Listener Service")
@@ -241,7 +242,7 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
         entity: Entity?
     ): K {
         val args = when {
-            K::class.java.isAssignableFrom(ComboEvent::class.java) -> arrayOf(player, item, offhandItem, bData, entity)
+            K::class.isSubclassOf(OffhandComboEvent::class) -> arrayOf(player, item, offhandItem, bData, entity)
             else -> arrayOf(player, item, bData, entity)
         }
 
@@ -281,8 +282,8 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
         plugin.launchAsync {
             for (player in nearby) {
                 val cancelled = if (exiting) {
-                    PlayerExitLiquidEvent(player, previous!!, new).callEvent()
-                } else PlayerEnterLiquidEvent(player, previous ?: LiquidType.NON, new).callEvent()
+                    PlayerLiquidExitEvent(player, previous!!, new).callEvent()
+                } else PlayerLiquidEnterEvent(player, previous ?: LiquidType.NON, new).callEvent()
 
                 if (cancelled) continue
                 PlayerServiceImpl.getService()[player.uniqueId].liquidType = new

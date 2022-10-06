@@ -29,6 +29,7 @@ gh workflow run "docs.yml" # Generate the documentation
 
 ./gradlew :Minix-API:publish # Publish from the API module
 ./gradlew :Minix-Core:publish # Public from the Core module
+./gradlew :minix-core:core-integrations:publish # Publish from the Core Integrations module
 
 git fetch --tags origin # Fetch the tags from the origin
 sed -i "s/version=.*/version=$3/" ./gradle.properties # We now in snapshot

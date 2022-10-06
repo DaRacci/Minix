@@ -261,51 +261,43 @@ public final class dev/racci/minix/api/configuration/constraint/MinixConstraints
 	public fun validate (Ljava/lang/String;)V
 }
 
+public abstract interface class dev/racci/minix/api/coroutine/CoroutineSession {
+	public abstract fun dispose ()V
+	public abstract fun fireSuspendingEvent (Lorg/bukkit/event/Event;Ldev/racci/minix/api/data/enums/EventExecutionType;)Ljava/util/Collection;
+	public abstract fun getAsyncDispatcher ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun getMinecraftDispatcher ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun getScope ()Lkotlinx/coroutines/CoroutineScope;
+	public abstract fun isManipulatedServerHeartBeat ()Z
+	public abstract fun launch (Lkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineStart;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public abstract fun registerSuspendedListener (Lorg/bukkit/event/Listener;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun setManipulatedServerHeartBeat (Z)V
+}
+
+public final class dev/racci/minix/api/coroutine/CoroutineSession$DefaultImpls {
+	public static synthetic fun launch$default (Ldev/racci/minix/api/coroutine/CoroutineSession;Lkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineStart;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/Job;
+}
+
+public abstract class dev/racci/minix/api/coroutine/CoroutineTimings : kotlin/coroutines/AbstractCoroutineContextElement, java/lang/Runnable {
+	public static final field Key Ldev/racci/minix/api/coroutine/CoroutineTimings$Key;
+	public fun <init> ()V
+	public final fun getQueue ()Ljava/util/Queue;
+	public fun run ()V
+	public final fun setQueue (Ljava/util/Queue;)V
+}
+
+public final class dev/racci/minix/api/coroutine/CoroutineTimings$Key : kotlin/coroutines/CoroutineContext$Key {
+}
+
 public final class dev/racci/minix/api/coroutine/ExtensionKt {
-	public static final fun callSuspendingEvent (Lorg/bukkit/plugin/PluginManager;Lorg/bukkit/event/Event;Ldev/racci/minix/api/plugin/MinixPlugin;)Ljava/util/Collection;
-	public static final fun findClazz (Ldev/racci/minix/api/plugin/MinixPlugin;Ljava/lang/String;)Ljava/lang/Class;
+	public static final fun callSuspendingEvent (Lorg/bukkit/plugin/PluginManager;Lorg/bukkit/event/Event;Ldev/racci/minix/api/plugin/MinixPlugin;Ldev/racci/minix/api/data/enums/EventExecutionType;)Ljava/util/Collection;
 	public static final fun getAsyncDispatcher (Ldev/racci/minix/api/plugin/MinixPlugin;)Lkotlin/coroutines/CoroutineContext;
-	public static final fun getCoroutineService ()Ldev/racci/minix/api/coroutine/contract/CoroutineService;
 	public static final fun getMinecraftDispatcher (Ldev/racci/minix/api/plugin/MinixPlugin;)Lkotlin/coroutines/CoroutineContext;
 	public static final fun getScope (Ldev/racci/minix/api/plugin/MinixPlugin;)Lkotlinx/coroutines/CoroutineScope;
-	public static final fun getServerVersion (Ldev/racci/minix/api/plugin/MinixPlugin;)Ljava/lang/String;
-	public static final fun launch (Ldev/racci/minix/api/plugin/MinixPlugin;Lkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
-	public static synthetic fun launch$default (Ldev/racci/minix/api/plugin/MinixPlugin;Lkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/Job;
+	public static final fun launch (Ldev/racci/minix/api/plugin/MinixPlugin;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public static synthetic fun launch$default (Ldev/racci/minix/api/plugin/MinixPlugin;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/Job;
 	public static final fun launchAsync (Ldev/racci/minix/api/plugin/MinixPlugin;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
-	public static final fun registerSuspendingEvents (Ldev/racci/minix/api/plugin/MinixPlugin;Lorg/bukkit/event/Listener;)V
-	public static final fun registerSuspendingEvents (Lorg/bukkit/plugin/PluginManager;Lorg/bukkit/event/Listener;Ldev/racci/minix/api/plugin/MinixPlugin;)V
-}
-
-public abstract interface class dev/racci/minix/api/coroutine/contract/CoroutineService : org/koin/core/component/KoinComponent {
-	public abstract fun disable (Ldev/racci/minix/api/plugin/MinixPlugin;)V
-	public abstract fun getCoroutineSession (Ldev/racci/minix/api/plugin/MinixPlugin;)Ldev/racci/minix/api/coroutine/contract/CoroutineSession;
-}
-
-public final class dev/racci/minix/api/coroutine/contract/CoroutineService$DefaultImpls {
-	public static fun getKoin (Ldev/racci/minix/api/coroutine/contract/CoroutineService;)Lorg/koin/core/Koin;
-}
-
-public abstract interface class dev/racci/minix/api/coroutine/contract/CoroutineSession {
-	public abstract fun dispose ()V
-	public abstract fun getDispatcherAsync ()Lkotlin/coroutines/CoroutineContext;
-	public abstract fun getDispatcherMinecraft ()Lkotlin/coroutines/CoroutineContext;
-	public abstract fun getEventService ()Ldev/racci/minix/api/coroutine/contract/EventService;
-	public abstract fun getScope ()Lkotlinx/coroutines/CoroutineScope;
-	public abstract fun getWakeUpBlockService ()Ldev/racci/minix/api/coroutine/contract/WakeUpBlockService;
-	public abstract fun launch (Lkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/CoroutineScope;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
-}
-
-public abstract interface class dev/racci/minix/api/coroutine/contract/EventService {
-	public abstract fun fireSuspendingEvent (Lorg/bukkit/event/Event;)Ljava/util/Collection;
-	public abstract fun registerSuspendListener (Lorg/bukkit/event/Listener;)V
-}
-
-public abstract interface class dev/racci/minix/api/coroutine/contract/WakeUpBlockService {
-	public abstract fun dispose ()V
-	public abstract fun ensureWakeup ()V
-	public abstract fun getPrimaryThread ()Ljava/lang/Thread;
-	public abstract fun isManipulatedServerHeartBeatEnabled ()Z
-	public abstract fun setManipulatedServerHeartBeatEnabled (Z)V
+	public static final fun registerSuspendingEvents (Ldev/racci/minix/api/plugin/MinixPlugin;Lorg/bukkit/event/Listener;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun registerSuspendingEvents (Lorg/bukkit/plugin/PluginManager;Lorg/bukkit/event/Listener;Ldev/racci/minix/api/plugin/MinixPlugin;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract class dev/racci/minix/api/data/LangConfig : dev/racci/minix/api/data/MinixConfig {
@@ -385,7 +377,7 @@ public final class dev/racci/minix/api/data/PlayerData {
 	public static synthetic fun copy$default (Ldev/racci/minix/api/data/PlayerData;Ljava/util/UUID;ILjava/lang/Object;)Ldev/racci/minix/api/data/PlayerData;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getInAccess ()I
-	public final fun getLiquidType ()Ldev/racci/minix/api/events/LiquidType;
+	public final fun getLiquidType ()Ldev/racci/minix/api/data/enums/LiquidType;
 	public final fun getUuid ()Ljava/util/UUID;
 	public fun hashCode ()I
 	public final fun isDoubleAttack ()Z
@@ -394,7 +386,7 @@ public final class dev/racci/minix/api/data/PlayerData {
 	public final fun isDoubleOffhand ()Z
 	public final fun isDoubleSneak ()Z
 	public final fun setInAccess (I)V
-	public final fun setLiquidType (Ldev/racci/minix/api/events/LiquidType;)V
+	public final fun setLiquidType (Ldev/racci/minix/api/data/enums/LiquidType;)V
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -435,6 +427,29 @@ public final class dev/racci/minix/api/data/PluginUpdater {
 	public final fun setSentInfo (Z)V
 	public final fun setUpdateMode (Ldev/racci/minix/api/updater/UpdateMode;)V
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/data/enums/EventExecutionType : java/lang/Enum {
+	public static final field Concurrent Ldev/racci/minix/api/data/enums/EventExecutionType;
+	public static final field Sequential Ldev/racci/minix/api/data/enums/EventExecutionType;
+	public static fun valueOf (Ljava/lang/String;)Ldev/racci/minix/api/data/enums/EventExecutionType;
+	public static fun values ()[Ldev/racci/minix/api/data/enums/EventExecutionType;
+}
+
+public final class dev/racci/minix/api/data/enums/LiquidType : java/lang/Enum {
+	public static final field Companion Ldev/racci/minix/api/data/enums/LiquidType$Companion;
+	public static final field LAVA Ldev/racci/minix/api/data/enums/LiquidType;
+	public static final field NON Ldev/racci/minix/api/data/enums/LiquidType;
+	public static final field WATER Ldev/racci/minix/api/data/enums/LiquidType;
+	public static fun valueOf (Ljava/lang/String;)Ldev/racci/minix/api/data/enums/LiquidType;
+	public static fun values ()[Ldev/racci/minix/api/data/enums/LiquidType;
+}
+
+public final class dev/racci/minix/api/data/enums/LiquidType$Companion {
+	public final fun convert (Lorg/bukkit/Material;)Ldev/racci/minix/api/data/enums/LiquidType;
+	public final fun convert (Lorg/bukkit/block/Block;)Ldev/racci/minix/api/data/enums/LiquidType;
+	public final fun getLiquidType (Lorg/bukkit/Material;)Ldev/racci/minix/api/data/enums/LiquidType;
+	public final fun getLiquidType (Lorg/bukkit/block/Block;)Ldev/racci/minix/api/data/enums/LiquidType;
 }
 
 public final class dev/racci/minix/api/destructors/CommonDestructorKt {
@@ -482,31 +497,9 @@ public final class dev/racci/minix/api/destructors/PatternDestructorKt {
 	public static final fun component2 (Lorg/bukkit/block/banner/Pattern;)Lorg/bukkit/block/banner/PatternType;
 }
 
-public abstract class dev/racci/minix/api/events/AbstractComboEvent : dev/racci/minix/api/events/KPlayerEvent {
-	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component2 ()Lorg/bukkit/inventory/ItemStack;
-	public final fun component3 ()Ldev/racci/minix/api/events/BlockData;
-	public final fun component4 ()Lorg/bukkit/entity/Entity;
-	public final fun getBlockData ()Ldev/racci/minix/api/events/BlockData;
-	public final fun getEntity ()Lorg/bukkit/entity/Entity;
-	public fun getHasItem ()Z
-	public final fun getItem ()Lorg/bukkit/inventory/ItemStack;
-	public final fun isBlockEvent ()Z
-	public final fun isEntityEvent ()Z
-}
-
-public final class dev/racci/minix/api/events/BlockData {
-	public fun <init> (Lorg/bukkit/block/Block;Lorg/bukkit/block/BlockFace;)V
-	public final fun component1 ()Lorg/bukkit/block/Block;
-	public final fun component2 ()Lorg/bukkit/block/BlockFace;
-	public final fun copy (Lorg/bukkit/block/Block;Lorg/bukkit/block/BlockFace;)Ldev/racci/minix/api/events/BlockData;
-	public static synthetic fun copy$default (Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/block/Block;Lorg/bukkit/block/BlockFace;ILjava/lang/Object;)Ldev/racci/minix/api/events/BlockData;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getBlock ()Lorg/bukkit/block/Block;
-	public final fun getBlockFace ()Lorg/bukkit/block/BlockFace;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+public class dev/racci/minix/api/events/CompanionEventHandler {
+	public fun <init> ()V
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
 }
 
 public abstract class dev/racci/minix/api/events/KEvent : org/bukkit/event/Event, org/bukkit/event/Cancellable {
@@ -523,7 +516,167 @@ public final class dev/racci/minix/api/events/KEvent$Companion {
 	public final fun getHandlerMap ()Lcom/github/benmanes/caffeine/cache/LoadingCache;
 }
 
-public abstract class dev/racci/minix/api/events/KPlayerEvent : org/bukkit/event/player/PlayerEvent, org/bukkit/event/Cancellable {
+public abstract class dev/racci/minix/api/events/keybind/ComboEvent : dev/racci/minix/api/events/player/KPlayerEvent {
+	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component2 ()Lorg/bukkit/inventory/ItemStack;
+	public final fun component3 ()Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;
+	public final fun component4 ()Lorg/bukkit/entity/Entity;
+	public final fun getBlockData ()Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;
+	public final fun getEntity ()Lorg/bukkit/entity/Entity;
+	public fun getHasItem ()Z
+	public final fun getItem ()Lorg/bukkit/inventory/ItemStack;
+	public final fun isBlockEvent ()Z
+	public final fun isEntityEvent ()Z
+}
+
+public final class dev/racci/minix/api/events/keybind/ComboEvent$BlockData {
+	public fun <init> (Lorg/bukkit/block/Block;Lorg/bukkit/block/BlockFace;)V
+	public final fun component1 ()Lorg/bukkit/block/Block;
+	public final fun component2 ()Lorg/bukkit/block/BlockFace;
+	public final fun copy (Lorg/bukkit/block/Block;Lorg/bukkit/block/BlockFace;)Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;
+	public static synthetic fun copy$default (Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/block/Block;Lorg/bukkit/block/BlockFace;ILjava/lang/Object;)Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBlock ()Lorg/bukkit/block/Block;
+	public final fun getBlockFace ()Lorg/bukkit/block/BlockFace;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class dev/racci/minix/api/events/keybind/OffhandComboEvent : dev/racci/minix/api/events/keybind/ComboEvent {
+	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component5 ()Lorg/bukkit/inventory/ItemStack;
+	public fun getHasItem ()Z
+	public final fun getOffHandItem ()Lorg/bukkit/inventory/ItemStack;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerDoubleOffhandEvent : dev/racci/minix/api/events/keybind/OffhandComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerDoubleOffhandEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerDoubleOffhandEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerDoublePrimaryEvent : dev/racci/minix/api/events/keybind/ComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerDoublePrimaryEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerDoublePrimaryEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerDoubleSecondaryEvent : dev/racci/minix/api/events/keybind/ComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerDoubleSecondaryEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerDoubleSecondaryEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerOffhandEvent : dev/racci/minix/api/events/keybind/OffhandComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerOffhandEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerOffhandEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerPrimaryEvent : dev/racci/minix/api/events/keybind/ComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerPrimaryEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerPrimaryEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSecondaryEvent : dev/racci/minix/api/events/keybind/ComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerSecondaryEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSecondaryEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakDoubleOffhandEvent : dev/racci/minix/api/events/keybind/OffhandComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerSneakDoubleOffhandEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakDoubleOffhandEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakDoublePrimaryEvent : dev/racci/minix/api/events/keybind/ComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerSneakDoublePrimaryEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakDoublePrimaryEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakDoubleSecondaryEvent : dev/racci/minix/api/events/keybind/ComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerSneakDoubleSecondaryEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakDoubleSecondaryEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakOffhandEvent : dev/racci/minix/api/events/keybind/OffhandComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerSneakOffhandEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakOffhandEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakPrimaryEvent : dev/racci/minix/api/events/keybind/ComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerSneakPrimaryEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakPrimaryEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakSecondaryEvent : dev/racci/minix/api/events/keybind/ComboEvent {
+	public static final field Companion Ldev/racci/minix/api/events/keybind/PlayerSneakSecondaryEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/keybind/ComboEvent$BlockData;Lorg/bukkit/entity/Entity;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/keybind/PlayerSneakSecondaryEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public abstract class dev/racci/minix/api/events/player/KPlayerEvent : org/bukkit/event/player/PlayerEvent, org/bukkit/event/Cancellable {
 	public fun <init> (Lorg/bukkit/entity/Player;Z)V
 	public synthetic fun <init> (Lorg/bukkit/entity/Player;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getHandlers ()Lorg/bukkit/event/HandlerList;
@@ -531,7 +684,119 @@ public abstract class dev/racci/minix/api/events/KPlayerEvent : org/bukkit/event
 	public fun setCancelled (Z)V
 }
 
-public abstract class dev/racci/minix/api/events/KWorldEvent : org/bukkit/event/world/WorldEvent, org/bukkit/event/Cancellable {
+public final class dev/racci/minix/api/events/player/PlayerLightEvent : dev/racci/minix/api/events/player/KPlayerEvent {
+	public static final field Companion Ldev/racci/minix/api/events/player/PlayerLightEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;IILdev/racci/minix/api/events/player/PlayerLightEvent$Cause;)V
+	public final fun getCause ()Ldev/racci/minix/api/events/player/PlayerLightEvent$Cause;
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+	public final fun getNewLightLevel ()I
+	public final fun getOldLightLevel ()I
+}
+
+public final class dev/racci/minix/api/events/player/PlayerLightEvent$Cause : java/lang/Enum {
+	public static final field BLOCK_UPDATE Ldev/racci/minix/api/events/player/PlayerLightEvent$Cause;
+	public static final field MOVEMENT Ldev/racci/minix/api/events/player/PlayerLightEvent$Cause;
+	public static fun valueOf (Ljava/lang/String;)Ldev/racci/minix/api/events/player/PlayerLightEvent$Cause;
+	public static fun values ()[Ldev/racci/minix/api/events/player/PlayerLightEvent$Cause;
+}
+
+public final class dev/racci/minix/api/events/player/PlayerLightEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/player/PlayerLiquidEnterEvent : dev/racci/minix/api/events/player/PlayerLiquidEvent {
+	public static final field Companion Ldev/racci/minix/api/events/player/PlayerLiquidEnterEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Ldev/racci/minix/api/data/enums/LiquidType;Ldev/racci/minix/api/data/enums/LiquidType;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/player/PlayerLiquidEnterEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public abstract class dev/racci/minix/api/events/player/PlayerLiquidEvent : dev/racci/minix/api/events/player/KPlayerEvent {
+	public synthetic fun <init> (Lorg/bukkit/entity/Player;Ldev/racci/minix/api/data/enums/LiquidType;Ldev/racci/minix/api/data/enums/LiquidType;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component2 ()Ldev/racci/minix/api/data/enums/LiquidType;
+	public final fun component3 ()Ldev/racci/minix/api/data/enums/LiquidType;
+	public final fun getNewType ()Ldev/racci/minix/api/data/enums/LiquidType;
+	public final fun getPreviousType ()Ldev/racci/minix/api/data/enums/LiquidType;
+}
+
+public final class dev/racci/minix/api/events/player/PlayerLiquidExitEvent : dev/racci/minix/api/events/player/PlayerLiquidEvent {
+	public static final field Companion Ldev/racci/minix/api/events/player/PlayerLiquidExitEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Ldev/racci/minix/api/data/enums/LiquidType;Ldev/racci/minix/api/data/enums/LiquidType;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/player/PlayerLiquidExitEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/player/PlayerMoveFullXYZEvent : dev/racci/minix/api/events/player/KPlayerEvent {
+	public static final field Companion Ldev/racci/minix/api/events/player/PlayerMoveFullXYZEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/Location;Lorg/bukkit/Location;)V
+	public final fun component2 ()Lorg/bukkit/Location;
+	public final fun component3 ()Lorg/bukkit/Location;
+	public final fun getFrom ()Lorg/bukkit/Location;
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+	public final fun getTo ()Lorg/bukkit/Location;
+	public final fun setTo (Lorg/bukkit/Location;)V
+}
+
+public final class dev/racci/minix/api/events/player/PlayerMoveFullXYZEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/player/PlayerMoveXYZEvent : dev/racci/minix/api/events/player/KPlayerEvent {
+	public static final field Companion Ldev/racci/minix/api/events/player/PlayerMoveXYZEvent$Companion;
+	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/Location;Lorg/bukkit/Location;)V
+	public final fun component2 ()Lorg/bukkit/Location;
+	public final fun component3 ()Lorg/bukkit/Location;
+	public final fun getFrom ()Lorg/bukkit/Location;
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+	public final fun getTo ()Lorg/bukkit/Location;
+	public final fun hasExplicitlyChangedBlock ()Z
+	public final fun setTo (Lorg/bukkit/Location;)V
+}
+
+public final class dev/racci/minix/api/events/player/PlayerMoveXYZEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/player/PlayerUnloadEvent : dev/racci/minix/api/events/KEvent {
+	public static final field Companion Ldev/racci/minix/api/events/player/PlayerUnloadEvent$Companion;
+	public fun <init> ()V
+	public fun <init> (Lorg/bukkit/entity/Player;Ljava/util/UUID;)V
+	public synthetic fun <init> (Lorg/bukkit/entity/Player;Ljava/util/UUID;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lorg/bukkit/entity/Player;
+	public final fun component2 ()Ljava/util/UUID;
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+	public final fun getPlayer ()Lorg/bukkit/entity/Player;
+	public final fun getUuid ()Ljava/util/UUID;
+}
+
+public final class dev/racci/minix/api/events/player/PlayerUnloadEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/plugin/CaughtCoroutineExceptionEvent : dev/racci/minix/api/events/plugin/KPluginEvent, org/bukkit/event/Cancellable {
+	public static final field Companion Ldev/racci/minix/api/events/plugin/CaughtCoroutineExceptionEvent$Companion;
+	public fun <init> (Ldev/racci/minix/api/plugin/MinixPlugin;Ljava/lang/Throwable;)V
+	public static fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public final class dev/racci/minix/api/events/plugin/CaughtCoroutineExceptionEvent$Companion : dev/racci/minix/api/events/CompanionEventHandler {
+	public fun getHandlerList ()Lorg/bukkit/event/HandlerList;
+}
+
+public abstract class dev/racci/minix/api/events/plugin/KPluginEvent : org/bukkit/event/server/PluginEvent, org/bukkit/event/Cancellable {
+	public fun <init> (Ldev/racci/minix/api/plugin/MinixPlugin;)V
+	public fun getHandlers ()Lorg/bukkit/event/HandlerList;
+	public fun isCancelled ()Z
+	public fun setCancelled (Z)V
+}
+
+public abstract class dev/racci/minix/api/events/world/KWorldEvent : org/bukkit/event/world/WorldEvent, org/bukkit/event/Cancellable {
 	public fun <init> (Lorg/bukkit/World;)V
 	public fun getHandlers ()Lorg/bukkit/event/HandlerList;
 	public fun isCancelled ()Z
@@ -542,260 +807,23 @@ public abstract class dev/racci/minix/api/events/KWorldEvent : org/bukkit/event/
 	public fun setCancelled (Z)V
 }
 
-public final class dev/racci/minix/api/events/LiquidType : java/lang/Enum {
-	public static final field Companion Ldev/racci/minix/api/events/LiquidType$Companion;
-	public static final field LAVA Ldev/racci/minix/api/events/LiquidType;
-	public static final field NON Ldev/racci/minix/api/events/LiquidType;
-	public static final field WATER Ldev/racci/minix/api/events/LiquidType;
-	public static fun valueOf (Ljava/lang/String;)Ldev/racci/minix/api/events/LiquidType;
-	public static fun values ()[Ldev/racci/minix/api/events/LiquidType;
-}
-
-public final class dev/racci/minix/api/events/LiquidType$Companion {
-	public final fun convert (Lorg/bukkit/Material;)Ldev/racci/minix/api/events/LiquidType;
-	public final fun convert (Lorg/bukkit/block/Block;)Ldev/racci/minix/api/events/LiquidType;
-	public final fun getLiquidType (Lorg/bukkit/Material;)Ldev/racci/minix/api/events/LiquidType;
-	public final fun getLiquidType (Lorg/bukkit/block/Block;)Ldev/racci/minix/api/events/LiquidType;
-}
-
-public final class dev/racci/minix/api/events/PlayerDoubleLeftClickEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerDoubleLeftClickEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerDoubleLeftClickEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerDoubleOffhandEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerDoubleOffhandEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component5 ()Lorg/bukkit/inventory/ItemStack;
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-	public fun getHasItem ()Z
-	public final fun getOffHandItem ()Lorg/bukkit/inventory/ItemStack;
-}
-
-public final class dev/racci/minix/api/events/PlayerDoubleOffhandEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerDoubleRightClickEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerDoubleRightClickEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerDoubleRightClickEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerEnterLiquidEvent : dev/racci/minix/api/events/PlayerLiquidEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerEnterLiquidEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Ldev/racci/minix/api/events/LiquidType;Ldev/racci/minix/api/events/LiquidType;)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerEnterLiquidEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerExitLiquidEvent : dev/racci/minix/api/events/PlayerLiquidEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerExitLiquidEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Ldev/racci/minix/api/events/LiquidType;Ldev/racci/minix/api/events/LiquidType;)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerExitLiquidEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerLeftClickEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerLeftClickEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerLeftClickEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerLightEvent : dev/racci/minix/api/events/KPlayerEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerLightEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;I)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-	public final fun getLightLevel ()I
-}
-
-public final class dev/racci/minix/api/events/PlayerLightEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public abstract class dev/racci/minix/api/events/PlayerLiquidEvent : dev/racci/minix/api/events/KPlayerEvent {
-	public synthetic fun <init> (Lorg/bukkit/entity/Player;Ldev/racci/minix/api/events/LiquidType;Ldev/racci/minix/api/events/LiquidType;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component2 ()Ldev/racci/minix/api/events/LiquidType;
-	public final fun component3 ()Ldev/racci/minix/api/events/LiquidType;
-	public final fun getNewType ()Ldev/racci/minix/api/events/LiquidType;
-	public final fun getPreviousType ()Ldev/racci/minix/api/events/LiquidType;
-}
-
-public final class dev/racci/minix/api/events/PlayerMoveFullXYZEvent : dev/racci/minix/api/events/KPlayerEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerMoveFullXYZEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/Location;Lorg/bukkit/Location;)V
-	public final fun component2 ()Lorg/bukkit/Location;
-	public final fun component3 ()Lorg/bukkit/Location;
-	public final fun getFrom ()Lorg/bukkit/Location;
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-	public final fun getTo ()Lorg/bukkit/Location;
-	public final fun setTo (Lorg/bukkit/Location;)V
-}
-
-public final class dev/racci/minix/api/events/PlayerMoveFullXYZEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerMoveXYZEvent : dev/racci/minix/api/events/KPlayerEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerMoveXYZEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/Location;Lorg/bukkit/Location;)V
-	public final fun component2 ()Lorg/bukkit/Location;
-	public final fun component3 ()Lorg/bukkit/Location;
-	public final fun getFrom ()Lorg/bukkit/Location;
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-	public final fun getTo ()Lorg/bukkit/Location;
-	public final fun hasExplicitlyChangedBlock ()Z
-	public final fun setTo (Lorg/bukkit/Location;)V
-}
-
-public final class dev/racci/minix/api/events/PlayerMoveXYZEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerOffhandEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerOffhandEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-	public final fun getOffHandItem ()Lorg/bukkit/inventory/ItemStack;
-}
-
-public final class dev/racci/minix/api/events/PlayerOffhandEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerRightClickEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerRightClickEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerRightClickEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftDoubleLeftClickEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerShiftDoubleLeftClickEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftDoubleLeftClickEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftDoubleOffhandEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerShiftDoubleOffhandEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component5 ()Lorg/bukkit/inventory/ItemStack;
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-	public fun getHasItem ()Z
-	public final fun getOffHandItem ()Lorg/bukkit/inventory/ItemStack;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftDoubleOffhandEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftDoubleRightClickEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerShiftDoubleRightClickEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftDoubleRightClickEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftLeftClickEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerShiftLeftClickEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftLeftClickEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftOffhandEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerShiftOffhandEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component5 ()Lorg/bukkit/inventory/ItemStack;
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-	public fun getHasItem ()Z
-	public final fun getOffHandItem ()Lorg/bukkit/inventory/ItemStack;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftOffhandEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftRightClickEvent : dev/racci/minix/api/events/AbstractComboEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerShiftRightClickEvent$Companion;
-	public fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;)V
-	public synthetic fun <init> (Lorg/bukkit/entity/Player;Lorg/bukkit/inventory/ItemStack;Ldev/racci/minix/api/events/BlockData;Lorg/bukkit/entity/Entity;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerShiftRightClickEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/PlayerUnloadEvent : dev/racci/minix/api/events/KEvent {
-	public static final field Companion Ldev/racci/minix/api/events/PlayerUnloadEvent$Companion;
-	public fun <init> ()V
-	public fun <init> (Lorg/bukkit/entity/Player;Ljava/util/UUID;)V
-	public synthetic fun <init> (Lorg/bukkit/entity/Player;Ljava/util/UUID;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Lorg/bukkit/entity/Player;
-	public final fun component2 ()Ljava/util/UUID;
-	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-	public final fun getPlayer ()Lorg/bukkit/entity/Player;
-	public final fun getUuid ()Ljava/util/UUID;
-}
-
-public final class dev/racci/minix/api/events/PlayerUnloadEvent$Companion {
-	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
-}
-
-public final class dev/racci/minix/api/events/WorldDayEvent : dev/racci/minix/api/events/KWorldEvent {
-	public static final field Companion Ldev/racci/minix/api/events/WorldDayEvent$Companion;
+public final class dev/racci/minix/api/events/world/WorldDayEvent : dev/racci/minix/api/events/world/KWorldEvent {
+	public static final field Companion Ldev/racci/minix/api/events/world/WorldDayEvent$Companion;
 	public fun <init> (Lorg/bukkit/World;)V
 	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
 }
 
-public final class dev/racci/minix/api/events/WorldDayEvent$Companion {
+public final class dev/racci/minix/api/events/world/WorldDayEvent$Companion {
 	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
 }
 
-public final class dev/racci/minix/api/events/WorldNightEvent : dev/racci/minix/api/events/KWorldEvent {
-	public static final field Companion Ldev/racci/minix/api/events/WorldNightEvent$Companion;
+public final class dev/racci/minix/api/events/world/WorldNightEvent : dev/racci/minix/api/events/world/KWorldEvent {
+	public static final field Companion Ldev/racci/minix/api/events/world/WorldNightEvent$Companion;
 	public fun <init> (Lorg/bukkit/World;)V
 	public static final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
 }
 
-public final class dev/racci/minix/api/events/WorldNightEvent$Companion {
+public final class dev/racci/minix/api/events/world/WorldNightEvent$Companion {
 	public final fun getHandlerList ()Lorg/bukkit/event/HandlerList;
 }
 
@@ -1335,6 +1363,7 @@ public final class dev/racci/minix/api/extensions/collections/ExCollectionKt {
 	public static final fun getCast (Ljava/util/Collection;I)Larrow/core/Validated;
 	public static final fun ifEmpty (Ljava/util/Collection;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun ifNotEmpty (Ljava/util/Collection;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun toMultiMap (Lcom/google/common/collect/Multimap;)Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
 }
 
 public final class dev/racci/minix/api/extensions/collections/ExMapKt {
@@ -1359,6 +1388,8 @@ public final class dev/racci/minix/api/extensions/reflection/ExKCallableKt {
 }
 
 public final class dev/racci/minix/api/extensions/reflection/ExKFunctionKt {
+	public static final fun accessInvoke (Lkotlin/reflect/KFunction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun accessInvoke (Lkotlin/reflect/KFunction;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun callIfOverriddenKFunction0 (Lkotlin/reflect/KFunction;Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public static final fun callIfOverriddenKSuspendFunction0 (Lkotlin/reflect/KFunction;Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public static final fun ifOverriddenIn (Lkotlin/reflect/KFunction;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
@@ -1562,7 +1593,6 @@ public final class dev/racci/minix/api/plugin/PluginData {
 	public final fun getLog ()Ldev/racci/minix/api/plugin/logger/PluginDependentMinixLogger;
 	public final fun getMetrics ()Lorg/bstats/bukkit/Metrics;
 	public final fun getPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
-	public final fun getValue (Ldev/racci/minix/api/plugin/MinixPlugin;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
 	public final fun getWantsFullUnload ()Z
 	public final fun setClassLoader (Lorg/bukkit/plugin/java/PluginClassLoader;)V
 	public final fun setMetrics (Lorg/bstats/bukkit/Metrics;)V
@@ -2061,10 +2091,10 @@ public final class dev/racci/minix/api/serializables/SerializableAttributeModifi
 public final class dev/racci/minix/api/serializables/SerializableItemMeta {
 	public static final field Companion Ldev/racci/minix/api/serializables/SerializableItemMeta$Companion;
 	public fun <init> ()V
-	public synthetic fun <init> (ILnet/kyori/adventure/text/Component;Ljava/lang/String;Lkotlinx/collections/immutable/ImmutableList;Ljava/lang/Integer;Lkotlinx/collections/immutable/ImmutableMap;Lkotlinx/collections/immutable/ImmutableSet;ZLdev/racci/minix/api/utils/collections/MultiMap;Ljava/lang/Integer;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public fun <init> (Lnet/kyori/adventure/text/Component;Ljava/lang/String;Lkotlinx/collections/immutable/ImmutableList;Ljava/lang/Integer;Lkotlinx/collections/immutable/ImmutableMap;Lkotlinx/collections/immutable/ImmutableSet;ZLdev/racci/minix/api/utils/collections/MultiMap;Ljava/lang/Integer;)V
-	public synthetic fun <init> (Lnet/kyori/adventure/text/Component;Ljava/lang/String;Lkotlinx/collections/immutable/ImmutableList;Ljava/lang/Integer;Lkotlinx/collections/immutable/ImmutableMap;Lkotlinx/collections/immutable/ImmutableSet;ZLdev/racci/minix/api/utils/collections/MultiMap;Ljava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getAttributeModifiers ()Ldev/racci/minix/api/utils/collections/MultiMap;
+	public synthetic fun <init> (ILnet/kyori/adventure/text/Component;Ljava/lang/String;Lkotlinx/collections/immutable/ImmutableList;Ljava/lang/Integer;Lkotlinx/collections/immutable/ImmutableMap;Lkotlinx/collections/immutable/ImmutableSet;ZLdev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;Ljava/lang/Integer;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lnet/kyori/adventure/text/Component;Ljava/lang/String;Lkotlinx/collections/immutable/ImmutableList;Ljava/lang/Integer;Lkotlinx/collections/immutable/ImmutableMap;Lkotlinx/collections/immutable/ImmutableSet;ZLdev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;Ljava/lang/Integer;)V
+	public synthetic fun <init> (Lnet/kyori/adventure/text/Component;Ljava/lang/String;Lkotlinx/collections/immutable/ImmutableList;Ljava/lang/Integer;Lkotlinx/collections/immutable/ImmutableMap;Lkotlinx/collections/immutable/ImmutableSet;ZLdev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;Ljava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getAttributeModifiers ()Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
 	public final fun getCustomModelData ()Ljava/lang/Integer;
 	public final fun getDamage ()Ljava/lang/Integer;
 	public final fun getDisplayName ()Lnet/kyori/adventure/text/Component;
@@ -2073,7 +2103,7 @@ public final class dev/racci/minix/api/serializables/SerializableItemMeta {
 	public final fun getLocalizedName ()Ljava/lang/String;
 	public final fun getLore ()Lkotlinx/collections/immutable/ImmutableList;
 	public final fun getUnbreakable ()Z
-	public final fun setAttributeModifiers (Ldev/racci/minix/api/utils/collections/MultiMap;)V
+	public final fun setAttributeModifiers (Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;)V
 	public final fun setCustomModelData (Ljava/lang/Integer;)V
 	public final fun setDamage (Ljava/lang/Integer;)V
 	public final fun setDisplayName (Lnet/kyori/adventure/text/Component;)V
@@ -2489,6 +2519,7 @@ public final class dev/racci/minix/api/services/DataService$Companion : dev/racc
 
 public abstract interface class dev/racci/minix/api/services/PlayerService {
 	public static final field Companion Ldev/racci/minix/api/services/PlayerService$Companion;
+	public abstract fun get (Lorg/bukkit/entity/Player;)Ldev/racci/minix/api/data/PlayerData;
 	public abstract fun getFunctionsMove ()Ldev/racci/minix/api/utils/collections/OnlinePlayerMap;
 	public abstract fun getFunctionsQuit ()Ldev/racci/minix/api/utils/collections/OnlinePlayerMap;
 	public abstract fun getInputCallbacks ()Ldev/racci/minix/api/utils/collections/OnlinePlayerMap;
@@ -2497,6 +2528,7 @@ public abstract interface class dev/racci/minix/api/services/PlayerService {
 }
 
 public final class dev/racci/minix/api/services/PlayerService$Companion : dev/racci/minix/api/services/PlayerService {
+	public fun get (Lorg/bukkit/entity/Player;)Ldev/racci/minix/api/data/PlayerData;
 	public fun getFunctionsMove ()Ldev/racci/minix/api/utils/collections/OnlinePlayerMap;
 	public fun getFunctionsQuit ()Ldev/racci/minix/api/utils/collections/OnlinePlayerMap;
 	public fun getInputCallbacks ()Ldev/racci/minix/api/utils/collections/OnlinePlayerMap;
@@ -3363,51 +3395,9 @@ public final class dev/racci/minix/api/utils/collections/MapUtils$sam$i$java_uti
 	public final synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 }
 
-public final class dev/racci/minix/api/utils/collections/MultiMap {
-	public static final field Companion Ldev/racci/minix/api/utils/collections/MultiMap$Companion;
-	public fun <init> ()V
-	public synthetic fun <init> (ILjava/util/Map;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
-	public final fun addAll (Ljava/lang/Object;[Ljava/lang/Object;)V
-	public final fun clear ()V
-	public final fun containsKey (Ljava/lang/Object;)Z
-	public final fun forEach (Lkotlin/jvm/functions/Function2;)V
-	public final fun forEachIndexed (Lkotlin/jvm/functions/Function3;)V
-	public final fun get (Ljava/lang/Object;)Ljava/util/Collection;
-	public final fun getEntries ()Ljava/util/Set;
-	public final fun getKeys ()Ljava/util/Set;
-	public final fun getMap ()Ljava/util/Map;
-	public final fun getSize ()I
-	public final fun getValues ()Ljava/util/Collection;
-	public final fun isEmpty ()Z
-	public final fun plusAssign (Lkotlin/Pair;)V
-	public final fun put (Ljava/lang/Object;Ljava/lang/Object;)V
-	public final fun putIfAbsent (Ljava/lang/Object;Ljava/lang/Object;)V
-	public final fun remove (Ljava/lang/Object;)Ljava/util/Collection;
-	public final fun remove (Ljava/lang/Object;Ljava/lang/Object;)Z
-	public final fun replace (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z
-	public final fun size ()I
-	public static final fun write$Self (Ldev/racci/minix/api/utils/collections/MultiMap;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
-}
-
-public final class dev/racci/minix/api/utils/collections/MultiMap$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
-	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/api/utils/collections/MultiMap;
-	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/api/utils/collections/MultiMap;)V
-	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
-}
-
-public final class dev/racci/minix/api/utils/collections/MultiMap$Companion {
-	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
-	public final fun toMultiMap (Lcom/google/common/collect/Multimap;)Ldev/racci/minix/api/utils/collections/MultiMap;
-}
-
 public final class dev/racci/minix/api/utils/collections/MultiMapKt {
-	public static final fun multiMapOf ([Lkotlin/Pair;)Ldev/racci/minix/api/utils/collections/MultiMap;
+	public static final fun emptyMultiMap ()Ldev/racci/minix/api/utils/collections/muiltimap/MultiMap;
+	public static final fun multiMapOf ([Lkotlin/Pair;)Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
 }
 
 public final class dev/racci/minix/api/utils/collections/ObservableAction : java/lang/Enum {
@@ -3444,7 +3434,7 @@ public final class dev/racci/minix/api/utils/collections/ObservableCollectionsKt
 
 public abstract class dev/racci/minix/api/utils/collections/ObservableHolder {
 	public fun <init> ()V
-	public abstract fun getListeners ()Ldev/racci/minix/api/utils/collections/MultiMap;
+	public abstract fun getListeners ()Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
 }
 
 public final class dev/racci/minix/api/utils/collections/ObservableList : dev/racci/minix/api/utils/collections/ObservableCollection, java/util/List, kotlin/jvm/internal/markers/KMutableList {
@@ -3457,7 +3447,7 @@ public final class dev/racci/minix/api/utils/collections/ObservableList : dev/ra
 	public fun contains (Ljava/lang/Object;)Z
 	public fun containsAll (Ljava/util/Collection;)Z
 	public fun get (I)Ljava/lang/Object;
-	public fun getListeners ()Ldev/racci/minix/api/utils/collections/MultiMap;
+	public fun getListeners ()Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
 	public fun getSize ()I
 	public fun indexOf (Ljava/lang/Object;)I
 	public fun isEmpty ()Z
@@ -3482,7 +3472,7 @@ public final class dev/racci/minix/api/utils/collections/ObservableMap : dev/rac
 	public fun get (Ljava/lang/Object;)Ljava/lang/Object;
 	public fun getEntries ()Ljava/util/Set;
 	public fun getKeys ()Ljava/util/Set;
-	public fun getListeners ()Ldev/racci/minix/api/utils/collections/MultiMap;
+	public fun getListeners ()Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
 	public fun getSize ()I
 	public fun getValues ()Ljava/util/Collection;
 	public fun isEmpty ()Z
@@ -3524,7 +3514,7 @@ public final class dev/racci/minix/api/utils/collections/ObservableSet : dev/rac
 	public fun clear ()V
 	public fun contains (Ljava/lang/Object;)Z
 	public fun containsAll (Ljava/util/Collection;)Z
-	public fun getListeners ()Ldev/racci/minix/api/utils/collections/MultiMap;
+	public fun getListeners ()Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
 	public fun getSize ()I
 	public fun isEmpty ()Z
 	public fun iterator ()Ljava/util/Iterator;
@@ -3700,6 +3690,80 @@ public final class dev/racci/minix/api/utils/collections/OnlinePlayerSet : java/
 	public fun setProperty (Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun size ()I
 	public fun sync (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+}
+
+public final class dev/racci/minix/api/utils/collections/muiltimap/EmptyMultiMap : dev/racci/minix/api/utils/collections/muiltimap/MultiMap {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/collections/muiltimap/EmptyMultiMap;
+	public fun containsKey (Ljava/lang/Object;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public fun forEach (Lkotlin/jvm/functions/Function2;)V
+	public fun forEachIndexed (Lkotlin/jvm/functions/Function3;)V
+	public fun get (Ljava/lang/Object;)Ljava/util/Collection;
+	public fun getEntries ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun getKeys ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun getSize ()I
+	public fun getValues ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun hashCode ()I
+	public fun isEmpty ()Z
+	public fun size ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/racci/minix/api/utils/collections/muiltimap/MultiMap {
+	public abstract fun containsKey (Ljava/lang/Object;)Z
+	public abstract fun forEach (Lkotlin/jvm/functions/Function2;)V
+	public abstract fun forEachIndexed (Lkotlin/jvm/functions/Function3;)V
+	public abstract fun get (Ljava/lang/Object;)Ljava/util/Collection;
+	public abstract fun getEntries ()Lkotlinx/collections/immutable/ImmutableSet;
+	public abstract fun getKeys ()Lkotlinx/collections/immutable/ImmutableSet;
+	public abstract fun getSize ()I
+	public abstract fun getValues ()Lkotlinx/collections/immutable/ImmutableSet;
+	public abstract fun isEmpty ()Z
+	public abstract fun size ()I
+}
+
+public final class dev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap : dev/racci/minix/api/utils/collections/muiltimap/MultiMap {
+	public static final field Companion Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap$Companion;
+	public synthetic fun <init> (ILjava/util/Map;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public final fun addAll (Ljava/lang/Object;[Ljava/lang/Object;)V
+	public final fun clear ()V
+	public final fun clear (Lkotlin/jvm/functions/Function2;)V
+	public fun containsKey (Ljava/lang/Object;)Z
+	public fun forEach (Lkotlin/jvm/functions/Function2;)V
+	public fun forEachIndexed (Lkotlin/jvm/functions/Function3;)V
+	public fun get (Ljava/lang/Object;)Ljava/util/Collection;
+	public fun getEntries ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun getKeys ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun getSize ()I
+	public fun getValues ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun isEmpty ()Z
+	public final fun minusAssign (Ljava/lang/Object;)V
+	public final fun minusAssign (Lkotlin/Pair;)V
+	public final fun plusAssign (Lkotlin/Pair;)V
+	public final fun put (Ljava/lang/Object;Ljava/lang/Object;)V
+	public final fun putIfAbsent (Ljava/lang/Object;Ljava/lang/Object;)V
+	public final fun remove (Ljava/lang/Object;)Lkotlinx/collections/immutable/ImmutableSet;
+	public final fun remove (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public final fun remove (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Z
+	public final fun replace (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z
+	public fun size ()I
+	public static final fun write$Self (Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+}
+
+public final class dev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
 }
 
 public final class dev/racci/minix/api/utils/data/Data : java/lang/Comparable {
@@ -4641,6 +4705,8 @@ public final class dev/racci/minix/api/utils/reflection/AccessUtils : dev/racci/
 	public final fun accessGet0 (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun accessGet1 (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun accessGet2 (Lkotlin/reflect/KProperty2;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun accessInvoke (Lkotlin/reflect/KFunction;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun accessInvoke0 (Lkotlin/reflect/KFunction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun accessSet0 (Lkotlin/reflect/KMutableProperty0;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun accessSet1 (Lkotlin/reflect/KMutableProperty1;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun accessSet2 (Lkotlin/reflect/KMutableProperty2;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

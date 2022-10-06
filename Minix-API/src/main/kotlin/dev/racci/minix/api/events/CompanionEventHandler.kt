@@ -4,6 +4,7 @@ import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.utils.kotlin.companionParent
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
+import kotlin.reflect.full.isSubclassOf
 
 /**
  * Allows for an easy way to handle those pesky HandlerLists in Bukkit.
@@ -24,7 +25,7 @@ open class CompanionEventHandler {
 
     init {
         if (!this::class.isCompanion) error("CompanionEventHandler must be a companion object.")
-        if (!this::class.companionParent!!.isInstance(Event::class)) error("CompanionEventHandler must be a companion object of an event.")
+        if (!this::class.companionParent!!.isSubclassOf(Event::class)) error("CompanionEventHandler must be a companion object of an event.")
     }
 
     open fun getHandlerList(): HandlerList = KEvent.handlerMap[this::class.companionParent.castOrThrow()]

@@ -4,8 +4,7 @@ import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MappedPlugin
-import dev.racci.minix.api.coroutine.contract.CoroutineSession
-import dev.racci.minix.api.coroutine.coroutineService
+import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.collections.findKProperty
 import dev.racci.minix.api.extensions.reflection.accessGet
@@ -18,8 +17,6 @@ import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.plugin.logger.PluginDependentMinixLogger
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
-import dev.racci.minix.api.services.PluginService.Companion.loadedPlugins
-import dev.racci.minix.api.services.PluginService.Companion.pluginCache
 import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.api.utils.reflection.OverrideUtils
 import dev.racci.minix.core.MinixApplicationBuilder
@@ -52,7 +49,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
 
     override val coroutineSession: LoadingCache<MinixPlugin, CoroutineSession> = Caffeine.newBuilder().build { plugin ->
         if (!plugin.isEnabled) {
-            throw plugin.log.fatal(RuntimeException()) {
+            throw plugin.log.fatal {
                 """
                 Plugin ${plugin.name} attempted to start a new coroutine session while being disabled.
                 Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already
@@ -94,7 +91,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
     }
 
     override fun startPlugin(plugin: MinixPlugin) {
-        coroutineService.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = true
+        coroutineSession[plugin].isManipulatedServerHeartBeat = true
         runBlocking {
             logRunning(plugin, plugin::handleEnable)
 
@@ -105,7 +102,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             logRunning(plugin, plugin::handleAfterEnable)
             loadedPlugins += plugin::class to plugin
         }
-        coroutineService.getCoroutineSession(plugin).wakeUpBlockService.isManipulatedServerHeartBeatEnabled = false
+        coroutineSession[plugin].isManipulatedServerHeartBeat = false
     }
 
     override fun unloadPlugin(plugin: MinixPlugin) {
@@ -143,7 +140,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         get<IntegrationMapper>().forgetMapped(plugin, cache)
         get<ConfigurationMapper>().forgetMapped(plugin, cache)
 
-        coroutineService.disable(plugin)
+        coroutineSession.getIfPresent(plugin)?.dispose()
         pluginCache.invalidate(plugin)
 
         unloadKoinModules(KoinUtils.getModule(plugin))

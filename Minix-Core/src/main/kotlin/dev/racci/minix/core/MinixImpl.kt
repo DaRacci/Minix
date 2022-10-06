@@ -3,7 +3,6 @@ package dev.racci.minix.core
 import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.builders.ItemBuilderDSL
-import dev.racci.minix.api.coroutine.contract.CoroutineService
 import dev.racci.minix.api.data.PluginUpdater
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.logger.MinixLogger
@@ -13,7 +12,6 @@ import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.providers.GithubUpdateProvider
 import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.core.builders.ItemBuilderImpl
-import dev.racci.minix.core.coroutine.impl.CoroutineServiceImpl
 import dev.racci.minix.core.data.MinixConfig
 import dev.racci.minix.core.loggers.KoinProxy
 import dev.racci.minix.core.loggers.SentryProxy
@@ -28,7 +26,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.get
 import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatformTools
@@ -76,7 +73,6 @@ class MinixImpl : Minix() {
 
             this.modules(
                 module {
-                    singleOf(::CoroutineServiceImpl) bind CoroutineService::class
                     single { ItemBuilderImpl.Companion } bind ItemBuilderDSL::class
                 }
             )

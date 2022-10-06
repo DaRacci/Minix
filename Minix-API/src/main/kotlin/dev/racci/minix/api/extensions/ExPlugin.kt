@@ -84,17 +84,17 @@ interface WithPlugin<T : MinixPlugin> : KoinComponent {
     fun launch(
         dispatcher: CoroutineContext,
         block: suspend CoroutineScope.() -> Unit
-    ): Job = this.plugin.launch(dispatcher, null, block)
+    ): Job = this.plugin.launch(dispatcher, block)
 
     /** Launches a job on the main bukkit thread and if fired from a extension attaches as a parentJob */
     fun sync(
         block: suspend CoroutineScope.() -> Unit
-    ): Job = this.plugin.launch(this.plugin.minecraftDispatcher, null, block)
+    ): Job = this.plugin.launch(this.plugin.minecraftDispatcher, block)
 
     /** Launches a job off the main bukkit thread and if fired from a extension attaches as a parentJob */
     fun async(
         block: suspend CoroutineScope.() -> Unit
-    ): Job = this.plugin.launch(this.plugin.asyncDispatcher, null, block)
+    ): Job = this.plugin.launch(this.plugin.asyncDispatcher, block)
 
     /**
      * A [Deferred], which is completed on the server thread.

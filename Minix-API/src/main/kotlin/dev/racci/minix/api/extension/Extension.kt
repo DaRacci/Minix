@@ -8,7 +8,9 @@ import dev.racci.minix.api.extensions.KListener
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.DataService
+import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.Closeable
+import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.api.utils.kotlin.companionParent
 import dev.racci.minix.api.utils.now
 import kotlinx.atomicfu.AtomicRef
@@ -78,15 +80,15 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
     final override fun launch(
         dispatcher: CoroutineContext,
         block: suspend CoroutineScope.() -> Unit
-    ): Job = this.plugin.launch(dispatcher, this.supervisor, block)
+    ): Job = pluginService.coroutineSession[plugin].launch(dispatcher, this.supervisor, block = block)
 
     final override fun sync(
         block: suspend CoroutineScope.() -> Unit
-    ): Job = this.plugin.launch(plugin.minecraftDispatcher, this.supervisor, block)
+    ): Job = pluginService.coroutineSession[plugin].launch(plugin.minecraftDispatcher, this.supervisor, block = block)
 
     final override fun async(
         block: suspend CoroutineScope.() -> Unit
-    ): Job = this.plugin.launch(this.dispatcher.get(), this.supervisor, block)
+    ): Job = pluginService.coroutineSession[plugin].launch(this.dispatcher.get(), this.supervisor, block = block)
 
     final override fun toString(): String = "Extension(name='$name', state='$state')"
 
@@ -114,8 +116,8 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
     }
 
     /**
-     * Designed to be applied to a companion object of a class extending
-     * [Extension]. This will allow a static method for getting the service or
+     * Designed to be applied to a companion object of a class extending [Extension].
+     * This will allow a static method for getting the service or
      * injecting it.
      *
      * ## Note: If used incorrectly it will throw [ClassCastException] when
@@ -144,5 +146,9 @@ abstract class Extension<P : MinixPlugin> : ExtensionSkeleton<P> {
         fun inject(): Lazy<E> = lazy { getKoin().get(getParent()) }
 
         private fun getParent() = this::class.companionParent.castOrThrow<KClass<Extension<*>>>()
+    }
+
+    private companion object {
+        private val pluginService by getKoin().inject<PluginService>()
     }
 }

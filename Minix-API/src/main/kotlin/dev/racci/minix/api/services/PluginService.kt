@@ -1,7 +1,7 @@
 package dev.racci.minix.api.services
 
 import com.github.benmanes.caffeine.cache.LoadingCache
-import dev.racci.minix.api.coroutine.contract.CoroutineSession
+import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.PluginData
 import dev.racci.minix.api.utils.getKoin

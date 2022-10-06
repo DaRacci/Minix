@@ -3,9 +3,9 @@ package dev.racci.minix.api.serializables
 import com.destroystokyo.paper.profile.CraftPlayerProfile
 import com.mojang.authlib.GameProfile
 import dev.racci.minix.api.extensions.addTexture
+import dev.racci.minix.api.extensions.collections.toMultiMap
 import dev.racci.minix.api.extensions.editItemMeta
 import dev.racci.minix.api.utils.collections.MultiMap
-import dev.racci.minix.api.utils.collections.MultiMap.Companion.toMultiMap
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.ImmutableSet

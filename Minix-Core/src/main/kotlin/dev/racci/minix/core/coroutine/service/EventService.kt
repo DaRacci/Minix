@@ -1,9 +1,19 @@
 package dev.racci.minix.core.coroutine.service
 
+import arrow.core.filterIsInstance
 import dev.racci.minix.api.annotations.RunAsync
 import dev.racci.minix.api.coroutine.CoroutineSession
+import dev.racci.minix.api.coroutine.launch
+import dev.racci.minix.api.data.enums.EventExecutionType
+import dev.racci.minix.api.extensions.collections.findKFunction
+import dev.racci.minix.api.extensions.pluginManager
+import dev.racci.minix.api.extensions.reflection.accessInvoke
+import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.core.coroutine.extension.invokeSuspend
+import dev.racci.minix.api.plugin.logger.MinixLogger
+import dev.racci.minix.api.utils.collections.muiltimap.MutableMultiMap
+import dev.racci.minix.api.utils.collections.multiMapOf
+import dev.racci.minix.api.utils.getKoin
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import org.bukkit.Warning
@@ -21,121 +31,126 @@ import org.bukkit.plugin.RegisteredListener
 import org.bukkit.plugin.SimplePluginManager
 import java.lang.Deprecated
 import java.lang.reflect.InvocationTargetException
-import java.lang.reflect.Method
+import kotlin.reflect.KClass
+import kotlin.reflect.KFunction
+import kotlin.reflect.KFunction2
+import kotlin.reflect.KParameter
+import kotlin.reflect.full.callSuspend
+import kotlin.reflect.full.declaredFunctions
+import kotlin.reflect.full.declaredMemberFunctions
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.functions
 import kotlin.reflect.full.hasAnnotation
+import kotlin.reflect.full.isSubclassOf
+import kotlin.reflect.full.isSubtypeOf
+import kotlin.reflect.full.isSuperclassOf
+import kotlin.reflect.full.starProjectedType
+import kotlin.reflect.full.superclasses
+import kotlin.reflect.jvm.javaMethod
 
 internal class EventService(
     private val plugin: MinixPlugin,
     private val coroutineSession: CoroutineSession
 ) {
-    private val eventListenersMethod by lazy { SimplePluginManager::class.java.getDeclaredMethod("getEventListeners", Class::class.java).apply { isAccessible = true } }
+    suspend fun registerSuspendListener(listener: Listener) {
+        val func = SimplePluginManager::class.declaredMemberFunctions.findKFunction<HandlerList>("getEventListeners")
+            .filterIsInstance<KFunction2<SimplePluginManager, Class<in Event>, HandlerList>>()
+            .orNull() ?: error("Could not find getEventListeners method in SimplePluginManager")
 
-    override fun registerSuspendListener(listener: Listener) {
-        val registeredListeners = createCoroutineListener(listener, plugin)
-
-        for (entry in registeredListeners.entries) {
-            val clazz = entry.key
-            val handlerList = eventListenersMethod.invoke(plugin.server.pluginManager, clazz) as HandlerList
-            handlerList.registerAll(entry.value as MutableCollection<RegisteredListener>)
-        }
+        createCoroutineListener(listener, plugin).entries.forEach { (eventClass, listeners) -> func.accessInvoke(pluginManager, eventClass).registerAll(listeners) }
     }
 
-    @Suppress("TooGenericExceptionCaught")
-    override fun fireSuspendingEvent(event: Event): Collection<Job> {
-        val listeners = event.handlers.registeredListeners
-        val jobs = ArrayList<Job>()
+    fun fireSuspendingEvent(event: Event): Collection<Job> {
+        fun filteredListeners() = event.handlers.registeredListeners.asSequence().filter { reg -> reg.plugin.isEnabled }
 
-        for (registration in listeners) {
-            try {
-                when {
-                    !registration.plugin.isEnabled -> continue
-                    registration is SuspendingRegisteredListener -> jobs += registration.callSuspendingEvent(event)
-                    else -> registration.callEvent(event)
-                }
-            } catch (e: Throwable) { plugin.log.error(e) { "Could not pass event ${event.eventName} to ${registration.plugin.description.fullName}" } }
+        fun Result<*>.handleError(
+            reg: RegisteredListener,
+            event: Event
+        ) = this.onFailure { err ->
+            plugin.log.error(err) { "Couldn't pass event ${event.eventName} to ${reg.plugin.description.fullName}" }
         }
-        return jobs
+
+        fun fireConcurrent() = filteredListeners().map { reg ->
+            runCatching {
+                if (reg is SuspendingEventExecutor.SuspendingRegisteredListener) {
+                    reg.callSuspendingEvent(event)
+                } else reg.callEvent(event)
+            }.handleError(reg, event)
+        }.filterIsInstance<Job>().toSet()
+
+        fun fireSequential() = plugin.launch(Dispatchers.Unconfined) {
+            filteredListeners().forEach { reg ->
+                runCatching {
+                    if (reg is SuspendingEventExecutor.SuspendingRegisteredListener) {
+                        reg.callSuspendingEvent(event).join()
+                    } else reg.callEvent(event)
+                }.handleError(reg, event)
+            }
+        }
+
+        return when (/*executionType*/EventExecutionType.Concurrent) {
+            EventExecutionType.Concurrent -> fireConcurrent()
+            EventExecutionType.Sequential -> listOf(fireSequential())
+        }
     }
 
     private fun createCoroutineListener(
         listener: Listener,
         plugin: MinixPlugin
-    ): Map<Class<*>, MutableSet<RegisteredListener>> {
-        val eventMethods = HashSet<Method>()
+    ): MutableMultiMap<KClass<*>, RegisteredListener> {
+        val result = multiMapOf<KClass<*>, RegisteredListener>()
 
-        try {
-            // Adds public methods of the current class and inherited classes
-            eventMethods.addAll(listener.javaClass.methods)
-            // Adds all methods of the current class
-            eventMethods.addAll(listener.javaClass.declaredMethods)
-        } catch (e: NoClassDefFoundError) {
-            plugin.log.error(e) {
-                "Plugin ${plugin.description.fullName} has failed to register events " +
-                    "for ${listener.javaClass} because ${e.message} does not exist."
-            }
-            return emptyMap()
-        }
+        plugin.log.debug { "Creating coroutine listener for ${listener::class.simpleName}" }
 
-        val result = mutableMapOf<Class<*>, MutableSet<RegisteredListener>>()
+        runCatching {
+            listener::class.functions + listener::class.declaredFunctions
+        }.onFailure { err ->
+            if (err !is NoClassDefFoundError) throw err
+            plugin.log.error(err) { "Failed to register events for ${listener::class} because ${err.message} doesn't exist." }
+            return multiMapOf()
+        }.getOrThrow().asSequence().filter { func ->
+            func.hasAnnotation<EventHandler>()
+        }.filter { func -> // TODO -> Is there a Kotlin Reflect method for this?
+            func.javaMethod?.isBridge == false && func.javaMethod?.isSynthetic == false
+        }.associateWith(::getEventKClass).onEach { (func, eventClass) ->
+            var kClass: KClass<*> = eventClass
 
-        for (method in eventMethods) {
-            val annotation = method.getAnnotation(EventHandler::class.java)
-
-            if (annotation == null || method.isBridge || method.isSynthetic) {
-                continue
-            }
-
-            val eventClass = method.parameterTypes[0].asSubclass(Event::class.java)
-            method.isAccessible = true
-
-            if (!result.containsKey(eventClass)) {
-                result[eventClass] = HashSet()
-            }
-
-            var clazz: Class<*> = eventClass
-
-            while (Event::class.java.isAssignableFrom(clazz)) {
-                if (clazz.getAnnotation(Deprecated::class.java) == null) {
-                    clazz = clazz.superclass
+            while (Event::class.isSuperclassOf(kClass)) {
+                if (!kClass.hasAnnotation<Deprecated>()) {
+                    kClass = kClass.superclasses.first()
                     continue
                 }
 
-                val warning = clazz.getAnnotation(Warning::class.java)
-                val warningState = plugin.server.warningState
+                val warning = kClass.findAnnotation<Warning>()
+                val state = plugin.server.warningState
 
-                if (!warningState.printFor(warning)) {
+                if (!state.printFor(warning)) {
                     break
                 }
 
-                plugin.log.warn(
-                    if (warningState == Warning.WarningState.ON) {
-                        AuthorNagException(null as String?)
-                    } else null
-                ) {
-                    val warn = if (warning?.reason?.isNotEmpty() == true) warning.reason else "Server performance will be affected"
-                    "${plugin.description.fullName} has registered a listener for ${clazz.name} on method ${method.toGenericString()}," +
-                        "but the event is Deprecated. $warn; please notify the authors ${plugin.description.authors}"
-                }
-            }
+                val err = if (state == Warning.WarningState.ON) {
+                    AuthorNagException(null)
+                } else null
 
-            val executor = SuspendingEventExecutor(eventClass, method, coroutineSession)
-            result[eventClass]!!.add(
-                SuspendingRegisteredListener(
-                    listener,
-                    executor,
-                    annotation.priority,
-                    plugin,
-                    annotation.ignoreCancelled
-                )
-            )
+                plugin.log.warn(err) { "${plugin.description.fullName} has registered a listener for ${kClass.qualifiedName}, but the event id Deprecated. $func; please notify the authors ${plugin.description.authors}." }
+            }
+        }.forEach { (func, eventKClass) ->
+            val executor = SuspendingEventExecutor(eventKClass, func, coroutineSession)
+            val annotation = func.findAnnotation<EventHandler>()!!
+            result.put(eventKClass, SuspendingEventExecutor.SuspendingRegisteredListener(listener, executor, annotation.priority, plugin, annotation.ignoreCancelled))
         }
 
         return result
     }
 
+    private fun getEventKClass(function: KFunction<*>) = function.parameters
+        .filter { it.kind == KParameter.Kind.EXTENSION_RECEIVER || it.kind == KParameter.Kind.VALUE }
+        .takeUnless { it.isEmpty() || it.size > 1 || !it[0].type.isSubtypeOf(Event::class.starProjectedType) }
+        .orEmpty().firstOrNull()?.type?.classifier.safeCast<KClass<Event>>() ?: error("Event function must have exactly one parameter of type *Event. (function: $function)")
+
     class SuspendingEventExecutor(
-        private val eventClass: Class<*>,
-        private val method: Method,
+        private val eventKClass: KClass<*>,
+        private val function: KFunction<*>,
         private val coroutineSession: CoroutineSession
     ) : EventExecutor {
 
@@ -147,64 +162,59 @@ internal class EventService(
         override fun execute(
             listener: Listener,
             event: Event
-        ) { executeEvent(listener, event) }
+        ) {
+            executeEvent(listener, event)
+        }
 
         private fun executeEvent(
             listener: Listener,
             event: Event
         ): Job {
-            val result: Result<Job> = try {
-                when {
-                    !eventClass.isAssignableFrom(event.javaClass) -> Result.failure(IllegalArgumentException("Event ${event.javaClass.name} is not assignable to ${eventClass.name}"))
-                    else -> {
-                        val dispatcher = when {
-                            event.isAsynchronous || listener::class.hasAnnotation<RunAsync>() -> Dispatchers.Unconfined
-                            else -> coroutineSession.dispatcherMinecraft
-                        }
-                        Result.success(
-                            coroutineSession.launch(dispatcher, null) { // Try as both incase it's not a suspend function
-                                try {
-                                    method.invokeSuspend(listener, event)
-                                } catch (e: IllegalArgumentException) {
-                                    method.invoke(listener, event)
-                                }
-                            }
-                        )
-                    }
+            if (!eventKClass.isSubclassOf(event::class)) {
+                println("Event $eventKClass is not a subclass of ${event::class}")
+                return Job()
+            }
+
+            val dispatcher = when {
+                event.isAsynchronous || listener::class.hasAnnotation<RunAsync>() -> coroutineSession.asyncDispatcher
+                else -> coroutineSession.minecraftDispatcher
+            }
+
+            return runCatching {
+                coroutineSession.launch(dispatcher) {
+                    println("Calling ${function.name} for $event")
+                    function.callSuspend(listener, event)
                 }
-            } catch (e: Throwable) { Result.failure(e) }
+            }.onFailure { err ->
+                val cause = if (err is InvocationTargetException) err.cause else err
+                val exception = EventException(cause)
+                getKoin().get<MinixLogger>().error(exception) { "Could not pass event ${event.eventName} to ${listener.javaClass.name}" }
 
-            return result.getOrElse { throwable ->
-                throw EventException(
-                    when (throwable) {
-                        is InvocationTargetException -> throwable.cause
-                        else -> throwable
-                    }
-                )
-            }
+                // Empty stacktrace to avoid spamming the console
+                exception.stackTrace = emptyArray()
+                throw exception
+            }.getOrDefault(Job())
         }
-    }
 
-    class SuspendingRegisteredListener(
-        lister: Listener,
-        private val executor: EventExecutor,
-        priority: EventPriority,
-        plugin: Plugin,
-        ignoreCancelled: Boolean
-    ) : RegisteredListener(lister, executor, priority, plugin, ignoreCancelled) {
+        class SuspendingRegisteredListener(
+            lister: Listener,
+            private val executor: EventExecutor,
+            priority: EventPriority,
+            plugin: Plugin,
+            ignoreCancelled: Boolean
+        ) : RegisteredListener(lister, executor, priority, plugin, ignoreCancelled) {
 
-        fun callSuspendingEvent(event: Event): Job {
-            if (event is Cancellable &&
-                (event as Cancellable).isCancelled &&
-                isIgnoringCancelled
-            ) return Job()
+            fun callSuspendingEvent(event: Event): Job {
+                when {
+                    event.ignoreEvent() -> plugin.logger.info("Event ${event.eventName} was cancelled by a plugin.")
+                    executor is SuspendingEventExecutor -> return executor.executeSuspend(listener, event)
+                    else -> executor.execute(listener, event)
+                }
 
-            return if (executor is SuspendingEventExecutor) {
-                executor.executeSuspend(listener, event)
-            } else {
-                executor.execute(listener, event)
-                Job()
+                return Job()
             }
+
+            private fun Event.ignoreEvent() = this is Cancellable && this.isCancelled && isIgnoringCancelled
         }
     }
 }

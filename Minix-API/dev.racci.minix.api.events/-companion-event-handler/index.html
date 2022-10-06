@@ -1,0 +1,306 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>CompanionEventHandler</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>Minix</span>            </a>    </div>
+    <div>4.2.0-SNAPSHOT
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="Minix-API::dev.racci.minix.api.events/CompanionEventHandler///PointingToDeclaration//1147827468">
+  <div class="breadcrumbs"><a href="../../index.html">Minix-API</a><span class="delimiter">/</span><a href="../index.html">dev.racci.minix.api.events</a><span class="delimiter">/</span><a href="index.html">CompanionEventHandler</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Companion</span><wbr><span>Event</span><wbr><span><span>Handler</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">CompanionEventHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Allows for an easy way to handle those pesky HandlerLists in Bukkit.</p><p class="paragraph">By extending this event you'll gain the wonderful handlerMap I've created. All that's left for you will be overriding the getHandlerList() method, marking it as @JvmStatic, and calling super.</p><div class="sample-container"><pre><code class="block lang-kotlin" theme="idea">companion object : CompanionEventHandler() {<br>     @JvmStatic<br>     override fun getHandlerList() = super.getHandlerList()<br>}</code></pre><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Throws">Throws</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Throws</h2>
+      <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="table"><div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-illegal-state-exception/index.html"><span>kotlin.</span><wbr><span>Illegal</span><wbr><span>State</span><wbr><span><span>Exception</span></span></a></div></span></div><div><div class="title"><p class="paragraph">If this class is not a companion object of an event.</p></div></div></div></div></div></div></div>
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="209485724%2FConstructors%2F1147827468" anchor-label="CompanionEventHandler" id="209485724%2FConstructors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-companion-event-handler.html"><span>Companion</span><wbr><span>Event</span><wbr><span><span>Handler</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="209485724%2FConstructors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-companion-event-handler.html"><span class="token function">CompanionEventHandler</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="1712383440%2FFunctions%2F1147827468" anchor-label="getHandlerList" id="1712383440%2FFunctions%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-handler-list.html"><span>get</span><wbr><span>Handler</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1712383440%2FFunctions%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-handler-list.html"><span class="token function">getHandlerList</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.bukkit.event/HandlerList///PointingToDeclaration/">HandlerList</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Inheritors</h2>
+      <div class="table" data-togglable="Inheritors"><a data-name="-1453171701%2FInheritors%2F1147827468" anchor-label="Companion" id="-1453171701%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-double-offhand-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1453171701%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="363845551%2FInheritors%2F1147827468" anchor-label="Companion" id="363845551%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-double-primary-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="363845551%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="683373601%2FInheritors%2F1147827468" anchor-label="Companion" id="683373601%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-double-secondary-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="683373601%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-336347172%2FInheritors%2F1147827468" anchor-label="Companion" id="-336347172%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-offhand-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-336347172%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1480670080%2FInheritors%2F1147827468" anchor-label="Companion" id="1480670080%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-primary-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1480670080%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="209921970%2FInheritors%2F1147827468" anchor-label="Companion" id="209921970%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-secondary-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="209921970%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-810475923%2FInheritors%2F1147827468" anchor-label="Companion" id="-810475923%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-sneak-double-offhand-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-810475923%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1006541329%2FInheritors%2F1147827468" anchor-label="Companion" id="1006541329%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-sneak-double-primary-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1006541329%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-161274365%2FInheritors%2F1147827468" anchor-label="Companion" id="-161274365%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-sneak-double-secondary-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-161274365%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1684769858%2FInheritors%2F1147827468" anchor-label="Companion" id="-1684769858%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-sneak-offhand-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1684769858%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="132247394%2FInheritors%2F1147827468" anchor-label="Companion" id="132247394%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-sneak-primary-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="132247394%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1455844116%2FInheritors%2F1147827468" anchor-label="Companion" id="1455844116%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.keybind/-player-sneak-secondary-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1455844116%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1789688313%2FInheritors%2F1147827468" anchor-label="Companion" id="-1789688313%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.player/-player-light-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1789688313%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-564937747%2FInheritors%2F1147827468" anchor-label="Companion" id="-564937747%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.player/-player-liquid-enter-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-564937747%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1635017723%2FInheritors%2F1147827468" anchor-label="Companion" id="1635017723%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.player/-player-liquid-exit-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1635017723%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1691581191%2FInheritors%2F1147827468" anchor-label="Companion" id="-1691581191%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.player/-player-move-x-y-z-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1691581191%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-606733462%2FInheritors%2F1147827468" anchor-label="Companion" id="-606733462%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.player/-player-move-full-x-y-z-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-606733462%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1188174464%2FInheritors%2F1147827468" anchor-label="Companion" id="-1188174464%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.player/-player-unload-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1188174464%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="650351265%2FInheritors%2F1147827468" anchor-label="Companion" id="650351265%2FInheritors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.plugin/-caught-coroutine-exception-event/-companion/index.html">Companion</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="650351265%2FInheritors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

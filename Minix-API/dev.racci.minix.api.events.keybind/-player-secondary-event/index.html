@@ -1,0 +1,341 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>PlayerSecondaryEvent</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>Minix</span>            </a>    </div>
+    <div>4.2.0-SNAPSHOT
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="Minix-API::dev.racci.minix.api.events.keybind/PlayerSecondaryEvent///PointingToDeclaration//1147827468">
+  <div class="breadcrumbs"><a href="../../index.html">Minix-API</a><span class="delimiter">/</span><a href="../index.html">dev.racci.minix.api.events.keybind</a><span class="delimiter">/</span><a href="index.html">PlayerSecondaryEvent</a></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Player</span><wbr><span>Secondary</span><wbr><span><span>Event</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">class </span><a href="index.html">PlayerSecondaryEvent</a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;player<span class="token operator">: </span><span data-unresolved-link="org.bukkit.entity/Player///PointingToDeclaration/">Player</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>item<span class="token operator">: </span><span data-unresolved-link="org.bukkit.inventory/ItemStack///PointingToDeclaration/">ItemStack</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>blockData<span class="token operator">: </span><a href="../-combo-event/-block-data/index.html">ComboEvent.BlockData</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;<span class="token keyword">val </span>entity<span class="token operator">: </span><span data-unresolved-link="org.bukkit.entity/Entity///PointingToDeclaration/">Entity</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span> : <a href="../-combo-event/index.html">ComboEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">Called when the player right-clicks.</p><h2 class=""> Note: Will not be called if the player clicks the air without an item in either hand due to the client not sending these packets.</h2></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button><button class="section-tab" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Properties">Properties</button><button class="section-tab" data-togglable="Parameters">Parameters</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Parameters</h2>
+      <div data-togglable="Parameters">
+        <div class="platform-hinted WithExtraAttributes" data-platform-hinted="data-platform-hinted" data-togglable="Parameters"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div data-togglable="Parameters"><div class="table" data-togglable="Parameters"><div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>player</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The player who triggered the event.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>item</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The item present in the players main hand during the event.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span>block</span><wbr><span><span>Data</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The block data present at the location of the event.</p></div></div></div></div></div><div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"><div class="main-subrow keyValue WithExtraAttributes"><div class=""><span class="inline-flex"><div><span><span>entity</span></span></div></span></div><div><div class="title"><div data-togglable="Parameters"><p class="paragraph">The entity present at the location of the event.</p></div></div></div></div></div></div></div></div></div>
+      </div>
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="284043863%2FConstructors%2F1147827468" anchor-label="PlayerSecondaryEvent" id="284043863%2FConstructors%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-player-secondary-event.html"><span>Player</span><wbr><span>Secondary</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="284043863%2FConstructors%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="-player-secondary-event.html"><span class="token function">PlayerSecondaryEvent</span></a><span class="token punctuation">(</span><span class="parameters wrapped"><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;player<span class="token operator">: </span><span data-unresolved-link="org.bukkit.entity/Player///PointingToDeclaration/">Player</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;item<span class="token operator">: </span><span data-unresolved-link="org.bukkit.inventory/ItemStack///PointingToDeclaration/">ItemStack</span><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;blockData<span class="token operator">: </span><a href="../-combo-event/-block-data/index.html">ComboEvent.BlockData</a><span class="token operator">?</span><span class="token punctuation">, </span></span><span class="parameter indented">&nbsp;&nbsp;&nbsp;&nbsp;entity<span class="token operator">: </span><span data-unresolved-link="org.bukkit.entity/Entity///PointingToDeclaration/">Entity</span><span class="token operator">?</span></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Types</h2>
+      <div class="table" data-togglable="Types"><a data-name="209921970%2FClasslikes%2F1147827468" anchor-label="Companion" id="209921970%2FClasslikes%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="-companion/index.html"><span><span>Companion</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="209921970%2FClasslikes%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">object </span><a href="-companion/index.html">Companion</a> : <a href="../../dev.racci.minix.api.events/-companion-event-handler/index.html">CompanionEventHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-1071638799%2FFunctions%2F1147827468" anchor-label="callEvent" id="-1071638799%2FFunctions%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.world/-world-night-event/index.html#-1071638799%2FFunctions%2F1147827468"><span>call</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1071638799%2FFunctions%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../dev.racci.minix.api.events.world/-world-night-event/index.html#-1071638799%2FFunctions%2F1147827468"><span class="token function">callEvent</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-188047745%2FFunctions%2F1147827468" anchor-label="component2" id="-188047745%2FFunctions%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-combo-event/component2.html"><span><span>component2</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-188047745%2FFunctions%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="../-combo-event/component2.html"><span class="token function">component2</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.bukkit.inventory/ItemStack///PointingToDeclaration/">ItemStack</span><span class="token operator">?</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-157027938%2FFunctions%2F1147827468" anchor-label="component3" id="-157027938%2FFunctions%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-combo-event/component3.html"><span><span>component3</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-157027938%2FFunctions%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="../-combo-event/component3.html"><span class="token function">component3</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-combo-event/-block-data/index.html">ComboEvent.BlockData</a><span class="token operator">?</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-126008131%2FFunctions%2F1147827468" anchor-label="component4" id="-126008131%2FFunctions%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-combo-event/component4.html"><span><span>component4</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-126008131%2FFunctions%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">operator </span><span class="token keyword">fun </span><a href="../-combo-event/component4.html"><span class="token function">component4</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.bukkit.entity/Entity///PointingToDeclaration/">Entity</span><span class="token operator">?</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1147460734%2FFunctions%2F1147827468" anchor-label="getEventName" id="1147460734%2FFunctions%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.world/-world-night-event/index.html#1147460734%2FFunctions%2F1147827468"><span>get</span><wbr><span>Event</span><wbr><span><span>Name</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1147460734%2FFunctions%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span></div></div><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../dev.racci.minix.api.events.world/-world-night-event/index.html#1147460734%2FFunctions%2F1147827468"><span class="token function">getEventName</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1137771832%2FFunctions%2F1147827468" anchor-label="getHandlers" id="1137771832%2FFunctions%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.player/-k-player-event/get-handlers.html"><span>get</span><wbr><span><span>Handlers</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1137771832%2FFunctions%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../dev.racci.minix.api.events.player/-k-player-event/get-handlers.html"><span class="token function">getHandlers</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="org.bukkit.event/HandlerList///PointingToDeclaration/">HandlerList</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1478213936%2FFunctions%2F1147827468" anchor-label="getPlayer" id="-1478213936%2FFunctions%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.player/-player-move-full-x-y-z-event/index.html#-1478213936%2FFunctions%2F1147827468"><span>get</span><wbr><span><span>Player</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1478213936%2FFunctions%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span></div></div><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../dev.racci.minix.api.events.player/-player-move-full-x-y-z-event/index.html#-1478213936%2FFunctions%2F1147827468"><span class="token function">getPlayer</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><span><span class="token annotation">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation">NotNull</span></span>&nbsp;</span><span data-unresolved-link="org.bukkit.entity/Player///PointingToDeclaration/">Player</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-706610981%2FFunctions%2F1147827468" anchor-label="isAsynchronous" id="-706610981%2FFunctions%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.world/-world-night-event/index.html#-706610981%2FFunctions%2F1147827468"><span>is</span><wbr><span><span>Asynchronous</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-706610981%2FFunctions%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../dev.racci.minix.api.events.world/-world-night-event/index.html#-706610981%2FFunctions%2F1147827468"><span class="token function">isAsynchronous</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-115110192%2FFunctions%2F1147827468" anchor-label="isCancelled" id="-115110192%2FFunctions%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.player/-k-player-event/is-cancelled.html"><span>is</span><wbr><span><span>Cancelled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-115110192%2FFunctions%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../dev.racci.minix.api.events.player/-k-player-event/is-cancelled.html"><span class="token function">isCancelled</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1979125095%2FFunctions%2F1147827468" anchor-label="setCancelled" id="-1979125095%2FFunctions%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../../dev.racci.minix.api.events.player/-k-player-event/set-cancelled.html"><span>set</span><wbr><span><span>Cancelled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1979125095%2FFunctions%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../dev.racci.minix.api.events.player/-k-player-event/set-cancelled.html"><span class="token function">setCancelled</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">cancel<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></span></span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Properties</h2>
+      <div class="table" data-togglable="Properties"><a data-name="-1757115665%2FProperties%2F1147827468" anchor-label="blockData" id="-1757115665%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-combo-event/block-data.html"><span>block</span><wbr><span><span>Data</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1757115665%2FProperties%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><a data-name="-1757115665%2FProperties%2F1147827468" anchor-label="blockData" id="-1757115665%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-combo-event/block-data.html">blockData</a><span class="token operator">: </span><a href="../-combo-event/-block-data/index.html">ComboEvent.BlockData</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="748780721%2FProperties%2F1147827468" anchor-label="entity" id="748780721%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-combo-event/entity.html"><span><span>entity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="748780721%2FProperties%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><a data-name="748780721%2FProperties%2F1147827468" anchor-label="entity" id="748780721%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-combo-event/entity.html">entity</a><span class="token operator">: </span><span data-unresolved-link="org.bukkit.entity/Entity///PointingToDeclaration/">Entity</span><span class="token operator">?</span><span class="token operator"> = </span>null<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1651419399%2FProperties%2F1147827468" anchor-label="hasItem" id="-1651419399%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-combo-event/has-item.html"><span>has</span><wbr><span><span>Item</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1651419399%2FProperties%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><a data-name="-1651419399%2FProperties%2F1147827468" anchor-label="hasItem" id="-1651419399%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">val </span><a href="../-combo-event/has-item.html">hasItem</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1651419399%2FProperties%2F1147827468" anchor-label="hasItem" id="-1651419399%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a><p class="paragraph">If true, this means the used item in the event is not a players fists.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1531517693%2FProperties%2F1147827468" anchor-label="isBlockEvent" id="1531517693%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-combo-event/is-block-event.html"><span>is</span><wbr><span>Block</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1531517693%2FProperties%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><a data-name="1531517693%2FProperties%2F1147827468" anchor-label="isBlockEvent" id="1531517693%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-combo-event/is-block-event.html">isBlockEvent</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="1531517693%2FProperties%2F1147827468" anchor-label="isBlockEvent" id="1531517693%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a><p class="paragraph">Returns if this event had a block involved.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1826112487%2FProperties%2F1147827468" anchor-label="isEntityEvent" id="-1826112487%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-combo-event/is-entity-event.html"><span>is</span><wbr><span>Entity</span><wbr><span><span>Event</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1826112487%2FProperties%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><a data-name="-1826112487%2FProperties%2F1147827468" anchor-label="isEntityEvent" id="-1826112487%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-combo-event/is-entity-event.html">isEntityEvent</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><a data-name="-1826112487%2FProperties%2F1147827468" anchor-label="isEntityEvent" id="-1826112487%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a><p class="paragraph">Returns if this event had an entity Involved.</p></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="915852609%2FProperties%2F1147827468" anchor-label="item" id="915852609%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":Minix-API:dokkaHtmlPartial/main" data-filterable-set=":Minix-API:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-combo-event/item.html"><span><span>item</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="915852609%2FProperties%2F1147827468"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted" data-togglable="Properties"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><a data-name="915852609%2FProperties%2F1147827468" anchor-label="item" id="915852609%2FProperties%2F1147827468" data-filterable-set=":Minix-API:dokkaHtmlPartial/main"></a><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../-combo-event/item.html">item</a><span class="token operator">: </span><span data-unresolved-link="org.bukkit.inventory/ItemStack///PointingToDeclaration/">ItemStack</span><span class="token operator">?</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

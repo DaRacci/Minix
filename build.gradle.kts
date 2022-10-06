@@ -68,13 +68,6 @@ tasks {
         dependsOn(reobfJar)
         findByName("copyJar")?.let { dependsOn(it) }
     }
-
-    val quickTest by creating {
-        group = "verification"
-        dependsOn(ktlintFormat)
-        dependsOn(ktlintCheck)
-        dependsOn(apiCheck)
-    }
 }
 
 subprojects {

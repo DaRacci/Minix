@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.2.1](https://github.com/DaRacci/Minix/compare/v4.2.0..v4.2.1) - 2022-10-06
+#### Bug Fixes
+- **(Logger)** Crash on startup - ([739651e](https://github.com/DaRacci/Minix/commit/739651e8e11efbe1e6ec45ec460d09b5794a5a23)) - [@DaRacci](https://github.com/DaRacci)
+- Publish core-integrations on post-bump - ([96bf869](https://github.com/DaRacci/Minix/commit/96bf8694e09b61055841cf4f35a458fd715c9acd)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.2.0 - ([01c4791](https://github.com/DaRacci/Minix/commit/01c4791a13bf403dfcc60effecab89e1a92be029)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.2.0](https://github.com/DaRacci/Minix/compare/v4.1.2..v4.2.0) - 2022-10-06
 #### Bug Fixes
 - **(API)** This should include the err - ([e3e89c3](https://github.com/DaRacci/Minix/commit/e3e89c329915e8986d47581e4fdff3e0656e9c1c)) - [@DaRacci](https://github.com/DaRacci)

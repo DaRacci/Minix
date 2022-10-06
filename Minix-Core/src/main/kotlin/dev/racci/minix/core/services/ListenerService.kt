@@ -201,7 +201,7 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
         ) {
             val rayTraceResult = player.rayTraceBlocks(16.0)
             getComboEvent<OffhandComboEvent>(
-                Action.LEFT_CLICK_AIR,
+                null,
                 player,
                 player.inventory.itemInMainHand,
                 player.inventory.itemInOffHand,

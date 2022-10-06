@@ -12,6 +12,7 @@ import dev.racci.minix.api.utils.collections.onlinePlayerMapOf
 import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
 import dev.racci.minix.api.utils.minecraft.PlayerUtils
 import io.papermc.paper.event.player.AsyncChatEvent
+import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import java.util.UUID
@@ -24,6 +25,7 @@ class PlayerServiceImpl(override val plugin: Minix) : Extension<Minix>(), Player
     override val inputCallbacks by lazy { onlinePlayerMapOf<PlayerUtils.ChatInput>() }
     override val functionsQuit by lazy { onlinePlayerMapOf<PlayerUtils.PlayerCallback<Unit>>() }
     override val functionsMove by lazy { onlinePlayerMapOf<PlayerUtils.PlayerCallback<Boolean>>() }
+    override operator fun get(player: Player): PlayerData = playerData.getOrPut(player.uniqueId) { PlayerData(player.uniqueId) }
 
     override fun remove(uuid: UUID): Boolean = playerData.remove(uuid) != null
 
@@ -49,7 +51,6 @@ class PlayerServiceImpl(override val plugin: Minix) : Extension<Minix>(), Player
     }
 
     override suspend fun handleUnload() {
-
         for (collection in listOf(inputCallbacks, functionsQuit, functionsMove)) {
             collection.keys.forEach(collection::remove)
         }

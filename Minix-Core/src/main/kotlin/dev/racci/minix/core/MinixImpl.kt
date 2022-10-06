@@ -107,7 +107,7 @@ class MinixImpl : Minix() {
             options.isDebug = log.isEnabled(MinixLogger.LoggingLevel.DEBUG)
             options.environment = if (version.isPreRelease) "pre-release" else "release"
             options.environment = "production"
-            options.inAppIncludes += "dev.racci"
+            options.inAppIncludes += "dev.racci.minix"
             options.setLogger(SentryProxy)
             options.setBeforeSend { event, _ ->
                 event.setTag("TPS-AVG", server.tps.average().toString())

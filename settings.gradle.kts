@@ -1,6 +1,8 @@
 enableFeaturePreview("VERSION_CATALOGS")
+
 pluginManagement {
     repositories {
+        mavenLocal()
         mavenCentral()
         gradlePluginPortal()
         maven("https://repo.racci.dev/releases")
@@ -9,15 +11,29 @@ pluginManagement {
 
     plugins {
         val kotlinVersion: String by settings
+
+        kotlin("plugin.serialization") version kotlinVersion
+        kotlin("plugin.atomicfu") version kotlinVersion
+        id("org.jetbrains.dokka") version kotlinVersion
+
+        id("dev.racci.slimjar") version "1.3.3"
+        id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
+        id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.1"
+    }
+
+    plugins {
+        val kotlinVersion: String by settings
         kotlin("plugin.serialization") version kotlinVersion
         id("org.jetbrains.dokka") version kotlinVersion
     }
 
-    val minixConventions: String by settings
+    val minixVersion: String by settings
+    val kotlinVersion: String by settings
+    val conventions = kotlinVersion.plus("-").plus(minixVersion.substringAfterLast('.'))
     resolutionStrategy {
         eachPlugin {
             if (requested.id.id.startsWith("dev.racci.minix")) {
-                useVersion(minixConventions)
+                useVersion(conventions)
             }
         }
     }
@@ -29,8 +45,11 @@ dependencyResolutionManagement {
     }
 
     versionCatalogs.create("libs") {
-        val minixConventions: String by settings
-        from("dev.racci:catalog:$minixConventions")
+        val minixVersion: String by settings
+        val kotlinVersion: String by settings
+        val conventions = kotlinVersion.plus("-").plus(minixVersion.substringAfterLast('.'))
+
+        from("dev.racci:catalog:$conventions")
     }
 }
 
@@ -41,3 +60,4 @@ include(":Minix-Core")
 
 include(":minix-core")
 include(":minix-core:core-integrations")
+include(":minix-core:core-updater")

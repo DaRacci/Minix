@@ -12,12 +12,12 @@ plugins {
     id("dev.racci.minix.nms")
 
     id("org.jetbrains.dokka") version "1.7.10"
-    kotlin("plugin.atomicfu") version "1.7.20"
+    kotlin("plugin.atomicfu")
     kotlin("plugin.serialization")
 
-    id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-    id("dev.racci.slimjar") version "1.3.3"
-    id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.1"
+    id("dev.racci.slimjar")
+    id("net.minecrell.plugin-yml.bukkit")
+    id("org.jetbrains.kotlinx.binary-compatibility-validator")
 }
 
 apiValidation {
@@ -28,11 +28,6 @@ apiValidation {
 
     ignoredPackages.add("dev.racci.minix.core")
     nonPublicMarkers.add("dev.racci.minix.api.MinixInternal")
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
 }
 
 // TODO -> Migrate Minix-NMS to Minix instead of Minix-Conventions

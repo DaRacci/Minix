@@ -27,7 +27,7 @@ abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
     }
 
     operator fun get(key: String, vararg placeholder: Pair<String, () -> Any>): Component {
-        val keys = PropertyFinder.formatString(key).split(".")
+        val keys = PropertyFinder.KeyMode.CAPITAL_TO_DOT.format(key).split(".")
         if (keys.size <= 1) return MiniMessage.miniMessage().deserialize("Invalid key: $key")
 
         val prop = this::class.declaredMemberProperties

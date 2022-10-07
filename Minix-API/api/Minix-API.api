@@ -3025,14 +3025,23 @@ public final class dev/racci/minix/api/utils/Loadable$State : java/lang/Enum {
 }
 
 public abstract class dev/racci/minix/api/utils/PropertyFinder {
-	public static final field Companion Ldev/racci/minix/api/utils/PropertyFinder$Companion;
 	public fun <init> ()V
-	public fun get (Ljava/lang/String;)Ljava/lang/Object;
+	public fun <init> (Ldev/racci/minix/api/utils/PropertyFinder$KeyMode;)V
+	public synthetic fun <init> (Ldev/racci/minix/api/utils/PropertyFinder$KeyMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun get (Ljava/lang/String;Z)Ljava/lang/Object;
+	public static synthetic fun get$default (Ldev/racci/minix/api/utils/PropertyFinder;Ljava/lang/String;ZILjava/lang/Object;)Ljava/lang/Object;
+	public final fun getKeys ()Lkotlinx/collections/immutable/ImmutableSet;
 	public final fun getPropertyMap ()Lkotlinx/collections/immutable/PersistentMap;
 }
 
-public final class dev/racci/minix/api/utils/PropertyFinder$Companion {
-	public final fun formatString (Ljava/lang/String;)Ljava/lang/String;
+public final class dev/racci/minix/api/utils/PropertyFinder$KeyMode : java/lang/Enum {
+	public static final field CAPITALISED Ldev/racci/minix/api/utils/PropertyFinder$KeyMode;
+	public static final field CAPITAL_TO_DOT Ldev/racci/minix/api/utils/PropertyFinder$KeyMode;
+	public static final field RAW Ldev/racci/minix/api/utils/PropertyFinder$KeyMode;
+	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun format (Ljava/lang/String;)Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Ldev/racci/minix/api/utils/PropertyFinder$KeyMode;
+	public static fun values ()[Ldev/racci/minix/api/utils/PropertyFinder$KeyMode;
 }
 
 public final class dev/racci/minix/api/utils/RecursionUtils : dev/racci/minix/api/utils/UtilObject {
@@ -4399,6 +4408,8 @@ public final class dev/racci/minix/api/utils/minecraft/MCVersion$Companion {
 	public final fun getMC_1_18_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
 	public final fun getMC_1_18_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
 	public final fun getMC_1_19 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_19_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_19_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
 	public final fun getMC_1_7 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
 	public final fun getMC_1_7_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
 	public final fun getMC_1_7_10 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;

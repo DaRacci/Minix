@@ -233,8 +233,10 @@ class MCVersion private constructor(
         val MC_NMS_1_18_R1 by MCVersionDelegate(121, 757)
         val MC_1_18_2 by MCVersionDelegate(122, 758)
         val MC_NMS_1_18_R2 by MCVersionDelegate(122, 758)
-        val MC_1_19 by MCVersionDelegate(131, Int.MAX_VALUE)
-        val MC_NMS_1_19_R1 by MCVersionDelegate(131, Int.MAX_VALUE)
+        val MC_1_19 by MCVersionDelegate(131, 759)
+        val MC_NMS_1_19_R1 by MCVersionDelegate(131, 759)
+        val MC_1_19_1 by MCVersionDelegate(131, 760)
+        val MC_1_19_2 by MCVersionDelegate(131, 760)
 
         init {
             this::class.declaredMemberProperties

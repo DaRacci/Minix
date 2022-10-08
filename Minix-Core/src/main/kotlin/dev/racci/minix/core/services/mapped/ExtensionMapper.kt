@@ -7,6 +7,7 @@ import arrow.core.getOrElse
 import arrow.core.toOption
 import com.google.common.graph.GraphBuilder
 import com.google.common.graph.MutableGraph
+import dev.racci.minix.api.annotations.DoNotUnload
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionState
@@ -30,10 +31,12 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.findParameterByName
+import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
 
+@DoNotUnload
 @Suppress("UnstableApiUsage")
 @MappedExtension(Minix::class, "Extension Mapper")
 class ExtensionMapper(override val plugin: Minix) : MapperService(
@@ -98,7 +101,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         return orderedExtensions.toImmutableList()
     }
 
-    private val topoSorted = ConcurrentHashMap<KClass<*>, ImmutableList<Extension<*>>>() // Topologically sorted extensions
+    private val topoSorted = ConcurrentHashMap<MinixPlugin, ImmutableList<Extension<*>>>() // Topologically sorted extensions
 
     private val extensionGraph = GraphBuilder.directed().build<Extension<*>>()
     private val neededEdges = ConcurrentHashMap<Extension<*>, MutableList<KClass<*>>>()
@@ -120,7 +123,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         }
 
         for (dependency in extension::class.findAnnotation<MappedExtension>()!!.dependencies) {
-            val dependencyExtension = extensionGraph.nodes().find { it::class == dependency }
+            val dependencyExtension = extensionGraph.nodes().find { dependency in KoinUtils.getBinds(it) }
             if (dependencyExtension != null) {
                 graph.putEdge(extension, dependencyExtension)
             } else {
@@ -128,7 +131,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
             }
         }
 
-        topoSorted.remove(plugin::class)
+        topoSorted.remove(plugin) // Ensures resorting of extensions
     }
 
     override suspend fun registerMapped(
@@ -154,40 +157,36 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         plugin: MinixPlugin,
         cache: PluginData<*>
     ) {
-        extensionGraph.nodes()
-            .filter { it.plugin == plugin }
-            .onEach(extensionGraph::removeNode)
-            .onEach { unloadKoinModules(KoinUtils.getModule(it)) }
-            .forEach(KoinUtils::clearBinds)
+        unloadExtensions(plugin)
 
         neededEdges.keys.removeAll { it.plugin == plugin }
-        topoSorted.remove(plugin::class)
+        topoSorted.remove(plugin)
     }
 
     suspend fun loadExtensions(plugin: MinixPlugin) {
-        topoSorted.computeIfAbsent(plugin::class) { orderExtensions(extensionGraph ?: error("${plugin.name} doesn't have a graph!")) }
+        topoSorted.computeIfAbsent(plugin) { orderExtensions(extensionGraph ?: error("${plugin.name} doesn't have a graph!")) }
             .filter { it.plugin === plugin }
             .also { plugin.log.debug { "Loading extensions in order: ${it.joinToString { it.name }}" } }
-            .forEach { extension -> this.loadExtension(extension, topoSorted[plugin::class]!!) }
+            .forEach { extension -> this.loadExtension(extension, topoSorted[plugin]!!) }
     }
 
     suspend fun enableExtensions(plugin: MinixPlugin) {
-        topoSorted[plugin::class]!!.filter { it.plugin === plugin }.forEach { extension -> this.enableExtension(extension, topoSorted[plugin::class]!!) }
+        getExtensions(plugin).forEach { extension -> this.enableExtension(extension, topoSorted[plugin]!!) }
     }
 
     suspend fun disableExtensions(plugin: MinixPlugin) {
-        topoSorted[plugin::class]!!.filter { it.plugin === plugin }.reversed().forEach { extension -> this.disableExtension(extension, topoSorted[plugin::class]!!) }
+        getExtensions(plugin).asReversed().forEach { extension -> this.disableExtension(extension, topoSorted[plugin]!!) }
     }
 
     suspend fun unloadExtensions(plugin: MinixPlugin) {
-        topoSorted[plugin::class]!!.filter { it.plugin === plugin }.reversed().forEach { extension -> this.unloadExtension(extension) }
+        getExtensions(plugin).asReversed().forEach { extension -> this.unloadExtension(extension) }
     }
 
     suspend fun loadExtension(
         extension: Extension<*>,
         sorted: List<Extension<*>>
     ) {
-        if (extension.loaded) return logger.warn { "Extension ${extension.name} in state, [${extension.state}], cannot load.!" }
+        if (extension.loaded) return
 
         withState(ExtensionState.LOADING, extension) {
             extension.handleLoad()
@@ -203,7 +202,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         sorted: List<Extension<*>>
     ) {
         val ordinal = extension.state.ordinal
-        if (ordinal !in 0..1 && ordinal !in 4..5) return logger.warn { "Extension ${extension.name} in state [${extension.state}], cannot enable." }
+        if (ordinal !in 0..1 && ordinal !in 4..5) return
 
         withState(ExtensionState.ENABLING, extension) {
             extension.handleEnable()
@@ -217,7 +216,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         extension: Extension<*>,
         extensionList: List<Extension<*>>
     ) {
-        if (extension.state.ordinal !in 0..3) return logger.warn { "Extension ${extension.name} in state [${extension.state}], cannot disable." }
+        if (extension.state.ordinal !in 0..3) return
 
         withState(ExtensionState.DISABLING, extension) {
             extension.handleDisable()
@@ -228,7 +227,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
     }
 
     suspend fun unloadExtension(extension: Extension<*>) {
-        if (extension.state.ordinal !in 0..5) return logger.warn { "Extension ${extension.name} in state [${extension.state}], cannot unload." }
+        if (extension.state.ordinal !in 0..5) return
 
         withState(ExtensionState.UNLOADING, extension) {
             extension.handleUnload()
@@ -238,11 +237,17 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         )
 
         extension.eventListener.unregisterListener()
+
+        if (extension::class.hasAnnotation<DoNotUnload>()) return
+
         extension.supervisor.coroutineContext.job.castOrThrow<CompletableJob>().complete()
         extension.dispatcher.close()
         runCatching { extensionGraph.removeNode(extension) }.onFailure { logger.error { "Failed to remove extension ${extension.name} from graph!" } }
         unloadKoinModules(KoinUtils.getModule(extension))
+        KoinUtils.clearBinds(extension)
     }
+
+    private fun getExtensions(plugin: MinixPlugin) = topoSorted[plugin]!!.filter { it.plugin === plugin }.also { logger.debug { "Order: ${it.joinToString(", ") { it.name }}" } }
 
     private suspend fun withState(
         state: ExtensionState,

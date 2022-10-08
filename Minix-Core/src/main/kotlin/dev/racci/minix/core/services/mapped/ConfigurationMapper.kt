@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services.mapped
 
+import dev.racci.minix.api.annotations.DoNotUnload
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.MinixConfig
@@ -15,6 +16,7 @@ import org.koin.core.component.get
 import org.koin.core.context.unloadKoinModules
 import org.koin.core.error.NoBeanDefFoundException
 
+@DoNotUnload
 @MappedExtension(Minix::class, "Configuration Mapper", [DataService::class])
 class ConfigurationMapper(override val plugin: Minix) : MapperService(
     MinixConfig::class,

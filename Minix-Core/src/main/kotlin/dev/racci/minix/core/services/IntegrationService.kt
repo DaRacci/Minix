@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services
 
+import dev.racci.minix.api.annotations.DoNotUnload
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MappedIntegration
 import dev.racci.minix.api.collections.RegisteringMap
@@ -19,6 +20,7 @@ import org.bukkit.plugin.Plugin
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
 
+@DoNotUnload
 @MappedExtension(Minix::class, "Integration Service")
 class IntegrationService(override val plugin: Minix) : Extension<Minix>() {
     private lateinit var enabledPlugins: PersistentMap<String, Plugin>

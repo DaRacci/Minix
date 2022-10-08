@@ -2,6 +2,7 @@ package dev.racci.minix.core.services
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
+import dev.racci.minix.api.annotations.DoNotUnload
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.coroutine.CoroutineSession
@@ -43,7 +44,8 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.javaField
 
-@MappedExtension(Minix::class, "Plugin Manager", [ExtensionMapper::class, ConfigurationMapper::class, IntegrationMapper::class], bindToKClass = PluginService::class)
+@DoNotUnload
+@MappedExtension(Minix::class, "Plugin Manager", [ExtensionMapper::class, ConfigurationMapper::class, IntegrationMapper::class], PluginService::class)
 class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<Minix>() {
     private lateinit var driver: Driver
 
@@ -254,7 +256,6 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
     }
 
     private suspend fun loadReflection(plugin: MinixPlugin) {
-        var int = 0
         val scanResult = ClassGraph()
             .acceptJars(plugin::class.java.protectionDomain.codeSource.location.path.substringAfterLast('/'))
             .addClassLoader(plugin::class.java.classLoader)
@@ -263,10 +264,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             .enableAnnotationInfo()
             .disableNestedJarScanning()
             .disableRuntimeInvisibleAnnotations()
-            .rejectClasses(
-                PluginServiceImpl::class.qualifiedName,
-                ExtensionMapper::class.qualifiedName
-            )
+            .rejectClasses(PluginServiceImpl::class.qualifiedName, ExtensionMapper::class.qualifiedName)
             .scan(4)
 
         if (plugin !is MinixImpl) plugin.log.info { "Ignore the following warning, this is expected behavior." }

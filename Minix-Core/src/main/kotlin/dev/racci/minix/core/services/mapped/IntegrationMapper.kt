@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services.mapped
 
+import dev.racci.minix.api.annotations.DoNotUnload
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MappedIntegration
 import dev.racci.minix.api.extensions.reflection.castOrThrow
@@ -16,6 +17,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 
+@DoNotUnload
 @MappedExtension(Minix::class, "Integration Mapper", [IntegrationService::class])
 class IntegrationMapper : MapperService(
     Integration::class,

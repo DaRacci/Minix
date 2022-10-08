@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.2.4](https://github.com/DaRacci/Minix/compare/v4.2.3..v4.2.4) - 2022-10-08
+#### Bug Fixes
+- **(BlockPosSerializer)** incorrect serialisation - ([aa78101](https://github.com/DaRacci/Minix/commit/aa78101405499baae37955a453cef2b6a45932c2)) - [@DaRacci](https://github.com/DaRacci)
+- Some unloading issues - ([7de0488](https://github.com/DaRacci/Minix/commit/7de0488056ed6bd001ef72d4a2cea0c7dd7d364e)) - [@DaRacci](https://github.com/DaRacci)
+#### Build
+- Slim jvm-driver instead of including - ([baa5b3b](https://github.com/DaRacci/Minix/commit/baa5b3b1b0914a0c685e59f5b23d3d315b48151c)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.2.3 - ([46b4898](https://github.com/DaRacci/Minix/commit/46b489817bd2bf74596ecb818eb2b1ee37dc27d0)) - [@DaRacci](https://github.com/DaRacci)
+- Binary dump - ([063de1f](https://github.com/DaRacci/Minix/commit/063de1f02367510bafd78c598598c4ed7790a4df)) - [@DaRacci](https://github.com/DaRacci)
+- Update readme - ([a4a8942](https://github.com/DaRacci/Minix/commit/a4a8942093d80842f537964ef144ce04fdd29ef9)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.2.3](https://github.com/DaRacci/Minix/compare/v4.2.2..v4.2.3) - 2022-10-08
 #### Bug Fixes
 - **(PropertyFinder)** map using wrong KeyMode - ([3b690b1](https://github.com/DaRacci/Minix/commit/3b690b191979247a404ea783129718e4fc7161b2)) - [@DaRacci](https://github.com/DaRacci)

@@ -11,7 +11,6 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.Instant
 import java.util.jar.JarFile
-import kotlin.reflect.jvm.internal.impl.types.TypeCheckerState.SupertypesPolicy.None
 import kotlin.time.Duration.Companion.minutes
 
 sealed class UpdateProvider(

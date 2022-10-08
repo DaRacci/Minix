@@ -1,3 +1,6 @@
+public abstract interface annotation class dev/racci/minix/api/annotations/DoNotUnload : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class dev/racci/minix/api/annotations/MappedConfig : java/lang/annotation/Annotation {
 	public abstract fun file ()Ljava/lang/String;
 	public abstract fun parent ()Ljava/lang/Class;

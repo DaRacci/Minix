@@ -8,15 +8,19 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 
 abstract class PropertyFinder<R> {
-    private lateinit var keyMode: KeyMode
+    @Transient
+    private val keyMode: KeyMode
+
+    constructor(keyMode: KeyMode = KeyMode.CAPITAL_TO_DOT) {
+        this.keyMode = keyMode
+
+        val properties = this::class.declaredMemberProperties.filterIsInstance<KProperty1<Any, R>>()
+        propertyMap = properties.associateBy { property -> keyMode.format(property.name) }.toPersistentMap()
+    }
 
     @ScheduledForRemoval(inVersion = "4.5.0")
     @Deprecated("Use the new constructor instead")
-    constructor()
-
-    constructor(
-        keyMode: KeyMode = KeyMode.CAPITAL_TO_DOT
-    ) { this.keyMode = keyMode }
+    constructor() : this(KeyMode.CAPITAL_TO_DOT)
 
     @Transient
     @kotlinx.serialization.Transient
@@ -38,18 +42,6 @@ abstract class PropertyFinder<R> {
         }
 
         return propertyMap[keyMode.format(key)]?.get(this) ?: throw IllegalArgumentException("Property $key not found")
-    }
-
-    init {
-        if (!::keyMode.isInitialized) {
-            keyMode = KeyMode.CAPITAL_TO_DOT
-        }
-
-        val properties = this::class.declaredMemberProperties.filterIsInstance<KProperty1<Any, R>>()
-        propertyMap = properties.associateBy { property ->
-            println("Adding property ${property.name} as ${keyMode.format(property.name)}")
-            keyMode.format(property.name)
-        }.toPersistentMap()
     }
 
     enum class KeyMode {

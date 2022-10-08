@@ -26,7 +26,10 @@ abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
         this.onNestedInstance<PartialComponent> { formatRaw(map) }
     }
 
-    operator fun get(key: String, vararg placeholder: Pair<String, () -> Any>): Component {
+    operator fun get(
+        key: String,
+        vararg placeholder: Pair<String, () -> Any>
+    ): Component {
         val keys = PropertyFinder.KeyMode.CAPITAL_TO_DOT.format(key).split(".")
         if (keys.size <= 1) return MiniMessage.miniMessage().deserialize("Invalid key: $key")
 
@@ -37,9 +40,9 @@ abstract class LangConfig<P : MinixPlugin> : MinixConfig<P>(false) {
 
         val value = prop.get(this).safeCast<PropertyFinder<PartialComponent>>() ?: return MiniMessage.miniMessage().deserialize("$key's return type is not a property finder class.")
 
-        return value[key.substringAfter('.')].get(*placeholder)
+        return value[key.substringAfter('.'), true].get(*placeholder)
     }
 
     @ConfigSerializable
-    open class InnerLang : PropertyFinder<PartialComponent>(), InnerConfig by InnerConfig.Default()
+    open class InnerLang : PropertyFinder<PartialComponent>(KeyMode.CAPITAL_TO_DOT), InnerConfig by InnerConfig.Default()
 }

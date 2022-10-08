@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.2.2](https://github.com/DaRacci/Minix/compare/v4.2.1..v4.2.2) - 2022-10-08
+#### Bug Fixes
+- import - ([270938d](https://github.com/DaRacci/Minix/commit/270938db92b2a7fa0dbec2bef63c578c633becfb)) - [@DaRacci](https://github.com/DaRacci)
+- imports - ([966fd62](https://github.com/DaRacci/Minix/commit/966fd6262be06d55024a976958383b14d467a3c6)) - [@DaRacci](https://github.com/DaRacci)
+- Add 1.19.1 and 1.19.2 MCVersions - ([631a03a](https://github.com/DaRacci/Minix/commit/631a03aaf7c7c72e11d5e91ed0a247bea75ac9f0)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- **(PropertyFinder)** KeyMode option - ([194fefb](https://github.com/DaRacci/Minix/commit/194fefba39cf4b31d6bf594fe3377aa74455cf13)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.2.1 - ([8433ed0](https://github.com/DaRacci/Minix/commit/8433ed0695980a719c59bf513b983fb82bb2ac59)) - [@DaRacci](https://github.com/DaRacci)
+- Update binary - ([446dde9](https://github.com/DaRacci/Minix/commit/446dde9b2dcade9da48429ad796220b7e2ecf6d3)) - [@DaRacci](https://github.com/DaRacci)
+- Update conventions version - ([91cca59](https://github.com/DaRacci/Minix/commit/91cca591cb4d58a68fc3ef6a739dd83c8caade5d)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.2.1](https://github.com/DaRacci/Minix/compare/v4.2.0..v4.2.1) - 2022-10-06
 #### Bug Fixes
 - **(Logger)** Crash on startup - ([739651e](https://github.com/DaRacci/Minix/commit/739651e8e11efbe1e6ec45ec460d09b5794a5a23)) - [@DaRacci](https://github.com/DaRacci)

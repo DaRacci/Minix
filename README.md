@@ -8,7 +8,7 @@
 
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/DaRacci/Minix?color=purple&style=for-the-badge)](https://www.codefactor.io/repository/github/daracci/minix)
 [![Maintainability](https://img.shields.io/codeclimate/maintainability/DaRacci/Minix?color=purple&style=for-the-badge)](https://codeclimate.com/github/DaRacci/Minix/)
-[![Lines](https://img.shields.io/tokei/lines/github/DaRacci/Minix?color=purple&style=for-the-badge)]
+![Lines](https://img.shields.io/tokei/lines/github/DaRacci/Minix?color=purple&style=for-the-badge)
 [![Code Climate issues](https://img.shields.io/codeclimate/issues/DaRacci/Minix?color=purple&style=for-the-badge)](https://codeclimate.com/github/DaRacci/Minix/)
 
 [![Servers](https://img.shields.io/bstats/servers/13706?color=purple&style=for-the-badge)](https://bstats.org/plugin/bukkit/Minix/13706)
@@ -20,7 +20,7 @@ Minix is library written for purpur based plugins, providing full integration wi
 
 ## Plugin Information
 
-- Supports 1.18.2
+- Supports 1.19.2
 
 ## Docs
 
@@ -71,15 +71,18 @@ Replace `tag` with a release tag, eg `1.0.0`.
   - Allows lots of the Ex Utils to be used without more interfaces, object calls, or the need to use the `this` keyword.
 
 - Events:
-  - [PlayerShiftLeftClickEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/ComboEvent.kt#L66)
-  - [PlayerShiftRightClickEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/ComboEvent.kt#L76)
-  - [PlayerShiftOffhandEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/ComboEvent.kt#L86)
-  - [PlayerShiftDoubleOffhandEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/ComboEvent.kt#L111)
-  - [PlayerDoubleOffhandEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/ComboEvent.kt#L135)
-  - [PlayerEnterLiquidEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/PlayerLiquidEvent.kt#L20)
-  - [PlayerExitLiquidEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/PlayerLightEvent.kt#26)
-  - [PlayerMoveXYZEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/PlayerMoveXYZEvent.kt#18)
-  - [PlayerMoveFullXYZEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/PlayerMoveXYZEvent.kt#41)
+  - [PlayerOffhandEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerOffhandEvent.kt)
+  - [PlayerPrimaryEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerPrimaryEvent.kt)
+  - [PlayerSecondaryEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerSecondaryEvent.kt)
+  - [PlayerDoubleOffhandEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerDoubleOffhandEvent.kt)
+  - [PlayerDoublePrimaryEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerDoublePrimaryEvent.kt)
+  - [PlayerDoubleSecondaryEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerDoubleSecondaryEvent.kt)
+  - [PlayerSneakOffhandEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerSneakOffhandEvent.kt)
+  - [PlayerSneakPrimaryEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerSneakPrimaryEvent.kt)
+  - [PlayerSneakSecondaryEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerSneakSecondaryEvent.kt)
+  - [PlayerSneakDoubleOffhandEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerSneakDoubleOffhandEvent.kt)
+  - [PlayerSneakDoublePrimaryEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerSneakDoublePrimaryEvent.kt)
+  - [PlayerSneakDoubleSecondaryEvent](Minix-API/src/main/kotlin/dev/racci/minix/api/events/keybind/PlayerSneakDoubleSecondaryEvent.kt)
 
 - [Event Flows](Minix-API/src/main/kotlin/dev/racci/minix/api/flow/EventFlow.kt):
   - Allows you to suspend and wait for an event such as player input.
@@ -165,7 +168,6 @@ Replace `tag` with a release tag, eg `1.0.0`.
   
   - Misc:
     - [Enum](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/EnumUtils.kt)
-    - [Legacy](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/LegacyUtils.kt)
     - [Math](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/MathUtils.kt)
     - [Number](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/NumberUtils.kt)
     - [String](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/StringUtils.kt)

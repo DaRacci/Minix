@@ -6,7 +6,6 @@ import arrow.core.Option
 import arrow.core.Some
 import arrow.core.Valid
 import arrow.core.Validated
-import co.aikar.timings.TimingsManager.url
 import com.google.gson.Gson
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.updater.ChecksumType
@@ -19,13 +18,10 @@ import io.ktor.client.engine.cio.endpoint
 import io.ktor.client.request.request
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
-import io.ktor.client.utils.EmptyContent.headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
-import org.apache.logging.log4j.core.net.UrlConnectionFactory.createConnection
-import sun.net.www.protocol.http.HttpURLConnection.userAgent
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URI
@@ -84,7 +80,7 @@ open class UpdateData(
             response = runCatching {
                 client.request {
                     url(targetURL)
-                    headers.append(HttpHeaders.UserAgent, userAgent)
+                    headers.append(HttpHeaders.UserAgent, provider.userAgent)
                     provider.requestBuilder(this)
                 }
             }.fold(

@@ -11,11 +11,13 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.datetime.Instant
 import java.util.jar.JarFile
+import kotlin.reflect.jvm.internal.impl.types.TypeCheckerState.SupertypesPolicy.None
 import kotlin.time.Duration.Companion.minutes
 
 sealed class UpdateProvider(
     val name: String,
-    val localVersion: Version
+    val localVersion: Version,
+    internal val userAgent: String = "Minix Auto-Updater"
 ) {
     private lateinit var remoteVersion: Version
     private val lastCheck: Instant = Instant.DISTANT_PAST
@@ -46,6 +48,7 @@ sealed class UpdateProvider(
      * * @return An Optional with the throwable if there was an error.
      */
     fun asyncCheckUpdates(): Deferred<Nothing> {
+        return CompletableDeferred()
     }
 
     fun asyncUpdate() {

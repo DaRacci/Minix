@@ -24,6 +24,10 @@ abstract class PropertyFinder<R> {
 
     val keys: ImmutableSet<String> get() = propertyMap.keys
 
+    @ScheduledForRemoval(inVersion = "4.5.0")
+    @Deprecated("Use the new constructor instead")
+    operator fun get(key: String): R = get(key, true)
+
     open operator fun get(
         key: String,
         convertFirst: Boolean = true
@@ -42,7 +46,10 @@ abstract class PropertyFinder<R> {
         }
 
         val properties = this::class.declaredMemberProperties.filterIsInstance<KProperty1<Any, R>>()
-        propertyMap = properties.associateBy { property -> keyMode.format(property.name) }.toPersistentMap()
+        propertyMap = properties.associateBy { property ->
+            println("Adding property ${property.name} as ${keyMode.format(property.name)}")
+            keyMode.format(property.name)
+        }.toPersistentMap()
     }
 
     enum class KeyMode {

@@ -56,3 +56,6 @@ module:core-integrations
 dev.racci.minix.core.integrations
 dev.racci.minix.core.integrations.placeholderapi
 dev.racci.minix.core.integrations.regions
+module:core-updater
+dev.racci.minix.updater
+dev.racci.minix.updater.providers

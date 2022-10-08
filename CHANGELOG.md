@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.2.3](https://github.com/DaRacci/Minix/compare/v4.2.2..v4.2.3) - 2022-10-08
+#### Bug Fixes
+- **(PropertyFinder)** map using wrong KeyMode - ([3b690b1](https://github.com/DaRacci/Minix/commit/3b690b191979247a404ea783129718e4fc7161b2)) - [@DaRacci](https://github.com/DaRacci)
+- binary function - ([299c9f7](https://github.com/DaRacci/Minix/commit/299c9f7d4321c664e63fd3dcc01cf67a9aef277a)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.2.2 - ([faac102](https://github.com/DaRacci/Minix/commit/faac102b85f060c1420aa3130dbc3d65d88a8c45)) - [@DaRacci](https://github.com/DaRacci)
+- Binary update - ([fd06b23](https://github.com/DaRacci/Minix/commit/fd06b23c252e5fa7c458e4cb1cf62d4b86871b32)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.2.2](https://github.com/DaRacci/Minix/compare/v4.2.1..v4.2.2) - 2022-10-08
 #### Bug Fixes
 - import - ([270938d](https://github.com/DaRacci/Minix/commit/270938db92b2a7fa0dbec2bef63c578c633becfb)) - [@DaRacci](https://github.com/DaRacci)

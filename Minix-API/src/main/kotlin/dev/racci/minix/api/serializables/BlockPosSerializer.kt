@@ -31,6 +31,6 @@ object BlockPosSerializer : TypeSerializer<BlockPos> {
             return
         }
 
-        node.raw("${obj.x},${obj.y},${obj.z}")
+        node.raw("${obj.x};${obj.y};${obj.z}")
     }
 }

@@ -36,6 +36,8 @@ dependencies {
     implementation(project("Minix-API"))
     implementation("dev.racci.slimjar:slimjar:1.2.11")
     implementation(libs.minecraft.bstats)
+
+    slim("io.github.toolfactory:jvm-driver:9.3.0")
 }
 
 kotlin {
@@ -121,11 +123,6 @@ subprojects {
     }
 }
 
-fun included(
-    build: String,
-    task: String
-) = gradle.includedBuild(build).task(task)
-
 inline fun <reified T : Task> TaskProvider<T>.alsoSubprojects(crossinline block: T.() -> Unit = {}) {
     this {
         dependsOn(gradle.includedBuilds.map { it.task(":$name") })
@@ -137,15 +134,10 @@ tasks {
 
     shadowJar {
         dependencyFilter.include {
-            it.module.id.module == libs.sentry.core.get().module ||
-                it.module.id.module == libs.sentry.kotlin.get().module ||
+            subprojects.map(Project::getName).contains(it.moduleName) ||
+                it.moduleGroup == libs.sentry.core.get().module.group ||
                 it.moduleGroup == libs.minecraft.bstats.get().module.group ||
-                it.moduleGroup == "dev.racci.slimjar" ||
-                it.moduleName == "Minix-Core" ||
-                it.moduleName == "Minix-API" ||
-                it.moduleName == "Minix-NMS" ||
-                it.moduleName == "core-integrations" ||
-                it.moduleName == "jvm-driver"
+                it.moduleGroup == "dev.racci.slimjar"
         }
         val prefix = "dev.racci.minix.libs"
         relocate("io.sentry", "$prefix.io.sentry")

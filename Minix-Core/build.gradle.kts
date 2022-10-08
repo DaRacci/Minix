@@ -19,7 +19,7 @@ dependencies {
     compileOnly(rootProject.libs.minecraft.api.landsAPI)
     compileOnly(rootProject.libs.bundles.cloud.kotlin)
 
-    implementation("io.github.toolfactory:jvm-driver:9.3.0")
+    compileOnly("io.github.toolfactory:jvm-driver:9.3.0")
     implementation(project(":minix-core:core-integrations"))
 }
 

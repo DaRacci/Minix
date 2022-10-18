@@ -1,23 +1,25 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
+import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlinx.serialization.gradle.SerializationGradleSubplugin
 import java.net.URL
 
 val minixVersion: String by project
 val version: String by project
 
 plugins {
-    id("dev.racci.minix.kotlin")
-    id("dev.racci.minix.copyjar")
-    id("dev.racci.minix.purpurmc")
-    id("dev.racci.minix.nms")
+    alias(libs.plugins.minix.nms)
+    alias(libs.plugins.minix.kotlin)
+    alias(libs.plugins.minix.copyjar)
+    alias(libs.plugins.minix.purpurmc)
 
-    id("org.jetbrains.dokka") version "1.7.10"
-    kotlin("plugin.atomicfu")
-    kotlin("plugin.serialization")
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.kotlin.atomicfu)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.binaryValidator)
 
-    id("dev.racci.slimjar")
-    id("net.minecrell.plugin-yml.bukkit")
-    id("org.jetbrains.kotlinx.binary-compatibility-validator")
+    alias(libs.plugins.slimjar)
+    alias(libs.plugins.minecraft.pluginYML)
 }
 
 apiValidation {
@@ -69,12 +71,13 @@ tasks {
 
 subprojects {
 
-    apply(plugin = "dev.racci.minix.kotlin")
-    apply(plugin = "dev.racci.minix.purpurmc")
-    apply(plugin = "dev.racci.minix.nms")
-    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
-    apply(plugin = "org.jetbrains.dokka")
-    apply(plugin = "maven-publish")
+    apply<Dev_racci_minix_nmsPlugin>()
+    apply<Dev_racci_minix_kotlinPlugin>()
+    apply<Dev_racci_minix_copyjarPlugin>()
+    apply<Dev_racci_minix_purpurmcPlugin>()
+    apply<SerializationGradleSubplugin>()
+    apply<DokkaPlugin>()
+    apply<MavenPublishPlugin>()
 
     dependencies {
         testImplementation(platform(kotlin("bom")))

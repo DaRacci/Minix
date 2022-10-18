@@ -75,9 +75,15 @@ interface StorageService<P : MinixPlugin> : ExtensionSkeleton<P> {
         }
     }
 
-    suspend fun withDatabase(
-        block: suspend Transaction.() -> Unit
-    ) = newSuspendedTransaction(this.dispatcher.get(), this.getDatabase()) {
+    suspend fun <T> withDatabase(
+        block: suspend Transaction.() -> T
+    ): T = newSuspendedTransaction(this.dispatcher.get(), this.getDatabase()) {
+        block()
+    }
+
+    suspend fun <T> withDatabaseAsync(
+        block: suspend Transaction.() -> T
+    ): Deferred<T> = suspendedTransactionAsync(this.dispatcher.get(), this.getDatabase()) {
         block()
     }
 

@@ -1,11 +1,13 @@
 package dev.racci.minix.api.utils.minecraft
 
 import dev.racci.minix.api.extensions.server
+import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.utils.getKoin
 import kotlinx.atomicfu.atomic
 import kotlinx.collections.immutable.toImmutableList
 import org.bukkit.Bukkit
+import org.koin.java.KoinJavaComponent.getKoin
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.typeOf

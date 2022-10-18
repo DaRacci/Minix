@@ -1,17 +1,9 @@
 @file:Suppress("UnstableApiUsage")
 
-import groovy.util.Node
-import groovy.util.NodeList
 import java.net.URI
 
 val minixVersion: String by rootProject
-val slim: Configuration by configurations.creating
-
-configurations {
-    compileClasspath.get().extendsFrom(slim)
-    runtimeClasspath.get().extendsFrom(slim)
-    api.get().extendsFrom(slim)
-}
+val slim: Configuration by configurations.getting
 
 repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
@@ -101,40 +93,40 @@ publishing {
         credentials(PasswordCredentials::class)
     }
 
-    publications.register("maven", MavenPublication::class) {
-        artifactId = rootProject.name
-        artifact(tasks.reobfJar.get().outputJar) {
-            builtBy(tasks.reobfJar)
-            classifier = null
-        }
-        artifact(tasks.kotlinSourcesJar) {
-            builtBy(tasks.kotlinSourcesJar)
-            classifier = "sources"
-        }
-        pom.withXml {
-            val depNode = Node(asNode(), "dependencies")
-            val nodeList = depNode.children() as NodeList
-
-            fun ResolvedDependency.getScope() = if (this.configuration == "runtime") "runtimeElements" else this.configuration
-
-            fun ResolvedDependency.isPresent() = nodeList.any {
-                val node = it as Node
-                node["groupId"] == this.moduleGroup &&
-                    node["artifactId"] == this.moduleName &&
-                    node["version"] == this.moduleVersion &&
-                    node["scope"] == this.getScope()
-            }
-
-            configurations["slim"].resolvedConfiguration.firstLevelModuleDependencies.forEach { dep ->
-                if (dep.isPresent()) return@forEach
-
-                Node(depNode, "dependency").apply {
-                    appendNode("groupId", dep.moduleGroup)
-                    appendNode("artifactId", dep.moduleName)
-                    appendNode("version", dep.moduleVersion)
-                    appendNode("scope", dep.getScope())
-                }
-            }
-        }
-    }
+//    publications.register("maven", MavenPublication::class) {
+//        artifactId = rootProject.name
+//        artifact(tasks.reobfJar.get().outputJar) {
+//            builtBy(tasks.reobfJar)
+//            classifier = null
+//        }
+//        artifact(tasks.kotlinSourcesJar) {
+//            builtBy(tasks.kotlinSourcesJar)
+//            classifier = "sources"
+//        }
+//        pom.withXml {
+//            val depNode = Node(asNode(), "dependencies")
+//            val nodeList = depNode.children() as NodeList
+//
+//            fun ResolvedDependency.getScope() = if (this.configuration == "runtime") "runtimeElements" else this.configuration
+//
+//            fun ResolvedDependency.isPresent() = nodeList.any {
+//                val node = it as Node
+//                node["groupId"] == this.moduleGroup &&
+//                    node["artifactId"] == this.moduleName &&
+//                    node["version"] == this.moduleVersion &&
+//                    node["scope"] == this.getScope()
+//            }
+//
+//            configurations["slim"].resolvedConfiguration.firstLevelModuleDependencies.forEach { dep ->
+//                if (dep.isPresent()) return@forEach
+//
+//                Node(depNode, "dependency").apply {
+//                    appendNode("groupId", dep.moduleGroup)
+//                    appendNode("artifactId", dep.moduleName)
+//                    appendNode("version", dep.moduleVersion)
+//                    appendNode("scope", dep.getScope())
+//                }
+//            }
+//        }
+//    }
 }

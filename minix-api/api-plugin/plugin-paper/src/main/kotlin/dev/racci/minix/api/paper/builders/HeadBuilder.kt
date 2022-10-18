@@ -1,4 +1,4 @@
-package dev.racci.minix.api.builders
+package dev.racci.minix.api.paper.builders
 
 import com.destroystokyo.paper.profile.PlayerProfile
 import org.bukkit.OfflinePlayer

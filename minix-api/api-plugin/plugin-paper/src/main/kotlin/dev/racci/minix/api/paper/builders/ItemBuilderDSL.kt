@@ -1,4 +1,4 @@
-package dev.racci.minix.api.builders
+package dev.racci.minix.api.paper.builders
 
 import dev.racci.minix.api.annotations.MinixDsl
 import dev.racci.minix.api.exceptions.IncorrectItemTypeException

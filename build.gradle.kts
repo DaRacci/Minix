@@ -8,8 +8,9 @@ val minixVersion: String by project
 val version: String by project
 
 plugins {
+    kotlin("multiplatform") version "1.7.20"
     alias(libs.plugins.minix.nms)
-    alias(libs.plugins.minix.kotlin)
+//    alias(libs.plugins.minix.kotlin)
     alias(libs.plugins.minix.copyjar)
     alias(libs.plugins.minix.purpurmc)
 
@@ -62,22 +63,102 @@ bukkit {
 tasks {
     val quickBuild by creating {
         group = "build"
-        dependsOn(compileKotlin)
+//        dependsOn(compileKotlin)
         dependsOn(shadowJar)
         dependsOn(reobfJar)
         findByName("copyJar")?.let { dependsOn(it) }
     }
 }
 
-subprojects {
+kotlin {
+    explicitApi()
 
-    apply<Dev_racci_minix_nmsPlugin>()
+    sourceSets {
+        val commonMain by getting {
+            this.kotlin.srcDir("minix-api/api-plugin/plugin-common/src/main/kotlin")
+            this.kotlin.srcDir("minix-plugin/plugin-common/src/main/resources")
+
+            dependencies {
+                api(project(":minix-api:api-autoscanner"))
+                api(project(":minix-api:api-common"))
+
+                compileOnly("org.apiguardian:apiguardian-api:1.1.2")
+
+                api(libs.kotlin.stdlib)
+                api(libs.kotlin.reflect)
+                api(libs.kotlinx.dateTime)
+                api(libs.kotlinx.atomicfu)
+                api(libs.kotlinx.coroutines)
+                api(libs.kotlinx.immutableCollections)
+
+                api(libs.mordant)
+
+                api("org.bstats:bstats-base:3.0.0")
+            }
+        }
+
+        val paperMain by creating {
+            this.kotlin.srcDir("minix-api/api-plugin/plugin-paper/src/main/kotlin")
+            this.kotlin.srcDir("minix-plugin/plugin-paper/src/main/kotlin")
+            this.dependsOn(commonMain)
+
+            repositories {
+                mavenCentral()
+                maven("https://papermc.io/repo/repository/maven-public/")
+            }
+
+            this.dependencies {
+                compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
+
+                api(libs.minecraft.bstats)
+            }
+        }
+
+        val velocityMain by creating {
+            this.kotlin.srcDir("minix-api/api-plugin/plugin-velocity/src/main/kotlin")
+            this.kotlin.srcDir("minix-plugin/plugin-velocity/src/main/kotlin")
+            this.dependsOn(commonMain)
+
+            this.dependencies {
+                compileOnly("com.velocitypowered:velocity-api:3.1.1")
+                compileOnly("com.velocitypowered:velocity-api:3.1.1") // TODO -> KSP
+
+                api("org.bstats:bstats-velocity:3.0.0")
+            }
+        }
+    }
+
+    targets {
+        all {
+            compilations.all {
+                kotlinOptions {
+                    allWarningsAsErrors = true
+                }
+            }
+        }
+
+        jvm("paper")
+        jvm("velocity")
+    }
+}
+
+subprojects {
+    apply<DokkaPlugin>()
+    apply<JavaLibraryPlugin>()
+    apply<MavenPublishPlugin>()
+
     apply<Dev_racci_minix_kotlinPlugin>()
     apply<Dev_racci_minix_copyjarPlugin>()
     apply<Dev_racci_minix_purpurmcPlugin>()
     apply<SerializationGradleSubplugin>()
-    apply<DokkaPlugin>()
-    apply<MavenPublishPlugin>()
+
+    configurations {
+        val slim by creating
+
+        compileClasspath.get().extendsFrom(slim)
+        runtimeClasspath.get().extendsFrom(slim)
+//        api.get().extendsFrom(slim)
+    }
 
     dependencies {
         testImplementation(platform(kotlin("bom")))
@@ -148,7 +229,7 @@ tasks {
         relocate("io.github.slimjar", "$prefix.io.github.slimjar")
     }
 
-    ktlintFormat.alsoSubprojects()
+//    ktlintFormat.alsoSubprojects()
     build.alsoSubprojects()
     clean.alsoSubprojects()
 
@@ -158,6 +239,9 @@ tasks {
 }
 
 allprojects {
+
+    buildDir = file(rootProject.projectDir.resolve("build").resolve(project.name))
+
     configurations {
         testImplementation.get().exclude("org.jetbrains.kotlin", "kotlin-test-junit")
 

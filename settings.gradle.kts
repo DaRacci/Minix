@@ -58,6 +58,9 @@ rootProject.name = "Minix"
 include(":Minix-API")
 include(":Minix-Core")
 
+include(":minix-api:api-common")
+include(":minix-api:api-autoscanner")
+
 include(":minix-core")
 include(":minix-core:core-integrations")
 include(":minix-core:core-updater")

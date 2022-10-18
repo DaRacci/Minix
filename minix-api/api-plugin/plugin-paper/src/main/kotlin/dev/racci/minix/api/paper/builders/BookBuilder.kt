@@ -1,4 +1,4 @@
-package dev.racci.minix.api.builders
+package dev.racci.minix.api.paper.builders
 
 import net.kyori.adventure.text.Component
 import org.bukkit.inventory.meta.BookMeta

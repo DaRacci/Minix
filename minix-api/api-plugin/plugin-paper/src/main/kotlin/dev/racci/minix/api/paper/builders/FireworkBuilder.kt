@@ -1,4 +1,4 @@
-package dev.racci.minix.api.builders
+package dev.racci.minix.api.paper.builders
 
 import org.bukkit.FireworkEffect
 import org.bukkit.inventory.meta.FireworkMeta

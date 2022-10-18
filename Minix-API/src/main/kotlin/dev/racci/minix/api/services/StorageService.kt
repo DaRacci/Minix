@@ -5,6 +5,7 @@ import dev.racci.minix.api.extension.ExtensionSkeleton
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.utils.getKoin
+import kotlinx.coroutines.Deferred
 import org.apiguardian.api.API
 import org.jetbrains.annotations.ApiStatus
 import org.jetbrains.exposed.sql.Database
@@ -16,6 +17,7 @@ import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.statements.StatementContext
 import org.jetbrains.exposed.sql.statements.expandArgs
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransactionAsync
 import java.nio.file.Path
 import javax.sql.DataSource
 
@@ -67,7 +69,10 @@ interface StorageService<P : MinixPlugin> : ExtensionSkeleton<P> {
         this.createDatabaseConfig()
         this.setProperty("database", Database.connect(this.getProperty<DataSource>("dataSource")!!, databaseConfig = databaseConfig))
 
-        withDatabase { SchemaUtils.addMissingColumnsStatements(managedTable) }
+        withDatabase {
+            SchemaUtils.create(managedTable)
+            SchemaUtils.addMissingColumnsStatements(managedTable)
+        }
     }
 
     suspend fun withDatabase(

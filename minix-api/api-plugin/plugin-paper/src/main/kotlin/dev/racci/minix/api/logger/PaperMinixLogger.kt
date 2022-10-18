@@ -1,72 +1,23 @@
-package dev.racci.minix.api.plugin.logger
+package dev.racci.minix.api.logger
 
-import arrow.core.filterIsInstance
-import arrow.core.getOrElse
-import arrow.core.redeem
-import arrow.core.toOption
 import com.github.ajalt.mordant.rendering.TextColors
-import dev.racci.minix.api.annotations.MinixInternal
-import dev.racci.minix.api.extensions.WithPlugin
-import dev.racci.minix.api.extensions.collections.findKProperty
-import dev.racci.minix.api.extensions.reflection.accessGet
-import dev.racci.minix.api.extensions.server
+import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.plugin.MinixPlugin
-import io.sentry.Breadcrumb
-import io.sentry.Sentry
-import io.sentry.SentryLevel
-import kotlinx.coroutines.DelicateCoroutinesApi
+import jdk.internal.org.jline.terminal.TerminalBuilder
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.NonCancellable.message
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-import net.minecrell.terminalconsole.TerminalConsoleAppender
-import org.apache.logging.log4j.core.appender.AbstractManager
-import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager
-import org.jline.terminal.Terminal
-import org.jline.terminal.TerminalBuilder
 import java.util.Optional
-import kotlin.reflect.full.staticProperties
+import kotlin.jvm.optionals.getOrNull
 
-@OptIn(DelicateCoroutinesApi::class)
-class PluginDependentMinixLogger<T : MinixPlugin> private constructor(
+public class PaperMinixLogger<T : MinixPlugin>(
     override val plugin: T,
     loggingLevel: LoggingLevel = LoggingLevel.INFO
-) : MinixLogger(loggingLevel), WithPlugin<T> {
-    private val generalLength = run {
-        var length = 6 // [][][]
-        length += 8 // HH:mm:ss
-        length += 3 // Spaces
-        length += 16 // Colours
-        length += plugin.name.length
-
-        length
-    }
-
-    private fun getPrefixLength(
-        scope: String?,
-        level: LoggingLevel
-    ): Int {
-        var length = generalLength
-        length += level.name.length
-
-        if (!scope.isNullOrBlank()) {
-            length += scope.length + 1
-        }
-
-        if (level.ordinal > 3) {
-            length += Thread.currentThread().name.length + 1
-        }
-
-        return length
-    }
-
-    init {
-        if (plugin.logger.level != null) {
-            this.setLevel(LoggingLevel.fromJava(plugin.logger.level))
-        }
-    }
+) : MinixLogger(loggingLevel), WithPlugin<T> by plugin {
 
     override fun format(
         message: String,
@@ -100,12 +51,52 @@ class PluginDependentMinixLogger<T : MinixPlugin> private constructor(
         }
     }
 
-    override fun log(message: () -> FormattedMessage) {
+    public override fun log(
+        level: LoggingLevel,
+        err: Throwable?,
+        scope: String?,
+        msg: UnsafeMessage,
+        colour: TextColors?
+    ) {
+        plugin.launch(dispatcher.get()) {
+            super.log(level, err, scope, msg, colour)
+        }
+
         if (server.isPrimaryThread) { // We don't want anything to do with the server thread.
             GlobalScope.launch(dispatcher.get().getOrThrow()) {
                 logAction(message)
             }
         } else logAction(message)
+    }
+
+    override fun preProcess(
+        level: LoggingLevel,
+        err: Throwable?,
+        scope: String?,
+        msg: String?
+    ) {
+        if (err != null) Sentry.captureException(err)
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    override fun getCallerScope(): String? {
+        return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).walk { walker ->
+            walker.skip(4)
+                .filter { frame -> frame.declaringClass.superclass == Extension::class.java }
+                .filter { frame -> frame.declaringClass.isAnnotationPresent(MappedExtension::class.java) }
+                .map { frame -> frame.declaringClass.getAnnotation(MappedExtension::class.java).name }
+                .findFirst()
+        }.getOrNull()
+    }
+
+    private val generalLength = run {
+        var length = 6 // [][][]
+        length += 8 // HH:mm:ss
+        length += 3 // Spaces
+        length += 16 // Colours
+        length += plugin.name.length
+
+        length
     }
 
     private fun logAction(message: () -> FormattedMessage) {
@@ -271,13 +262,37 @@ class PluginDependentMinixLogger<T : MinixPlugin> private constructor(
         Sentry.addBreadcrumb(breadcrumb)
     }
 
-    companion object {
-        private val NEWLINE: ByteArray = "\n".encodeToByteArray()
-        private val TERMINAL: Terminal = TerminalConsoleAppender.getTerminal().toOption()
+    private fun getPrefixLength(
+        scope: String?,
+        level: LoggingLevel
+    ): Int {
+        var length = generalLength
+        length += level.name.length
+
+        if (!scope.isNullOrBlank()) {
+            length += scope.length + 1
+        }
+
+        if (level.ordinal > 3) {
+            length += Thread.currentThread().name.length + 1
+        }
+
+        return length
+    }
+
+    init {
+        if (plugin.logger.level != null) {
+            this.setLevel(LoggingLevel.fromJava(plugin.logger.level))
+        }
+    }
+
+    private companion object {
+        val NEWLINE: ByteArray = "\n".encodeToByteArray()
+        val TERMINAL: Terminal = TerminalConsoleAppender.getTerminal().toOption()
             .redeem({ TerminalBuilder.terminal() }, { it })
             .redeem({ TerminalBuilder.builder().build() }, { it })
             .getOrElse { error("Couldn't get the default Terminal Appender.") }
-        private val ROLLING_MANAGER: RollingRandomAccessFileManager = AbstractManager::class.staticProperties
+        val ROLLING_MANAGER: RollingRandomAccessFileManager = AbstractManager::class.staticProperties
             .findKProperty<Map<String, AbstractManager>>("MAP")
             .map { runBlocking { it.accessGet() } }
             .mapNotNull { map -> map["logs/latest.log"] }
@@ -285,7 +300,6 @@ class PluginDependentMinixLogger<T : MinixPlugin> private constructor(
             .filterIsInstance<RollingRandomAccessFileManager>()
             .getOrElse { error("The manager instance wasn't of type RollingRandomAccessFileManager.") }
 
-        @MinixInternal
         val EXISTING: MutableMap<MinixPlugin, PluginDependentMinixLogger<*>> = mutableMapOf()
 
         fun getLogger(plugin: MinixPlugin) = EXISTING.getOrPut(plugin) { PluginDependentMinixLogger(plugin) }

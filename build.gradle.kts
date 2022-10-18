@@ -91,6 +91,7 @@ kotlin {
                 api(libs.kotlinx.coroutines)
                 api(libs.kotlinx.immutableCollections)
 
+                api(libs.koin.core)
                 api(libs.mordant)
 
                 api("org.bstats:bstats-base:3.0.0")

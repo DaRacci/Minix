@@ -1,34 +1,21 @@
-package dev.racci.minix.api.extensions
+package dev.racci.minix.api.plugin
 
-import dev.racci.minix.api.coroutine.asyncDispatcher
-import dev.racci.minix.api.coroutine.launch
-import dev.racci.minix.api.coroutine.minecraftDispatcher
-import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.plugin.logger.MinixLogger
+import dev.racci.minix.api.logger.MinixLogger
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.future.asCompletableFuture
-import org.bukkit.event.Listener
-import org.bukkit.plugin.Plugin
-import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import org.koin.core.Koin
 import org.koin.core.component.KoinComponent
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.CoroutineContext
 
-/** Registers all of these listeners for the plugin. */
-fun Plugin.registerEvents(
-    vararg listeners: Listener
-) = listeners.forEach { server.pluginManager.registerEvents(it, this) }
+public expect interface WithPlugin<T : MinixPlugin> : KoinComponent {
 
-interface WithPlugin<T : MinixPlugin> : KoinComponent {
+    public val plugin: T
 
-    val plugin: T
-
-    /** @see [MinixPlugin.logger] */
-    val logger: MinixLogger get() = this.plugin.log
+    public val logger: MinixLogger
 
     /**
      * Registers these events for the plugin.
@@ -121,8 +108,7 @@ interface WithPlugin<T : MinixPlugin> : KoinComponent {
      * @param block The lambda to run.
      * @param R The return type of the lambda.
      */
-    fun <R> completableSync(block: suspend () -> R): CompletableFuture<R> = getCompletable(this.plugin.minecraftDispatcher, block)
-
+    fun <R> completableSync(block: suspend () -> R): CompletableFuture<R>
     /**
      * A [CompletableFuture], which is completed off the server thread.
      * This future will be completed after the [block] is executed.
@@ -130,53 +116,14 @@ interface WithPlugin<T : MinixPlugin> : KoinComponent {
      * @param block The lambda to run.
      * @param R The return type of the lambda.
      */
-    fun <R> completableAsync(block: suspend () -> R): CompletableFuture<R> = getCompletable(this.plugin.asyncDispatcher, block)
-
+    fun <R> completableAsync(block: suspend () -> R): CompletableFuture<R>
     private fun <R> getDeferred(
         dispatcher: CoroutineContext,
         block: suspend () -> R
-    ): Deferred<R> {
-        val deferred = CompletableDeferred<R>()
-        launch(dispatcher) { deferred.complete(block()) }.invokeOnCompletion { it?.let(deferred::completeExceptionally) }
-        return deferred
-    }
+    ): Deferred<R>
 
     private fun <R> getCompletable(
         dispatcher: CoroutineContext,
         block: suspend () -> R
-    ): CompletableFuture<R> = getDeferred(dispatcher, block).asCompletableFuture()
+    ): CompletableFuture<R>
 }
-
-@get:ScheduledForRemoval(inVersion = "4.5.0")
-@get:Deprecated("Use WithPlugin.logger instead", ReplaceWith("this.logger"))
-val WithPlugin<*>.log: MinixLogger get() = this.logger
-
-@ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use WithPlugin.registerEvents instead", ReplaceWith("this.launch(listeners)"))
-fun WithPlugin<*>.registerEvents(
-    vararg listeners: Listener
-) = this.registerEvents(*listeners)
-
-@ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use WithPlugin.sync instead", ReplaceWith("this.sync(block)"))
-inline fun WithPlugin<*>.sync(noinline block: suspend CoroutineScope.() -> Unit): Job = this.sync(block)
-
-@ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use WithPlugin.async instead", ReplaceWith("this.async(block)"))
-inline fun WithPlugin<*>.async(noinline block: suspend CoroutineScope.() -> Unit): Job = this.async(block)
-
-@ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use WithPlugin.completableSync instead", ReplaceWith("this.completableSync(block)"))
-inline fun <R> WithPlugin<*>.completableSync(noinline block: suspend () -> R): CompletableFuture<R> = this.completableSync(block)
-
-@ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use WithPlugin.completableAsync instead", ReplaceWith("this.completableAsync(block)"))
-inline fun <R> WithPlugin<*>.completableAsync(noinline block: suspend () -> R): CompletableFuture<R> = this.completableAsync(block)
-
-@ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use WithPlugin.deferredSync instead", ReplaceWith("this.deferredSync(block)"))
-inline fun <R> WithPlugin<*>.deferredSync(noinline block: suspend () -> R): Deferred<R> = deferredSync(block)
-
-@ScheduledForRemoval(inVersion = "4.5.0")
-@Deprecated("Use WithPlugin.deferredAsync instead", ReplaceWith("this.deferredAsync(block)"))
-inline fun <R> WithPlugin<*>.deferredAsync(noinline block: suspend () -> R): Deferred<R> = deferredAsync(block)

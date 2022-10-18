@@ -1,4 +1,4 @@
-package dev.racci.minix.api.utils
+package dev.racci.minix.api.lifecycles
 
 import kotlinx.atomicfu.AtomicBoolean
 import kotlinx.atomicfu.AtomicRef
@@ -19,7 +19,8 @@ abstract class Loadable<T> {
     val failed: Boolean get() = error.value != null
     val loaded: Boolean get() = value.value != null && initialized.value
     val unloaded: Boolean get() = !initialized.value
-    val state: State get() = when {
+    val state: State
+        get() = when {
         unloaded -> State.UNLOADED
         loaded -> State.LOADED
         failed -> State.FAILED

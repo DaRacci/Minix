@@ -1,4 +1,4 @@
-package dev.racci.minix.api.utils
+package dev.racci.minix.api.lifecycles
 
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic

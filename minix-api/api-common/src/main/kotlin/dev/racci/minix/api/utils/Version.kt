@@ -1,4 +1,4 @@
-package dev.racci.minix.api.updater
+package dev.racci.minix.api.utils
 
 import dev.racci.minix.api.utils.collections.CollectionUtils.containsIgnoreCase
 import dev.racci.minix.api.utils.kotlin.ifTrue

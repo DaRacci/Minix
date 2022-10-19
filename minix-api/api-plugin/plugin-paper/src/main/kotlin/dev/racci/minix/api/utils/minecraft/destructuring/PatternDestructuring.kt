@@ -1,4 +1,4 @@
-package dev.racci.minix.api.destructors
+package dev.racci.minix.api.utils.minecraft.destructuring
 
 import org.bukkit.block.banner.Pattern
 

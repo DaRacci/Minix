@@ -8,4 +8,4 @@ import dev.racci.minix.api.extension.ExtensionSkeleton
  * [ExtensionSkeleton.handleUnload] will still be called, however, it won't be unloaded from koin, or the plugin service.
  */
 @MinixInternal
-annotation class DoNotUnload
+public annotation class DoNotUnload

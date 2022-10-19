@@ -13,4 +13,4 @@ package dev.racci.minix.api.annotations
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.PROPERTY_SETTER
 )
-annotation class MinixInternal
+public annotation class MinixInternal

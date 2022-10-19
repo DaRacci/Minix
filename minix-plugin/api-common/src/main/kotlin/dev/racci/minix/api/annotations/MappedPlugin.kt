@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  */
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class MappedPlugin(
+public annotation class MappedPlugin(
     val bStatsId: Int = -1,
     val bindToKClass: KClass<*> = MinixPlugin::class
 )

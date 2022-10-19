@@ -16,7 +16,7 @@ import kotlin.reflect.KClass
  * @property threadCount The number of threads in this extensions [ExecutorCoroutineDispatcher]
  */
 @Target(AnnotationTarget.CLASS)
-annotation class MappedExtension(
+public annotation class MappedExtension(
     val parent: KClass<*>,
     val name: String,
     val dependencies: Array<KClass<*>> = [],

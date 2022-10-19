@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
  * @property serializers An array of the serializers, these should be in groups of two with the first being the class, and the second being the serializer.
  */
 @Target(AnnotationTarget.CLASS)
-annotation class MappedConfig(
+public annotation class MappedConfig(
     val parent: KClass<*>,
     val file: String,
     val serializers: Array<KClass<*>> = []

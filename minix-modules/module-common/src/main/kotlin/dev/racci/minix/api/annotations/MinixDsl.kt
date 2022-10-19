@@ -5,4 +5,4 @@ package dev.racci.minix.api.annotations
  */
 @DslMarker
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
-annotation class MinixDsl
+public annotation class MinixDsl

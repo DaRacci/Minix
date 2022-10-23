@@ -8,35 +8,6 @@ pluginManagement {
         maven("https://repo.racci.dev/releases")
         maven("https://papermc.io/repo/repository/maven-public/")
     }
-
-    plugins {
-        val kotlinVersion: String by settings
-
-        kotlin("plugin.serialization") version kotlinVersion
-        kotlin("plugin.atomicfu") version kotlinVersion
-        id("org.jetbrains.dokka") version kotlinVersion
-
-        id("dev.racci.slimjar") version "1.3.3"
-        id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-        id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.1"
-    }
-
-    plugins {
-        val kotlinVersion: String by settings
-        kotlin("plugin.serialization") version kotlinVersion
-        id("org.jetbrains.dokka") version kotlinVersion
-    }
-
-    val minixVersion: String by settings
-    val kotlinVersion: String by settings
-    val conventions = kotlinVersion.plus("-").plus(minixVersion.substringAfterLast('.'))
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id.startsWith("dev.racci.minix")) {
-                useVersion(conventions)
-            }
-        }
-    }
 }
 
 dependencyResolutionManagement {
@@ -55,12 +26,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "Minix"
 
-include(":Minix-API")
-include(":Minix-Core")
-
-include(":minix-api:api-common")
-include(":minix-api:api-autoscanner")
-
-include(":minix-core")
-include(":minix-core:core-integrations")
-include(":minix-core:core-updater")
+include(":minix-modules:module-common")
+include(":minix-modules:module-autoscanner")
+include(":minix-modules:module-data")
+include(":minix-modules:module-wrappers")
+include(":minix-modules:module-eventbus")
+include(":minix-modules:module-integrations")
+//include(":minix-modules:module-updater")

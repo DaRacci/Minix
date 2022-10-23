@@ -61,10 +61,10 @@ Replace `tag` with a release tag, eg `1.0.0`.
 - [CoroutineTask](Minix-API/src/main/kotlin/dev/racci/minix/api/scheduler/CoroutineTask.kt)
 - [CoroutineRunnable](Minix-API/src/main/kotlin/dev/racci/minix/api/scheduler/CoroutineRunnable.kt)
 
-- [PluginService](Minix-Core/src/main/kotlin/dev/racci/minix/core/services/PluginServiceImpl.kt)
+- [PluginService](minix-plugin/core-common/src/main/kotlin/dev/racci/minix/core/services/PluginServiceImpl.kt)
   - Manages all minix plugins and allows plugins to be safe to use new versions of minix without code changes.
 
-- [Extensions](Minix-API/src/main/kotlin/dev/racci/minix/api/extension/Extension.kt):
+- [Extensions](minix-plugin/api-common/src/main/kotlin/dev/racci/minix/api/extension/Extension.kt):
   - Registers as a Koin injection automatically with the ability to bind to another class.
   - Provides a way of depending on other extension modules to start first and make sure they have successfully started.
   - Acts like it's own mini plugin with a enable and disable function, this allows you to more efficiently split your code up into smaller modules and helps with debugging.
@@ -110,11 +110,11 @@ Replace `tag` with a release tag, eg `1.0.0`.
   - [Enchant](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/EnchantSerializer.kt)
   - [Location](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/LocationSerializer.kt)
   - [MiniMessage](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/MiniMessageSerializer.kt)
-  - [NamespacedKey](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/NamespacedKeySerializer.kt)
+  - [NamespacedKey](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/KeySerializer.kt)
   - [Pattern](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/PatternSerializer.kt)
   - [PotionEffect](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/PotionEffectSerializer.kt)
   - [Range](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/RangeSerializers.kt)
-  - [Item Stack](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/SerializableItemStack.kt)
+  - [Item Stack](minix-modules/module-data/src/main/kotlin/dev/racci/minix/data/serializers/kotlin/minecraft/SerializableItemStack.kt)
   - [UUID](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/UUIDSerializer.kt)
   - [Vector](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/VectorSerializer.kt)
   - [World](Minix-API/src/main/kotlin/dev/racci/minix/api/serializables/WorldSerializer.kt)
@@ -138,16 +138,16 @@ Replace `tag` with a release tag, eg `1.0.0`.
     - [OnlinePlayerCollection](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/collections/OnlinePlayerCollections.kt)
 
   - Jetbrains exposed:
-    - [Block](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/exposed/Block.kt)
-    - [BlockPos](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/exposed/BlockPos.kt)
-    - [Cached](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/exposed/Cached.kt)
-    - [Chunk](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/exposed/Chunk.kt)
-    - [ChunkPos](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/exposed/ChunkPos.kt)
-    - [Item](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/exposed/Item.kt)
-    - [Location](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/exposed/Location.kt)
-    - [LocationPos](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/exposed/LocationPos.kt)
-    - [OfflinePlayer](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/exposed/OfflinePlayer.kt)
-    - [World](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/exposed/World.kt)
+    - [Block](minix-modules/module-data/src/main/kotlin/dev/racci/minix/api/data/serializers/exposed/Block.kt)
+    - [BlockPos](minix-modules/module-data/src/main/kotlin/dev/racci/minix/api/data/serializers/exposed/BlockPos.kt)
+    - [Cached](minix-modules/module-data/src/main/kotlin/dev/racci/minix/api/data/serializers/exposed/Cached.kt)
+    - [Chunk](minix-modules/module-data/src/main/kotlin/dev/racci/minix/api/data/serializers/exposed/Chunk.kt)
+    - [ChunkPos](minix-modules/module-data/src/main/kotlin/dev/racci/minix/api/data/serializers/exposed/ChunkPos.kt)
+    - [Item](minix-modules/module-data/src/main/kotlin/dev/racci/minix/api/data/serializers/exposed/Item.kt)
+    - [Location](minix-modules/module-data/src/main/kotlin/dev/racci/minix/api/data/serializers/exposed/Location.kt)
+    - [LocationPos](minix-modules/module-data/src/main/kotlin/dev/racci/minix/api/data/serializers/exposed/LocationPos.kt)
+    - [OfflinePlayer](minix-modules/module-data/src/main/kotlin/dev/racci/minix/api/data/serializers/exposed/OfflinePlayer.kt)
+    - [World](minix-modules/module-data/src/main/kotlin/dev/racci/minix/api/data/serializers/exposed/World.kt)
 
   - Kotlin:
     - [Infix Utils](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/kotlin/Infix.kt)
@@ -172,8 +172,8 @@ Replace `tag` with a release tag, eg `1.0.0`.
     - [Number](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/NumberUtils.kt)
     - [String](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/primitive/StringUtils.kt)
     - [Koin](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/Koin.kt)
-    - [Reflection](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/ReflectionUtils.kt)
-    - [TakeMaxTimePerTick](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/TakeMaxTimePerTickUtils.kt)
+    - [Reflection](minix-modules/module-common/src/main/kotlin/dev/racci/minix/api/utils/ReflectionUtils.kt)
+    - [TakeMaxTimePerTick](minix-modules/module-common/src/main/kotlin/dev/racci/minix/api/utils/TakeMaxTimePerTickUtils.kt)
     - [Time](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/TimeUtils.kt)
     - [Unsafe](Minix-API/src/main/kotlin/dev/racci/minix/api/utils/UnsafeUtil.kt)
 

@@ -1,5 +1,9 @@
 import java.net.URI
 
+plugins {
+    `java-library`
+}
+
 dependencies {
     compileOnly(project(":Minix-API"))
     compileOnly("dev.racci.slimjar:slimjar:1.2.10")
@@ -7,9 +11,9 @@ dependencies {
 
 java.withSourcesJar()
 
-tasks.dokkaHtml {
-    outputDirectory.set(file("/docs"))
-}
+//tasks.dokkaHtml {
+//    outputDirectory.set(file("/docs"))
+//}
 
 tasks.withType<GenerateModuleMetadata> {
     enabled = false
@@ -23,12 +27,12 @@ dependencies {
     implementation(project(":minix-core:core-integrations"))
 }
 
-publishing {
-    repositories.maven {
-        name = "RacciRepo"
-        url = URI("https://repo.racci.dev/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
-        credentials(PasswordCredentials::class)
-    }
+//publishing {
+//    repositories.maven {
+//        name = "RacciRepo"
+//        url = URI("https://repo.racci.dev/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
+//        credentials(PasswordCredentials::class)
+//    }
 
 //    publications.register("maven", MavenPublication::class) {
 //        artifactId = rootProject.name + "-Core"
@@ -67,4 +71,4 @@ publishing {
 //            }
 //        }
 //    }
-}
+//}

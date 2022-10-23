@@ -1,88 +1,79 @@
+import com.google.devtools.ksp.gradle.KspGradleSubplugin
+import net.minecrell.pluginyml.bukkit.BukkitPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
 import org.jetbrains.dokka.gradle.DokkaPlugin
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlinx.serialization.gradle.SerializationGradleSubplugin
 import java.net.URL
 
 val minixVersion: String by project
 val version: String by project
 
+// Workaround for (https://youtrack.jetbrains.com/issue/KTIJ-19369)
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     kotlin("multiplatform") version "1.7.20"
-    alias(libs.plugins.minix.nms)
-//    alias(libs.plugins.minix.kotlin)
-    alias(libs.plugins.minix.copyjar)
-    alias(libs.plugins.minix.purpurmc)
+// TODO -> FIX
+//  alias(libs.plugins.minix.kotlin)
+    alias(libs.plugins.minix.copyjar) apply false
+    alias(libs.plugins.minix.purpurmc) apply false
 
     alias(libs.plugins.dokka)
-    alias(libs.plugins.kotlin.atomicfu)
-    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.atomicfu) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.kotlin.binaryValidator)
 
+    alias(libs.plugins.shadow)
     alias(libs.plugins.slimjar)
     alias(libs.plugins.minecraft.pluginYML)
+
+    id("com.google.devtools.ksp") version "1.7.20-1.0.7"
 }
 
 apiValidation {
-    ignoredProjects = subprojects.first { it.name == "minix-core" }.subprojects.map(Project::getName).toMutableSet()
-    ignoredProjects += "Minix"
-    ignoredProjects += "Minix-Core"
-    ignoredProjects += "minix-core"
+//    ignoredProjects = subprojects.first { it.name.contains("core") }.subprojects.map(Project::getName).toMutableSet()
 
     ignoredPackages.add("dev.racci.minix.core")
     nonPublicMarkers.add("dev.racci.minix.api.MinixInternal")
 }
 
-// TODO -> Migrate Minix-NMS to Minix instead of Minix-Conventions
-dependencies {
-    implementation(project("Minix-Core"))
-    implementation(project("Minix-API"))
-    implementation("dev.racci.slimjar:slimjar:1.2.11")
-    implementation(libs.minecraft.bstats)
-
-    slim("io.github.toolfactory:jvm-driver:9.3.0")
-}
-
-kotlin {
-    kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
-}
-
-bukkit {
-    name = "Minix"
-    prefix = "Minix"
-    author = "Racci"
-    apiVersion = "1.19"
-    version = rootProject.version.toString()
-    main = "dev.racci.minix.core.MinixInit"
-    load = PluginLoadOrder.STARTUP
-    loadBefore = listOf("eco")
-    softDepend = listOf("PlaceholderAPI", "Lands", "ServerUtils")
-    website = "https://github.com/DaRacci/Minix"
-}
-
 tasks {
     val quickBuild by creating {
         group = "build"
-//        dependsOn(compileKotlin)
+        dependsOn(compileJava)
         dependsOn(shadowJar)
-        dependsOn(reobfJar)
+//        dependsOn(reobfJar)
         findByName("copyJar")?.let { dependsOn(it) }
     }
 }
 
 kotlin {
-    explicitApi()
+    explicitApiWarning()
+    kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
+
+    fun KotlinSourceSet.setDirs(module: String) {
+        this.kotlin.srcDirs.clear()
+        this.kotlin.setSrcDirs(
+            listOf(
+                "minix-plugin/api-$module/src/main/kotlin",
+                "minix-plugin/core-$module/src/main/kotlin"
+            )
+        )
+    }
 
     sourceSets {
         val commonMain by getting {
-            this.kotlin.srcDir("minix-api/api-plugin/plugin-common/src/main/kotlin")
-            this.kotlin.srcDir("minix-plugin/plugin-common/src/main/resources")
+            this.setDirs("common")
 
             dependencies {
-                api(project(":minix-api:api-autoscanner"))
-                api(project(":minix-api:api-common"))
-
-                compileOnly("org.apiguardian:apiguardian-api:1.1.2")
+                api(project(":minix-modules:module-autoscanner"))
+                api(project(":minix-modules:module-common"))
+                api(project(":minix-modules:module-data"))
+                api(project(":minix-modules:module-eventbus"))
+                api(project(":minix-modules:module-integrations"))
+//                api(project(":minix-modules:module-updater"))
+                api(project(":minix-modules:module-wrappers"))
 
                 api(libs.kotlin.stdlib)
                 api(libs.kotlin.reflect)
@@ -93,37 +84,43 @@ kotlin {
 
                 api(libs.koin.core)
                 api(libs.mordant)
-
+                api(libs.caffeine)
                 api("org.bstats:bstats-base:3.0.0")
+                api("io.github.toolfactory:jvm-driver:9.3.0")
+                api("dev.racci.slimjar:slimjar:1.2.11")
+
+                api(libs.sentry.core)
+                api(libs.sentry.kotlin)
+
+                api(libs.hikariCP)
+
+                // Annotations
+                compileOnly("org.apiguardian:apiguardian-api:1.1.2")
+                compileOnly("io.insert-koin:koin-annotations:1.0.3")
             }
         }
 
         val paperMain by creating {
-            this.kotlin.srcDir("minix-api/api-plugin/plugin-paper/src/main/kotlin")
-            this.kotlin.srcDir("minix-plugin/plugin-paper/src/main/kotlin")
+            this.setDirs("paper")
+            this.kotlin.srcDir("minix-plugin/core-paper/src/main/java")
             this.dependsOn(commonMain)
-
-            repositories {
-                mavenCentral()
-                maven("https://papermc.io/repo/repository/maven-public/")
-            }
 
             this.dependencies {
                 compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
+                compileOnly(libs.minecraft.api.landsAPI)
+                compileOnly(libs.minecraft.api.placeholderAPI)
+                compileOnly("net.frankheijden.serverutils:ServerUtils:3.5.3")
 
                 api(libs.minecraft.bstats)
             }
         }
 
         val velocityMain by creating {
-            this.kotlin.srcDir("minix-api/api-plugin/plugin-velocity/src/main/kotlin")
-            this.kotlin.srcDir("minix-plugin/plugin-velocity/src/main/kotlin")
+            this.setDirs("velocity")
             this.dependsOn(commonMain)
 
             this.dependencies {
                 compileOnly("com.velocitypowered:velocity-api:3.1.1")
-                compileOnly("com.velocitypowered:velocity-api:3.1.1") // TODO -> KSP
-
                 api("org.bstats:bstats-velocity:3.0.0")
             }
         }
@@ -133,42 +130,66 @@ kotlin {
         all {
             compilations.all {
                 kotlinOptions {
-                    allWarningsAsErrors = true
+                    this.allWarningsAsErrors = true
+                    this.freeCompilerArgs += "-opt-in=dev.racci.minix.api.annotations.MinixInternal"
                 }
             }
         }
 
-        jvm("paper")
+        jvm("paper") {
+            this.project.apply<BukkitPlugin>()
+            this.project.bukkit {
+                name = "Minix"
+                prefix = "Minix"
+                author = "Racci"
+                apiVersion = "1.19"
+                version = rootProject.version.toString()
+                main = "dev.racci.minix.core.MinixInit"
+                load = PluginLoadOrder.STARTUP
+                loadBefore = listOf("eco")
+                softDepend = listOf("PlaceholderAPI", "Lands", "ServerUtils")
+                website = "https://github.com/DaRacci/Minix"
+            }
+        }
         jvm("velocity")
     }
+}
+
+dependencies {
+    add("kspCommonMainMetadata", "io.insert-koin:koin-ksp-compiler:1.0.3")
+    add("kspVelocity", "com.velocitypowered:velocity-api:3.1.1")
+    add("kspVelocity", "io.insert-koin:koin-ksp-compiler:1.0.3")
+    add("kspPaper", "io.insert-koin:koin-ksp-compiler:1.0.3")
 }
 
 subprojects {
     apply<DokkaPlugin>()
     apply<JavaLibraryPlugin>()
     apply<MavenPublishPlugin>()
-
     apply<Dev_racci_minix_kotlinPlugin>()
-    apply<Dev_racci_minix_copyjarPlugin>()
-    apply<Dev_racci_minix_purpurmcPlugin>()
-    apply<SerializationGradleSubplugin>()
+    apply<KspGradleSubplugin>()
 
     configurations {
         val slim by creating
 
         compileClasspath.get().extendsFrom(slim)
         runtimeClasspath.get().extendsFrom(slim)
-//        api.get().extendsFrom(slim)
+        apiElements.get().extendsFrom(slim)
+    }
+
+    (this as ExtensionAware).extensions.configure<KotlinJvmProjectExtension>("kotlin") {
+        explicitApiWarning()
+        kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
     }
 
     dependencies {
-        testImplementation(platform(kotlin("bom")))
-        testImplementation(rootProject.libs.bundles.kotlin)
-        testImplementation(rootProject.libs.bundles.kotlinx)
-        testImplementation(rootProject.libs.bundles.testing)
-        testImplementation(rootProject.libs.koin.test)
-        testImplementation(rootProject.libs.minecraft.bstats)
-        testImplementation(project(":Minix-API"))
+        val common = project(":minix-modules:module-common")
+        if (this@subprojects.project !== common.dependencyProject) {
+            compileOnly(common)
+        }
+
+        ksp("io.arrow-kt:arrow-meta:1.6.1-SNAPSHOT")
+        ksp("io.insert-koin:koin-ksp-compiler:1.0.3")
     }
 
     tasks {
@@ -242,6 +263,17 @@ tasks {
 allprojects {
 
     buildDir = file(rootProject.projectDir.resolve("build").resolve(project.name))
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven("https://jitpack.io")
+        maven("https://repo.fvdh.dev/releases")
+        maven("https://repo.racci.dev/releases")
+        maven("https://repo.purpurmc.org/snapshots")
+        maven("https://papermc.io/repo/repository/maven-public/")
+        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
+    }
 
     configurations {
         testImplementation.get().exclude("org.jetbrains.kotlin", "kotlin-test-junit")

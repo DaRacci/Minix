@@ -5,14 +5,13 @@ import dev.racci.minix.api.data.enums.LiquidType
 import dev.racci.minix.api.events.CompanionEventHandler
 import org.bukkit.event.HandlerList
 
-public class PlayerLiquidExitEvent(
+public class PlayerLiquidEnterEvent(
     player: MinixPlayer,
     previousType: LiquidType,
     newType: LiquidType
 ) : PlayerLiquidEvent(player, previousType, newType) {
 
     public companion object : CompanionEventHandler() {
-        @JvmStatic
-        override fun getHandlerList(): HandlerList = super.getHandlerList()
+        @JvmStatic override fun getHandlerList(): HandlerList = super.getHandlerList()
     }
 }

@@ -1,7 +1,7 @@
 package dev.racci.minix.api.events.player
 
-import dev.racci.minix.api.events.CompanionEventHandler
 import dev.racci.minix.api.data.MinixPlayer
+import dev.racci.minix.api.events.CompanionEventHandler
 import org.bukkit.event.HandlerList
 
 /**

@@ -17,7 +17,7 @@ public actual abstract class MinixEvent(
 ) : Event(async), Cancellable {
 
     @set:JvmName("actualSetCancelled")
-    public actual var cancelled: Boolean = false
+    public var cancelled: Boolean = false
 
     final override fun setCancelled(cancel: Boolean) {
         cancelled = cancel

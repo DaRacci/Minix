@@ -2,9 +2,11 @@ import com.google.devtools.ksp.gradle.KspGradleSubplugin
 import net.minecrell.pluginyml.bukkit.BukkitPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
 import org.jetbrains.dokka.gradle.DokkaPlugin
-import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jlleitschuh.gradle.ktlint.KtlintExtension
+import org.jlleitschuh.gradle.ktlint.KtlintPlugin
 import java.net.URL
 
 val minixVersion: String by project
@@ -32,7 +34,8 @@ plugins {
 }
 
 apiValidation {
-//    ignoredProjects = subprojects.first { it.name.contains("core") }.subprojects.map(Project::getName).toMutableSet()
+    ignoredProjects = subprojects.filter { it.name.contains("core") }.map(Project::getName).toMutableSet()
+    ignoredPackages += "minix-modules"
 
     ignoredPackages.add("dev.racci.minix.core")
     nonPublicMarkers.add("dev.racci.minix.api.MinixInternal")
@@ -49,9 +52,6 @@ tasks {
 }
 
 kotlin {
-    explicitApiWarning()
-    kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
-
     fun KotlinSourceSet.setDirs(module: String) {
         this.kotlin.srcDirs.clear()
         this.kotlin.setSrcDirs(
@@ -93,6 +93,7 @@ kotlin {
                 api(libs.sentry.kotlin)
 
                 api(libs.hikariCP)
+                api(libs.adventure.configurate)
 
                 // Annotations
                 compileOnly("org.apiguardian:apiguardian-api:1.1.2")
@@ -102,40 +103,41 @@ kotlin {
 
         val paperMain by creating {
             this.setDirs("paper")
+
             this.kotlin.srcDir("minix-plugin/core-paper/src/main/java")
             this.dependsOn(commonMain)
 
             this.dependencies {
                 compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
+
+                // Integrations
                 compileOnly(libs.minecraft.api.landsAPI)
                 compileOnly(libs.minecraft.api.placeholderAPI)
                 compileOnly("net.frankheijden.serverutils:ServerUtils:3.5.3")
 
+                // MinixLogger backend hooks for paper logger
+                compileOnly("org.apache.logging.log4j:log4j-core:2.19.0")
+                compileOnly("net.minecrell:terminalconsoleappender:1.3.0")
+                compileOnly("org.jline:jline-terminal-jansi:3.21.0")
+
                 api(libs.minecraft.bstats)
+                api(libs.configurate.hocon)
+                api(libs.configurate.extra.kotlin)
             }
         }
 
-        val velocityMain by creating {
-            this.setDirs("velocity")
-            this.dependsOn(commonMain)
-
-            this.dependencies {
-                compileOnly("com.velocitypowered:velocity-api:3.1.1")
-                api("org.bstats:bstats-velocity:3.0.0")
-            }
-        }
+//        val velocityMain by creating {
+//            this.setDirs("velocity")
+//            this.dependsOn(commonMain)
+//
+//            this.dependencies {
+//                compileOnly("com.velocitypowered:velocity-api:3.1.1")
+//                api("org.bstats:bstats-velocity:3.0.0")
+//            }
+//        }
     }
 
     targets {
-        all {
-            compilations.all {
-                kotlinOptions {
-                    this.allWarningsAsErrors = true
-                    this.freeCompilerArgs += "-opt-in=dev.racci.minix.api.annotations.MinixInternal"
-                }
-            }
-        }
-
         jvm("paper") {
             this.project.apply<BukkitPlugin>()
             this.project.bukkit {
@@ -151,14 +153,14 @@ kotlin {
                 website = "https://github.com/DaRacci/Minix"
             }
         }
-        jvm("velocity")
+//        jvm("velocity")
     }
 }
 
 dependencies {
     add("kspCommonMainMetadata", "io.insert-koin:koin-ksp-compiler:1.0.3")
-    add("kspVelocity", "com.velocitypowered:velocity-api:3.1.1")
-    add("kspVelocity", "io.insert-koin:koin-ksp-compiler:1.0.3")
+//    add("kspVelocity", "com.velocitypowered:velocity-api:3.1.1")
+//    add("kspVelocity", "io.insert-koin:koin-ksp-compiler:1.0.3")
     add("kspPaper", "io.insert-koin:koin-ksp-compiler:1.0.3")
 }
 
@@ -177,11 +179,6 @@ subprojects {
         apiElements.get().extendsFrom(slim)
     }
 
-    (this as ExtensionAware).extensions.configure<KotlinJvmProjectExtension>("kotlin") {
-        explicitApiWarning()
-        kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
-    }
-
     dependencies {
         val common = project(":minix-modules:module-common")
         if (this@subprojects.project !== common.dependencyProject) {
@@ -193,14 +190,6 @@ subprojects {
     }
 
     tasks {
-
-        withType<Test>().configureEach {
-            useJUnitPlatform()
-        }
-
-        withType<KotlinCompile>().configureEach {
-            kotlinOptions.freeCompilerArgs += "-opt-in=dev.racci.minix.api.annotations.MinixInternal"
-        }
 
         dokkaHtml.get().dokkaSourceSets.configureEach {
             includeNonPublic.set(false)
@@ -261,8 +250,15 @@ tasks {
 }
 
 allprojects {
+    apply<KtlintPlugin>()
 
     buildDir = file(rootProject.projectDir.resolve("build").resolve(project.name))
+
+    configure<KtlintExtension> {
+        filter {
+            this.exclude("**/generated/**") // exclude generated sources
+        }
+    }
 
     repositories {
         mavenLocal()
@@ -283,6 +279,29 @@ allprojects {
             exclude("me.carleslc.Simple-YAML", "Simple-Configuration")
             exclude("me.carleslc.Simple-YAML", "Simple-Yaml")
             exclude("com.github.technove", "Flare")
+        }
+    }
+
+    tasks {
+        withType<Test>().configureEach {
+            useJUnitPlatform()
+        }
+
+        withType<KotlinCompile>().configureEach {
+            kotlinOptions.freeCompilerArgs += "-opt-in=dev.racci.minix.api.annotations.MinixInternal"
+        }
+    }
+
+    kotlinExtension.apply {
+        this.jvmToolchain(17)
+        this.explicitApiWarning() // Koin generated sources aren't complicit.
+        this.kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
+
+        (sourceSets.findByName("main") ?: sourceSets.getByName("commonMain")).apply {
+            this.kotlin.srcDir("$buildDir/generated/ksp/main/kotlin")
+        }
+        (sourceSets.findByName("test") ?: sourceSets.getByName("commonTest")).apply {
+            this.kotlin.srcDir("$buildDir/generated/ksp/test/kotlin")
         }
     }
 }

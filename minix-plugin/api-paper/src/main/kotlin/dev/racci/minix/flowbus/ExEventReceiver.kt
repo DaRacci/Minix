@@ -33,7 +33,7 @@ public inline fun <reified T : Any> EventReceiver.bukkitSubscribe(
     event: KClass<T>,
     priority: EventPriority = EventPriority.NORMAL, // TODO -> Add support for event priority
     ignoreCancelled: Boolean = false,
-    crossinline callback: T.() -> Unit
+    crossinline callback: suspend T.() -> Unit
 ) {
     this.subscribeTo(event, true) {
         if (it is Cancellable && ignoreCancelled && it.isCancelled) return@subscribeTo

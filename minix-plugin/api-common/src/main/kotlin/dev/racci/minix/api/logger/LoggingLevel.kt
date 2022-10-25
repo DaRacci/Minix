@@ -6,6 +6,7 @@ package dev.racci.minix.api.logger
  * This allows for easy filtering using [Int] comparisons.
  */
 import dev.racci.minix.api.exceptions.LevelConversionException
+import dev.racci.minix.api.logger.converters.LoggerConverter
 import org.apiguardian.api.API
 import kotlin.jvm.Throws
 import kotlin.reflect.KClass
@@ -27,7 +28,7 @@ public enum class LoggingLevel(public val level: Int) {
 
     public companion object {
         @PublishedApi
-        internal lateinit var CONVERTERS: MutableMap<KClass<Any>, LoggerConverter<Any>>
+        internal lateinit var CONVERTERS: MutableMap<KClass<out Any>, LoggerConverter<out Any>>
 
         @PublishedApi
         @Suppress("UNCHECKED_CAST")

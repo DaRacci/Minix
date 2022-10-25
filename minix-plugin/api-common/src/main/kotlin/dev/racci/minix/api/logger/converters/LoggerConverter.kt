@@ -1,6 +1,7 @@
-package dev.racci.minix.api.logger
+package dev.racci.minix.api.logger.converters
 
 import dev.racci.minix.api.exceptions.LevelConversionException
+import dev.racci.minix.api.logger.LoggingLevel
 import org.apiguardian.api.API
 
 /**

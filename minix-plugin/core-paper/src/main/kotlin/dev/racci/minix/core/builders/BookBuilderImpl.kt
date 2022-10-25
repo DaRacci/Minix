@@ -1,13 +1,11 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.core.builders
 
-import dev.racci.minix.api.builders.BookBuilder
+import dev.racci.minix.api.paper.builders.BookBuilder
 import net.kyori.adventure.text.Component
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BookMeta
 
-class BookBuilderImpl internal constructor(
+public class BookBuilderImpl internal constructor(
     itemStack: ItemStack,
 ) : BaseItemBuilderImpl<BookBuilder, BookMeta>(itemStack), BookBuilder {
 

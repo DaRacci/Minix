@@ -1,15 +1,13 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.core.builders
 
-import dev.racci.minix.api.builders.MapBuilder
+import dev.racci.minix.api.paper.builders.MapBuilder
 import org.bukkit.Color
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.MapMeta
 import org.bukkit.map.MapView
 
-class MapBuilderImpl internal constructor(
-    itemStack: ItemStack,
+public class MapBuilderImpl internal constructor(
+    itemStack: ItemStack
 ) : BaseItemBuilderImpl<MapBuilderImpl, MapMeta>(itemStack), MapBuilder {
 
     override var colour: Color?

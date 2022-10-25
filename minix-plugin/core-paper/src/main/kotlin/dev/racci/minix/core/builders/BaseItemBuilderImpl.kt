@@ -1,14 +1,12 @@
-@file:Suppress("UNCHECKED_CAST", "UNUSED")
-
 package dev.racci.minix.core.builders
 
 import com.destroystokyo.paper.Namespaced
 import com.google.common.collect.Multimap
-import dev.racci.minix.api.builders.BaseItemBuilder
 import dev.racci.minix.api.exceptions.IncorrectItemTypeException
 import dev.racci.minix.api.extensions.PDC
 import dev.racci.minix.api.extensions.pdc
 import dev.racci.minix.api.extensions.toItemStack
+import dev.racci.minix.api.paper.builders.BaseItemBuilder
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
@@ -18,7 +16,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 
-sealed class BaseItemBuilderImpl<B : BaseItemBuilder<B, M>, M : ItemMeta> constructor(
+public sealed class BaseItemBuilderImpl<B : BaseItemBuilder<B, M>, M : ItemMeta> constructor(
     override var itemStack: ItemStack = Material.AIR.toItemStack(),
     override var meta: M = itemStack.itemMeta as? M
         ?: throw IncorrectItemTypeException("The meta type ${Class<M>::getName} and builder type" + " ${Class<B>::getName} is not valid for item type ${itemStack.type.name}"),

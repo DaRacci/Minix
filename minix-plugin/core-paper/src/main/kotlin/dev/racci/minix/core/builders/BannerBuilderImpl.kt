@@ -1,15 +1,13 @@
-@file:Suppress("UNUSED")
-
 package dev.racci.minix.core.builders
 
 import com.destroystokyo.paper.MaterialSetTag
-import dev.racci.minix.api.builders.BannerBuilder
+import dev.racci.minix.api.paper.builders.BannerBuilder
 import org.bukkit.Material
 import org.bukkit.block.banner.Pattern
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BannerMeta
 
-class BannerBuilderImpl internal constructor(
+public class BannerBuilderImpl internal constructor(
     itemStack: ItemStack,
 ) : BaseItemBuilderImpl<BannerBuilder, BannerMeta>(itemStack), BannerBuilder {
 

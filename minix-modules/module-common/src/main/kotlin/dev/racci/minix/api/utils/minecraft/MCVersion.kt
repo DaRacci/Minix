@@ -14,8 +14,8 @@ public class MCVersion private constructor(
     public val protocolVersion: Int
 ) : Comparable<MCVersion> {
     private val isNMS: Boolean
-    private val identifier: String
 
+    public val identifier: String
     public val ordinal: Int = ordinalInc.getAndIncrement()
     public val mainVersionString: String
     public val versionString: String

@@ -1,6 +1,6 @@
 package dev.racci.minix.api.events.world
 
-import dev.racci.minix.api.events.MinixEvent
+import dev.racci.minix.api.events.CompanionEventHandler
 import org.bukkit.World
 import org.bukkit.event.HandlerList
 
@@ -12,8 +12,7 @@ import org.bukkit.event.HandlerList
 public class WorldDayEvent(
     world: World
 ) : MinixWorldEvent(world) {
-    public companion object {
-        @JvmStatic
-        public fun getHandlerList(): HandlerList = MinixEvent.handlerMap[WorldDayEvent::class]
+    public companion object : CompanionEventHandler() {
+        @JvmStatic override fun getHandlerList(): HandlerList = super.getHandlerList()
     }
 }

@@ -3,7 +3,9 @@ package dev.racci.minix.api.events.plugin
 import dev.racci.minix.api.events.MinixCancellable
 import dev.racci.minix.api.plugin.MinixPlugin
 
-public expect class CaughtCoroutineExceptionEvent(
+public actual class CaughtCoroutineExceptionEvent actual constructor(
     plugin: MinixPlugin,
     err: Throwable
-) : MinixPluginEvent, MinixCancellable
+) : MinixPluginEvent(plugin, true), MinixCancellable {
+    public override var actualCancelled: Boolean = false
+}

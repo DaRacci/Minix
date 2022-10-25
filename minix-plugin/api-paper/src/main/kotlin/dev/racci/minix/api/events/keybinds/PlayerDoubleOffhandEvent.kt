@@ -1,7 +1,7 @@
 package dev.racci.minix.api.events.keybinds
 
-import dev.racci.minix.api.events.CompanionEventHandler
 import dev.racci.minix.api.data.MinixPlayer
+import dev.racci.minix.api.events.CompanionEventHandler
 import org.bukkit.entity.Entity
 import org.bukkit.event.HandlerList
 import org.bukkit.inventory.ItemStack

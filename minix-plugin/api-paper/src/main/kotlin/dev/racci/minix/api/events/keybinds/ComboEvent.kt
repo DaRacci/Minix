@@ -1,7 +1,7 @@
 package dev.racci.minix.api.events.keybinds
 
-import dev.racci.minix.api.events.player.MinixPlayerEvent
 import dev.racci.minix.api.data.MinixPlayer
+import dev.racci.minix.api.events.player.MinixPlayerEvent
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.entity.Entity

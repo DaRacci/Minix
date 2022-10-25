@@ -70,7 +70,7 @@ kotlin {
                 api(project(":minix-modules:module-autoscanner"))
                 api(project(":minix-modules:module-common"))
                 api(project(":minix-modules:module-data"))
-                api(project(":minix-modules:module-eventbus"))
+                api(project(":minix-modules:module-flowbus"))
                 api(project(":minix-modules:module-integrations"))
 //                api(project(":minix-modules:module-updater"))
                 api(project(":minix-modules:module-wrappers"))

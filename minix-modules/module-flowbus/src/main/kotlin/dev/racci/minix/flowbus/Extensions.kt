@@ -28,7 +28,7 @@ public inline fun <reified T : Any> FlowBus.getFlow(): Flow<T> = getFlow(T::clas
  */
 public inline fun <reified T : Any> EventReceiver.subscribe(
     skipRetained: Boolean = false,
-    noinline callback: suspend (T) -> Unit
+    noinline callback: suspend T.() -> Unit
 ): EventReceiver = subscribeTo(T::class, skipRetained, callback)
 
 /**

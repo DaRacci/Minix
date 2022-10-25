@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
-import org.koin.core.annotation.Scope
 import kotlin.reflect.KClass
 
 /**
@@ -23,7 +22,6 @@ import kotlin.reflect.KClass
 */
 // TODO -> Cancelable, Priority, Bukkit listener conversion
 @Factory([EventReceiver::class])
-@Scope(name = "flowBus:receiver-impl")
 public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : EventReceiver {
     private val jobs = mutableMapOf<KClass<*>, Job>()
 

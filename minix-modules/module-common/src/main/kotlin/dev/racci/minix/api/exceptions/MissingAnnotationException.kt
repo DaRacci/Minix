@@ -4,5 +4,5 @@ import kotlin.reflect.KClass
 
 public class MissingAnnotationException(
     kClass: KClass<*>,
-    annotation: KClass<Annotation>
+    annotation: KClass<out Annotation>
 ) : RuntimeException("Missing annotation ${annotation.simpleName} on ${kClass.qualifiedName}")

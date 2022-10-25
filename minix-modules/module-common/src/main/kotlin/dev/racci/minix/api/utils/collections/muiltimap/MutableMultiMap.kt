@@ -93,8 +93,10 @@ public class MutableMultiMap<K, V> : MultiMap<K, V> {
      *
      * @param onRemove The action to run on each key with its values.
      */
-    public fun clear(onRemove: (K, ImmutableSet<V>) -> Unit) {
-        internalMap.entries.forEach { onRemove(it.key, it.value.toImmutableSet()) }.also { internalMap.clear() }
+    public fun clear(onRemove: (K, V) -> Unit) {
+        internalMap.entries.flatMap { entry ->
+            entry.value.map { value -> entry.key to value }
+        }.forEach { (key, value) -> onRemove(key, value) }
     }
 
     /**

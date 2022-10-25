@@ -62,4 +62,16 @@ public open class MutableRegisteringMap<K : Any, V : Any> private constructor(
     public fun remove(descriptor: K): Boolean {
         return internalMap.computeAndRemove(descriptor, Loadable<V>::unload)
     }
+
+    public companion object {
+        /**
+         * Creates a new [MutableRegisteringMap].
+         */
+        public fun <K : Any, V : Any> of(): MutableRegisteringMap<K, V> = MutableRegisteringMap(mutableMapOf())
+
+        /**
+         * Creates a new [MutableRegisteringMap] with the given entries.
+         */
+        public fun <K : Any, V : Any> of(vararg pairs: Pair<K, Loadable<V>>): MutableRegisteringMap<K, V> = MutableRegisteringMap(mutableMapOf(*pairs))
+    }
 }

@@ -29,7 +29,7 @@ public sealed class RegisteringMap<K : Any, V : Any> {
 
     public fun containsValue(value: V): Boolean = this.internalMap.values.any { it.get().isSuccess && it.get().getOrThrow() == value }
 
-    public fun get(key: K): V? = this.internalMap[key]?.get()?.getOrNull()
+    public fun getLoaded(key: K): V? = this.internalMap[key]?.get()?.getOrNull()
 
     /** @return All registered values in this map. */
     public fun getRegistered(): ImmutableSet<V> {

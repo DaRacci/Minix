@@ -5,7 +5,7 @@ import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentHashMapOf
 import kotlinx.collections.immutable.toPersistentHashMap
 
-public open class ImmutableRegisteringMap<K : Any, V : Any> private constructor(
+public open class ImmutableRegisteringMap<K : Any, V : Any> internal constructor(
     protected override val internalMap: PersistentMap<K, Loadable<V>>
 ) : RegisteringMap<K, V>() {
 

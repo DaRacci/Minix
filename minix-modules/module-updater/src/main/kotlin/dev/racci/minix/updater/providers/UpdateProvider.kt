@@ -323,12 +323,6 @@ public sealed class UpdateProvider : KoinComponent {
                     SpigotUpdateProvider(projectID, node.nonVirtualNode("fileName").getOrNull()?.string ?: "$projectID.jar")
                 }
             )
-
-            public fun ConfigurationNode.nonVirtualNode(
-                vararg path: Any
-            ): Result<ConfigurationNode> = if (!this.hasChild(*path)) {
-                Result.failure(SerializationException("Field " + path.joinToString("") + " was not present in node"))
-            } else Result.success(this.node(*path))
         }
     }
 }

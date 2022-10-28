@@ -2,10 +2,10 @@ package dev.racci.minix.api.utils
 
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MappedPlugin
-import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.plugin.MinixPlugin
+import org.apiguardian.api.API
 import org.koin.core.module.Module
 import org.koin.dsl.binds
 import org.koin.dsl.module
@@ -56,7 +56,7 @@ public object KoinUtils {
         return setOf(initBind, instance::class).toTypedArray()
     }
 
-    @MinixInternal
+    @API(status = API.Status.INTERNAL)
     public fun clearBinds(instance: Any) {
         reference.remove(instance::class)
     }

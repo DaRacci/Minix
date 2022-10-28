@@ -9,6 +9,7 @@ import net.kyori.adventure.text.ComponentLike
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+// TODO -> Rework
 /**
  * Utilities for Players.
  */
@@ -19,24 +20,23 @@ public object PlayerUtils {
         callback: ChatInputCallback
     ) {
         PlayerService.inputCallbacks.put(
-            player!!,
-            ChatInput(plugin, callback, whenQuitWithoutInput)
-        ) { it.playerQuit(this) }
+            this,
+            ChatInput(callback, whenQuitWithoutInput),
+            onQuit = { player, _ -> whenQuitWithoutInput(player) }
+        )
     }
 
     // null if player disconnect
     public suspend fun MinixPlayer.chatInput(): ComponentLike? = suspendCoroutine { c ->
-        chatInput(plugin, { c.resume(null) }) { c.resume(it) }
+        chatInput({ c.resume(null) }) { c.resume(it) }
     }
 
     public fun MinixPlayer.whenQuit(callback: PlayerQuitCallback) {
-        PlayerService.functionsQuit.put(this, PlayerCallback(plugin, callback)) {
-            it.callback.invoke(player!!)
-        }
+        PlayerService.quitCallbacks.put(this, callback)
     }
 
     public fun MinixPlayer.whenMove(callback: PlayerMoveCallback) {
-        PlayerService.moveCallbacks[this] = callback
+        PlayerService.moveCallbacks.put(this, callback)
     }
 
     public data class ChatInput(

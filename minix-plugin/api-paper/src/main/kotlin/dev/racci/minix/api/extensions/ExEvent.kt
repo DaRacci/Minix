@@ -1,13 +1,9 @@
-@file:Suppress("UNUSED", "UNCHECKED_CAST")
-
 package dev.racci.minix.api.extensions
 
-import dev.racci.minix.api.coroutine.asyncDispatcher
-import dev.racci.minix.api.coroutine.minecraftDispatcher
-import dev.racci.minix.api.eventbus.receiver.EventReceiver
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.WithPlugin
+import dev.racci.minix.flowbus.Priority
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
@@ -35,8 +31,8 @@ public fun <T : Event> WithPlugin<*>.events(
             priority,
             { _, event ->
                 val dispatcher = if (forceAsync || event.isAsynchronous) {
-                    plugin.asyncDispatcher
-                } else plugin.minecraftDispatcher
+                    plugin.context
+                } else plugin.minecraftContext
 
                 plugin.launch(dispatcher) {
                     if (clazz.isInstance(event)) {
@@ -64,13 +60,15 @@ public fun <T : Event> WithPlugin<*>.events(
 public inline fun <reified T : Event> Extension<*>.event(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
-    forceAsync: Boolean = false,
     noinline block: suspend T.() -> Unit
 ) {
-    this.get<EventReceiver>().subscribeTo(
-        T::class,
-        true,
-        block
+    this.eventListener.event(
+        type = T::class,
+        plugin = plugin,
+        priority = priority,
+        ignoreCancelled = ignoreCancelled,
+        forceAsync = false,
+        block = block
     )
 }
 
@@ -131,8 +129,8 @@ public fun <T : Event> Listener.event(
         priority,
         { _, event ->
             val dispatcher = if (forceAsync || event.isAsynchronous) {
-                plugin.asyncDispatcher
-            } else plugin.minecraftDispatcher
+                plugin.context
+            } else plugin.minecraftContext
 
             plugin.launch(dispatcher) {
                 if (type.isInstance(event) && event as? T != null) {
@@ -143,6 +141,15 @@ public fun <T : Event> Listener.event(
         plugin,
         ignoreCancelled
     )
+}
+
+public fun convertBukkitPriority(priority: EventPriority): Priority = when (priority) {
+    EventPriority.HIGHEST -> Priority.FINAL
+    EventPriority.HIGH -> Priority.of(35)
+    EventPriority.NORMAL -> Priority.DEFAULT
+    EventPriority.LOW -> Priority.of(10)
+    EventPriority.LOWEST -> Priority.INITIAL
+    EventPriority.MONITOR -> Priority.MONITOR
 }
 
 public inline fun WithPlugin<*>.events(block: KListener<*>.() -> Unit): SimpleKListener = plugin.events(block)

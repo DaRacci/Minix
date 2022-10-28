@@ -1,9 +1,13 @@
 package dev.racci.minix.api.data
 
-import dev.racci.minix.api.exceptions.WrappingException
+import dev.racci.minix.api.wrappers.WrapperCompanion
 import net.kyori.adventure.text.Component
 import java.util.UUID
 
+/**
+ * A Wrapper for the platforms player object.
+ * This wrapper also provides a few useful functions.
+ */
 public expect class MinixPlayer : PlatformPlayerData {
 
     public val uuid: UUID
@@ -14,14 +18,12 @@ public expect class MinixPlayer : PlatformPlayerData {
 
     public val isOnline: Boolean
 
-    public companion object {
-        /**
-         * Wraps a player object from the platform into a MinixPlayer.
-         * @param obj The player object to wrap.
-         * @return The wrapped player.
-         * @throws WrappingException If the player object is not the platforms' player type.
-         */
-        @Throws(WrappingException::class)
-        public fun wrapped(obj: Any): MinixPlayer
+    public companion object : WrapperCompanion<MinixPlayer> {
+        internal val EMPTY: MinixPlayer
+
+        override fun wrapped(obj: Any): MinixPlayer
+
+        // For the Player service
+        internal fun of(obj: Any): MinixPlayer
     }
 }

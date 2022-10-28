@@ -14,9 +14,7 @@ public interface OnlinePlayerCollection : MutableCollection<MinixPlayer>, EventR
 
     public fun checkRegistration() {
         if (size == 1) {
-            this.subscribe<WrappedPlayerQuitEvent> { event ->
-                this.quit(event.player)
-            }
+            this.subscribe<WrappedPlayerQuitEvent> { quit(this.player) }
         } else if (size == 0) {
             this.unsubscribe()
         }

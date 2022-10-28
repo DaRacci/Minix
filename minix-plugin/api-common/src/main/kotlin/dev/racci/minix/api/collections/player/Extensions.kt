@@ -21,6 +21,9 @@ public fun onlinePlayerSetOf(
     vararg players: MinixPlayer
 ): OnlinePlayerSet = onlinePlayerSetOf(*players.map { it to PlayerQuitCallback.empty }.toTypedArray())
 
+@JvmName("onlinePlayerMapOfEmpty")
+public fun <V> onlinePlayerMapOf(): OnlinePlayerMap<V> = OnlinePlayerMap(mutableMapOf())
+
 @JvmName("onlinePlayerMapOfPair")
 public fun <V> onlinePlayerMapOf(
     vararg players: Pair<MinixPlayer, Pair<V, PlayerQuitMapCallback<V>>>

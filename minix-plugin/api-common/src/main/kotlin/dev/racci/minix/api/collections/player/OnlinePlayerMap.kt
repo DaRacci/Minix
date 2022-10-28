@@ -23,9 +23,11 @@ public class OnlinePlayerMap<V> internal constructor(
 
     override fun containsValue(value: V): Boolean = this.backingMap.values.any { it.first == value }
 
-    override fun get(key: MinixPlayer): V? = this.backingMap[key]?.first
-
     override fun isEmpty(): Boolean = this.backingMap.isEmpty()
+
+    override operator fun get(key: MinixPlayer): V? = this.backingMap[key]?.first
+
+    public operator fun set(key: MinixPlayer, value: V) { this.backingMap[key] = value to this.backingMap[key]?.second }
 
     public fun put(
         key: MinixPlayer,
@@ -53,9 +55,7 @@ public class OnlinePlayerMap<V> internal constructor(
 
     private fun checkRegistration() {
         if (size == 1) {
-            this.subscribe<WrappedPlayerQuitEvent> { event ->
-                this.quit(event.player)
-            }
+            this.subscribe<WrappedPlayerQuitEvent> { quit(this.player) }
         } else if (isEmpty()) {
             this.unsubscribe()
         }

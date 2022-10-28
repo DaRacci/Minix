@@ -16,10 +16,15 @@ import kotlin.reflect.KClass
  * @property threadCount The number of threads in this extensions [ExecutorCoroutineDispatcher]
  */
 @Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
 public annotation class MappedExtension(
-    val parent: KClass<*>,
-    val name: String,
     val dependencies: Array<KClass<*>> = [],
     val bindToKClass: KClass<*> = Extension::class,
-    val threadCount: Int = 1
-)
+    val name: String = REPLACE_ME,
+    val threadCount: Int = DEFAULT_THREAD_COUNT
+) {
+    public companion object {
+        public const val REPLACE_ME: String = "CLASS_NAME_REPLACEMENT_NEEDED"
+        public const val DEFAULT_THREAD_COUNT: Int = 1
+    }
+}

@@ -6,25 +6,23 @@ import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.lifecycles.Closeable
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PluginService
-import dev.racci.minix.core.coroutine.MinixCoroutineDispatcher
-import dev.racci.minix.core.coroutine.MinixCoroutineExceptionHandler
 import dev.racci.minix.flowbus.FlowBus
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.plus
+import org.koin.core.component.createScope
 import org.koin.core.component.get
+import org.koin.core.parameter.parametersOf
+import org.koin.core.scope.Scope
+import org.koin.core.scope.get
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.full.findAnnotation
 
 /** Global platform independent extension. */
 public abstract class PlatformIndependentExtension<P : MinixPlugin> internal constructor() : ExtensionSkeleton<P> {
-    final override val eventListener: PlatformListener<P> by lazy { PlatformListener(plugin) }
-
-    final override var state: ExtensionState = ExtensionState.UNLOADED
-        set(value) { get<FlowBus>().post(ExtensionStateEvent(this.castOrThrow(), this.state, state)); field = value }
-
     final override val value: String = buildString {
         append(plugin.value)
         append(':')
@@ -35,12 +33,22 @@ public abstract class PlatformIndependentExtension<P : MinixPlugin> internal con
         )
     }
 
-    final override val dispatcher: Closeable<ExecutorCoroutineDispatcher> by lazy { MinixCoroutineDispatcher(this) }
+    @Deprecated("Use value instead.", replaceWith = ReplaceWith("value"))
+    final override val name: String get() = this.value
+
+    final override val scope: Scope = createScope(value)
+
+    final override val eventListener: PlatformListener<P> by lazy { PlatformListener(plugin) }
+
+    final override var state: ExtensionState = ExtensionState.UNLOADED
+        set(value) { get<FlowBus>().post(ExtensionStateEvent(this.castOrThrow(), this.state, state)); field = value }
+
+    final override val dispatcher: Closeable<ExecutorCoroutineDispatcher> = scope.get(parameters = { parametersOf(this) })
 
     final override val supervisor: CoroutineScope by lazy {
-        MinixCoroutineExceptionHandler(plugin, value)
+        scope.get<CoroutineExceptionHandler>(parameters = { parametersOf(this, value) })
             .let(::CoroutineScope)
-            .plus(SupervisorJob(plugin.scope as Job)) // Supervisor job is a child of the plugin supervisor.
+            .plus(SupervisorJob(plugin.coroutineScope as Job)) // Supervisor job is a child of the plugin supervisor.
             .plus(dispatcher.get()) // Dispatcher for the execution context
     }
 

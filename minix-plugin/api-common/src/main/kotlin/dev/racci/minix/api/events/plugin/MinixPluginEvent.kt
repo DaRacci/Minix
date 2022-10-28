@@ -1,5 +1,6 @@
 package dev.racci.minix.api.events.plugin
 
+import dev.racci.minix.api.events.MinixEvent
 import dev.racci.minix.api.plugin.MinixPlugin
 
 /**
@@ -7,7 +8,9 @@ import dev.racci.minix.api.plugin.MinixPlugin
  *
  * ## Includes Pre-done handlers, you still need to add your own static handler.
  */
-public expect abstract class MinixPluginEvent {
+public expect abstract class MinixPluginEvent internal constructor(
+    plugin: MinixPlugin
+) : MinixEvent {
 
     public val plugin: MinixPlugin
 }

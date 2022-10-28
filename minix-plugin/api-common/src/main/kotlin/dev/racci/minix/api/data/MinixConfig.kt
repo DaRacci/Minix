@@ -10,6 +10,8 @@ import dev.racci.minix.data.utils.NestedUtils
 import kotlinx.coroutines.runBlocking
 import org.apiguardian.api.API
 import org.koin.core.Koin
+import org.koin.core.qualifier.Qualifier
+import org.koin.core.qualifier.QualifierValue
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.transformation.ConfigurationTransformation
@@ -20,10 +22,17 @@ public abstract class MinixConfig<P : MinixPlugin>(
     @field:Transient
     @API(status = API.Status.INTERNAL)
     public val primaryConfig: Boolean
-) : WithPlugin<P> {
+) : WithPlugin<P>, Qualifier {
 
     @field:Transient
     final override lateinit var plugin: P; private set
+
+    @field:Transient
+    final override val value: QualifierValue = buildString {
+        append(plugin::class.simpleName)
+        append(':')
+        append(this@MinixConfig::class.simpleName)
+    }
 
     @field:Transient
     public open val versionTransformations: Map<Int, ConfigurationTransformation> = emptyMap()
@@ -107,9 +116,9 @@ public abstract class MinixConfig<P : MinixPlugin>(
 
         public class Default : InnerConfig {
             // TODO -> Make sure this works
-            override val initialized: Boolean by ::plugin::isInitialized
+            override val initialized: Boolean get() = ::plugin.isInitialized
 
-            @Transient
+            @field:Transient
             override lateinit var plugin: MinixPlugin
         }
     }

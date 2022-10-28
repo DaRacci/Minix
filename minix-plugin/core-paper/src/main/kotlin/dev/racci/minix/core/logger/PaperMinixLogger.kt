@@ -1,30 +1,40 @@
-package dev.racci.minix.api.logger
+package dev.racci.minix.core.logger
 
+import arrow.core.filterIsInstance
+import arrow.core.getOrElse
+import arrow.core.redeem
+import arrow.core.toOption
 import com.github.ajalt.mordant.rendering.TextColors
-import com.github.ajalt.mordant.terminal.Terminal
 import dev.racci.minix.api.annotations.MappedExtension
-import dev.racci.minix.api.extensions.server
+import dev.racci.minix.api.extension.Extension
+import dev.racci.minix.api.extensions.collections.findKProperty
+import dev.racci.minix.api.extensions.reflection.accessGet
+import dev.racci.minix.api.logger.LoggingLevel
+import dev.racci.minix.api.logger.MinixLogger
+import dev.racci.minix.api.logger.UnsafeMessage
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.WithPlugin
+import dev.racci.minix.api.utils.suspendBlockingLazy
 import io.sentry.Breadcrumb
 import io.sentry.Sentry
-import io.sentry.SentryLevel
-import jdk.internal.org.jline.terminal.TerminalBuilder
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import net.minecrell.terminalconsole.TerminalConsoleAppender
+import org.apache.logging.log4j.core.appender.AbstractManager
+import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager
+import org.jline.terminal.Terminal
+import org.jline.terminal.TerminalBuilder
+import org.koin.core.annotation.Singleton
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
-import kotlin.reflect.KProperty
+import kotlin.reflect.full.staticProperties
 
-public class PaperMinixLogger<T>(
+@Singleton([MinixLogger::class]) // The fallback main instance
+public class PaperMinixLogger<T> internal constructor(
     override val plugin: T,
     loggingLevel: LoggingLevel = LoggingLevel.INFO
-) : WithPlugin<T> by plugin, MinixLogger(loggingLevel) where T : MinixPlugin, T : WithPlugin<T> {
+) : WithPlugin<T> by plugin, MinixLogger(loggingLevel) where T : MinixPlugin, T : WithPlugin<MinixPlugin> {
 
     override fun format(
         message: String,
@@ -58,7 +68,6 @@ public class PaperMinixLogger<T>(
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
     public override fun log(
         level: LoggingLevel,
         err: Throwable?,
@@ -66,15 +75,16 @@ public class PaperMinixLogger<T>(
         msg: UnsafeMessage,
         colour: TextColors?
     ) {
-        plugin.launch(dispatcher) {
+        plugin.launch(context) {
             super.log(level, err, scope, msg, colour)
         }
+    }
 
-        if (server.isPrimaryThread) { // We don't want anything to do with the server thread.
-            GlobalScope.launch(dispatcher) {
-                logAction(message)
-            }
-        } else logAction(message)
+    override fun printLog(formattedMessage: FormattedMessage) {
+        this.appendLogFile(formattedMessage)
+
+        TERMINAL.writer().println(formattedMessage.rendered)
+        TERMINAL.writer().flush()
     }
 
     override fun preProcess(
@@ -83,6 +93,12 @@ public class PaperMinixLogger<T>(
         scope: String?,
         msg: String?
     ) {
+        this.addSentryBreadcrumb(
+            msg ?: "Message empty",
+            scope ?: "LogTrace",
+            level
+        )
+
         if (err != null) Sentry.captureException(err)
     }
 
@@ -105,16 +121,6 @@ public class PaperMinixLogger<T>(
         length += plugin.name.length
 
         length
-    }
-
-    private fun logAction(message: () -> FormattedMessage) {
-        val formatted = message()
-
-        addSentryBreadcrumb(formatted)
-        appendLogFile(formatted)
-
-        TERMINAL.writer().println(formatted.rendered)
-        TERMINAL.writer().flush()
     }
 
     private fun applyColour(
@@ -256,16 +262,25 @@ public class PaperMinixLogger<T>(
 //        }
     }
 
-    private fun addSentryBreadcrumb(message: FormattedMessage) {
+    private fun addSentryBreadcrumb(
+        message: String,
+        scope: String,
+        level: LoggingLevel
+    ) {
         val breadcrumb = Breadcrumb()
-        breadcrumb.category = "LogTrace"
-        breadcrumb.level = SentryLevel.DEBUG
-        breadcrumb.message = message.raw
-        breadcrumb.type = message.level.name
+        breadcrumb.category = scope
+        breadcrumb.level = level.convert()
+        breadcrumb.message = message
+        breadcrumb.type = level.name
 
-        val stackTrace = Thread.currentThread().stackTrace
-        val calledFrom = stackTrace[4].className + " -> " + stackTrace[4].methodName
-        breadcrumb.setData("calledFrom", calledFrom)
+        StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).walk { walker ->
+            walker.skip(5)
+                .filter { frame -> frame.declaringClass.superclass == Extension::class.java }
+                .findFirst()
+        }.ifPresent { frame ->
+            breadcrumb.setData("extension", frame.className)
+            breadcrumb.setData("calledFrom", "${frame.className} -> ${frame.methodName}")
+        }
 
         Sentry.addBreadcrumb(breadcrumb)
     }
@@ -300,23 +315,15 @@ public class PaperMinixLogger<T>(
             .redeem({ TerminalBuilder.terminal() }, { it })
             .redeem({ TerminalBuilder.builder().build() }, { it })
             .getOrElse { error("Couldn't get the default Terminal Appender.") }
-        private val ROLLING_MANAGER: RollingRandomAccessFileManager = AbstractManager::class.staticProperties
-            .findKProperty<Map<String, AbstractManager>>("MAP")
-            .map { runBlocking { it.accessGet() } }
-            .mapNotNull { map -> map["logs/latest.log"] }
-            .tapNone { error("Couldn't get 'latest.log' from the RollingRandomAccessFileManager.") }
-            .filterIsInstance<RollingRandomAccessFileManager>()
-            .getOrElse { error("The manager instance wasn't of type RollingRandomAccessFileManager.") }
 
-        internal val EXISTING: MutableMap<MinixPlugin, PaperMinixLogger<*>> = mutableMapOf()
-
-        public operator fun getValue(
-            thisRef: WithPlugin<*>,
-            property: KProperty<*>
-        ): PaperMinixLogger<*> = EXISTING.getOrPut(thisRef.plugin) { PaperMinixLogger(thisRef.plugin) }
-
-        public fun getLogger(
-            plugin: MinixPlugin
-        ): PaperMinixLogger<*> = EXISTING.getOrPut(plugin) { PaperMinixLogger(plugin) }
+        private val ROLLING_MANAGER: RollingRandomAccessFileManager by suspendBlockingLazy {
+            AbstractManager::class.staticProperties
+                .findKProperty<Map<String, AbstractManager>>("MAP")
+                .map { it.accessGet() }
+                .mapNotNull { map -> map["logs/latest.log"] }
+                .tapNone { error("Couldn't get 'latest.log' from the RollingRandomAccessFileManager.") }
+                .filterIsInstance<RollingRandomAccessFileManager>()
+                .getOrElse { error("The manager instance wasn't of type RollingRandomAccessFileManager.") }
+        }
     }
 }

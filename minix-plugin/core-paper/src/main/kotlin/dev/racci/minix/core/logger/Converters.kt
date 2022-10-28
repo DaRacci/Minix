@@ -1,8 +1,9 @@
 package dev.racci.minix.core.logger
 
 import dev.racci.minix.api.exceptions.LevelConversionException
-import dev.racci.minix.api.logger.LoggerConverter
+import dev.racci.minix.api.logger.converters.LoggerConverter
 import dev.racci.minix.api.logger.LoggingLevel
+import dev.racci.minix.api.utils.kotlin.fromOrdinal
 import org.apache.logging.log4j.spi.StandardLevel
 import java.util.logging.Level
 

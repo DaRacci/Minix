@@ -56,8 +56,8 @@ public class ConfigData<P, C>
     ConfigurateException::class
 )
 internal constructor(
-    private val managedClass: KClass<in C>,
-    private val owner: P,
+    internal val managedClass: KClass<in C>,
+    internal val owner: P,
     loader: HoconConfigurationLoader? = null
 ) : KoinComponent where P : MinixPlugin, C : MinixConfig<out P> {
     public val reference: ConfigurationReference<CommentedConfigurationNode>

@@ -52,19 +52,33 @@ tasks {
 }
 
 kotlin {
-    fun KotlinSourceSet.setDirs(module: String) {
+    fun KotlinSourceSet.setDirs(module: String, api: Boolean) {
         this.kotlin.srcDirs.clear()
-        this.kotlin.setSrcDirs(
-            listOf(
-                "minix-plugin/api-$module/src/main/kotlin",
-                "minix-plugin/core-$module/src/main/kotlin"
-            )
-        )
+
+        if (api) {
+            this.kotlin.setSrcDirs(listOf("minix-plugin/api-$module/src/main/kotlin"))
+        } else {
+            this.kotlin.setSrcDirs(listOf("minix-plugin/core-$module/src/main/kotlin"))
+        }
     }
 
     sourceSets {
+        val commonAPI by creating {
+            setDirs("common", true)
+
+            this.dependencies {
+                api(libs.kotlin.stdlib)
+                api(libs.kotlin.reflect)
+                api(libs.kotlinx.dateTime)
+                api(libs.kotlinx.atomicfu)
+                api(libs.kotlinx.coroutines)
+                api(libs.kotlinx.immutableCollections)
+            }
+        }
+
         val commonMain by getting {
-            this.setDirs("common")
+            this.setDirs("common", false)
+            this.dependsOn(commonAPI)
 
             dependencies {
                 api(project(":minix-modules:module-autoscanner"))
@@ -72,15 +86,7 @@ kotlin {
                 api(project(":minix-modules:module-data"))
                 api(project(":minix-modules:module-flowbus"))
                 api(project(":minix-modules:module-integrations"))
-//                api(project(":minix-modules:module-updater"))
                 api(project(":minix-modules:module-wrappers"))
-
-                api(libs.kotlin.stdlib)
-                api(libs.kotlin.reflect)
-                api(libs.kotlinx.dateTime)
-                api(libs.kotlinx.atomicfu)
-                api(libs.kotlinx.coroutines)
-                api(libs.kotlinx.immutableCollections)
 
                 api(libs.koin.core)
                 api(libs.mordant)
@@ -101,11 +107,10 @@ kotlin {
             }
         }
 
-        val paperMain by creating {
-            this.setDirs("paper")
+        val paperAPI by creating {
+            this.setDirs("paper", true)
 
-            this.kotlin.srcDir("minix-plugin/core-paper/src/main/java")
-            this.dependsOn(commonMain)
+            this.dependsOn(commonAPI)
 
             this.dependencies {
                 compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
@@ -113,6 +118,18 @@ kotlin {
                 // Integrations
                 compileOnly(libs.minecraft.api.landsAPI)
                 compileOnly(libs.minecraft.api.placeholderAPI)
+            }
+        }
+
+        val paperMain by creating {
+            this.setDirs("paper", false)
+            this.kotlin.srcDir("minix-plugin/core-paper/src/main/java")
+
+            this.dependsOn(commonMain)
+            this.dependsOn(paperAPI)
+
+            this.dependencies {
+                // Integrations
                 compileOnly("net.frankheijden.serverutils:ServerUtils:3.5.3")
 
                 // MinixLogger backend hooks for paper logger
@@ -125,16 +142,6 @@ kotlin {
                 api(libs.configurate.extra.kotlin)
             }
         }
-
-//        val velocityMain by creating {
-//            this.setDirs("velocity")
-//            this.dependsOn(commonMain)
-//
-//            this.dependencies {
-//                compileOnly("com.velocitypowered:velocity-api:3.1.1")
-//                api("org.bstats:bstats-velocity:3.0.0")
-//            }
-//        }
     }
 
     targets {
@@ -153,14 +160,11 @@ kotlin {
                 website = "https://github.com/DaRacci/Minix"
             }
         }
-//        jvm("velocity")
     }
 }
 
 dependencies {
     add("kspCommonMainMetadata", "io.insert-koin:koin-ksp-compiler:1.0.3")
-//    add("kspVelocity", "com.velocitypowered:velocity-api:3.1.1")
-//    add("kspVelocity", "io.insert-koin:koin-ksp-compiler:1.0.3")
     add("kspPaper", "io.insert-koin:koin-ksp-compiler:1.0.3")
 }
 
@@ -288,7 +292,7 @@ allprojects {
         }
 
         withType<KotlinCompile>().configureEach {
-            kotlinOptions.freeCompilerArgs += "-opt-in=dev.racci.minix.api.annotations.MinixInternal"
+            kotlinOptions.suppressWarnings = true
         }
     }
 
@@ -297,9 +301,12 @@ allprojects {
         this.explicitApiWarning() // Koin generated sources aren't complicit.
         this.kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
 
-        (sourceSets.findByName("main") ?: sourceSets.getByName("commonMain")).apply {
-            this.kotlin.srcDir("$buildDir/generated/ksp/main/kotlin")
+        sourceSets.forEach {
+            it.kotlin.srcDir("$buildDir/generated/ksp/main/kotlin")
         }
+//        (sourceSets.findByName("main") ?: sourceSets.getByName("commonMain")).apply {
+//            this.kotlin.srcDir("$buildDir/generated/ksp/main/kotlin")
+//        }
         (sourceSets.findByName("test") ?: sourceSets.getByName("commonTest")).apply {
             this.kotlin.srcDir("$buildDir/generated/ksp/test/kotlin")
         }

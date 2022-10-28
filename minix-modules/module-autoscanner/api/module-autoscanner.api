@@ -1,0 +1,7 @@
+public final class dev/racci/minix/api/autoscanner/Scanner {
+	public fun <init> (Ljava/util/Collection;Ljava/lang/String;Ljava/lang/String;Ljava/util/Collection;)V
+	public synthetic fun <init> (Ljava/util/Collection;Ljava/lang/String;Ljava/lang/String;Ljava/util/Collection;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getExcludes ()Ljava/util/Collection;
+	public final fun getResult ()Lio/github/classgraph/ScanResult;
+}
+

@@ -4,10 +4,11 @@ import com.google.common.graph.Graphs
 import com.google.common.graph.MutableGraph
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.launchAsync
+import dev.racci.minix.api.data.MinixPlayer
 import dev.racci.minix.api.data.enums.LiquidType
 import dev.racci.minix.api.data.enums.LiquidType.Companion.liquidType
-import dev.racci.minix.api.events.keybind.ComboEvent
-import dev.racci.minix.api.events.keybind.OffhandComboEvent
+import dev.racci.minix.api.events.keybinds.ComboEvent
+import dev.racci.minix.api.events.keybinds.OffhandComboEvent
 import dev.racci.minix.api.events.player.PlayerLiquidEnterEvent
 import dev.racci.minix.api.events.player.PlayerLiquidExitEvent
 import dev.racci.minix.api.events.player.PlayerMoveFullXYZEvent
@@ -19,16 +20,15 @@ import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.extensions.pluginManager
 import dev.racci.minix.api.extensions.reflection.castOrThrow
-import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.services.PlayerService
 import dev.racci.minix.api.utils.accessReturn
 import dev.racci.minix.api.utils.collections.CollectionUtils.first
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.unsafeCast
+import dev.racci.minix.core.plugin.Minix
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.Block
-import org.bukkit.craftbukkit.v1_19_R1.block.impl.CraftFluids
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
@@ -52,8 +52,8 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 
-@MappedExtension(Minix::class, "Listener Service")
-class ListenerService(override val plugin: Minix) : Extension<Minix>() {
+@MappedExtension
+public class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
     override suspend fun handleEnable() {
         event<PlayerMoveEvent>(
@@ -63,7 +63,7 @@ class ListenerService(override val plugin: Minix) : Extension<Minix>() {
         ) {
             if (!hasExplicitlyChangedPosition()) return@event
 
-            PlayerMoveXYZEvent(player, from, to).callEvent()
+            PlayerMoveXYZEvent(MinixPlayer.wrapped(player), from, to).callEvent()
         }
 
         event<PlayerMoveXYZEvent>(

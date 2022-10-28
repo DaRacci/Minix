@@ -1,0 +1,1217 @@
+public final class dev/racci/minix/data/DataSize : java/lang/Comparable {
+	public static final field Companion Ldev/racci/minix/data/DataSize$Companion;
+	public fun <init> (J)V
+	public fun compareTo (Ldev/racci/minix/data/DataSize;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public final fun component1 ()J
+	public final fun copy (J)Ldev/racci/minix/data/DataSize;
+	public static synthetic fun copy$default (Ldev/racci/minix/data/DataSize;JILjava/lang/Object;)Ldev/racci/minix/data/DataSize;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBytes ()J
+	public final fun getGigabytes ()D
+	public final fun getGigabytesRounded ()J
+	public final fun getKilobytes ()D
+	public final fun getKilobytesRounded ()J
+	public final fun getMegabytes ()D
+	public final fun getMegabytesRounded ()J
+	public fun hashCode ()I
+	public final fun humanReadableSize ()Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/data/DataSize$Companion : org/koin/core/component/KoinComponent {
+	public final fun fromGigabytes (J)Ldev/racci/minix/data/DataSize;
+	public final fun fromKilobytes (J)Ldev/racci/minix/data/DataSize;
+	public final fun fromMegabytes (J)Ldev/racci/minix/data/DataSize;
+	public fun getKoin ()Lorg/koin/core/Koin;
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/DataSizeKt {
+	public static final fun gigabytes (J)Ldev/racci/minix/data/DataSize;
+	public static final fun kilobytes (J)Ldev/racci/minix/data/DataSize;
+	public static final fun megabytes (J)Ldev/racci/minix/data/DataSize;
+}
+
+public final class dev/racci/minix/data/Version : java/lang/Comparable {
+	public static final field Companion Ldev/racci/minix/data/Version$Companion;
+	public fun <init> (I)V
+	public fun <init> (II)V
+	public fun <init> (III)V
+	public fun <init> (Ljava/lang/String;Z)V
+	public synthetic fun <init> (Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compareTo (Ldev/racci/minix/data/Version;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public final fun compareTo (Ljava/lang/String;)I
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBuildNumber ()J
+	public final fun getMajor ()I
+	public final fun getMinor ()I
+	public final fun getPatch ()I
+	public final fun getRawVersion ()Ljava/lang/String;
+	public final fun getTimestamp ()J
+	public fun hashCode ()I
+	public final fun isPreRelease ()Z
+	public final fun setPreRelease (Z)V
+	public final fun toInt ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/data/Version$Companion {
+	public final fun getBuildParameter (Ljava/util/List;Ljava/lang/String;)J
+	public final fun getERROR ()Ldev/racci/minix/data/Version;
+	public final fun getGroupTagRegex ()Lkotlin/text/Regex;
+	public final fun getPreReleaseTagRegex ()Lkotlin/text/Regex;
+	public final fun getPreReleaseTagResolution ()Ljava/util/Map;
+	public final fun getPreReleaseTags ()[Ljava/lang/String;
+	public final fun getTagRegex ()Lkotlin/text/Regex;
+	public final fun getVersionStringRegex ()Lkotlin/text/Regex;
+}
+
+public final class dev/racci/minix/data/exceptions/InvalidVersionStringException : java/lang/IllegalArgumentException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class dev/racci/minix/data/exceptions/SerializationException : java/lang/IllegalArgumentException {
+	public fun <init> (Ljava/lang/String;)V
+	public fun <init> (Lkotlinx/serialization/descriptors/SerialDescriptor;I)V
+}
+
+public final class dev/racci/minix/data/extensions/ExConfigurateKt {
+	public static final fun nonVirtualNode (Lorg/spongepowered/configurate/ConfigurationNode;[Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/data/extensions/ExKeyKt {
+	public static final fun getBukkit (Lnet/kyori/adventure/key/Key;)Lorg/bukkit/NamespacedKey;
+}
+
+public final class dev/racci/minix/data/extensions/ExPairKt {
+	public static final fun toDoubleIntInt (Lkotlin/Pair;)Lkotlin/Pair;
+	public static final fun toFloatDoubleDouble (Lkotlin/Pair;)Lkotlin/Pair;
+	public static final fun toFloatIntInt (Lkotlin/Pair;)Lkotlin/Pair;
+	public static final fun toIntDoubleDouble (Lkotlin/Pair;)Lkotlin/Pair;
+}
+
+public abstract interface class dev/racci/minix/data/serializers/base/DataSerializerBase {
+	public abstract fun deserialize (Lkotlin/text/MatchResult;)Ldev/racci/minix/data/DataSize;
+	public abstract fun serialize (Ldev/racci/minix/data/DataSize;)Ljava/lang/String;
+}
+
+public final class dev/racci/minix/data/serializers/base/DataSerializerBase$DefaultImpls {
+	public static fun deserialize (Ldev/racci/minix/data/serializers/base/DataSerializerBase;Lkotlin/text/MatchResult;)Ldev/racci/minix/data/DataSize;
+	public static fun serialize (Ldev/racci/minix/data/serializers/base/DataSerializerBase;Ldev/racci/minix/data/DataSize;)Ljava/lang/String;
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfigurateAttributeModifierSerializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/configurate/ConfigurateAttributeModifierSerializer;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lorg/bukkit/attribute/AttributeModifier;
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public fun serialize (Ljava/lang/reflect/Type;Lorg/bukkit/attribute/AttributeModifier;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfigurateBlockPosSerializer {
+	public fun <init> ()V
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfigurateDataSerializer : dev/racci/minix/data/serializers/base/DataSerializerBase, org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/configurate/ConfigurateDataSerializer;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ldev/racci/minix/data/DataSize;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Lkotlin/text/MatchResult;)Ldev/racci/minix/data/DataSize;
+	public fun serialize (Ldev/racci/minix/data/DataSize;)Ljava/lang/String;
+	public fun serialize (Ljava/lang/reflect/Type;Ldev/racci/minix/data/DataSize;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfigurateDurationSerializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/configurate/ConfigurateDurationSerializer;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize-3nIYWDw (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)J
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public fun serialize-Kx4hsE0 (Ljava/lang/reflect/Type;Lkotlin/time/Duration;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfigurateEnchantSerializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/configurate/ConfigurateEnchantSerializer;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lorg/bukkit/enchantments/Enchantment;
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public fun serialize (Ljava/lang/reflect/Type;Lorg/bukkit/enchantments/Enchantment;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfigurateLocationSerializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/configurate/ConfigurateLocationSerializer;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lorg/bukkit/Location;
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public fun serialize (Ljava/lang/reflect/Type;Lorg/bukkit/Location;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfigurateNamespacedKeySerializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/configurate/ConfigurateNamespacedKeySerializer;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lorg/bukkit/NamespacedKey;
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public fun serialize (Ljava/lang/reflect/Type;Lorg/bukkit/NamespacedKey;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfiguratePairSerializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/configurate/ConfiguratePairSerializer;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lkotlin/Pair;
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public fun serialize (Ljava/lang/reflect/Type;Lkotlin/Pair;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfiguratePatternSerializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/configurate/ConfiguratePatternSerializer;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lorg/bukkit/block/banner/Pattern;
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public fun serialize (Ljava/lang/reflect/Type;Lorg/bukkit/block/banner/Pattern;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfiguratePotionSerializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/configurate/ConfiguratePotionSerializer;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lorg/bukkit/potion/PotionEffect;
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public fun serialize (Ljava/lang/reflect/Type;Lorg/bukkit/potion/PotionEffect;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfigurateVectorSerializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/configurate/ConfigurateVectorSerializer;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lorg/bukkit/util/Vector;
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public fun serialize (Ljava/lang/reflect/Type;Lorg/bukkit/util/Vector;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/configurate/ConfigurateWorldSerializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/configurate/ConfigurateWorldSerializer;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lorg/bukkit/World;
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public fun serialize (Ljava/lang/reflect/Type;Lorg/bukkit/World;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/BlockExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/block/Block;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/block/Block;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/BlockExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/block/Block;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/block/Block;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/BlockKt {
+	public static final fun block (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/BlockExposedDelegate;
+	public static final fun block (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/BlockExposedDelegateNullable;
+	public static final fun block (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/BlockMultiColumnExposedDelegate;
+	public static final fun nullableBlock (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/BlockMultiColumnExposedDelegateNullable;
+}
+
+public final class dev/racci/minix/data/serializers/exposed/BlockMultiColumnExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/block/Block;
+	public final fun getWorldColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/block/Block;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/BlockMultiColumnExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/block/Block;
+	public final fun getWorldColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/block/Block;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/BlockPosExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/BlockPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/BlockPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/BlockPosExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/BlockPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/BlockPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/BlockPosKt {
+	public static final fun blockPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/BlockPosExposedDelegate;
+	public static final fun blockPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/BlockPosExposedDelegateNullable;
+	public static final fun blockPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/BlockPosMultiColumnExposedDelegate;
+	public static final fun nullableBlockPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/BlockPosMultiColumnExposedDelegateNullable;
+}
+
+public final class dev/racci/minix/data/serializers/exposed/BlockPosMultiColumnExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/BlockPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/BlockPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/BlockPosMultiColumnExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/BlockPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/BlockPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/CachedExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Ldev/racci/minix/data/serializers/exposed/ExposedDelegate;)V
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/CachedKt {
+	public static final fun cached (Ldev/racci/minix/data/serializers/exposed/ExposedDelegate;)Ldev/racci/minix/data/serializers/exposed/CachedExposedDelegate;
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ChunkExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/Chunk;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/Chunk;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ChunkExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/Chunk;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/Chunk;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ChunkKt {
+	public static final fun chunk (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/ChunkExposedDelegate;
+	public static final fun chunk (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/ChunkMultiColumnExposedDelegate;
+	public static final fun chunk (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/ChunkMultiColumnExposedDelegateNullable;
+	public static final fun nullableChunk (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/ChunkExposedDelegateNullable;
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ChunkMultiColumnExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/Chunk;
+	public final fun getWorldColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/Chunk;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ChunkMultiColumnExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/Chunk;
+	public final fun getWorldColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/Chunk;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ChunkPosExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/ChunkPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/ChunkPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ChunkPosExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/ChunkPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/ChunkPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ChunkPosKt {
+	public static final fun chunkPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/ChunkPosExposedDelegate;
+	public static final fun chunkPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/ChunkPosMultiColumnExposedDelegate;
+	public static final fun chunkPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/ChunkPosMultiColumnExposedDelegateNullable;
+	public static final fun nullableChunkPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/ChunkPosExposedDelegateNullable;
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ChunkPosMultiColumnExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/ChunkPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/ChunkPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ChunkPosMultiColumnExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/ChunkPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/ChunkPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public abstract interface class dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public abstract fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public abstract fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ItemKt {
+	public static final fun itemStack (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/ItemStackExposedDelegate;
+	public static final fun nullableItemStack (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/ItemStackExposedDelegateNullable;
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ItemStackExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/inventory/ItemStack;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/inventory/ItemStack;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/ItemStackExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/inventory/ItemStack;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/inventory/ItemStack;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/LocationExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/Location;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/Location;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/LocationExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/Location;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/Location;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/LocationKt {
+	public static final fun location (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/LocationExposedDelegate;
+	public static final fun location (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/LocationExposedDelegateNullable;
+	public static final fun location (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/LocationMultiColumnExposedDelegate;
+	public static final fun nullableLocation (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/LocationMultiColumnExposedDelegateNullable;
+}
+
+public final class dev/racci/minix/data/serializers/exposed/LocationMultiColumnExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getPitchColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/Location;
+	public final fun getWorldColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYawColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/Location;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/LocationMultiColumnExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getPitchColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/Location;
+	public final fun getWorldColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYawColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/Location;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/LocationPosExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/LocationPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/LocationPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/LocationPosExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/LocationPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/LocationPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/LocationPosKt {
+	public static final fun locationPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/LocationPosExposedDelegate;
+	public static final fun locationPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/LocationPosMultiColumnExposedDelegate;
+	public static final fun locationPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/LocationPosMultiColumnExposedDelegateNullable;
+	public static final fun nullableLocationPos (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/LocationPosExposedDelegateNullable;
+}
+
+public final class dev/racci/minix/data/serializers/exposed/LocationPosMultiColumnExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getPitchColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/LocationPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYawColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/LocationPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/LocationPosMultiColumnExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getPitchColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ldev/racci/minix/data/structs/minecraft/LocationPos;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public final fun getXColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getYawColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public final fun getZColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ldev/racci/minix/data/structs/minecraft/LocationPos;)V
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/OfflinePlayerExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/OfflinePlayer;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/OfflinePlayer;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/OfflinePlayerExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/OfflinePlayer;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/OfflinePlayer;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/OfflinePlayerKt {
+	public static final fun nullableOfflinePlayer (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/OfflinePlayerExposedDelegateNullable;
+	public static final fun offlinePlayer (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/OfflinePlayerExposedDelegate;
+}
+
+public final class dev/racci/minix/data/serializers/exposed/WorldExposedDelegate : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/World;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/World;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/WorldExposedDelegateNullable : dev/racci/minix/data/serializers/exposed/ExposedDelegate {
+	public fun <init> (Lorg/jetbrains/exposed/sql/Column;)V
+	public final fun getColumn ()Lorg/jetbrains/exposed/sql/Column;
+	public synthetic fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun getValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;)Lorg/bukkit/World;
+	public synthetic fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Ljava/lang/Object;)V
+	public fun setValue (Lorg/jetbrains/exposed/dao/Entity;Lkotlin/reflect/KProperty;Lorg/bukkit/World;)V
+}
+
+public final class dev/racci/minix/data/serializers/exposed/WorldKt {
+	public static final fun nullableWorld (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/WorldExposedDelegateNullable;
+	public static final fun world (Lorg/jetbrains/exposed/dao/Entity;Lorg/jetbrains/exposed/sql/Column;)Ldev/racci/minix/data/serializers/exposed/WorldExposedDelegate;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/CharRangeSerializer : dev/racci/minix/data/serializers/kotlin/RangeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/CharRangeSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lkotlin/ranges/CharRange;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/CharRangeSerializer$Configurate : dev/racci/minix/data/serializers/kotlin/RangeSerializer$Configurate {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/CharRangeSerializer$Configurate;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lkotlin/ranges/CharRange;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/DataSerializer : dev/racci/minix/data/serializers/base/DataSerializerBase, kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/DataSerializer;
+	public fun deserialize (Lkotlin/text/MatchResult;)Ldev/racci/minix/data/DataSize;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/DataSize;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Ldev/racci/minix/data/DataSize;)Ljava/lang/String;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/data/DataSize;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/DoubleRangeSerializer : dev/racci/minix/data/serializers/kotlin/RangeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/DoubleRangeSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lkotlin/ranges/ClosedFloatingPointRange;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/DoubleRangeSerializer$Configurate : dev/racci/minix/data/serializers/kotlin/RangeSerializer$Configurate {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/DoubleRangeSerializer$Configurate;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lkotlin/ranges/ClosedFloatingPointRange;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/DurationSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/DurationSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize-5sfh64U (Lkotlinx/serialization/encoding/Decoder;)J
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize-HG0u8IE (Lkotlinx/serialization/encoding/Encoder;J)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/FloatRangeSerializer : dev/racci/minix/data/serializers/kotlin/RangeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/FloatRangeSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lkotlin/ranges/ClosedFloatingPointRange;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/FloatRangeSerializer$Configurate : dev/racci/minix/data/serializers/kotlin/RangeSerializer$Configurate {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/FloatRangeSerializer$Configurate;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lkotlin/ranges/ClosedFloatingPointRange;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/IntRangeSerializer : dev/racci/minix/data/serializers/kotlin/RangeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/IntRangeSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lkotlin/ranges/IntRange;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/IntRangeSerializer$Configurate : dev/racci/minix/data/serializers/kotlin/RangeSerializer$Configurate {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/IntRangeSerializer$Configurate;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lkotlin/ranges/IntRange;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/KeySerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/KeySerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/bukkit/NamespacedKey;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lnet/kyori/adventure/key/Key;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/LongRangeSerializer : dev/racci/minix/data/serializers/kotlin/RangeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/LongRangeSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lkotlin/ranges/LongRange;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/LongRangeSerializer$Configurate : dev/racci/minix/data/serializers/kotlin/RangeSerializer$Configurate {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/LongRangeSerializer$Configurate;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Lkotlin/ranges/LongRange;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/MiniMessageSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/MiniMessageSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lnet/kyori/adventure/text/Component;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lnet/kyori/adventure/text/Component;)V
+}
+
+public abstract class dev/racci/minix/data/serializers/kotlin/RangeSerializer : kotlinx/serialization/KSerializer {
+	public fun <init> ()V
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lkotlin/ranges/ClosedRange;)V
+}
+
+public abstract class dev/racci/minix/data/serializers/kotlin/RangeSerializer$Configurate : org/spongepowered/configurate/serialize/TypeSerializer {
+	public fun <init> ()V
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public fun serialize (Ljava/lang/reflect/Type;Lkotlin/ranges/ClosedRange;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/Serializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/Serializer;
+	public final fun getSerializers ()Lorg/spongepowered/configurate/serialize/TypeSerializerCollection;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/UUIDSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/UUIDSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/util/UUID;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/util/UUID;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/VectorSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/VectorSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/bukkit/util/Vector;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/bukkit/util/Vector;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/minecraft/AttributeModifierSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/minecraft/AttributeModifierSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/bukkit/attribute/AttributeModifier;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/bukkit/attribute/AttributeModifier;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/minecraft/BlockPosSerializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/minecraft/BlockPosSerializer;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ldev/racci/minix/data/structs/minecraft/BlockPos;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun serialize (Ljava/lang/reflect/Type;Ldev/racci/minix/data/structs/minecraft/BlockPos;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/minecraft/EnchantSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/minecraft/EnchantSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/bukkit/enchantments/Enchantment;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/bukkit/enchantments/Enchantment;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/minecraft/ItemMetaSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/minecraft/ItemMetaSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/bukkit/inventory/meta/ItemMeta;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/bukkit/inventory/meta/ItemMeta;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/minecraft/ItemStackSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/minecraft/ItemStackSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/bukkit/inventory/ItemStack;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/bukkit/inventory/ItemStack;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/minecraft/LocationSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/minecraft/LocationSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/bukkit/Location;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/bukkit/Location;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/minecraft/PatternSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/minecraft/PatternSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/bukkit/block/banner/Pattern;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/bukkit/block/banner/Pattern;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/minecraft/PotionEffectSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/minecraft/PotionEffectSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/bukkit/potion/PotionEffect;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/bukkit/potion/PotionEffect;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/minecraft/WorldSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/minecraft/WorldSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lorg/bukkit/World;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Lorg/bukkit/World;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/BlastingRecipeIngredients : dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients {
+	public static final field Companion Ldev/racci/minix/data/serializers/kotlin/recipes/BlastingRecipeIngredients$Companion;
+	public synthetic fun <init> (ILorg/bukkit/inventory/ItemStack;FILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lorg/bukkit/inventory/ItemStack;FI)V
+	public final fun getCookingTime ()I
+	public final fun getExperience ()F
+	public final fun getInput ()Lorg/bukkit/inventory/ItemStack;
+	public fun toRecipe (Lnet/kyori/adventure/key/Key;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;)Lorg/bukkit/inventory/Recipe;
+	public static final fun write$Self (Ldev/racci/minix/data/serializers/kotlin/recipes/BlastingRecipeIngredients;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/BlastingRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/BlastingRecipeIngredients$$serializer;
+	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/BlastingRecipeIngredients;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/data/serializers/kotlin/recipes/BlastingRecipeIngredients;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/BlastingRecipeIngredients$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/CampfireRecipeIngredients : dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients {
+	public static final field Companion Ldev/racci/minix/data/serializers/kotlin/recipes/CampfireRecipeIngredients$Companion;
+	public synthetic fun <init> (ILorg/bukkit/inventory/ItemStack;FILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lorg/bukkit/inventory/ItemStack;FI)V
+	public final fun getCookingTime ()I
+	public final fun getExperience ()F
+	public final fun getInput ()Lorg/bukkit/inventory/ItemStack;
+	public fun toRecipe (Lnet/kyori/adventure/key/Key;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;)Lorg/bukkit/inventory/Recipe;
+	public static final fun write$Self (Ldev/racci/minix/data/serializers/kotlin/recipes/CampfireRecipeIngredients;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/CampfireRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/CampfireRecipeIngredients$$serializer;
+	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/CampfireRecipeIngredients;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/data/serializers/kotlin/recipes/CampfireRecipeIngredients;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/CampfireRecipeIngredients$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipeIngredients : dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients {
+	public static final field Companion Ldev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipeIngredients$Companion;
+	public synthetic fun <init> (ILorg/bukkit/inventory/ItemStack;FILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lorg/bukkit/inventory/ItemStack;FI)V
+	public final fun getCookingTime ()I
+	public final fun getExperience ()F
+	public final fun getInput ()Lorg/bukkit/inventory/ItemStack;
+	public fun toRecipe (Lnet/kyori/adventure/key/Key;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;)Lorg/bukkit/inventory/Recipe;
+	public static final fun write$Self (Ldev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipeIngredients;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipeIngredients$$serializer;
+	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipeIngredients;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipeIngredients;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipeIngredients$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipe {
+	public static final field Companion Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipe$Companion;
+	public synthetic fun <init> (ILnet/kyori/adventure/key/Key;Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lnet/kyori/adventure/key/Key;Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;)V
+	public synthetic fun <init> (Lnet/kyori/adventure/key/Key;Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getGroup ()Ljava/lang/String;
+	public final fun getIngredients ()Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients;
+	public final fun getKey ()Lnet/kyori/adventure/key/Key;
+	public final fun getResult ()Lorg/bukkit/inventory/ItemStack;
+	public final fun toCraftingRecipe ()Lorg/bukkit/inventory/Recipe;
+	public static final fun write$Self (Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipe;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipe$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipe$$serializer;
+	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipe;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipe;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipe$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public abstract class dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients {
+	public static final field Companion Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients$Companion;
+	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public abstract fun toRecipe (Lnet/kyori/adventure/key/Key;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;)Lorg/bukkit/inventory/Recipe;
+	public static synthetic fun toRecipe$default (Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients;Lnet/kyori/adventure/key/Key;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;ILjava/lang/Object;)Lorg/bukkit/inventory/Recipe;
+	public static final fun write$Self (Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeIngredients : dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients {
+	public static final field Companion Ldev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeIngredients$Companion;
+	public synthetic fun <init> (ILjava/util/Map;Ljava/lang/String;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Ljava/util/Map;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/util/Map;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getConfiguration ()Ljava/lang/String;
+	public final fun getItems ()Ljava/util/Map;
+	public fun toRecipe (Lnet/kyori/adventure/key/Key;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;)Lorg/bukkit/inventory/Recipe;
+	public static final fun write$Self (Ldev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeIngredients;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeIngredients$$serializer;
+	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeIngredients;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeIngredients;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeIngredients$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/ShapelessRecipeIngredients : dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients {
+	public static final field Companion Ldev/racci/minix/data/serializers/kotlin/recipes/ShapelessRecipeIngredients$Companion;
+	public synthetic fun <init> (ILjava/util/List;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Ljava/util/List;)V
+	public final fun getItems ()Ljava/util/List;
+	public fun toRecipe (Lnet/kyori/adventure/key/Key;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;)Lorg/bukkit/inventory/Recipe;
+	public static final fun write$Self (Ldev/racci/minix/data/serializers/kotlin/recipes/ShapelessRecipeIngredients;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/ShapelessRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/ShapelessRecipeIngredients$$serializer;
+	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/ShapelessRecipeIngredients;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/data/serializers/kotlin/recipes/ShapelessRecipeIngredients;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/ShapelessRecipeIngredients$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/SmithingRecipeIngredients : dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients {
+	public static final field Companion Ldev/racci/minix/data/serializers/kotlin/recipes/SmithingRecipeIngredients$Companion;
+	public synthetic fun <init> (ILorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lorg/bukkit/inventory/ItemStack;Lorg/bukkit/inventory/ItemStack;)V
+	public final fun getAddition ()Lorg/bukkit/inventory/ItemStack;
+	public final fun getInput ()Lorg/bukkit/inventory/ItemStack;
+	public fun toRecipe (Lnet/kyori/adventure/key/Key;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;)Lorg/bukkit/inventory/Recipe;
+	public static final fun write$Self (Ldev/racci/minix/data/serializers/kotlin/recipes/SmithingRecipeIngredients;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/SmithingRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/SmithingRecipeIngredients$$serializer;
+	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/SmithingRecipeIngredients;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/data/serializers/kotlin/recipes/SmithingRecipeIngredients;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/SmithingRecipeIngredients$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipeIngredients : dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients {
+	public static final field Companion Ldev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipeIngredients$Companion;
+	public synthetic fun <init> (ILorg/bukkit/inventory/ItemStack;FILkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lorg/bukkit/inventory/ItemStack;FI)V
+	public final fun getCookingTime ()I
+	public final fun getExperience ()F
+	public final fun getInput ()Lorg/bukkit/inventory/ItemStack;
+	public fun toRecipe (Lnet/kyori/adventure/key/Key;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;)Lorg/bukkit/inventory/Recipe;
+	public static final fun write$Self (Ldev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipeIngredients;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipeIngredients$$serializer;
+	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipeIngredients;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipeIngredients;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipeIngredients$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingRecipeIngredients : dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipeIngredients {
+	public static final field Companion Ldev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingRecipeIngredients$Companion;
+	public synthetic fun <init> (ILorg/bukkit/inventory/ItemStack;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public fun <init> (Lorg/bukkit/inventory/ItemStack;)V
+	public final fun getInput ()Lorg/bukkit/inventory/ItemStack;
+	public fun toRecipe (Lnet/kyori/adventure/key/Key;Lorg/bukkit/inventory/ItemStack;Ljava/lang/String;)Lorg/bukkit/inventory/Recipe;
+	public static final fun write$Self (Ldev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingRecipeIngredients;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingRecipeIngredients$$serializer;
+	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingRecipeIngredients;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingRecipeIngredients;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingRecipeIngredients$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/data/structs/minecraft/BlockPos : dev/racci/minix/data/structs/minecraft/VectorComparable {
+	public fun <init> (DDD)V
+	public fun <init> (III)V
+	public final fun asChunkPos ()Ldev/racci/minix/data/structs/minecraft/ChunkPos;
+	public final fun asLocationPos ()Ldev/racci/minix/data/structs/minecraft/LocationPos;
+	public fun axis ()[D
+	public fun compareTo (Ldev/racci/minix/data/structs/minecraft/BlockPos;)I
+	public synthetic fun compareTo (Ljava/lang/Comparable;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public final fun component1 ()D
+	public final fun component2 ()D
+	public final fun component3 ()D
+	public final fun copy (DDD)Ldev/racci/minix/data/structs/minecraft/BlockPos;
+	public static synthetic fun copy$default (Ldev/racci/minix/data/structs/minecraft/BlockPos;DDDILjava/lang/Object;)Ldev/racci/minix/data/structs/minecraft/BlockPos;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun factor ([I)Ldev/racci/minix/data/structs/minecraft/BlockPos;
+	public synthetic fun factor ([I)Ljava/lang/Comparable;
+	public final fun getX ()D
+	public final fun getY ()D
+	public final fun getZ ()D
+	public fun hashCode ()I
+	public fun rangeTo (Ldev/racci/minix/data/structs/minecraft/BlockPos;)Ldev/racci/minix/data/structs/minecraft/range/PosRange;
+	public synthetic fun rangeTo (Ljava/lang/Comparable;)Ldev/racci/minix/data/structs/minecraft/range/PosRange;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/data/structs/minecraft/BlockPosKt {
+	public static final fun blockPosOf (DDD)Ldev/racci/minix/data/structs/minecraft/BlockPos;
+	public static final fun blockPosOf (III)Ldev/racci/minix/data/structs/minecraft/BlockPos;
+	public static final fun calculatePythagoras ([Lkotlin/Pair;)Lkotlin/Pair;
+}
+
+public final class dev/racci/minix/data/structs/minecraft/ChunkPos : dev/racci/minix/data/structs/minecraft/VectorComparable {
+	public fun <init> (II)V
+	public final fun asBukkitChunk (Lorg/bukkit/World;)Lorg/bukkit/Chunk;
+	public fun axis ()[D
+	public fun compareTo (Ldev/racci/minix/data/structs/minecraft/ChunkPos;)I
+	public synthetic fun compareTo (Ljava/lang/Comparable;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun copy (II)Ldev/racci/minix/data/structs/minecraft/ChunkPos;
+	public static synthetic fun copy$default (Ldev/racci/minix/data/structs/minecraft/ChunkPos;IIILjava/lang/Object;)Ldev/racci/minix/data/structs/minecraft/ChunkPos;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun factor ([I)Ldev/racci/minix/data/structs/minecraft/ChunkPos;
+	public synthetic fun factor ([I)Ljava/lang/Comparable;
+	public final fun getX ()I
+	public final fun getZ ()I
+	public fun hashCode ()I
+	public fun rangeTo (Ldev/racci/minix/data/structs/minecraft/ChunkPos;)Ldev/racci/minix/data/structs/minecraft/range/PosRange;
+	public synthetic fun rangeTo (Ljava/lang/Comparable;)Ldev/racci/minix/data/structs/minecraft/range/PosRange;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/data/structs/minecraft/ChunkPosKt {
+	public static final fun chunkPosOf (II)Ldev/racci/minix/data/structs/minecraft/ChunkPos;
+}
+
+public final class dev/racci/minix/data/structs/minecraft/LocationPos : dev/racci/minix/data/structs/minecraft/VectorComparable {
+	public fun <init> (DDDFF)V
+	public final fun asBlockPos ()Ldev/racci/minix/data/structs/minecraft/BlockPos;
+	public fun axis ()[D
+	public fun compareTo (Ldev/racci/minix/data/structs/minecraft/LocationPos;)I
+	public synthetic fun compareTo (Ljava/lang/Comparable;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public final fun component1 ()D
+	public final fun component2 ()D
+	public final fun component3 ()D
+	public final fun component4 ()F
+	public final fun component5 ()F
+	public final fun copy (DDDFF)Ldev/racci/minix/data/structs/minecraft/LocationPos;
+	public static synthetic fun copy$default (Ldev/racci/minix/data/structs/minecraft/LocationPos;DDDFFILjava/lang/Object;)Ldev/racci/minix/data/structs/minecraft/LocationPos;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun factor ([I)Ldev/racci/minix/data/structs/minecraft/LocationPos;
+	public synthetic fun factor ([I)Ljava/lang/Comparable;
+	public final fun getPitch ()F
+	public final fun getX ()D
+	public final fun getY ()D
+	public final fun getYaw ()F
+	public final fun getZ ()D
+	public fun hashCode ()I
+	public fun rangeTo (Ldev/racci/minix/data/structs/minecraft/LocationPos;)Ldev/racci/minix/data/structs/minecraft/range/PosRange;
+	public synthetic fun rangeTo (Ljava/lang/Comparable;)Ldev/racci/minix/data/structs/minecraft/range/PosRange;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/data/structs/minecraft/LocationPosKt {
+	public static final fun locationPosOf (DDDFF)Ldev/racci/minix/data/structs/minecraft/LocationPos;
+	public static synthetic fun locationPosOf$default (DDDFFILjava/lang/Object;)Ldev/racci/minix/data/structs/minecraft/LocationPos;
+}
+
+public abstract interface class dev/racci/minix/data/structs/minecraft/VectorComparable : java/lang/Comparable {
+	public abstract fun axis ()[D
+	public abstract fun compareTo (Ljava/lang/Comparable;)I
+	public abstract fun factor ([I)Ljava/lang/Comparable;
+	public abstract fun rangeTo (Ljava/lang/Comparable;)Ldev/racci/minix/data/structs/minecraft/range/PosRange;
+}
+
+public final class dev/racci/minix/data/structs/minecraft/VectorComparable$DefaultImpls {
+	public static fun compareTo (Ldev/racci/minix/data/structs/minecraft/VectorComparable;Ljava/lang/Comparable;)I
+	public static fun rangeTo (Ldev/racci/minix/data/structs/minecraft/VectorComparable;Ljava/lang/Comparable;)Ldev/racci/minix/data/structs/minecraft/range/PosRange;
+}
+
+public final class dev/racci/minix/data/structs/minecraft/range/PosRange : java/lang/Iterable, kotlin/jvm/internal/markers/KMappedMarker, kotlin/ranges/ClosedRange {
+	public fun <init> (Ldev/racci/minix/data/structs/minecraft/VectorComparable;Ldev/racci/minix/data/structs/minecraft/VectorComparable;Lkotlin/jvm/functions/Function0;)V
+	public fun contains (Ldev/racci/minix/data/structs/minecraft/VectorComparable;)Z
+	public synthetic fun contains (Ljava/lang/Comparable;)Z
+	public final fun getBuildIterator ()Lkotlin/jvm/functions/Function0;
+	public fun getEndInclusive ()Ldev/racci/minix/data/structs/minecraft/VectorComparable;
+	public synthetic fun getEndInclusive ()Ljava/lang/Comparable;
+	public final fun getFirst ()Ldev/racci/minix/data/structs/minecraft/VectorComparable;
+	public final fun getLast ()Ldev/racci/minix/data/structs/minecraft/VectorComparable;
+	public fun getStart ()Ldev/racci/minix/data/structs/minecraft/VectorComparable;
+	public synthetic fun getStart ()Ljava/lang/Comparable;
+	public fun isEmpty ()Z
+	public fun iterator ()Ljava/util/Iterator;
+}
+
+public final class dev/racci/minix/data/structs/minecraft/range/PosRangeIterator : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun <init> (Ldev/racci/minix/data/structs/minecraft/VectorComparable;Ldev/racci/minix/data/structs/minecraft/VectorComparable;Lkotlin/jvm/functions/Function1;)V
+	public final fun getFactor ()Lkotlin/jvm/functions/Function1;
+	public fun hasNext ()Z
+	public fun next ()Ldev/racci/minix/data/structs/minecraft/VectorComparable;
+	public synthetic fun next ()Ljava/lang/Object;
+	public fun remove ()V
+}
+
+public final class dev/racci/minix/data/structs/minecraft/range/RangeIteratorWithFactor : java/util/Iterator, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public final fun getIterator ()Ldev/racci/minix/data/structs/minecraft/range/PosRangeIterator;
+	public fun hasNext ()Z
+	public fun next ()Ljava/lang/Object;
+	public fun remove ()V
+}
+
+public final class dev/racci/minix/data/utils/FileSystemUtils {
+	public static final field INSTANCE Ldev/racci/minix/data/utils/FileSystemUtils;
+	public final fun size (Ljava/io/File;I)J
+	public static synthetic fun size$default (Ldev/racci/minix/data/utils/FileSystemUtils;Ljava/io/File;IILjava/lang/Object;)J
+}
+
+public final class dev/racci/minix/data/utils/FileSystemUtilsKt {
+	public static final fun size (Ljava/io/File;)J
+	public static final fun size (Ljava/nio/file/Path;)J
+}
+
+public final class dev/racci/minix/data/utils/NestedUtils {
+	public static final field INSTANCE Ldev/racci/minix/data/utils/NestedUtils;
+	public final fun getNestedClasses (Lkotlin/reflect/KClass;II)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun getNestedClasses$default (Ldev/racci/minix/data/utils/NestedUtils;Lkotlin/reflect/KClass;IIILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public final fun getNestedInstances (Lkotlin/reflect/KClass;Ljava/lang/Object;II)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun getNestedInstances$default (Ldev/racci/minix/data/utils/NestedUtils;Lkotlin/reflect/KClass;Ljava/lang/Object;IIILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public abstract class dev/racci/minix/data/utils/PropertyFinder {
+	public fun <init> ()V
+	public fun <init> (Ldev/racci/minix/data/utils/PropertyFinder$KeyMode;)V
+	public synthetic fun <init> (Ldev/racci/minix/data/utils/PropertyFinder$KeyMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun get (Ljava/lang/String;)Ljava/lang/Object;
+	public fun get (Ljava/lang/String;Z)Ljava/lang/Object;
+	public static synthetic fun get$default (Ldev/racci/minix/data/utils/PropertyFinder;Ljava/lang/String;ZILjava/lang/Object;)Ljava/lang/Object;
+	public final fun getKeys ()Lkotlinx/collections/immutable/ImmutableSet;
+	public final fun getPropertyMap ()Lkotlinx/collections/immutable/PersistentMap;
+}
+
+public final class dev/racci/minix/data/utils/PropertyFinder$KeyMode : java/lang/Enum {
+	public static final field CAPITALISED Ldev/racci/minix/data/utils/PropertyFinder$KeyMode;
+	public static final field CAPITAL_TO_DOT Ldev/racci/minix/data/utils/PropertyFinder$KeyMode;
+	public static final field RAW Ldev/racci/minix/data/utils/PropertyFinder$KeyMode;
+	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun format (Ljava/lang/String;)Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Ldev/racci/minix/data/utils/PropertyFinder$KeyMode;
+	public static fun values ()[Ldev/racci/minix/data/utils/PropertyFinder$KeyMode;
+}
+

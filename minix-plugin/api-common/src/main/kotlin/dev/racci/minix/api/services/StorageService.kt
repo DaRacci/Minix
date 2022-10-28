@@ -2,6 +2,9 @@ package dev.racci.minix.api.services
 
 import com.zaxxer.hikari.HikariDataSource
 import dev.racci.minix.api.extension.ExtensionSkeleton
+import dev.racci.minix.api.extensions.deleteProperty
+import dev.racci.minix.api.extensions.getProperty
+import dev.racci.minix.api.extensions.setProperty
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.getKoin
@@ -30,48 +33,53 @@ public interface StorageService<P : MinixPlugin> : ExtensionSkeleton<P> {
     public val managedTable: Table
 
     @ApiStatus.NonExtendable
-    public override suspend fun handleCreate() {
-        this.getProperty<HikariDataSource>("dataSource")?.close()
-        this.deleteProperty("dataSource")
-        this.deleteProperty("database")
+    public override suspend fun handleLoad() {
+        this.createDatabaseConfig()
+        this.setProperty(PROPERTY_DATABASE, Database.connect(this.getProperty<DataSource>(PROPERTY_DATA_SOURCE)!!, databaseConfig = databaseConfig))
+
+        withDatabase {
+            SchemaUtils.create(managedTable)
+            SchemaUtils.addMissingColumnsStatements(managedTable)
+        }
     }
 
     @ApiStatus.NonExtendable
+    public override suspend fun handleReload() {
+        // TODO -> Reload database settings and re-initialise
+    }
+
+    @ApiStatus.NonExtendable
+    public override suspend fun handlePostUnload() {
+        this.getProperty<HikariDataSource>(PROPERTY_DATA_SOURCE)?.close()
+        this.deleteProperty(PROPERTY_DATA_SOURCE)
+        this.deleteProperty(PROPERTY_DATABASE)
+    }
+
     public suspend fun getDatabase(): Database? {
-        this.ensureSetup()
-        return this.getProperty("database")
+        return this.getProperty(PROPERTY_DATABASE)
     }
 
     public fun getStorageDirectory(): Path = plugin.dataFolder
 
+    // TODO -> Configurable in MinixConfig file
     public fun getDataSourceProperties(): Map<String, Any> = mapOf(
         "cachePrepStmts" to true,
         "prepStmtCacheSize" to 250,
         "prepStmtCacheSqlLimit" to 2048
     )
 
-    private fun createDatabaseConfig() {
-        with(HikariDataSource()) {
+    // TODO -> MariaDB support
+    // TODO -> HyperSQL support
+    // TODO -> Support changing through MinixConfig file
+    private fun createDatabaseConfig(): DataSource {
+        return with(HikariDataSource()) {
             this.jdbcUrl = "jdbc:sqlite:${getStorageDirectory()}/database.db"
 
             this@StorageService.getDataSourceProperties().forEach { (key, value) ->
                 this.addDataSourceProperty(key, value)
             }
 
-            setProperty("dataSource", this)
-        }
-    }
-
-    private suspend fun ensureSetup() {
-        val database = this.getProperty<Database>("database")
-        if (database != null) return
-
-        this.createDatabaseConfig()
-        this.setProperty("database", Database.connect(this.getProperty<DataSource>("dataSource")!!, databaseConfig = databaseConfig))
-
-        withDatabase {
-            SchemaUtils.create(managedTable)
-            SchemaUtils.addMissingColumnsStatements(managedTable)
+            setProperty(PROPERTY_DATA_SOURCE, this)
         }
     }
 
@@ -88,6 +96,9 @@ public interface StorageService<P : MinixPlugin> : ExtensionSkeleton<P> {
     }
 
     private companion object {
+        const val PROPERTY_DATABASE = "database"
+        const val PROPERTY_DATA_SOURCE = "datasource"
+
         val databaseConfig = DatabaseConfig {
             this.sqlLogger = object : SqlLogger {
                 override fun log(

@@ -1,18 +1,18 @@
-package dev.racci.minix.core.loggers
+package dev.racci.minix.core.logger
 
-import dev.racci.minix.api.plugin.logger.MinixLogger
+import dev.racci.minix.api.logger.MinixLogger
 import io.sentry.ILogger
 import io.sentry.SentryLevel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
-object SentryProxy : ILogger, KoinComponent {
+public object SentryProxy : ILogger, KoinComponent {
 
     override fun log(
         level: SentryLevel,
         message: String,
         vararg args: Any?
-    ) = this.log(
+    ): Unit = this.log(
         level = level,
         message = message,
         throwable = null,
@@ -23,7 +23,7 @@ object SentryProxy : ILogger, KoinComponent {
         level: SentryLevel,
         message: String,
         throwable: Throwable?
-    ) = this.log(
+    ): Unit = this.log(
         level = level,
         message = message,
         throwable = throwable,
@@ -45,5 +45,5 @@ object SentryProxy : ILogger, KoinComponent {
         }
     }
 
-    override fun isEnabled(level: SentryLevel?) = false
+    override fun isEnabled(level: SentryLevel?): Boolean = false
 }

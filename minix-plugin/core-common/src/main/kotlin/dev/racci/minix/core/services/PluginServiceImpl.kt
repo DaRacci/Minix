@@ -1,36 +1,24 @@
 package dev.racci.minix.core.services
 
-import com.github.benmanes.caffeine.cache.Caffeine
-import com.github.benmanes.caffeine.cache.LoadingCache
 import dev.racci.minix.api.annotations.DoNotUnload
 import dev.racci.minix.api.annotations.MappedExtension
-import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.collections.findKProperty
 import dev.racci.minix.api.extensions.reflection.accessGet
-import dev.racci.minix.api.extensions.reflection.castOrThrow
-import dev.racci.minix.api.extensions.server
-import dev.racci.minix.api.plugin.Minix
+import dev.racci.minix.api.logger.LoggingLevel
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.plugin.PluginData
-import dev.racci.minix.api.plugin.logger.MinixLogger
-import dev.racci.minix.api.plugin.logger.PluginDependentMinixLogger
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.api.utils.reflection.OverrideUtils
-import dev.racci.minix.core.MinixApplicationBuilder
-import dev.racci.minix.core.MinixImpl
-import dev.racci.minix.core.MinixInit
-import dev.racci.minix.core.coroutine.service.CoroutineSessionImpl
+import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.core.services.mapped.ConfigurationMapper
 import dev.racci.minix.core.services.mapped.ExtensionMapper
 import dev.racci.minix.core.services.mapped.IntegrationMapper
 import io.github.classgraph.ClassGraph
 import io.github.toolfactory.jvm.Driver
 import kotlinx.coroutines.runBlocking
-import org.bstats.bukkit.Metrics
 import org.bukkit.plugin.java.JavaPluginLoader
 import org.bukkit.plugin.java.PluginClassLoader
 import org.koin.core.component.get
@@ -41,46 +29,48 @@ import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 import kotlin.reflect.KSuspendFunction0
 import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.jvm.javaField
 
 @DoNotUnload
-@MappedExtension(Minix::class, "Plugin Manager", [ExtensionMapper::class, ConfigurationMapper::class, IntegrationMapper::class], PluginService::class)
+@MappedExtension([ExtensionMapper::class, ConfigurationMapper::class, IntegrationMapper::class], PluginService::class)
 class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<Minix>() {
     private lateinit var driver: Driver
+    private val sessionHolder = ConcurrentHashMap<MinixPlugin, CoroutineSession>(1)
 
-    override val coroutineSession: LoadingCache<MinixPlugin, CoroutineSession> = Caffeine.newBuilder().build { plugin ->
-        if (!plugin.isEnabled) {
-            throw plugin.log.fatal {
-                """
-                Plugin ${plugin.name} attempted to start a new coroutine session while being disabled.
-                Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already
-                disposed of at this point and cannot be used.
-                """.trimIndent()
-            }
-        }
-        CoroutineSessionImpl(plugin)
-    }
+//    override val coroutineSession: LoadingCache<MinixPlugin, CoroutineSession> = Caffeine.newBuilder().build { plugin ->
+//        if (!plugin.isEnabled) {
+//            throw plugin.log.fatal {
+//                """
+//                Plugin ${plugin.name} attempted to start a new coroutine session while being disabled.
+//                Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already
+//                disposed of at this point and cannot be used.
+//                """.trimIndent()
+//            }
+//        }
+//        CoroutineSessionImpl(plugin)
+//    }
 
-    override val loadedPlugins by lazy { mutableMapOf<KClass<out MinixPlugin>, MinixPlugin>() }
-
-    override val pluginCache: LoadingCache<MinixPlugin, PluginData<MinixPlugin>> = Caffeine.newBuilder().build(::PluginData)
+    override val loadedPlugins: MutableMap<KClass<out MinixPlugin>, MinixPlugin> by lazy { mutableMapOf() }
 
     override suspend fun handleLoad() {
         driver = Driver.Factory.getNew()
     }
 
+    override suspend fun handlePostUnload() {
+        driver.close()
+    }
+
     override fun loadPlugin(plugin: MinixPlugin) {
         runBlocking {
             if (plugin.version.isPreRelease) {
-                logger.warn { "Plugin ${plugin.name} is a pre-release version and may not be stable." }
-                plugin.log.setLevel(MinixLogger.LoggingLevel.TRACE)
-                plugin.log.lockLevel()
+                logger.warn { "Plugin ${plugin.value} is a pre-release version and may not be stable." }
+                plugin.logger.setLevel(LoggingLevel.TRACE)
+                plugin.logger.lockLevel()
             }
 
             loadDependencies(plugin)
 
-            if (plugin !is MinixImpl) loadKoinModules(KoinUtils.getModule(plugin))
+            if (plugin !is Minix) loadKoinModules(KoinUtils.getModule(plugin))
 
             logRunning(plugin, plugin::handleLoad)
 
@@ -88,7 +78,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
 
             get<ExtensionMapper>().loadExtensions(plugin)
 
-            logRunning(plugin, plugin::handleAfterLoad)
+            logRunning(plugin, plugin::handlePostLoad)
         }
     }
 
@@ -96,8 +86,6 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         coroutineSession[plugin].isManipulatedServerHeartBeat = true
         runBlocking {
             logRunning(plugin, plugin::handleEnable)
-
-            registerStats(plugin)
 
             get<ExtensionMapper>().enableExtensions(plugin)
 
@@ -224,7 +212,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
             }.getOrNull()
     }
 
-    override suspend fun fromClassloader(classLoader: ClassLoader): MinixPlugin? {
+    override fun fromClassloader(classLoader: ClassLoader): MinixPlugin? {
         for (plugin in loadedPlugins.values) {
             if (pluginCache[plugin].getClassLoader() != classLoader) continue
             return plugin
@@ -232,7 +220,9 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         return null
     }
 
-    override operator fun <P : MinixPlugin> get(plugin: P): PluginData<P> = pluginCache[plugin].castOrThrow()
+    public override fun getValue(thisRef: Any, property: Any?): MinixPlugin {
+        return this.fromClassLoader(thisRef::class.java.classLoader)!!
+    }
 
     private fun isFullUnload(): Boolean = server.isStopping || pluginCache.getIfPresent(plugin)?.wantsFullUnload == true
 
@@ -240,19 +230,12 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         plugin: MinixPlugin,
         func: KSuspendFunction0<Unit>
     ) {
-        if (!OverrideUtils.doesOverrideFunction(plugin::class, func)) return
+        if (!OverrideUtils.doesOverrideFunction(plugin::class, func)) {
+            return logger.debug { "${plugin.value} doesn't override function ${func.name}, skipping." }
+        }
 
-        logger.trace { "Running [${plugin.name}:${func.name}]." }
+        logger.trace { "Running [${plugin.value}:${func.name}]." }
         func.invoke()
-    }
-
-    private fun registerStats(plugin: MinixPlugin) {
-        val id = this::class.findAnnotation<MappedPlugin>()?.bStatsId
-
-        if (id == null || id == 0) return
-
-        logger.info { "Registering bStats." }
-        pluginCache[plugin].metrics = Metrics(plugin, id)
     }
 
     private suspend fun loadReflection(plugin: MinixPlugin) {
@@ -277,8 +260,7 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
     }
 
     private suspend fun loadDependencies(plugin: MinixPlugin) {
-        val classLoader = pluginCache[plugin].getClassLoader()
-        logger.debug { "Loading dependencies for ${plugin.name}, with class ${plugin::class}, with loader ${classLoader.name}" }
+        logger.debug { "Loading dependencies for ${plugin.value}, with class ${plugin::class}, with loader ${plugin.classLoader.name}" }
 
         if (MinixApplicationBuilder.createApplication(plugin) == null) {
             logger.debug { "Plugin ${plugin.name} does not have any needed libraries." }

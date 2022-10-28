@@ -3,6 +3,7 @@ package dev.racci.minix.core.services
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
 import com.github.benmanes.caffeine.cache.RemovalCause
+import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.extensions.reflection.castOrThrow
@@ -13,10 +14,12 @@ import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.services.StorageService
 import dev.racci.minix.api.utils.KoinUtils
+import dev.racci.minix.api.utils.collections.multiMapOf
 import dev.racci.minix.core.data.ConfigData
 import dev.racci.minix.core.data.PluginData
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.core.services.mapped.MapperService
+import dev.racci.minix.flowbus.receiver.EventReceiver
 import io.github.classgraph.ClassInfo
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.Table
@@ -29,9 +32,14 @@ import kotlin.reflect.KClass
 @MappedExtension([PluginService::class], DataService::class, threadCount = 2)
 public class DataServiceImpl internal constructor(
     @InjectedParam override val plugin: Minix
-) : StorageService<Minix>, MapperService<Minix>, DataService() {
+) : StorageService<Minix>, MapperService<Minix>, DataService(), EventReceiver by getKoin().get() {
+    private val configurations = multiMapOf<KClass<out MinixPlugin>, ConfigData<*, *>>()
+
     internal lateinit var watcher: WatchServiceListener
+
     override val managedTable: Table = PluginData
+    override val superclass: KClass<out Any> = MinixConfig::class
+    override val targetAnnotation: KClass<out Annotation> = MappedConfig::class
 
     override suspend fun handleLoad() {
         watcher = WatchServiceListener.builder()
@@ -61,7 +69,10 @@ public class DataServiceImpl internal constructor(
     }
 
     override suspend fun forgetMapped(plugin: MinixPlugin) {
-        configurations
+        configurations.clear { _, config ->
+            disposeConfig(config)
+            unloadKoinModules(KoinUtils.getModule(config))
+        }
 
         ClassValueCtorCache.cache.configurations
             .onEach(dataService.configDataHolder::invalidate)
@@ -94,14 +105,10 @@ public class DataServiceImpl internal constructor(
     }
 
     /** Save the configuration and remove references to it. */
-    private fun disposeConfig(
-        kClass: KClass<out MinixConfig<*>>,
-        config: MinixConfig<*>
-    ) {
-        val config = configurations[kClass]
+    private fun disposeConfig(data: ConfigData<*, *>) {
+        val instance = getKoin().get<MinixConfig<*>>(data.managedClass)
 
-        logger.info { "Saving and disposing configurate class [${config.plugin}:${config.simpleName}]." }
-
+        logger.info { "Saving and disposing configurate class [${instance.value}]." }
         value.configInstance.handleUnload()
         if (value.configLoader.canSave()) {
             value.save()

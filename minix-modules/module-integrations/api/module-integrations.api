@@ -1,0 +1,29 @@
+public abstract interface class dev/racci/minix/integrations/Integration {
+	public abstract fun handleEnable (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun handleLoad (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun handleUnload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/integrations/Integration$DefaultImpls {
+	public static fun handleEnable (Ldev/racci/minix/integrations/Integration;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleLoad (Ldev/racci/minix/integrations/Integration;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleUnload (Ldev/racci/minix/integrations/Integration;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public class dev/racci/minix/integrations/IntegrationManager {
+	public static final field Companion Ldev/racci/minix/integrations/IntegrationManager$Companion;
+	public fun <init> ()V
+	public final fun getFirstRegistered (Lkotlin/jvm/functions/Function1;)Ljava/util/Optional;
+	public final fun getIntegrations ()Ljava/util/Set;
+	public final fun onFirstRegistered (Lkotlin/jvm/functions/Function1;)V
+	public final fun register (Ldev/racci/minix/integrations/Integration;)V
+}
+
+public final class dev/racci/minix/integrations/IntegrationManager$Companion : dev/racci/minix/integrations/IntegrationManager {
+}
+
+public abstract interface annotation class dev/racci/minix/integrations/annotations/MappedIntegration : java/lang/annotation/Annotation {
+	public abstract fun integrationManager ()Ljava/lang/Class;
+	public abstract fun pluginName ()Ljava/lang/String;
+}
+

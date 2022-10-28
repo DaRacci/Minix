@@ -1,18 +1,18 @@
-package dev.racci.minix.core.loggers
+package dev.racci.minix.core.logger
 
-import dev.racci.minix.api.plugin.logger.MinixLogger
+import dev.racci.minix.api.logger.MinixLogger
 import io.github.slimjar.logging.ProcessLogger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
-object SlimJarProxy : ProcessLogger, KoinComponent {
+public object SlimJarProxy : ProcessLogger, KoinComponent {
     override fun log(
         message: String?,
         vararg args: Any?
-    ) = get<MinixLogger>().info { message?.format(*args) }
+    ): Unit = get<MinixLogger>().info { message?.format(*args) }
 
     override fun debug(
         message: String?,
         vararg args: Any?
-    ) = get<MinixLogger>().debug { message?.format(*args) }
+    ): Unit = get<MinixLogger>().debug { message?.format(*args) }
 }

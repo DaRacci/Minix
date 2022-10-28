@@ -1,0 +1,1101 @@
+public abstract interface annotation class dev/racci/minix/api/annotations/MinixDsl : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class dev/racci/minix/api/annotations/RunAsync : java/lang/annotation/Annotation {
+}
+
+public final class dev/racci/minix/api/collections/ExpiringArray : java/util/HashSet {
+	public synthetic fun <init> (JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun add (Ljava/lang/Object;)Z
+	public final fun getDuration-UwyO8pc ()J
+	public fun getSize ()I
+	public final fun size ()I
+}
+
+public abstract interface class dev/racci/minix/api/collections/expiring/ExpirationCallback {
+	public abstract fun onExpire (Ljava/lang/Object;)V
+}
+
+public abstract interface class dev/racci/minix/api/collections/expiring/ExpirationCollection : java/util/Collection, kotlin/jvm/internal/markers/KMappedMarker {
+	public abstract fun add-8Mi8wO0 (Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationCallback;)V
+	public abstract fun addAll-KLykuaI (J[Ljava/lang/Object;Ldev/racci/minix/api/collections/expiring/ExpirationCallback;)V
+	public abstract fun addAll-VtjQ1oo (J[Lkotlin/Pair;)V
+	public abstract fun addFirst-8Mi8wO0 (Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationCallback;)V
+	public abstract fun addLast-8Mi8wO0 (Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationCallback;)V
+	public abstract fun clear ()V
+	public abstract fun first ()Ljava/lang/Object;
+	public abstract fun get (I)Ljava/lang/Object;
+	public abstract fun indexOf (Ljava/lang/Object;)I
+	public abstract fun last ()Ljava/lang/Object;
+	public abstract fun remove (Ljava/lang/Object;)Z
+	public abstract fun removeAt (I)Ljava/lang/Object;
+	public abstract fun removeFirst ()Ljava/lang/Object;
+	public abstract fun removeLast ()Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/collections/expiring/ExpirationCollection$DefaultImpls {
+	public static synthetic fun add-8Mi8wO0$default (Ldev/racci/minix/api/collections/expiring/ExpirationCollection;Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationCallback;ILjava/lang/Object;)V
+	public static synthetic fun addAll-KLykuaI$default (Ldev/racci/minix/api/collections/expiring/ExpirationCollection;J[Ljava/lang/Object;Ldev/racci/minix/api/collections/expiring/ExpirationCallback;ILjava/lang/Object;)V
+	public static synthetic fun addFirst-8Mi8wO0$default (Ldev/racci/minix/api/collections/expiring/ExpirationCollection;Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationCallback;ILjava/lang/Object;)V
+	public static synthetic fun addLast-8Mi8wO0$default (Ldev/racci/minix/api/collections/expiring/ExpirationCollection;Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationCallback;ILjava/lang/Object;)V
+}
+
+public final class dev/racci/minix/api/collections/expiring/ExpirationListImpl : dev/racci/minix/api/collections/expiring/ExpirationCollection {
+	public fun add (Ljava/lang/Object;)Z
+	public fun add-8Mi8wO0 (Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationCallback;)V
+	public fun addAll (Ljava/util/Collection;)Z
+	public fun addAll-KLykuaI (J[Ljava/lang/Object;Ldev/racci/minix/api/collections/expiring/ExpirationCallback;)V
+	public fun addAll-VtjQ1oo (J[Lkotlin/Pair;)V
+	public fun addFirst-8Mi8wO0 (Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationCallback;)V
+	public fun addLast-8Mi8wO0 (Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationCallback;)V
+	public fun clear ()V
+	public fun contains (Ljava/lang/Object;)Z
+	public fun containsAll (Ljava/util/Collection;)Z
+	public fun first ()Ljava/lang/Object;
+	public fun get (I)Ljava/lang/Object;
+	public fun getSize ()I
+	public fun indexOf (Ljava/lang/Object;)I
+	public fun isEmpty ()Z
+	public fun iterator ()Ljava/util/Iterator;
+	public fun last ()Ljava/lang/Object;
+	public fun remove (Ljava/lang/Object;)Z
+	public fun removeAll (Ljava/util/Collection;)Z
+	public fun removeAt (I)Ljava/lang/Object;
+	public fun removeFirst ()Ljava/lang/Object;
+	public fun removeIf (Ljava/util/function/Predicate;)Z
+	public fun removeLast ()Ljava/lang/Object;
+	public fun retainAll (Ljava/util/Collection;)Z
+	public final fun size ()I
+	public fun toArray ()[Ljava/lang/Object;
+	public fun toArray ([Ljava/lang/Object;)[Ljava/lang/Object;
+}
+
+public abstract interface class dev/racci/minix/api/collections/expiring/ExpirationMap : java/util/Map, kotlin/jvm/internal/markers/KMutableMap {
+	public abstract fun getValues ()Ljava/util/Collection;
+	public abstract fun put-SxA4cEA (Ljava/lang/Object;Ljava/lang/Object;J)Ljava/lang/Object;
+	public abstract fun put-exY8QGI (Ljava/lang/Object;Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationMapCallback;)Ljava/lang/Object;
+	public abstract fun remainingTime-LV8wdWc (Ljava/lang/Object;)Lkotlin/time/Duration;
+	public abstract fun setExpiration-8Mi8wO0 (Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationMapCallback;)Z
+	public abstract fun setExpirationCallback (Ljava/lang/Object;Ldev/racci/minix/api/collections/expiring/ExpirationMapCallback;)Z
+}
+
+public final class dev/racci/minix/api/collections/expiring/ExpirationMap$DefaultImpls {
+	public static synthetic fun setExpiration-8Mi8wO0$default (Ldev/racci/minix/api/collections/expiring/ExpirationMap;Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationMapCallback;ILjava/lang/Object;)Z
+}
+
+public abstract interface class dev/racci/minix/api/collections/expiring/ExpirationMapCallback {
+	public abstract fun onExpire (Ljava/lang/Object;Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/api/collections/expiring/ExpirationMapImpl : dev/racci/minix/api/collections/expiring/ExpirationMap, java/util/Map, kotlin/jvm/internal/markers/KMutableMap {
+	public synthetic fun <init> (JLkotlin/coroutines/CoroutineContext;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (JLkotlin/coroutines/CoroutineContext;Ljava/util/Map;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun clear ()V
+	public fun containsKey (Ljava/lang/Object;)Z
+	public fun containsValue (Ljava/lang/Object;)Z
+	public final fun entrySet ()Ljava/util/Set;
+	public fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun getEntries ()Ljava/util/Set;
+	public fun getKeys ()Ljava/util/Set;
+	public fun getSize ()I
+	public fun getValues ()Ljava/util/Collection;
+	public fun isEmpty ()Z
+	public final fun keySet ()Ljava/util/Set;
+	public fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun put-SxA4cEA (Ljava/lang/Object;Ljava/lang/Object;J)Ljava/lang/Object;
+	public fun put-exY8QGI (Ljava/lang/Object;Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationMapCallback;)Ljava/lang/Object;
+	public fun putAll (Ljava/util/Map;)V
+	public fun remainingTime-LV8wdWc (Ljava/lang/Object;)Lkotlin/time/Duration;
+	public fun remove (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun setExpiration-8Mi8wO0 (Ljava/lang/Object;JLdev/racci/minix/api/collections/expiring/ExpirationMapCallback;)Z
+	public fun setExpirationCallback (Ljava/lang/Object;Ldev/racci/minix/api/collections/expiring/ExpirationMapCallback;)Z
+	public final fun size ()I
+	public final fun values ()Ljava/util/Collection;
+}
+
+public final class dev/racci/minix/api/collections/expiring/ExpirationMapValue {
+	public synthetic fun <init> (Ljava/lang/Object;JLkotlinx/datetime/Instant;Ldev/racci/minix/api/collections/expiring/ExpirationMapCallback;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2-UwyO8pc ()J
+	public final fun component3 ()Lkotlinx/datetime/Instant;
+	public final fun component4 ()Ldev/racci/minix/api/collections/expiring/ExpirationMapCallback;
+	public final fun copy-dWUq8MI (Ljava/lang/Object;JLkotlinx/datetime/Instant;Ldev/racci/minix/api/collections/expiring/ExpirationMapCallback;)Ldev/racci/minix/api/collections/expiring/ExpirationMapValue;
+	public static synthetic fun copy-dWUq8MI$default (Ldev/racci/minix/api/collections/expiring/ExpirationMapValue;Ljava/lang/Object;JLkotlinx/datetime/Instant;Ldev/racci/minix/api/collections/expiring/ExpirationMapCallback;ILjava/lang/Object;)Ldev/racci/minix/api/collections/expiring/ExpirationMapValue;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getExpireIn-UwyO8pc ()J
+	public final fun getOnExpire ()Ldev/racci/minix/api/collections/expiring/ExpirationMapCallback;
+	public final fun getStartTime ()Lkotlinx/datetime/Instant;
+	public final fun getValue ()Ljava/lang/Object;
+	public fun hashCode ()I
+	public final fun remainingTime-UwyO8pc ()J
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/collections/expiring/ExpirationNode {
+	public synthetic fun <init> (Ljava/lang/Object;JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getElement ()Ljava/lang/Object;
+	public final fun getExpireIn-UwyO8pc ()J
+	public final fun getNext ()Ldev/racci/minix/api/collections/expiring/ExpirationNode;
+	public final fun getOnExpire ()Ldev/racci/minix/api/collections/expiring/ExpirationCallback;
+	public final fun getPrevious ()Ldev/racci/minix/api/collections/expiring/ExpirationNode;
+	public final fun getStartTime ()Lkotlinx/datetime/Instant;
+	public final fun setElement (Ljava/lang/Object;)V
+	public final fun setNext (Ldev/racci/minix/api/collections/expiring/ExpirationNode;)V
+	public final fun setOnExpire (Ldev/racci/minix/api/collections/expiring/ExpirationCallback;)V
+	public final fun setPrevious (Ldev/racci/minix/api/collections/expiring/ExpirationNode;)V
+}
+
+public final class dev/racci/minix/api/collections/expiring/ExtensionsKt {
+	public static final fun expirationListOf (Lkotlin/coroutines/CoroutineContext;)Ldev/racci/minix/api/collections/expiring/ExpirationCollection;
+	public static synthetic fun expirationListOf$default (Lkotlin/coroutines/CoroutineContext;ILjava/lang/Object;)Ldev/racci/minix/api/collections/expiring/ExpirationCollection;
+	public static final fun expirationListOf-VtjQ1oo (J[Ljava/lang/Object;)Ldev/racci/minix/api/collections/expiring/ExpirationCollection;
+	public static final fun expirationListOf-VtjQ1oo (J[Lkotlin/Pair;)Ldev/racci/minix/api/collections/expiring/ExpirationCollection;
+	public static synthetic fun expirationListOf-VtjQ1oo$default (J[Ljava/lang/Object;ILjava/lang/Object;)Ldev/racci/minix/api/collections/expiring/ExpirationCollection;
+	public static synthetic fun expirationListOf-VtjQ1oo$default (J[Lkotlin/Pair;ILjava/lang/Object;)Ldev/racci/minix/api/collections/expiring/ExpirationCollection;
+	public static final fun expirationMapOf-KLykuaI (JLkotlin/coroutines/CoroutineContext;[Lkotlin/Pair;)Ldev/racci/minix/api/collections/expiring/ExpirationMap;
+	public static synthetic fun expirationMapOf-KLykuaI$default (JLkotlin/coroutines/CoroutineContext;[Lkotlin/Pair;ILjava/lang/Object;)Ldev/racci/minix/api/collections/expiring/ExpirationMap;
+	public static final fun expirationMapOfPairCallback (JLkotlin/coroutines/CoroutineContext;[Lkotlin/Pair;)Ldev/racci/minix/api/collections/expiring/ExpirationMap;
+	public static synthetic fun expirationMapOfPairCallback$default (JLkotlin/coroutines/CoroutineContext;[Lkotlin/Pair;ILjava/lang/Object;)Ldev/racci/minix/api/collections/expiring/ExpirationMap;
+	public static final fun expirationMapOfPairDuration (JLkotlin/coroutines/CoroutineContext;[Lkotlin/Pair;)Ldev/racci/minix/api/collections/expiring/ExpirationMap;
+	public static synthetic fun expirationMapOfPairDuration$default (JLkotlin/coroutines/CoroutineContext;[Lkotlin/Pair;ILjava/lang/Object;)Ldev/racci/minix/api/collections/expiring/ExpirationMap;
+}
+
+public final class dev/racci/minix/api/collections/registering/ExtensionsKt {
+	public static final fun registeringMapOf ()Ldev/racci/minix/api/collections/registering/MutableRegisteringMap;
+	public static final fun registeringMapOf ([Lkotlin/Pair;)Ldev/racci/minix/api/collections/registering/MutableRegisteringMap;
+}
+
+public class dev/racci/minix/api/collections/registering/ImmutableRegisteringMap : dev/racci/minix/api/collections/registering/RegisteringMap {
+	public static final field Companion Ldev/racci/minix/api/collections/registering/ImmutableRegisteringMap$Companion;
+	public synthetic fun getInternalMap ()Ljava/util/Map;
+	protected fun getInternalMap ()Lkotlinx/collections/immutable/PersistentMap;
+}
+
+public final class dev/racci/minix/api/collections/registering/ImmutableRegisteringMap$Companion {
+	public final fun of (Ljava/lang/Iterable;)Ldev/racci/minix/api/collections/registering/ImmutableRegisteringMap;
+	public final fun of ([Lkotlin/Pair;)Ldev/racci/minix/api/collections/registering/ImmutableRegisteringMap;
+}
+
+public class dev/racci/minix/api/collections/registering/MutableRegisteringMap : dev/racci/minix/api/collections/registering/RegisteringMap {
+	public static final field Companion Ldev/racci/minix/api/collections/registering/MutableRegisteringMap$Companion;
+	public synthetic fun <init> (Ljava/util/Map;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected fun getInternalMap ()Ljava/util/Map;
+	public final fun put (Ljava/lang/Object;Ldev/racci/minix/api/lifecycles/Loadable;)Z
+	public final fun put (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun put$default (Ldev/racci/minix/api/collections/registering/MutableRegisteringMap;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun remove (Ljava/lang/Object;)Z
+}
+
+public final class dev/racci/minix/api/collections/registering/MutableRegisteringMap$Companion {
+	public final fun of ()Ldev/racci/minix/api/collections/registering/MutableRegisteringMap;
+	public final fun of ([Lkotlin/Pair;)Ldev/racci/minix/api/collections/registering/MutableRegisteringMap;
+}
+
+public abstract class dev/racci/minix/api/collections/registering/RegisteringMap {
+	public final fun containsKey (Ljava/lang/Object;)Z
+	public final fun containsValue (Ldev/racci/minix/api/lifecycles/Loadable;)Z
+	public final fun containsValue (Ljava/lang/Object;)Z
+	public final fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun getEntries ()Lkotlinx/collections/immutable/ImmutableSet;
+	protected abstract fun getInternalMap ()Ljava/util/Map;
+	public final fun getKeys ()Lkotlinx/collections/immutable/ImmutableSet;
+	public final fun getLoaded (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun getRegistered ()Lkotlinx/collections/immutable/ImmutableSet;
+	public final fun getRegistered (Ljava/lang/Object;)Ljava/util/Optional;
+	public final fun getSize ()I
+	public final fun getValues ()Lkotlinx/collections/immutable/ImmutableSet;
+	public final fun register-IoAF18A (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun tryRegisterAll (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun unregister (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun unregisterAll (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/collections/registering/RegisteringMap$Entry : java/util/Map$Entry, kotlin/jvm/internal/markers/KMappedMarker {
+	public fun getKey ()Ljava/lang/Object;
+	public fun getValue ()Ljava/lang/Object;
+	public fun setValue (Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/exceptions/AnnotatedRegistryException : java/lang/RuntimeException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun getCause ()Ljava/lang/Throwable;
+	public fun getMessage ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/exceptions/DependencyErrorException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class dev/racci/minix/api/exceptions/IncorrectItemTypeException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;)V
+}
+
+public final class dev/racci/minix/api/exceptions/LevelConversionException : java/lang/RuntimeException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class dev/racci/minix/api/exceptions/MissingAnnotationException : java/lang/RuntimeException {
+	public fun <init> (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)V
+}
+
+public final class dev/racci/minix/api/exceptions/NoTraceException : java/lang/RuntimeException {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun fillInStackTrace ()Ljava/lang/Throwable;
+}
+
+public final class dev/racci/minix/api/extensions/ExAdventureKt {
+	public static final fun lazyPlaceholder (Lnet/kyori/adventure/text/minimessage/MiniMessage;Ljava/lang/String;[Lkotlin/Pair;)Lnet/kyori/adventure/text/Component;
+}
+
+public final class dev/racci/minix/api/extensions/ExAudienceKt {
+	public static final fun msgAudience (Lnet/kyori/adventure/text/ComponentLike;Lnet/kyori/adventure/audience/Audience;)V
+	public static final fun msgAudienceArray ([Lnet/kyori/adventure/text/ComponentLike;Lnet/kyori/adventure/audience/Audience;)V
+	public static final fun msgAudienceCollection (Ljava/util/Collection;Lnet/kyori/adventure/audience/Audience;)V
+	public static final fun sendAudience (Lnet/kyori/adventure/audience/Audience;Lnet/kyori/adventure/text/ComponentLike;)V
+	public static final fun sendAudienceArray (Lnet/kyori/adventure/audience/Audience;[Lnet/kyori/adventure/text/ComponentLike;)V
+	public static final fun sendAudienceCollection (Lnet/kyori/adventure/audience/Audience;Ljava/util/Collection;)V
+}
+
+public final class dev/racci/minix/api/extensions/ExBooleanKt {
+	public static final fun asBoolean (I)Z
+	public static final fun asInt (Ljava/lang/Boolean;)I
+	public static final fun asInt (Z)I
+}
+
+public final class dev/racci/minix/api/extensions/ExEnumKt {
+	public static final fun formatted (Ljava/lang/Enum;Ljava/lang/String;Z)Ljava/lang/String;
+	public static synthetic fun formatted$default (Ljava/lang/Enum;Ljava/lang/String;ZILjava/lang/Object;)Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/extensions/ExMathKt {
+	public static final fun round (DI)D
+}
+
+public final class dev/racci/minix/api/extensions/ExMiniMessageKt {
+	public static final fun asInsert (Lnet/kyori/adventure/text/Component;)Lnet/kyori/adventure/text/minimessage/tag/Inserting;
+	public static final fun parse (Lnet/kyori/adventure/text/minimessage/MiniMessage;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)Lnet/kyori/adventure/text/Component;
+	public static synthetic fun parse$default (Lnet/kyori/adventure/text/minimessage/MiniMessage;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lnet/kyori/adventure/text/Component;
+	public static final fun template (Lnet/kyori/adventure/text/minimessage/MiniMessage;Ljava/lang/String;[Lkotlin/Pair;Lkotlin/jvm/functions/Function1;)Lnet/kyori/adventure/text/Component;
+	public static synthetic fun template$default (Lnet/kyori/adventure/text/minimessage/MiniMessage;Ljava/lang/String;[Lkotlin/Pair;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lnet/kyori/adventure/text/Component;
+}
+
+public final class dev/racci/minix/api/extensions/ExRangeKt {
+	public static final fun randomOrMin (Lkotlin/ranges/IntRange;)I
+	public static final fun randomOrMin (Lkotlin/ranges/LongRange;)J
+}
+
+public final class dev/racci/minix/api/extensions/ExTextKt {
+	public static final fun message (Lnet/kyori/adventure/text/Component;Lnet/kyori/adventure/audience/Audience;)V
+	public static final fun parse (Ljava/lang/String;)Lnet/kyori/adventure/text/Component;
+	public static final fun parse (Ljava/util/Collection;)Ljava/util/List;
+	public static final fun parse ([Ljava/lang/String;)[Lnet/kyori/adventure/text/Component;
+}
+
+public final class dev/racci/minix/api/extensions/collections/ExArrayKt {
+	public static final fun contains ([Ljava/lang/String;Ljava/lang/String;Z)Z
+	public static synthetic fun contains$default ([Ljava/lang/String;Ljava/lang/String;ZILjava/lang/Object;)Z
+	public static final fun findKCallable ([Lkotlin/reflect/KCallable;Ljava/lang/String;Z)Larrow/core/Option;
+	public static synthetic fun findKCallable$default ([Lkotlin/reflect/KCallable;Ljava/lang/String;ZILjava/lang/Object;)Larrow/core/Option;
+	public static final fun getCast ([Ljava/lang/Object;I)Larrow/core/Validated;
+	public static final fun ifEmpty ([Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun ifNotEmpty ([Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/extensions/collections/ExCollectionKt {
+	public static final fun clear (Ljava/util/Collection;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun contains (Ljava/util/Collection;Ljava/lang/String;Z)Z
+	public static synthetic fun contains$default (Ljava/util/Collection;Ljava/lang/String;ZILjava/lang/Object;)Z
+	public static final fun findKCallable (Ljava/util/Collection;Ljava/lang/String;Z)Larrow/core/Option;
+	public static synthetic fun findKCallable$default (Ljava/util/Collection;Ljava/lang/String;ZILjava/lang/Object;)Larrow/core/Option;
+	public static final fun getCast (Ljava/util/Collection;I)Larrow/core/Validated;
+	public static final fun ifEmpty (Ljava/util/Collection;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun ifNotEmpty (Ljava/util/Collection;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/extensions/collections/ExMapKt {
+	public static final fun clear (Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
+	public static final fun computeAndRemove (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Z
+	public static final fun contains (Ljava/util/Map;Ljava/lang/String;Z)Z
+	public static synthetic fun contains$default (Ljava/util/Map;Ljava/lang/String;ZILjava/lang/Object;)Z
+	public static final fun get (Ljava/util/Map;Ljava/lang/String;Z)Larrow/core/Option;
+	public static synthetic fun get$default (Ljava/util/Map;Ljava/lang/String;ZILjava/lang/Object;)Larrow/core/Option;
+}
+
+public final class dev/racci/minix/api/extensions/reflection/ExAnyKt {
+	public static final fun castOr (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun castOrElse (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public static final fun castOrThrow (Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun safeCast (Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun withCast (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/extensions/reflection/ExKCallableKt {
+	public static final fun accessWith (Lkotlin/reflect/KCallable;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/extensions/reflection/ExKFunctionKt {
+	public static final fun accessInvoke (Lkotlin/reflect/KFunction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun accessInvoke (Lkotlin/reflect/KFunction;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun callIfOverriddenKFunction0 (Lkotlin/reflect/KFunction;Lkotlin/reflect/KClass;)Ljava/lang/Object;
+	public static final fun callIfOverriddenKSuspendFunction0 (Lkotlin/reflect/KFunction;Lkotlin/reflect/KClass;)Ljava/lang/Object;
+	public static final fun ifOverriddenIn (Lkotlin/reflect/KFunction;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun isOverriddenIn (Lkotlin/reflect/KFunction;Ljava/lang/Object;)Z
+}
+
+public final class dev/racci/minix/api/extensions/reflection/ExKProperty0Kt {
+	public static final fun accessGet (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun accessSet (Lkotlin/reflect/KProperty0;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun getOrDefault (Lkotlin/reflect/KProperty0;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun getOrElse (Lkotlin/reflect/KProperty0;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun ifInitialised (Lkotlin/reflect/KProperty0;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun isLazy (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun isLazyInitialised (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun orNull (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun orThrow (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/extensions/reflection/ExKProperty1Kt {
+	public static final fun accessGet (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun accessSet (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun getOrDefault (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun getOrElse (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun ifInitialised (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun isInitialised (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun isLazy (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun orNull (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun orThrow (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/flow/ConcurrencyKt {
+	public static final fun concurrentMap (Lkotlinx/coroutines/flow/Flow;Lkotlinx/coroutines/CoroutineScope;ILkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun mapInOrder (Lkotlinx/coroutines/flow/Flow;ILkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public abstract class dev/racci/minix/api/lifecycles/Closeable {
+	public fun <init> ()V
+	public final fun close ()Ljava/lang/Object;
+	public abstract fun create ()Ljava/lang/Object;
+	public final fun get ()Ljava/lang/Object;
+	protected final fun getValue ()Lkotlinx/atomicfu/AtomicRef;
+	public final fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public fun onClose ()V
+}
+
+public abstract interface class dev/racci/minix/api/lifecycles/ComplexLifecycle : dev/racci/minix/api/lifecycles/Lifecycle {
+	public abstract fun handleDisable (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun handleEnable (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun handleReload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/lifecycles/ComplexLifecycle$DefaultImpls {
+	public static fun handleDisable (Ldev/racci/minix/api/lifecycles/ComplexLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleEnable (Ldev/racci/minix/api/lifecycles/ComplexLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleLoad (Ldev/racci/minix/api/lifecycles/ComplexLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleReload (Ldev/racci/minix/api/lifecycles/ComplexLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleUnload (Ldev/racci/minix/api/lifecycles/ComplexLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class dev/racci/minix/api/lifecycles/ComplexManagedLifecycle : dev/racci/minix/api/lifecycles/ComplexLifecycle, dev/racci/minix/api/lifecycles/ManagedLifecycle {
+	public abstract fun handlePostDisable (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun handlePostEnable (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/lifecycles/ComplexManagedLifecycle$DefaultImpls {
+	public static fun handleDisable (Ldev/racci/minix/api/lifecycles/ComplexManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleEnable (Ldev/racci/minix/api/lifecycles/ComplexManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleLoad (Ldev/racci/minix/api/lifecycles/ComplexManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handlePostDisable (Ldev/racci/minix/api/lifecycles/ComplexManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handlePostEnable (Ldev/racci/minix/api/lifecycles/ComplexManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handlePostLoad (Ldev/racci/minix/api/lifecycles/ComplexManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handlePostUnload (Ldev/racci/minix/api/lifecycles/ComplexManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleReload (Ldev/racci/minix/api/lifecycles/ComplexManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleUnload (Ldev/racci/minix/api/lifecycles/ComplexManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class dev/racci/minix/api/lifecycles/Lifecycle {
+	public abstract fun handleLoad (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun handleUnload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/lifecycles/Lifecycle$DefaultImpls {
+	public static fun handleLoad (Ldev/racci/minix/api/lifecycles/Lifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleUnload (Ldev/racci/minix/api/lifecycles/Lifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract class dev/racci/minix/api/lifecycles/Loadable {
+	public static final field Companion Ldev/racci/minix/api/lifecycles/Loadable$Companion;
+	public fun <init> ()V
+	public final fun equals (Ljava/lang/Object;)Z
+	public final fun get-IoAF18A (Z)Ljava/lang/Object;
+	public static synthetic fun get-IoAF18A$default (Ldev/racci/minix/api/lifecycles/Loadable;ZILjava/lang/Object;)Ljava/lang/Object;
+	protected final fun getError ()Lkotlinx/atomicfu/AtomicRef;
+	public final fun getFailed ()Z
+	protected final fun getInitialized ()Lkotlinx/atomicfu/AtomicBoolean;
+	public final fun getLoaded ()Z
+	public final fun getState ()Ldev/racci/minix/api/lifecycles/Loadable$State;
+	public final fun getUnloaded ()Z
+	protected final fun getValue ()Lkotlinx/atomicfu/AtomicRef;
+	public final fun hashCode ()I
+	public final fun load-gIAlu-s (ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun load-gIAlu-s$default (Ldev/racci/minix/api/lifecycles/Loadable;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun onLoad (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun onUnload (Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected fun predicateLoadable ()Z
+	public final fun toString ()Ljava/lang/String;
+	public final fun unload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/lifecycles/Loadable$Companion {
+}
+
+public final class dev/racci/minix/api/lifecycles/Loadable$State : java/lang/Enum {
+	public static final field FAILED Ldev/racci/minix/api/lifecycles/Loadable$State;
+	public static final field LOADABLE Ldev/racci/minix/api/lifecycles/Loadable$State;
+	public static final field LOADED Ldev/racci/minix/api/lifecycles/Loadable$State;
+	public static final field UNLOADED Ldev/racci/minix/api/lifecycles/Loadable$State;
+	public static fun valueOf (Ljava/lang/String;)Ldev/racci/minix/api/lifecycles/Loadable$State;
+	public static fun values ()[Ldev/racci/minix/api/lifecycles/Loadable$State;
+}
+
+public abstract interface class dev/racci/minix/api/lifecycles/ManagedLifecycle : dev/racci/minix/api/lifecycles/Lifecycle {
+	public abstract fun handlePostLoad (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun handlePostUnload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/lifecycles/ManagedLifecycle$DefaultImpls {
+	public static fun handleLoad (Ldev/racci/minix/api/lifecycles/ManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handlePostLoad (Ldev/racci/minix/api/lifecycles/ManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handlePostUnload (Ldev/racci/minix/api/lifecycles/ManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleUnload (Ldev/racci/minix/api/lifecycles/ManagedLifecycle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/utils/KoinKt {
+	public static final fun getKoin ()Lorg/koin/core/Koin;
+	public static final fun loadModule (ZLkotlin/jvm/functions/Function1;)Lorg/koin/core/module/Module;
+	public static synthetic fun loadModule$default (ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/module/Module;
+}
+
+public final class dev/racci/minix/api/utils/RecursionUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/RecursionUtils;
+	public final fun recursiveFinder (Ljava/lang/Object;IILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/HashSet;)Ljava/util/HashSet;
+	public static synthetic fun recursiveFinder$default (Ldev/racci/minix/api/utils/RecursionUtils;Ljava/lang/Object;IILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/HashSet;ILjava/lang/Object;)Ljava/util/HashSet;
+}
+
+public final class dev/racci/minix/api/utils/ReflectionUtilsKt {
+	public static final fun accessReturn (Lkotlin/reflect/KProperty1;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun accessReturn (Lkotlin/reflect/KProperty;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun accessWith (Lkotlin/reflect/KProperty1;Lkotlin/jvm/functions/Function1;)V
+	public static final fun accessWith (Lkotlin/reflect/KProperty;Lkotlin/jvm/functions/Function1;)V
+	public static final fun classConstructor (Ljava/lang/reflect/Constructor;[Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun clone (Ljava/lang/Object;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun clone$default (Ljava/lang/Object;Ljava/util/Map;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun exists (Ljava/lang/String;)Z
+	public static final fun readInstanceProperty (Ljava/lang/Object;Ljava/lang/String;Z)Ljava/lang/Object;
+	public static synthetic fun readInstanceProperty$default (Ljava/lang/Object;Ljava/lang/String;ZILjava/lang/Object;)Ljava/lang/Object;
+	public static final fun safeCast (Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;
+	public static final fun unsafeCast (Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun unsafeCast (Ljava/lang/Object;Ljava/lang/Class;)Ljava/lang/Object;
+}
+
+public abstract interface class dev/racci/minix/api/utils/SuspendLazy : kotlin/Lazy {
+	public abstract fun invoke (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/utils/SuspendLazyKt {
+	public static final fun suspendBlockingLazy (Lkotlinx/coroutines/CoroutineDispatcher;Lkotlin/jvm/functions/Function1;)Ldev/racci/minix/api/utils/SuspendLazy;
+	public static synthetic fun suspendBlockingLazy$default (Lkotlinx/coroutines/CoroutineDispatcher;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ldev/racci/minix/api/utils/SuspendLazy;
+	public static final fun suspendLazy (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Ldev/racci/minix/api/utils/SuspendLazy;
+	public static synthetic fun suspendLazy$default (Lkotlinx/coroutines/CoroutineScope;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Ldev/racci/minix/api/utils/SuspendLazy;
+}
+
+public final class dev/racci/minix/api/utils/TimeUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/TimeUtils;
+	public final fun processTimed-5sfh64U (Lkotlin/jvm/functions/Function0;)J
+}
+
+public final class dev/racci/minix/api/utils/TimeUtilsKt {
+	public static final fun getTicks (D)J
+	public static final fun getTicks (I)J
+	public static final fun getTicks (J)J
+	public static final fun getTicks-LRDsOJo (J)J
+	public static final fun now ()Lkotlinx/datetime/Instant;
+}
+
+public final class dev/racci/minix/api/utils/UnsafeUtil {
+	public static final field Companion Ldev/racci/minix/api/utils/UnsafeUtil$Companion;
+	public fun <init> ()V
+	public final fun catch ([Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;)V
+	public final fun danger (Lkotlin/jvm/functions/Function1;)V
+	public final fun finally (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class dev/racci/minix/api/utils/UnsafeUtil$Companion {
+	public final fun unsafe (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class dev/racci/minix/api/utils/adventure/LazyComponentReplacement : net/kyori/adventure/text/minimessage/tag/Inserting, net/kyori/adventure/text/minimessage/tag/Tag {
+	public fun <init> (Lkotlin/jvm/functions/Function0;)V
+	public fun allowsChildren ()Z
+	public fun value ()Lnet/kyori/adventure/text/Component;
+}
+
+public final class dev/racci/minix/api/utils/adventure/LazyStringReplacement : net/kyori/adventure/text/minimessage/tag/PreProcess, net/kyori/adventure/text/minimessage/tag/Tag {
+	public fun <init> (Lkotlin/jvm/functions/Function0;)V
+	public fun value ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/utils/adventure/PartialComponent : net/kyori/adventure/text/ComponentLike {
+	public static final field Companion Ldev/racci/minix/api/utils/adventure/PartialComponent$Companion;
+	public synthetic fun <init> (Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun asComponent ()Lnet/kyori/adventure/text/Component;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun formatRaw (Ljava/util/Map;)V
+	public final fun get ([Lkotlin/Pair;)Lnet/kyori/adventure/text/Component;
+	public final fun getValue ()Lnet/kyori/adventure/text/Component;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/utils/adventure/PartialComponent$Companion {
+	public final fun of (Ljava/lang/String;)Ldev/racci/minix/api/utils/adventure/PartialComponent;
+}
+
+public final class dev/racci/minix/api/utils/adventure/PartialComponent$Serializer : org/spongepowered/configurate/serialize/TypeSerializer {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/adventure/PartialComponent$Serializer;
+	public fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ldev/racci/minix/api/utils/adventure/PartialComponent;
+	public synthetic fun deserialize (Ljava/lang/reflect/Type;Lorg/spongepowered/configurate/ConfigurationNode;)Ljava/lang/Object;
+	public fun serialize (Ljava/lang/reflect/Type;Ldev/racci/minix/api/utils/adventure/PartialComponent;Lorg/spongepowered/configurate/ConfigurationNode;)V
+	public synthetic fun serialize (Ljava/lang/reflect/Type;Ljava/lang/Object;Lorg/spongepowered/configurate/ConfigurationNode;)V
+}
+
+public final class dev/racci/minix/api/utils/collections/CollectionUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/collections/CollectionUtils;
+	public final fun clear (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)V
+	public final fun clear (Ljava/util/Map;Lkotlin/jvm/functions/Function1;)V
+	public final fun clear (Ljava/util/Map;Lkotlin/jvm/functions/Function2;)V
+	public final fun computeAndRemove (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Z
+	public final fun computeAndRemove (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Z
+	public final fun containsIgnoreCase (Ljava/util/Collection;Ljava/lang/String;)Z
+	public final fun containsIgnoreCase ([Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun containsKeyIgnoreCase (Ljava/util/Map;Ljava/lang/String;)Z
+	public final fun find (Ljava/util/Collection;Ljava/lang/String;Z)Ljava/lang/String;
+	public final fun find (Ljava/util/Collection;Ljava/lang/String;Z)Lkotlin/reflect/KFunction;
+	public final fun find (Ljava/util/Collection;Ljava/lang/String;Z)Lkotlin/reflect/KProperty;
+	public final fun find (Ljava/util/Collection;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public final fun find ([Ljava/lang/Object;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public final fun find ([Ljava/lang/String;Ljava/lang/String;Z)Ljava/lang/String;
+	public final fun find ([Lkotlin/reflect/KFunction;Ljava/lang/String;Z)Lkotlin/reflect/KFunction;
+	public final fun find ([Lkotlin/reflect/KProperty;Ljava/lang/String;Z)Lkotlin/reflect/KProperty;
+	public static synthetic fun find$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;Ljava/util/Collection;Ljava/lang/String;ZILjava/lang/Object;)Ljava/lang/String;
+	public static synthetic fun find$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;Ljava/util/Collection;Ljava/lang/String;ZILjava/lang/Object;)Lkotlin/reflect/KFunction;
+	public static synthetic fun find$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;Ljava/util/Collection;Ljava/lang/String;ZILjava/lang/Object;)Lkotlin/reflect/KProperty;
+	public static synthetic fun find$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;Ljava/util/Collection;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun find$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;[Ljava/lang/Object;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun find$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;[Ljava/lang/String;Ljava/lang/String;ZILjava/lang/Object;)Ljava/lang/String;
+	public static synthetic fun find$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;[Lkotlin/reflect/KFunction;Ljava/lang/String;ZILjava/lang/Object;)Lkotlin/reflect/KFunction;
+	public static synthetic fun find$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;[Lkotlin/reflect/KProperty;Ljava/lang/String;ZILjava/lang/Object;)Lkotlin/reflect/KProperty;
+	public final fun first (Ljava/util/Collection;Ljava/lang/String;Z)Ljava/lang/String;
+	public final fun first (Ljava/util/Collection;Ljava/lang/String;Z)Lkotlin/reflect/KFunction;
+	public final fun first (Ljava/util/Collection;Ljava/lang/String;Z)Lkotlin/reflect/KProperty1;
+	public final fun first (Ljava/util/Collection;Ljava/lang/String;Z)Lkotlin/reflect/KProperty;
+	public final fun first (Ljava/util/Collection;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static synthetic fun first$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;Ljava/util/Collection;Ljava/lang/String;ZILjava/lang/Object;)Ljava/lang/String;
+	public static synthetic fun first$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;Ljava/util/Collection;Ljava/lang/String;ZILjava/lang/Object;)Lkotlin/reflect/KFunction;
+	public static synthetic fun first$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;Ljava/util/Collection;Ljava/lang/String;ZILjava/lang/Object;)Lkotlin/reflect/KProperty1;
+	public static synthetic fun first$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;Ljava/util/Collection;Ljava/lang/String;ZILjava/lang/Object;)Lkotlin/reflect/KProperty;
+	public static synthetic fun first$default (Ldev/racci/minix/api/utils/collections/CollectionUtils;Ljava/util/Collection;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun get (Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun getCast (Ljava/util/Collection;I)Ljava/lang/Object;
+	public final fun getCast ([Ljava/lang/Object;I)Ljava/lang/Object;
+	public final fun getIgnoreCase (Ljava/util/Map;Ljava/lang/String;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/utils/collections/CollectionUtils$Contains {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/collections/CollectionUtils$Contains;
+	public final fun containsStringArray ([Ljava/lang/String;Ljava/lang/String;Z)Z
+	public final fun containsStringCollection (Ljava/util/Collection;Ljava/lang/String;Z)Z
+}
+
+public final class dev/racci/minix/api/utils/collections/CollectionUtils$Find {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/collections/CollectionUtils$Find;
+	public final fun findKCallableArray ([Lkotlin/reflect/KCallable;Ljava/lang/String;Z)Larrow/core/Option;
+	public final fun findKCallableCollection (Ljava/util/Collection;Ljava/lang/String;Z)Larrow/core/Option;
+}
+
+public final class dev/racci/minix/api/utils/collections/CollectionUtils$Get {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/collections/CollectionUtils$Get;
+	public final fun getCastArray ([Ljava/lang/Object;I)Larrow/core/Validated;
+	public final fun getCastCollection (Ljava/util/Collection;I)Larrow/core/Validated;
+}
+
+public final class dev/racci/minix/api/utils/collections/CollectionUtils$If {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/collections/CollectionUtils$If;
+	public final fun ifEmptyArray ([Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun ifEmptyCollection (Ljava/util/Collection;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun ifNotEmptyArray ([Ljava/lang/Object;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun ifNotEmptyCollection (Ljava/util/Collection;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/utils/collections/CollectionUtils$Mutate {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/collections/CollectionUtils$Mutate;
+	public final fun clearCollection (Ljava/util/Collection;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/utils/collections/MapUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/collections/MapUtils;
+	public final fun clear (Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
+	public final fun computeAndRemove (Ljava/util/Map;Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Z
+	public final fun containsKeyIgnoreCase (Ljava/util/Map;Ljava/lang/String;Z)Z
+	public final fun getValueIgnoreCase (Ljava/util/Map;Ljava/lang/String;Z)Larrow/core/Option;
+}
+
+public final class dev/racci/minix/api/utils/collections/MapUtils$sam$i$java_util_function_BiFunction$0 : java/util/function/BiFunction {
+	public fun <init> (Lkotlin/jvm/functions/Function2;)V
+	public final synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/utils/collections/MultiMapKt {
+	public static final fun emptyMultiMap ()Ldev/racci/minix/api/utils/collections/muiltimap/MultiMap;
+	public static final fun multiMapOf ([Lkotlin/Pair;)Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
+}
+
+public final class dev/racci/minix/api/utils/collections/ObservableAction : java/lang/Enum {
+	public static final field ADD Ldev/racci/minix/api/utils/collections/ObservableAction;
+	public static final field ADD_ALL Ldev/racci/minix/api/utils/collections/ObservableAction;
+	public static final field CLEAR Ldev/racci/minix/api/utils/collections/ObservableAction;
+	public static final field REMOVE Ldev/racci/minix/api/utils/collections/ObservableAction;
+	public static final field REMOVE_ALL Ldev/racci/minix/api/utils/collections/ObservableAction;
+	public static final field REPLACE Ldev/racci/minix/api/utils/collections/ObservableAction;
+	public static final field SET Ldev/racci/minix/api/utils/collections/ObservableAction;
+	public static fun valueOf (Ljava/lang/String;)Ldev/racci/minix/api/utils/collections/ObservableAction;
+	public static fun values ()[Ldev/racci/minix/api/utils/collections/ObservableAction;
+}
+
+public abstract class dev/racci/minix/api/utils/collections/ObservableCollection : dev/racci/minix/api/utils/collections/ObservableHolder, java/util/Collection, kotlin/jvm/internal/markers/KMutableCollection {
+	public fun <init> ()V
+	public abstract fun getSize ()I
+	public final fun size ()I
+	public fun toArray ()[Ljava/lang/Object;
+	public fun toArray ([Ljava/lang/Object;)[Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/utils/collections/ObservableCollectionsKt {
+	public static final fun asObservable (Ljava/util/List;)Ldev/racci/minix/api/utils/collections/ObservableList;
+	public static final fun asObservable (Ljava/util/Map;)Ldev/racci/minix/api/utils/collections/ObservableMap;
+	public static final fun asObservable (Ljava/util/Set;)Ldev/racci/minix/api/utils/collections/ObservableSet;
+	public static final fun observableListOf (Ljava/util/List;)Ldev/racci/minix/api/utils/collections/ObservableList;
+	public static final fun observableListOf ([Ljava/lang/Object;)Ldev/racci/minix/api/utils/collections/ObservableList;
+	public static final fun observableMapOf (Ljava/util/Map;)Ldev/racci/minix/api/utils/collections/ObservableMap;
+	public static final fun observableMapOf ([Lkotlin/Pair;)Ldev/racci/minix/api/utils/collections/ObservableMap;
+	public static final fun observableSetOf (Ljava/util/Set;)Ldev/racci/minix/api/utils/collections/ObservableSet;
+	public static final fun observableSetOf ([Ljava/lang/Object;)Ldev/racci/minix/api/utils/collections/ObservableSet;
+}
+
+public abstract class dev/racci/minix/api/utils/collections/ObservableHolder {
+	public fun <init> ()V
+	public abstract fun getListeners ()Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
+}
+
+public final class dev/racci/minix/api/utils/collections/ObservableList : dev/racci/minix/api/utils/collections/ObservableCollection, java/util/List, kotlin/jvm/internal/markers/KMutableList {
+	public fun add (ILjava/lang/Object;)V
+	public fun add (Ljava/lang/Object;)Z
+	public fun addAll (ILjava/util/Collection;)Z
+	public fun addAll (Ljava/util/Collection;)Z
+	public final fun addAll ([Ljava/lang/Object;)Z
+	public fun clear ()V
+	public fun contains (Ljava/lang/Object;)Z
+	public fun containsAll (Ljava/util/Collection;)Z
+	public fun get (I)Ljava/lang/Object;
+	public fun getListeners ()Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
+	public fun getSize ()I
+	public fun indexOf (Ljava/lang/Object;)I
+	public fun isEmpty ()Z
+	public fun iterator ()Ljava/util/Iterator;
+	public fun lastIndexOf (Ljava/lang/Object;)I
+	public fun listIterator ()Ljava/util/ListIterator;
+	public fun listIterator (I)Ljava/util/ListIterator;
+	public final fun remove (I)Ljava/lang/Object;
+	public fun remove (Ljava/lang/Object;)Z
+	public fun removeAll (Ljava/util/Collection;)Z
+	public fun removeAt (I)Ljava/lang/Object;
+	public fun retainAll (Ljava/util/Collection;)Z
+	public fun set (ILjava/lang/Object;)Ljava/lang/Object;
+	public fun subList (II)Ljava/util/List;
+}
+
+public final class dev/racci/minix/api/utils/collections/ObservableMap : dev/racci/minix/api/utils/collections/ObservableHolder, java/util/Map, kotlin/jvm/internal/markers/KMutableMap {
+	public fun clear ()V
+	public fun containsKey (Ljava/lang/Object;)Z
+	public fun containsValue (Ljava/lang/Object;)Z
+	public final fun entrySet ()Ljava/util/Set;
+	public fun get (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun getEntries ()Ljava/util/Set;
+	public fun getKeys ()Ljava/util/Set;
+	public fun getListeners ()Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
+	public fun getSize ()I
+	public fun getValues ()Ljava/util/Collection;
+	public fun isEmpty ()Z
+	public final fun keySet ()Ljava/util/Set;
+	public fun put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun putAll (Ljava/util/Map;)V
+	public fun putIfAbsent (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun remove (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun remove (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public fun replace (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun replace (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z
+	public final fun size ()I
+	public final fun values ()Ljava/util/Collection;
+}
+
+public final class dev/racci/minix/api/utils/collections/ObservableMutableIterator : java/util/Iterator, kotlin/jvm/internal/markers/KMutableIterator {
+	public fun <init> (Ljava/util/Iterator;Lkotlin/jvm/functions/Function2;)V
+	public fun hasNext ()Z
+	public fun next ()Ljava/lang/Object;
+	public fun remove ()V
+}
+
+public final class dev/racci/minix/api/utils/collections/ObservableMutableListIterator : java/util/ListIterator, kotlin/jvm/internal/markers/KMutableListIterator {
+	public fun <init> (Ljava/util/ListIterator;Lkotlin/jvm/functions/Function2;)V
+	public fun add (Ljava/lang/Object;)V
+	public fun hasNext ()Z
+	public fun hasPrevious ()Z
+	public fun next ()Ljava/lang/Object;
+	public fun nextIndex ()I
+	public fun previous ()Ljava/lang/Object;
+	public fun previousIndex ()I
+	public fun remove ()V
+	public fun set (Ljava/lang/Object;)V
+}
+
+public final class dev/racci/minix/api/utils/collections/ObservableSet : dev/racci/minix/api/utils/collections/ObservableCollection, java/util/Set, kotlin/jvm/internal/markers/KMutableSet {
+	public fun add (Ljava/lang/Object;)Z
+	public fun addAll (Ljava/util/Collection;)Z
+	public fun clear ()V
+	public fun contains (Ljava/lang/Object;)Z
+	public fun containsAll (Ljava/util/Collection;)Z
+	public fun getListeners ()Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
+	public fun getSize ()I
+	public fun isEmpty ()Z
+	public fun iterator ()Ljava/util/Iterator;
+	public fun remove (Ljava/lang/Object;)Z
+	public fun removeAll (Ljava/util/Collection;)Z
+	public fun retainAll (Ljava/util/Collection;)Z
+}
+
+public final class dev/racci/minix/api/utils/collections/muiltimap/EmptyMultiMap : dev/racci/minix/api/utils/collections/muiltimap/MultiMap {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/collections/muiltimap/EmptyMultiMap;
+	public fun containsKey (Ljava/lang/Object;)Z
+	public fun equals (Ljava/lang/Object;)Z
+	public fun forEach (Lkotlin/jvm/functions/Function2;)V
+	public fun forEachIndexed (Lkotlin/jvm/functions/Function3;)V
+	public fun get (Ljava/lang/Object;)Ljava/util/Collection;
+	public fun getEntries ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun getKeys ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun getSize ()I
+	public fun getValues ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun hashCode ()I
+	public fun isEmpty ()Z
+	public fun size ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/racci/minix/api/utils/collections/muiltimap/MultiMap {
+	public abstract fun containsKey (Ljava/lang/Object;)Z
+	public abstract fun forEach (Lkotlin/jvm/functions/Function2;)V
+	public abstract fun forEachIndexed (Lkotlin/jvm/functions/Function3;)V
+	public abstract fun get (Ljava/lang/Object;)Ljava/util/Collection;
+	public abstract fun getEntries ()Lkotlinx/collections/immutable/ImmutableSet;
+	public abstract fun getKeys ()Lkotlinx/collections/immutable/ImmutableSet;
+	public abstract fun getSize ()I
+	public abstract fun getValues ()Lkotlinx/collections/immutable/ImmutableSet;
+	public abstract fun isEmpty ()Z
+	public abstract fun size ()I
+}
+
+public final class dev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap : dev/racci/minix/api/utils/collections/muiltimap/MultiMap {
+	public static final field Companion Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap$Companion;
+	public synthetic fun <init> (ILjava/util/Map;Lkotlinx/serialization/internal/SerializationConstructorMarker;)V
+	public final fun addAll (Ljava/lang/Object;[Ljava/lang/Object;)V
+	public final fun clear ()V
+	public final fun clear (Lkotlin/jvm/functions/Function2;)V
+	public fun containsKey (Ljava/lang/Object;)Z
+	public fun forEach (Lkotlin/jvm/functions/Function2;)V
+	public fun forEachIndexed (Lkotlin/jvm/functions/Function3;)V
+	public fun get (Ljava/lang/Object;)Ljava/util/Collection;
+	public fun getEntries ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun getKeys ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun getSize ()I
+	public fun getValues ()Lkotlinx/collections/immutable/ImmutableSet;
+	public fun isEmpty ()Z
+	public final fun minusAssign (Ljava/lang/Object;)V
+	public final fun minusAssign (Lkotlin/Pair;)V
+	public final fun plusAssign (Lkotlin/Pair;)V
+	public final fun put (Ljava/lang/Object;Ljava/lang/Object;)V
+	public final fun putIfAbsent (Ljava/lang/Object;Ljava/lang/Object;)V
+	public final fun remove (Ljava/lang/Object;)Lkotlinx/collections/immutable/ImmutableSet;
+	public final fun remove (Ljava/lang/Object;Ljava/lang/Object;)Z
+	public final fun remove (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Z
+	public final fun replace (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z
+	public fun size ()I
+	public static final fun write$Self (Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+}
+
+public final class dev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun <init> (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)V
+	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;Ldev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/api/utils/collections/muiltimap/MutableMultiMap$Companion {
+	public final fun serializer (Lkotlinx/serialization/KSerializer;Lkotlinx/serialization/KSerializer;)Lkotlinx/serialization/KSerializer;
+}
+
+public final class dev/racci/minix/api/utils/kotlin/InfixKt {
+	public static final fun and (Ljava/lang/Object;Ljava/lang/Object;)Lkotlinx/collections/immutable/PersistentList;
+}
+
+public final class dev/racci/minix/api/utils/kotlin/KotlinUtilsKt {
+	public static final fun doesOverride (Lkotlin/reflect/KClass;Ljava/lang/String;)Z
+	public static final fun doesOverride (Lkotlin/reflect/KClass;Lkotlin/reflect/KFunction;)Z
+	public static final fun doesOverride (Lkotlin/reflect/KClass;Lkotlin/reflect/KProperty1;)Z
+	public static final fun getCompanionParent (Lkotlin/reflect/KClass;)Lkotlin/reflect/KClass;
+	public static final fun ifFalse (Ljava/lang/Boolean;Lkotlin/jvm/functions/Function0;)Z
+	public static final fun ifTrue (Ljava/lang/Boolean;Lkotlin/jvm/functions/Function0;)Z
+	public static final fun invokeIfNotNull (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Z
+	public static final fun invokeIfNull (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Z
+	public static final fun to (Lkotlin/Pair;Ljava/lang/Object;)Lkotlin/Triple;
+	public static final fun toSafeString (Lkotlin/jvm/functions/Function0;)Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/utils/kotlin/LazyUtilsKt {
+	public static final fun ifInitialized (Lkotlin/Lazy;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class dev/racci/minix/api/utils/minecraft/MCVersion : java/lang/Comparable {
+	public static final field Companion Ldev/racci/minix/api/utils/minecraft/MCVersion$Companion;
+	public synthetic fun <init> (Ljava/lang/String;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compareTo (Ldev/racci/minix/api/utils/minecraft/MCVersion;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getIdentifier ()Ljava/lang/String;
+	public final fun getMainVersionString ()Ljava/lang/String;
+	public final fun getMajorMinecraftVersion ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getOrdinal ()I
+	public final fun getProtocolVersion ()I
+	public final fun getSupportsDuelWielding ()Z
+	public final fun getSupportsRGBColour ()Z
+	public final fun getSupportsUUIDs ()Z
+	public final fun getVersionID ()I
+	public final fun getVersionString ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun isSameMajorVersion (Ldev/racci/minix/api/utils/minecraft/MCVersion;)Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/utils/minecraft/MCVersion$Companion {
+	public final fun fromName (Ljava/lang/String;)Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun fromProtocol (I)Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun get (I)Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun get (Ljava/lang/String;)Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_10 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_10_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_10_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_11 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_11_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_11_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_12 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_12_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_12_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_13 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_13_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_13_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_14 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_14_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_14_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_14_3 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_14_4 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_15 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_15_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_15_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_16 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_16_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_16_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_16_3 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_16_4 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_16_5 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_17 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_17_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_18 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_18_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_18_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_19 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_19_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_19_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_7 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_7_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_7_10 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_7_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_7_3 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_7_4 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_7_5 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_7_6 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_7_7 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_7_8 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_7_9 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_8 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_8_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_8_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_8_3 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_8_4 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_8_5 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_8_6 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_8_7 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_8_8 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_8_9 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_9 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_9_1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_9_2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_9_3 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_1_9_4 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_10_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_11_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_12_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_13_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_13_R2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_14_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_15_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_16_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_16_R2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_16_R3 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_17_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_18_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_18_R2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_19_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_7_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_7_R2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_7_R3 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_7_R4 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_8_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_8_R2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_8_R3 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_9_R1 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getMC_NMS_1_9_R2 ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getNAME_MAP ()Lkotlinx/collections/immutable/ImmutableMap;
+	public final fun getNMS_MAP ()Lkotlinx/collections/immutable/ImmutableMap;
+	public final fun getPROTOCOL_MAP ()Lkotlinx/collections/immutable/ImmutableMap;
+	public final fun getProtocolVersions ()Ljava/util/List;
+	public final fun getUNKNOWN ()Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun getVersions ()Ljava/util/List;
+	public final fun sameMajor (Ldev/racci/minix/api/utils/minecraft/MCVersion;Ldev/racci/minix/api/utils/minecraft/MCVersion;)Z
+	public final fun valueOf (I)Ldev/racci/minix/api/utils/minecraft/MCVersion;
+	public final fun valueOf (Ljava/lang/String;)Ldev/racci/minix/api/utils/minecraft/MCVersion;
+}
+
+public final class dev/racci/minix/api/utils/primitive/EnumUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/primitive/EnumUtils;
+	public final fun formatted (Ljava/lang/Enum;Ljava/lang/String;Z)Ljava/lang/String;
+	public static synthetic fun formatted$default (Ldev/racci/minix/api/utils/primitive/EnumUtils;Ljava/lang/Enum;Ljava/lang/String;ZILjava/lang/Object;)Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/utils/primitive/MathUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/primitive/MathUtils;
+	public final fun getMultiplierFromPercent (D)D
+	public final fun multiplyByPercent (DD)D
+}
+
+public final class dev/racci/minix/api/utils/primitive/NumberUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/primitive/NumberUtils;
+	public final fun toRoman (I)Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/utils/primitive/StringUtilsKt {
+	public static final fun centralize (Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public static synthetic fun centralize$default (Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ljava/lang/String;
+	public static final fun javaUnicodeToCharacter (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/utils/reflection/AccessUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/reflection/AccessUtils;
+	public final fun accessGet0 (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun accessGet1 (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun accessGet2 (Lkotlin/reflect/KProperty2;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun accessInvoke (Lkotlin/reflect/KFunction;[Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun accessInvoke0 (Lkotlin/reflect/KFunction;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun accessSet0 (Lkotlin/reflect/KMutableProperty0;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun accessSet1 (Lkotlin/reflect/KMutableProperty1;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun accessSet2 (Lkotlin/reflect/KMutableProperty2;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun accessWith (Lkotlin/reflect/KCallable;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getLockMap ()Ljava/util/concurrent/ConcurrentHashMap;
+}
+
+public final class dev/racci/minix/api/utils/reflection/CastUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/reflection/CastUtils;
+	public final fun castOr (Ljava/lang/Object;Lkotlin/reflect/KClass;Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun castOrElse (Ljava/lang/Object;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public final fun castOrThrow (Ljava/lang/Object;Lkotlin/reflect/KClass;)Ljava/lang/Object;
+	public final fun safeCast (Ljava/lang/Object;Lkotlin/reflect/KClass;)Ljava/lang/Object;
+	public final fun withCast (Ljava/lang/Object;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/utils/reflection/LateInitUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/reflection/LateInitUtils;
+	public final fun getLateInit (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getOrSet (Lkotlin/reflect/KMutableProperty0;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/utils/reflection/LazyUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/reflection/LazyUtils;
+	public final fun getOrDefault0 (Lkotlin/reflect/KProperty0;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getOrDefault1 (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getOrElse0 (Lkotlin/reflect/KProperty0;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getOrElse1 (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getOrNull0 (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getOrNull1 (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getOrThrow0 (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun getOrThrow1 (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun ifInitialized0 (Lkotlin/reflect/KProperty0;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun ifInitialized1 (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun isInitialised0 (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun isInitialised1 (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun isLazy0 (Lkotlin/reflect/KProperty0;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun isLazy1 (Lkotlin/reflect/KProperty1;Ljava/lang/Object;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/utils/reflection/OverrideUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/reflection/OverrideUtils;
+	public final fun callIfOverridesFunction (Lkotlin/reflect/KClass;Lkotlin/reflect/KFunction;)Ljava/lang/Object;
+	public final fun callIfOverridesFunctionSuspend (Lkotlin/reflect/KClass;Lkotlin/reflect/KFunction;)Ljava/lang/Object;
+	public final fun doesOverrideFunctionInternal (Lkotlin/reflect/KClass;Lkotlin/reflect/KFunction;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public final fun doesOverrideKFunction (Lkotlin/reflect/KClass;Lkotlin/reflect/KFunction;)Z
+	public final fun doesOverrideKFunctionSelector (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;)Z
+	public final fun doesOverrideKProperty (Lkotlin/reflect/KClass;Lkotlin/reflect/KProperty;)Z
+	public final fun doesOverrideKPropertySelector (Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;)Z
+	public final fun doesOverridePropertyInternal (Lkotlin/reflect/KClass;Lkotlin/reflect/KProperty;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public final fun ifOverridesKFunction (Lkotlin/reflect/KClass;Lkotlin/reflect/KFunction;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public final fun ifOverridesKFunctionInstance (Ljava/lang/Object;Lkotlin/reflect/KFunction;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public final fun ifOverridesKFunctionKCallable (Lkotlin/reflect/KClass;Lkotlin/reflect/KFunction;)Ljava/lang/Object;
+	public final fun ifOverridesKProperty (Lkotlin/reflect/KClass;Lkotlin/reflect/KProperty;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public final fun ifOverridesKPropertyInstance (Ljava/lang/Object;Lkotlin/reflect/KProperty;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public final fun ifOverridesKSuspendFunction (Lkotlin/reflect/KClass;Lkotlin/reflect/KFunction;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/utils/reflection/ReflectionUtils {
+	public static final field INSTANCE Ldev/racci/minix/api/utils/reflection/ReflectionUtils;
+	public final fun classForName (Ljava/lang/String;)Larrow/core/Validated;
+	public final fun clone (Ljava/lang/Object;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun clone$default (Ldev/racci/minix/api/utils/reflection/ReflectionUtils;Ljava/lang/Object;Ljava/util/Map;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+

@@ -23,6 +23,8 @@ public sealed class RegisteringMap<K : Any, V : Any> {
 
     public val size: Int get() = this.internalMap.size
 
+    public operator fun get(key: K): V? = this.internalMap[key]?.get()?.getOrNull()
+
     public fun containsKey(key: K): Boolean = this.internalMap.containsKey(key)
 
     public fun containsValue(value: Loadable<V>): Boolean = this.internalMap.containsValue(value)

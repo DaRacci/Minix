@@ -14,6 +14,7 @@ dependencies {
     slim("io.arrow-kt:arrow-fx-coroutines")
     slim("io.arrow-kt:arrow-optics")
 
+    slim(libs.koin.core)
     slim(libs.adventure.api)
     slim(libs.adventure.minimessage)
 
@@ -23,8 +24,6 @@ dependencies {
     slim(libs.kotlinx.atomicfu)
     slim(libs.kotlinx.coroutines)
     slim(libs.kotlinx.immutableCollections)
-
-    slim(libs.koin.core)
 
     compileOnly(libs.configurate)
     compileOnly(libs.configurate.extra.kotlin)

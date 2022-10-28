@@ -28,35 +28,17 @@ public actual abstract class MinixPlugin :
     JavaPlugin() {
 
     actual final override val platformClassLoader: ClassLoader get() = this.classLoader
-
     actual final override val value: String get() = this.name
-
     actual final override val scope: Scope by lazy { getKoin().createScope(this.getScopeId(), named(this.value), this) }
-
     actual final override val plugin: MinixPlugin get() = this
-
     actual final override val logger: MinixLogger by MinixLoggerFactory
-
     actual final override val dataFolder: Path get() = this.getDataFolder().toPath()
 
-    public actual override val version: Version by lazy { Version(this.description.version) }
-
-    public actual val enabled: Boolean get() = this.isEnabled
-    public actual val metrics: Metrics by lazy { Metrics(this) }
+    actual final override val version: Version by lazy { Version(this.description.version) }
 
     public actual val log: MinixLogger get() = logger
-
-    @ApiStatus.NonExtendable
-    @API(status = API.Status.INTERNAL)
-    override fun onEnable() {
-        get<PluginService>().startPlugin(this)
-    }
-
-    @ApiStatus.NonExtendable
-    @API(status = API.Status.INTERNAL)
-    override fun onDisable() {
-        get<PluginService>().unloadPlugin(this)
-    }
+    public actual val enabled: Boolean get() = this.isEnabled
+    public actual val metrics: Metrics by lazy { Metrics(this) }
 
     @ApiStatus.NonExtendable
     @API(status = API.Status.INTERNAL)
@@ -64,11 +46,48 @@ public actual abstract class MinixPlugin :
         get<PluginService>().loadPlugin(this)
     }
 
+    @ApiStatus.NonExtendable
+    @API(status = API.Status.INTERNAL)
+    override fun onEnable() {
+        get<PluginService>().enablePlugin(this)
+    }
+
+    @ApiStatus.NonExtendable
+    @API(status = API.Status.INTERNAL)
+    override fun onDisable() {
+        get<PluginService>().disablePlugin(this)
+        if (this.server.isStopping) get<PluginService>().unloadPlugin(this)
+    }
+
     /**
-     * Called once when the plugin is loaded.
-     * Check your platforms documentation for more information of when this is called.
+     * Called once when the plugin is loaded by Bukkit.
+     * The plugin is not enabled at this point and cannot register listeners and the like.
      */
     actual override suspend fun handleLoad() { /* no-op */ }
+
+    /** Called once after minix has completed its internal loading process. */
+    actual override suspend fun handlePostLoad() { /* no-op */ }
+
+    /**
+     * Called possibly multiple times within the lifecycle.
+     * The plugin is considered enabled by bukkit and can now register listeners and the like.
+     */
+    actual override suspend fun handleEnable() { /* no-op */ }
+
+    /** Called once after minix has completed its internal enabling process. */
+    actual override suspend fun handlePostEnable() { /* no-op */ }
+
+    /** Called possibly multiple times within the lifecycle while it is considered enabled. */
+    actual override suspend fun handleReload() { /* no-op */ }
+
+    /**
+     * Called possibly multiple times within the lifecycle.
+     * The plugin is considered disabled by bukkit and cannot register listeners and the like.
+     */
+    actual override suspend fun handleDisable() { /* no-op */ }
+
+    /** Called once after minix has completed its internal disabling process. */
+    actual override suspend fun handlePostDisable() { /* no-op */ }
 
     /**
      * Called once when the plugin is unloaded.
@@ -77,8 +96,8 @@ public actual abstract class MinixPlugin :
     actual override suspend fun handleUnload() { /* no-op */ }
 
     /**
-     * Called once after minix has completed its internal loading process.
-     * Check your platforms documentation for more information of when this is called.
+     * Called once after minix has completed its internal unloading process.
+     * This plugin and all sub-applications should be unloaded from memory and should not be used again.
      */
-    actual override suspend fun handlePostLoad() { /* no-op */ }
+    actual override suspend fun handlePostUnload() { /* no-op */ }
 }

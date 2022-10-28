@@ -1,16 +1,16 @@
 package dev.racci.minix.integrations.regions
 
 import com.google.common.collect.HashBiMap
-import dev.racci.minix.api.annotations.MappedIntegration
+import dev.racci.minix.api.extensions.asBukkitLocation
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.integrations.regions.Region
 import dev.racci.minix.api.integrations.regions.RegionIntegration
 import dev.racci.minix.api.integrations.regions.RegionManager
-import dev.racci.minix.api.plugin.Minix
-import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.kotlin.ifFalse
 import dev.racci.minix.api.utils.kotlin.ifTrue
-import dev.racci.minix.api.utils.minecraft.BlockPos
+import dev.racci.minix.core.plugin.Minix
+import dev.racci.minix.data.structs.minecraft.BlockPos
+import dev.racci.minix.integrations.annotations.MappedIntegration
 import me.angeschossen.lands.api.integration.LandsIntegration
 import me.angeschossen.lands.api.land.LandArea
 import org.bukkit.World
@@ -18,8 +18,8 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.Optional
 
-@MappedIntegration("Lands", Minix::class, RegionManager::class)
-class LandsRegionIntegration(override val plugin: MinixPlugin) : RegionIntegration {
+@MappedIntegration("Lands", RegionManager::class)
+public class LandsRegionIntegration(plugin: Minix) : RegionIntegration {
     private val integration = LandsIntegration(plugin)
     private val areaReference = HashBiMap.create<LandArea, AreaRegion>()
 

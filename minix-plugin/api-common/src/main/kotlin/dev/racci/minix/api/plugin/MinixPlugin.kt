@@ -74,6 +74,16 @@ public expect abstract class MinixPlugin : PlatformPlugin, WithPlugin<MinixPlugi
      */
     override suspend fun handlePostEnable()
 
+    /**
+     * Called possibly multiple times after the plugin is disabled.
+     * This is called after Minix has completed its internal disabling process.
+     * Check your platforms documentation for more information of when this is called.
+     */
+    override suspend fun handlePostDisable()
+
+    /** Called once after minix has completed its internal unloading process. */
+    override suspend fun handlePostUnload()
+
     @get:ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
     @Deprecated("Use logger instead", ReplaceWith("logger"))
     public val log: MinixLogger

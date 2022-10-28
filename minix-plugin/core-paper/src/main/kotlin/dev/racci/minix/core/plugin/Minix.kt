@@ -2,27 +2,30 @@ package dev.racci.minix.core.plugin
 
 import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.logger.LoggingLevel
-import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.paper.builders.ItemBuilderDSL
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.core.MinixApplicationBuilder
-import dev.racci.minix.core.MinixImpl
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.data.MinixActualConfig
-import dev.racci.minix.core.loggers.KoinProxy
-import dev.racci.minix.core.loggers.SentryProxy
-import dev.racci.minix.core.loggers.SlimJarProxy
+import dev.racci.minix.core.logger.KoinProxy
+import dev.racci.minix.core.logger.SentryProxy
+import dev.racci.minix.core.logger.SlimJarProxy
 import dev.racci.minix.core.services.PluginServiceImpl
 import dev.racci.minix.core.services.mapped.ExtensionMapper
 import io.sentry.Sentry
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.runBlocking
+import org.koin.core.annotation.ComponentScan
+import org.koin.core.annotation.Module
 import org.koin.core.component.get
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import org.koin.ksp.generated.*
 
+@Module
+@ComponentScan
 @MappedPlugin(13706)
 public actual class Minix : MinixPlugin() {
     private var sentryState = atomic(false)
@@ -47,7 +50,7 @@ public actual class Minix : MinixPlugin() {
         org.koin.core.context.startKoin {
             this.modules(
                 KoinUtils.getModule(this@Minix),
-                module { single { PluginDependentMinixLogger.getLogger(get<MinixImpl>()) } bind MinixLogger::class }
+//                module { single { .getLogger(get<MinixImpl>()) } bind MinixLogger::class }
             )
 
             this.logger(KoinProxy)

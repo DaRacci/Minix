@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
+import org.apiguardian.api.API;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -32,8 +33,9 @@ public final class MinixApplicationBuilder {
     private static ClassLoader classLoader = null;
     private static Set<FilePair> initialised = null;
     private static JarFileRelocatorFactory relocatorFactory = null;
-    @MinixInternal
-    static ProcessLogger logger = null;
+
+    @API(status = API.Status.INTERNAL)
+    public static ProcessLogger logger = null;
 
     public static void init(
         final Path downloadFolder,

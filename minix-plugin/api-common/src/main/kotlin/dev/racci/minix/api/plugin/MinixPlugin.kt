@@ -2,22 +2,34 @@ package dev.racci.minix.api.plugin
 
 import dev.racci.minix.api.lifecycles.ComplexManagedLifecycle
 import dev.racci.minix.api.logger.MinixLogger
+import dev.racci.minix.data.Version
 import org.jetbrains.annotations.ApiStatus
+import org.koin.core.component.KoinScopeComponent
 import org.koin.core.qualifier.Qualifier
+import org.koin.core.scope.Scope
 import java.nio.file.Path
 
 /**
  * The main plugin class.
  */
-public expect abstract class MinixPlugin : WithPlugin<MinixPlugin>, Qualifier, ComplexManagedLifecycle {
-
+public expect abstract class MinixPlugin : PlatformPlugin, WithPlugin<MinixPlugin>, Qualifier, ComplexManagedLifecycle, KoinScopeComponent {
     public final override val value: String
+
+    public final override val scope: Scope
 
     public final override val plugin: MinixPlugin
 
     public final override val logger: MinixLogger
 
+    public final override val platformClassLoader: ClassLoader
+
     public final override val dataFolder: Path
+
+    public final override val version: Version
+
+    public val enabled: Boolean
+
+    public val metrics: Metrics
 
     /**
      * Called possibly multiple times when the plugin is enabled.
@@ -35,7 +47,7 @@ public expect abstract class MinixPlugin : WithPlugin<MinixPlugin>, Qualifier, C
      * Called once when the plugin is loaded.
      * Check your platforms documentation for more information of when this is called.
      */
-    override suspend fun handleCreate()
+    override suspend fun handleLoad()
 
     /**
      * Called possibly multiple times or never when the plugin is reloaded.
@@ -47,13 +59,13 @@ public expect abstract class MinixPlugin : WithPlugin<MinixPlugin>, Qualifier, C
      * Called once when the plugin is unloaded.
      * This plugin and all sub-applications should be unloaded from memory and should not be used again.
      */
-    override suspend fun handleDispose()
+    override suspend fun handleUnload()
 
     /**
      * Called once after minix has completed its internal loading process.
      * Check your platforms documentation for more information of when this is called.
      */
-    override suspend fun handlePostCreate()
+    override suspend fun handlePostLoad()
 
     /**
      * Called possibly multiple times after the plugin is enabled.

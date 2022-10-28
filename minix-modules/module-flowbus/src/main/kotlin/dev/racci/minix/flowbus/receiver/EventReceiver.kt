@@ -1,6 +1,7 @@
 package dev.racci.minix.flowbus.receiver
 
 import dev.racci.minix.flowbus.EventCallback
+import dev.racci.minix.flowbus.Priority
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.reflect.KClass
 
@@ -12,6 +13,9 @@ public interface EventReceiver {
      * In any other case [Dispatchers.Default] will be used.
      */
     public fun returnOn(dispatcher: CoroutineDispatcher): EventReceiver
+
+    /** Checks if this implementation of [EventReceiver] determines that an event is cancelled. */
+    public fun isCancelled(event: Any): Boolean
 
     /**
      * Subscribe to events that are type of [clazz] with the given [callback] function.
@@ -25,6 +29,8 @@ public interface EventReceiver {
     public fun <T : Any> subscribeTo(
         clazz: KClass<T>,
         skipRetained: Boolean = false,
+        priority: Priority = Priority.DEFAULT,
+        ignoreCancelled: Boolean = false,
         callback: suspend (T) -> Unit
     ): EventReceiver
 
@@ -40,6 +46,8 @@ public interface EventReceiver {
     public fun <T : Any> subscribeTo(
         clazz: KClass<T>,
         skipRetained: Boolean = false,
+        priority: Priority = Priority.DEFAULT,
+        ignoreCancelled: Boolean = false,
         callback: EventCallback<T>
     ): EventReceiver
 

@@ -2,15 +2,19 @@ package dev.racci.minix.flowbus
 
 import dev.racci.minix.api.extensions.pm
 import dev.racci.minix.api.extensions.reflection.castOrThrow
+import dev.racci.minix.api.logger.MinixLoggerFactory
 import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.core.plugin.Minix
 import kotlinx.coroutines.flow.onSubscription
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
-public class BukkitFlowBus : FlowBus() {
+@Singleton
+public class PaperFlowBus : FlowBus() {
+    private val logger by MinixLoggerFactory
     private val listener = object : Listener {}
 
     public override fun <T : Any> forEvent(clazz: KClass<out T>): RendezvousStateFlow<T?> {
@@ -21,7 +25,7 @@ public class BukkitFlowBus : FlowBus() {
 
         flow.onSubscription {
             if (flow.subscriptionCount.value > 0) return@onSubscription // Already setup
-            println("Setting up bukkit listener for $clazz")
+            logger.debug { "Registering event listener for ${clazz.simpleName}" }
 
             val plugin = getKoin().get<Minix>()
 

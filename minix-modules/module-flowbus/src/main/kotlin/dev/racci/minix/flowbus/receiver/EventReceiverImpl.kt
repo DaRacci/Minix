@@ -1,18 +1,20 @@
 package dev.racci.minix.flowbus.receiver
 
 import dev.racci.minix.flowbus.DispatcherProvider
+import dev.racci.minix.flowbus.EmitterCancellable
 import dev.racci.minix.flowbus.EventCallback
 import dev.racci.minix.flowbus.FlowBus
+import dev.racci.minix.flowbus.Priority
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import kotlin.reflect.KClass
 
@@ -21,7 +23,6 @@ import kotlin.reflect.KClass
 * @param bus [FlowBus] instance to subscribe to. If not set, the koin singleton will be used.
 */
 // TODO -> Cancelable, Priority, Bukkit listener conversion
-@Factory([EventReceiver::class])
 public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : EventReceiver {
     private val jobs = mutableMapOf<KClass<*>, Job>()
 
@@ -38,6 +39,10 @@ public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : E
         return this
     }
 
+    override fun isCancelled(event: Any): Boolean {
+        return event is EmitterCancellable && event.cancelled
+    }
+
     /**
      * Subscribe to events that are type of [clazz] with the given [callback] function.
      * The [callback] can be called immediately if event of type [clazz] is present in the flow.
@@ -50,6 +55,8 @@ public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : E
     override fun <T : Any> subscribeTo(
         clazz: KClass<T>,
         skipRetained: Boolean,
+        priority: Priority,
+        ignoreCancelled: Boolean,
         callback: suspend (T) -> Unit
     ): EventReceiver {
         if (jobs.containsKey(clazz)) {
@@ -64,6 +71,7 @@ public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : E
             bus.forEvent(clazz)
                 .drop(if (skipRetained) 1 else 0)
                 .filterNotNull()
+                .filter { !ignoreCancelled || !isCancelled(it) }
                 .flowOn(returnDispatcher)
                 .collect { event -> callback(event) }
         }
@@ -83,6 +91,8 @@ public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : E
     override fun <T : Any> subscribeTo(
         clazz: KClass<T>,
         skipRetained: Boolean,
+        priority: Priority,
+        ignoreCancelled: Boolean,
         callback: EventCallback<T>
     ): EventReceiver = subscribeTo(clazz, skipRetained) { callback.onEvent(it) }
 

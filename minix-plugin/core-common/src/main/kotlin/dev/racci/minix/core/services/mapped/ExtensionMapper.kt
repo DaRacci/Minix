@@ -12,17 +12,16 @@ import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionState
 import dev.racci.minix.api.extensions.reflection.castOrThrow
-import dev.racci.minix.api.extensions.unregisterListener
-import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.plugin.PluginData
 import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.api.utils.RecursionUtils
+import dev.racci.minix.core.plugin.Minix
 import io.github.classgraph.ClassInfo
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.job
+import org.koin.core.component.inject
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 import org.koin.ext.getFullName
@@ -36,12 +35,13 @@ import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
 
 @DoNotUnload
+@MappedExtension
 @Suppress("UnstableApiUsage")
-@MappedExtension(Minix::class, "Extension Mapper")
-class ExtensionMapper(override val plugin: Minix) : MapperService(
-    Extension::class,
-    MappedExtension::class
-) {
+public class ExtensionMapper : MapperService<Minix> {
+    override val plugin: Minix by inject()
+    override val superclass: KClass<*> = Extension::class
+    override val targetAnnotation: KClass<out Annotation> = MappedExtension::class
+
     // Create a function that orders extensions by their dependencies
     private fun orderExtensions(g: MutableGraph<Extension<*>>): ImmutableList<Extension<*>> {
         val extensions = g.nodes().toList()
@@ -146,46 +146,44 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
                 val res = if (hasPluginParam) constructor.call(getKoin().get<MinixPlugin>(plugin::class)) else constructor.call()
 
                 loadKoinModules(KoinUtils.getModule(res))
+                res.scope.linkTo(plugin.scope)
                 res
             }
 
         registerMapped(extension, plugin)
     }
 
-    override suspend fun forgetMapped(
-        plugin: MinixPlugin,
-        cache: PluginData<*>
-    ) {
+    override suspend fun forgetMapped(plugin: MinixPlugin) {
         unloadExtensions(plugin)
 
         neededEdges.keys.removeAll { it.plugin == plugin }
         topoSorted.remove(plugin)
     }
 
-    suspend fun loadExtensions(plugin: MinixPlugin) {
-        topoSorted.computeIfAbsent(plugin) { orderExtensions(extensionGraph ?: error("${plugin.name} doesn't have a graph!")) }
+    public suspend fun loadExtensions(plugin: MinixPlugin) {
+        topoSorted.computeIfAbsent(plugin) { orderExtensions(extensionGraph ?: error("${plugin.value} doesn't have a graph!")) }
             .filter { it.plugin === plugin }
             .also { plugin.log.debug { "Loading extensions in order: ${it.joinToString { it.name }}" } }
             .forEach { extension -> this.loadExtension(extension, topoSorted[plugin]!!) }
     }
 
-    suspend fun enableExtensions(plugin: MinixPlugin) {
+    public suspend fun enableExtensions(plugin: MinixPlugin) {
         getExtensions(plugin).forEach { extension -> this.enableExtension(extension, topoSorted[plugin]!!) }
     }
 
-    suspend fun disableExtensions(plugin: MinixPlugin) {
+    public suspend fun disableExtensions(plugin: MinixPlugin) {
         getExtensions(plugin).asReversed().forEach { extension -> this.disableExtension(extension, topoSorted[plugin]!!) }
     }
 
-    suspend fun unloadExtensions(plugin: MinixPlugin) {
+    public suspend fun unloadExtensions(plugin: MinixPlugin) {
         getExtensions(plugin).asReversed().forEach { extension -> this.unloadExtension(extension) }
     }
 
-    suspend fun loadExtension(
+    public suspend fun loadExtension(
         extension: Extension<*>,
         sorted: List<Extension<*>>
     ) {
-        if (extension.loaded) return
+        if (extension.state < ExtensionState.UNLOADED) return
 
         withState(ExtensionState.LOADING, extension) {
             extension.handleLoad()
@@ -196,7 +194,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         extension.plugin
     }
 
-    suspend fun enableExtension(
+    public suspend fun enableExtension(
         extension: Extension<*>,
         sorted: List<Extension<*>>
     ) {
@@ -211,7 +209,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         )
     }
 
-    suspend fun disableExtension(
+    public suspend fun disableExtension(
         extension: Extension<*>,
         extensionList: List<Extension<*>>
     ) {
@@ -225,7 +223,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         )
     }
 
-    suspend fun unloadExtension(extension: Extension<*>) {
+    public suspend fun unloadExtension(extension: Extension<*>) {
         if (extension.state.ordinal !in 0..5) return
 
         withState(ExtensionState.UNLOADING, extension) {
@@ -235,7 +233,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
             { err -> logger.error(err) { "Extension ${extension.name} threw an error while unloading!" } }
         )
 
-        extension.eventListener.unregisterListener()
+        extension.eventListener.close()
 
         if (extension::class.hasAnnotation<DoNotUnload>()) return
 
@@ -253,16 +251,16 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
         extension: Extension<*>,
         block: suspend () -> Unit
     ): Option<Throwable> {
-        extension.setState(state)
+        extension.state = state
 
         try {
             block()
         } catch (e: Throwable) {
-            logger.error(e) { "Extension ${extension.name} threw an error while ${state.name.lowercase()}!" }
+            logger.error(e) { "Extension ${extension.value} threw an error while ${state.name.lowercase()}!" }
             return Some(e)
         }
 
-        extension.setState(ExtensionState.values()[state.ordinal - 1])
+        extension.state = ExtensionState.values()[state.ordinal - 1]
 
         return None
     }
@@ -281,7 +279,7 @@ class ExtensionMapper(override val plugin: Minix) : MapperService(
             builder.append("\nThis is not a fatal error, but it may cause other extensions to fail to load.")
             if (dependents.isNotEmpty()) {
                 builder.append("\nThese extensions will not be loaded:")
-                dependents.forEach { builder.append("\n\t${it.name}") }
+                dependents.forEach { builder.append("\n\t${it.value}") }
             }
             builder.toString()
         }

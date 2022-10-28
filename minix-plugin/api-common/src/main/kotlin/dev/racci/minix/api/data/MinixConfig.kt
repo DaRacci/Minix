@@ -1,24 +1,24 @@
 package dev.racci.minix.api.data
 
-import dev.racci.minix.api.annotations.MappedConfig
-import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.logger.LoggingLevel
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.WithPlugin
+import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.kotlin.doesOverride
 import dev.racci.minix.data.utils.NestedUtils
 import kotlinx.coroutines.runBlocking
+import org.apiguardian.api.API
 import org.koin.core.Koin
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.transformation.ConfigurationTransformation
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.findAnnotation
 
 public abstract class MinixConfig<P : MinixPlugin>(
-    @MinixInternal @field:Transient
+    @field:Transient
+    @API(status = API.Status.INTERNAL)
     public val primaryConfig: Boolean
 ) : WithPlugin<P> {
 
@@ -37,15 +37,14 @@ public abstract class MinixConfig<P : MinixPlugin>(
     /** If overridden make sure to call super. */
     public open suspend fun load() {
         if (!this::class.doesOverride(MinixConfig<P>::plugin)) {
-            val annotation = this::class.findAnnotation<MappedConfig>() ?: throw IllegalStateException("${this::class.qualifiedName} is not annotated with @MappedConfig")
-            val parentKClass = annotation.parent
-            val parent = getKoin().get<P>(parentKClass)
-            this.plugin = parent
+//            val annotation = this::class.findAnnotation<MappedConfig>() ?: throw IllegalStateException("${this::class.qualifiedName} is not annotated with @MappedConfig")
+            val parent = PluginService.fromClassloader(this::class.java.classLoader) ?: error("Could not find plugin from classloader ${this::class.java.classLoader}")
+            logger.debug { "Loading config for ${this::class.qualifiedName} with parent ${parent::class.qualifiedName}" }
+            this.plugin = plugin
         }
 
         this.onNestedInstance<InnerConfig> {
             this.plugin = this@MinixConfig.plugin
-            this.initialized = true
         }
 
         handleLoad()
@@ -79,7 +78,6 @@ public abstract class MinixConfig<P : MinixPlugin>(
     }
 
     // TODO: Improve performance
-    @OptIn(MinixInternal::class)
     final override fun equals(other: Any?): Boolean {
         if (other == null || other !is MinixConfig<*>) return false
 
@@ -103,13 +101,13 @@ public abstract class MinixConfig<P : MinixPlugin>(
 
     @ConfigSerializable
     public interface InnerConfig {
-        public var initialized: Boolean
+        public val initialized: Boolean
 
         public var plugin: MinixPlugin
 
         public class Default : InnerConfig {
-            @Transient
-            override var initialized: Boolean = false
+            // TODO -> Make sure this works
+            override val initialized: Boolean by ::plugin::isInitialized
 
             @Transient
             override lateinit var plugin: MinixPlugin

@@ -2,19 +2,19 @@ package dev.racci.minix.core.data
 
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.data.MinixConfig
-import dev.racci.minix.api.plugin.Minix
+import dev.racci.minix.core.plugin.Minix
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
 import org.spongepowered.configurate.objectmapping.meta.Comment
 import org.spongepowered.configurate.objectmapping.meta.Setting
 import java.util.UUID
 
 @ConfigSerializable
-@MappedConfig(Minix::class, "config.conf")
-class MinixConfig : MinixConfig<Minix>(true) {
+@MappedConfig("config.conf")
+public class MinixActualConfig : MinixConfig<Minix>(true) {
 
     @Setting("server-uuid")
     @Comment("This server unique uuid (Please don't change this)")
-    var serverUUID: UUID = UUID.randomUUID()
+    public var serverUUID: UUID = UUID.randomUUID()
 
     @Comment(
         """
@@ -25,5 +25,5 @@ class MinixConfig : MinixConfig<Minix>(true) {
         sent for identification and error tracking.
         """
     )
-    var sentryEnabled: Boolean = true
+    public var sentryEnabled: Boolean = true
 }

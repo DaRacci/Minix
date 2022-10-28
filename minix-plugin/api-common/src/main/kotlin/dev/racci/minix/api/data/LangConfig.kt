@@ -2,8 +2,8 @@ package dev.racci.minix.api.data
 
 import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.utils.PropertyFinder
 import dev.racci.minix.api.utils.adventure.PartialComponent
+import dev.racci.minix.data.utils.PropertyFinder
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.spongepowered.configurate.objectmapping.ConfigSerializable

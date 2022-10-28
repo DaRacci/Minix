@@ -11,42 +11,13 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.PluginManager
 import kotlin.coroutines.CoroutineContext
 
-/**
- * A static session.
- */
 private val pluginService by getKoin().inject<PluginService>()
 
 /**
- * Gets the plugin minecraft dispatcher.
+ * Gets the plugin minecraft context.
  */
 public val MinixPlugin.minecraftDispatcher: CoroutineContext
-    get() = pluginService.coroutineSession[this].minecraftDispatcher
-
-/**
- * Gets the plugin async dispatcher.
- */
-public val MinixPlugin.asyncDispatcher: CoroutineContext
-    get() = pluginService.coroutineSession[this].asyncDispatcher
-
-/**
- * Gets the plugin coroutine scope.
- */
-public val MinixPlugin.scope: CoroutineScope
-    get() = pluginService.coroutineSession[this].scope
-
-/**
- * Launches the given function in the Coroutine Scope of the given plugin.
- * This function may be called immediately without any delay if the Thread
- * calling this function Bukkit.isPrimaryThread() is true.
- * This means, for example, that event cancelling or modifying return values is still possible.
- * @param dispatcher Coroutine context. The default context is minecraft dispatcher.
- * @param block callback function inside a coroutine scope.
- * @return Cancelable coroutine job.
- */
-public fun MinixPlugin.launch(
-    dispatcher: CoroutineContext = minecraftDispatcher,
-    block: suspend CoroutineScope.() -> Unit
-): Job = pluginService.coroutineSession[this].launch(dispatcher, block = block)
+    get() = pluginService.coroutineSession[this].minecraftContext
 
 /**
  * Launches the given function in the Coroutine Scope of the given plugin async.
@@ -58,7 +29,7 @@ public fun MinixPlugin.launch(
  */
 public fun MinixPlugin.launchAsync(
     block: suspend CoroutineScope.() -> Unit
-): Job = pluginService.coroutineSession[this].launch(this.asyncDispatcher, block = block)
+): Job = pluginService.coroutineSession[this].launch(this.context, block = block)
 
 /**
  * Registers an event listener with suspending functions.

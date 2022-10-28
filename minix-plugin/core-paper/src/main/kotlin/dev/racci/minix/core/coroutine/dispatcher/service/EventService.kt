@@ -1,16 +1,15 @@
-package dev.racci.minix.core.coroutine.service
+package dev.racci.minix.core.coroutine.dispatcher.service
 
 import arrow.core.filterIsInstance
 import dev.racci.minix.api.annotations.RunAsync
 import dev.racci.minix.api.coroutine.CoroutineSession
-import dev.racci.minix.api.coroutine.launch
 import dev.racci.minix.api.data.enums.EventExecutionType
 import dev.racci.minix.api.extensions.collections.findKFunction
 import dev.racci.minix.api.extensions.pluginManager
 import dev.racci.minix.api.extensions.reflection.accessInvoke
 import dev.racci.minix.api.extensions.reflection.safeCast
+import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.utils.collections.muiltimap.MutableMultiMap
 import dev.racci.minix.api.utils.collections.multiMapOf
 import dev.racci.minix.api.utils.getKoin
@@ -176,8 +175,8 @@ internal class EventService(
             }
 
             val dispatcher = when {
-                event.isAsynchronous || listener::class.hasAnnotation<RunAsync>() -> coroutineSession.asyncDispatcher
-                else -> coroutineSession.minecraftDispatcher
+                event.isAsynchronous || listener::class.hasAnnotation<RunAsync>() -> coroutineSession.context
+                else -> coroutineSession.minecraftContext
             }
 
             return runCatching {

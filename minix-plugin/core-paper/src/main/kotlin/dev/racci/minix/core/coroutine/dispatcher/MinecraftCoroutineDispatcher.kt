@@ -3,22 +3,24 @@ package dev.racci.minix.core.coroutine.dispatcher
 import arrow.core.toOption
 import dev.racci.minix.api.coroutine.CoroutineTimings
 import dev.racci.minix.api.extensions.scheduler
-import dev.racci.minix.core.coroutine.service.WakeUpBlockService
+import dev.racci.minix.api.logger.MinixLoggerFactory
+import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.core.coroutine.dispatcher.service.WakeUpBlockService
 import kotlinx.coroutines.CoroutineDispatcher
-import org.bukkit.plugin.Plugin
 import kotlin.coroutines.CoroutineContext
 
 internal class MinecraftCoroutineDispatcher(
-    private val plugin: Plugin,
+    private val plugin: MinixPlugin,
     private val wakeUpBlockService: WakeUpBlockService
 ) : CoroutineDispatcher() {
+    private val logger by MinixLoggerFactory
 
     /**
      * Returns `true` if the execution of the coroutine should be performed with [dispatch] method.
      * The default behavior for most dispatchers is to return `true`.
      * This method should generally be exception-safe.
      * An exception thrown from this method
-     * may leave the coroutines that use this dispatcher in the inconsistent and hard to debug state.
+     * may leave the coroutines that use this context in the inconsistent and hard to debug state.
      */
     override fun isDispatchNeeded(context: CoroutineContext): Boolean {
         wakeUpBlockService.ensureWakeup()
@@ -33,7 +35,7 @@ internal class MinecraftCoroutineDispatcher(
         block: Runnable
     ) {
         if (!plugin.isEnabled) {
-            println("Plugin isn't enabled, not dispatching")
+            logger.warn { "Plugin isn't enabled, not dispatching" }
             return
         }
 

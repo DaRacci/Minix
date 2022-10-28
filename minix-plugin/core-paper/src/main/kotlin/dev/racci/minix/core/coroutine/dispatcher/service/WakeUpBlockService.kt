@@ -1,13 +1,12 @@
-package dev.racci.minix.core.coroutine.service
+package dev.racci.minix.core.coroutine.dispatcher.service
 
 import dev.racci.minix.api.extensions.collections.findKCallable
 import dev.racci.minix.api.extensions.collections.findKProperty
 import dev.racci.minix.api.extensions.reflection.accessGet
 import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.utils.minecraft.NMSUtils
 import kotlinx.coroutines.runBlocking
-import org.bukkit.craftbukkit.v1_19_R1.CraftServer
-import org.bukkit.craftbukkit.v1_19_R1.scheduler.CraftScheduler
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.locks.LockSupport
@@ -18,11 +17,11 @@ import kotlin.reflect.jvm.isAccessible
 internal class WakeUpBlockService(private val plugin: MinixPlugin) {
 
     private var threadSupport: ExecutorService? = null
-    private val craftSchedulerTickProperty by lazy { CraftScheduler::class.declaredMemberProperties.findKProperty<Int>("currentTick").tap { it.isAccessible = true }.orNull()!! }
-    private val craftSchedulerHeartBeatFunction by lazy { CraftScheduler::class.declaredMemberFunctions.findKCallable("mainThreadHeartbeat").orNull()!! }
+    private val craftSchedulerTickProperty by lazy { NMSUtils.getNMSClass("CraftScheduler").declaredMemberProperties.findKProperty<Int>("currentTick").tap { it.isAccessible = true }.orNull()!! }
+    private val craftSchedulerHeartBeatFunction by lazy { NMSUtils.getNMSClass("CraftScheduler").declaredMemberFunctions.findKCallable("mainThreadHeartbeat").orNull()!! }
     private val primaryThread by lazy {
         runBlocking {
-            CraftServer::class.declaredMemberProperties.findKProperty<Any>("console")
+            NMSUtils.getNMSClass("CraftServer").declaredMemberProperties.findKProperty<Any>("console")
                 .map { it.accessGet(server) }
                 .mapNotNull { it::class.declaredMemberProperties.findKProperty<Thread>("serverThread").orNull() }
                 .map { it.accessGet(it) }

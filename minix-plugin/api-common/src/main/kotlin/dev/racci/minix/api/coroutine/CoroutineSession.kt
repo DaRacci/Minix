@@ -1,46 +1,30 @@
 package dev.racci.minix.api.coroutine
 
-import dev.racci.minix.api.data.enums.EventExecutionType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
-import org.bukkit.event.Event
-import org.bukkit.event.Listener
 import kotlin.coroutines.CoroutineContext
 
-public interface CoroutineSession {
+public expect interface CoroutineSession {
 
     /**
      * Gets the scope.
      */
-    public val scope: CoroutineScope
+    public val coroutineScope: CoroutineScope
 
     /**
-     * Gets the minecraft dispatcher.
+     * The context for the plugin.
+     * Check the actual implementation for more information for that platform.
      */
-    public val minecraftDispatcher: CoroutineContext
-
-    /**
-     * Gets the async dispatcher.
-     */
-    public val asyncDispatcher: CoroutineContext
-
-    public var isManipulatedServerHeartBeat: Boolean
-
-    public suspend fun registerSuspendedListener(listener: Listener)
-
-    public fun fireSuspendingEvent(
-        event: Event,
-        executionType: EventExecutionType
-    ): Collection<Job>
+    public val context: CoroutineContext
 
     /**
      * Launches the given function on the plugin coroutineService scope.
      * @return Cancelable coroutineService job.
      */
     public fun launch(
-        dispatcher: CoroutineContext,
-        parentScope: CoroutineScope = scope,
+        context: CoroutineContext = this.context,
+        parentScope: CoroutineScope = coroutineScope,
         start: CoroutineStart = CoroutineStart.DEFAULT,
         block: suspend CoroutineScope.() -> Unit
     ): Job

@@ -2,7 +2,6 @@ package dev.racci.minix.api.events
 
 import com.github.benmanes.caffeine.cache.Caffeine
 import com.github.benmanes.caffeine.cache.LoadingCache
-import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 import kotlin.reflect.KClass
@@ -14,18 +13,7 @@ import kotlin.reflect.KClass
  */
 public actual abstract class MinixEvent(
     public actual val async: Boolean = true
-) : Event(async), Cancellable {
-
-    @set:JvmName("actualSetCancelled")
-    public var cancelled: Boolean = false
-
-    final override fun setCancelled(cancel: Boolean) {
-        cancelled = cancel
-    }
-
-    final override fun isCancelled(): Boolean {
-        return cancelled
-    }
+) : Event(async) {
 
     final override fun getHandlers(): HandlerList = handlerMap[this::class]
 

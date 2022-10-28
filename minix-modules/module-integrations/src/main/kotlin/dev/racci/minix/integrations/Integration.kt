@@ -1,9 +1,7 @@
 package dev.racci.minix.integrations
 
-import dev.racci.minix.integrations.annotations.IntegrationTarget
 import dev.racci.minix.integrations.annotations.MappedIntegration
 import org.apiguardian.api.API
-import kotlin.reflect.full.findAnnotation
 
 /**
  * A common class for integrating with other plugins.
@@ -11,11 +9,8 @@ import kotlin.reflect.full.findAnnotation
  *
  * @see RegionIntegration
  */
-@API(status = API.Status.EXPERIMENTAL)
+@API(status = API.Status.EXPERIMENTAL, since = "4.0.0")
 public interface Integration {
-
-    /** The integrations plugin name. */
-    public val pluginName: String get() = this::class.findAnnotation<IntegrationTarget>()?.targetPlugin ?: "Unknown"
 
     /** Called when the integration is registered. */
     public suspend fun handleLoad(): Unit = Unit

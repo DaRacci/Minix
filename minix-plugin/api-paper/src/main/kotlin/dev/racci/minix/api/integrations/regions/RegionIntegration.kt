@@ -1,35 +1,35 @@
 package dev.racci.minix.api.integrations.regions
 
+import dev.racci.minix.data.structs.minecraft.BlockPos
 import dev.racci.minix.integrations.Integration
-import dev.racci.minix.api.utils.minecraft.BlockPos
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.Optional
 
-interface RegionIntegration : Integration {
+public interface RegionIntegration : Integration {
 
     /** @return The [Region] at the given position, if any. */
-    fun getRegion(
+    public fun getRegion(
         pos: BlockPos,
         world: World
     ): Optional<Region>
 
     /** @return True, if there is a region at the given position. */
-    fun insideRegion(
+    public fun insideRegion(
         pos: BlockPos,
         world: World
     ): Boolean
 
     /** @return If the given [player] is able to build at the given [pos]. */
-    fun canBuild(
+    public fun canBuild(
         pos: BlockPos,
         world: World,
         player: Player
     ): Boolean
 
     /** @return If the given [player] is able to break at the given [pos]. */
-    fun canBreak(
+    public fun canBreak(
         pos: BlockPos,
         world: World,
         player: Player
@@ -44,14 +44,14 @@ interface RegionIntegration : Integration {
      * @param player The player to check.
      * @return If the player is able to interact with the given [pos].
      */
-    fun canInteract(
+    public fun canInteract(
         pos: BlockPos,
         world: World,
         player: Player
     ): Boolean
 
     /** @return If the given [player] is able to attack the [target] the given [pos]. */
-    fun canAttack(
+    public fun canAttack(
         pos: BlockPos,
         world: World,
         player: Player,
@@ -59,21 +59,21 @@ interface RegionIntegration : Integration {
     ): Boolean
 
     /** @return Runs the action if the pos isn't inside a region. */
-    fun ifWilderness(
+    public fun ifWilderness(
         pos: BlockPos,
         world: World,
         action: () -> Unit
     ): Boolean
 
     /** @return Runs the action if the player is trusted inside the region at this pos. */
-    fun ifTrustedInRegion(
+    public fun ifTrustedInRegion(
         pos: BlockPos,
         player: Player,
         action: () -> Unit
     ): Boolean
 
     /** @return Runs the action if the player is a member inside the region at this pos or if the pos is in the wilderness. */
-    fun ifWildernessOrTrusted(
+    public fun ifWildernessOrTrusted(
         pos: BlockPos,
         player: Player,
         action: () -> Unit

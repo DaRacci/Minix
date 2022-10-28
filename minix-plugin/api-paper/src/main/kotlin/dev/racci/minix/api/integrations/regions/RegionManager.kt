@@ -1,29 +1,29 @@
 package dev.racci.minix.api.integrations.regions
 
+import dev.racci.minix.data.structs.minecraft.BlockPos
 import dev.racci.minix.integrations.IntegrationManager
-import dev.racci.minix.api.utils.minecraft.BlockPos
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.Optional
 
-object RegionManager : IntegrationManager<RegionIntegration>() {
+public object RegionManager : IntegrationManager<RegionIntegration>() {
 
-    fun getRegion(
+    public fun getRegion(
         pos: BlockPos,
         world: World
     ): Optional<Region> = this.getFirstRegistered {
         it.getRegion(pos, world).orElse(null)
     }
 
-    fun insideRegion(
+    public fun insideRegion(
         pos: BlockPos,
         world: World
     ): Boolean = this.getFirstRegistered {
         it.insideRegion(pos, world)
     }.orElse(false)
 
-    fun canBuild(
+    public fun canBuild(
         pos: BlockPos,
         world: World,
         player: Player
@@ -31,7 +31,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         it.canBuild(pos, world, player)
     }.orElse(true)
 
-    fun canBreak(
+    public fun canBreak(
         pos: BlockPos,
         world: World,
         player: Player
@@ -39,7 +39,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         it.canBreak(pos, world, player)
     }.orElse(true)
 
-    fun canInteract(
+    public fun canInteract(
         pos: BlockPos,
         world: World,
         player: Player
@@ -47,7 +47,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         it.canInteract(pos, world, player)
     }.orElse(true)
 
-    fun canAttack(
+    public fun canAttack(
         pos: BlockPos,
         world: World,
         player: Player,
@@ -56,7 +56,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         it.canAttack(pos, world, player, target)
     }.orElse(true)
 
-    fun ifWilderness(
+    public fun ifWilderness(
         pos: BlockPos,
         world: World,
         action: () -> Unit
@@ -64,7 +64,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         it.ifWilderness(pos, world, action)
     }.orElse(true) // if no region integration is found, assume wilderness
 
-    fun ifTrustedInRegion(
+    public fun ifTrustedInRegion(
         pos: BlockPos,
         player: Player,
         action: () -> Unit
@@ -72,7 +72,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         it.ifTrustedInRegion(pos, player, action)
     }.orElse(false)
 
-    fun ifWildernessOrTrusted(
+    public fun ifWildernessOrTrusted(
         pos: BlockPos,
         player: Player,
         action: () -> Unit

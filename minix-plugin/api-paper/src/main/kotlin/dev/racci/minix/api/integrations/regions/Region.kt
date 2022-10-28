@@ -5,19 +5,19 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import java.util.UUID
 
-interface Region {
-    val id: Int
-    val name: String
-    val owner: UUID
-    val world: World
+public interface Region {
+    public val id: Int
+    public val name: String
+    public val owner: UUID
+    public val world: World
 
-    fun canBuild(player: Player): Boolean
+    public fun canBuild(player: Player): Boolean
 
-    fun canBreak(player: Player): Boolean
+    public fun canBreak(player: Player): Boolean
 
-    fun canInteract(player: Player): Boolean
+    public fun canInteract(player: Player): Boolean
 
-    fun canAttack(
+    public fun canAttack(
         player: Player,
         target: Entity
     ): Boolean

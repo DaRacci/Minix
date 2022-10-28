@@ -4,17 +4,22 @@ import arrow.core.Ior
 import arrow.core.widen
 import dev.racci.minix.api.extensions.collections.get
 import dev.racci.minix.api.extensions.reflection.castOrThrow
-import dev.racci.minix.integrations.Integration
+import dev.racci.minix.api.logger.MinixLoggerFactory
+import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.kotlin.toSafeString
+import dev.racci.minix.integrations.Integration
 import me.clip.placeholderapi.expansion.PlaceholderExpansion
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
 
 public typealias Placeholder = Ior<() -> Any, OfflinePlayer.() -> Any>
 
 public abstract class PlaceholderIntegration : PlaceholderExpansion(), Integration {
+    private val plugin: Plugin by PluginService
+    private val logger by MinixLoggerFactory
     private val placeholders = mutableMapOf<String, Placeholder>()
 
     /** Registers a placeholder, which doesn't require a player. */

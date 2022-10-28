@@ -10,29 +10,29 @@ import kotlin.time.Duration
  * Represents a task being executed
  * by the [CoroutineScheduler].
  */
-interface CoroutineTask {
+public interface CoroutineTask {
 
     /** The unique ID of the task. */
-    val taskID: Int
+    public val taskID: Int
 
     /** The name of the task. */
-    var name: String
+    public var name: String
 
     /** The plugin, which started and owns this task. */
-    val owner: MinixPlugin
+    public val owner: MinixPlugin
 
     /** If the task is being executed off the main bukkit thread. */
-    val async: Boolean
+    public val async: Boolean
 
     /** If this task is able to repeat. */
-    val keepRunning: AtomicBoolean
+    public val keepRunning: AtomicBoolean
 
     /** The delay between each execution. */
-    val period: Duration?
+    public val period: Duration?
 
-    val job: Job?
-    val task: suspend (MinixPlugin, CoroutineScope) -> Unit
-    val runnable: CoroutineRunnable?
+    public val job: Job?
+    public val task: suspend (MinixPlugin, CoroutineScope) -> Unit
+    public val runnable: CoroutineRunnable?
 
     /**
      * Initiates an orderly shutdown.
@@ -41,18 +41,18 @@ interface CoroutineTask {
      *
      * @return if the task was successfully shutdown.
      */
-    fun shutdown(): Boolean
+    public fun shutdown(): Boolean
 
     /**
      * Immediately stops the task event if there is a running job.
      *
      * @return If the task was successfully stopped.
      */
-    fun cancel(): Boolean
+    public fun cancel(): Boolean
 
     /** Marks that the task should execute asynchronously. */
-    fun async(): CoroutineTask
+    public fun async(): CoroutineTask
 
     /** Marks that the task should execute synchronously. */
-    fun sync(): CoroutineTask
+    public fun sync(): CoroutineTask
 }

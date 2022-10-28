@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
+// TODO -> Rewrite without any use of the bukkit scheduler
 // TODO add extensions so i can not have to add plugin into each thingy
 public abstract class CoroutineRunnable {
 
@@ -16,41 +17,41 @@ public abstract class CoroutineRunnable {
      * otherwise this will result in an [IllegalStateException].
      * @throws IllegalStateException
      */
-    val plugin get() = task?.owner ?: error { "Don't call the plugin val if this task doesn't have an owner." }
+    public val plugin: MinixPlugin get() = task?.owner ?: error { "Don't call the plugin val if this task doesn't have an owner." }
 
-    val taskID: Int
+    public val taskID: Int
         get() {
             checkScheduled()
             return task!!.taskID
         }
 
-    val name: String
+    public val name: String
         get() {
             checkScheduled()
             return task!!.name
         }
 
-    val cancelled: Boolean
+    public val cancelled: Boolean
         get() {
             checkScheduled()
             return task!!.keepRunning.value
         }
 
-    abstract suspend fun run()
+    public abstract suspend fun run()
 
-    fun named(name: String): CoroutineRunnable {
+    public fun named(name: String): CoroutineRunnable {
         taskName = name
         return this
     }
 
-    fun runTask(
+    public fun runTask(
         plugin: MinixPlugin
     ): CoroutineTask {
         checkNotYetScheduled()
         return setupTask(CoroutineScheduler.runTask(plugin, this))
     }
 
-    fun runTaskLater(
+    public fun runTaskLater(
         plugin: MinixPlugin,
         delay: Duration
     ): CoroutineTask {
@@ -58,7 +59,7 @@ public abstract class CoroutineRunnable {
         return setupTask(CoroutineScheduler.runTaskLater(plugin, this, delay))
     }
 
-    fun runTaskTimer(
+    public fun runTaskTimer(
         plugin: MinixPlugin,
         delay: Duration,
         period: Duration
@@ -67,14 +68,14 @@ public abstract class CoroutineRunnable {
         return setupTask(CoroutineScheduler.runTaskTimer(plugin, this, delay, period))
     }
 
-    fun runAsyncTask(
+    public fun runAsyncTask(
         plugin: MinixPlugin
     ): CoroutineTask {
         checkNotYetScheduled()
         return setupTask(CoroutineScheduler.runAsyncTask(plugin, runnable = this))
     }
 
-    fun runAsyncTaskLater(
+    public fun runAsyncTaskLater(
         plugin: MinixPlugin,
         delay: Duration
     ): CoroutineTask {
@@ -82,7 +83,7 @@ public abstract class CoroutineRunnable {
         return setupTask(CoroutineScheduler.runAsyncTaskLater(plugin, this, delay))
     }
 
-    fun runAsyncTaskTimer(
+    public fun runAsyncTaskTimer(
         plugin: MinixPlugin,
         delay: Duration,
         period: Duration
@@ -91,7 +92,7 @@ public abstract class CoroutineRunnable {
         return setupTask(CoroutineScheduler.runAsyncTaskTimer(plugin, this, delay, period))
     }
 
-    fun cancel() {
+    public fun cancel() {
         CoroutineScope(CoroutineScheduler.parentJob).launch { CoroutineScheduler.cancelTask(taskID) }
     }
 

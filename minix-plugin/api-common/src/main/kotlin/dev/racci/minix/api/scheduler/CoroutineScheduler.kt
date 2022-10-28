@@ -6,16 +6,16 @@ import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.Duration
 
-typealias CoroutineBlock = suspend (MinixPlugin, CoroutineScope) -> Unit
+public typealias CoroutineBlock = suspend (MinixPlugin, CoroutineScope) -> Unit
 
-interface CoroutineScheduler {
+public interface CoroutineScheduler {
 
-    val parentJob: CompletableJob
+    public val parentJob: CompletableJob
 
     /**
      * @return an [IntArray] which represents this plugins active jobs.
      */
-    fun activateTasks(plugin: MinixPlugin): IntArray?
+    public fun activateTasks(plugin: MinixPlugin): IntArray?
 
     /**
      * Initiates an orderly shutdown, if the task timer is currently running,
@@ -24,14 +24,14 @@ interface CoroutineScheduler {
      *
      * @return true if the task was successfully shut down.
      */
-    suspend fun shutdownTask(taskID: Int): Boolean
+    public suspend fun shutdownTask(taskID: Int): Boolean
 
     /**
      * Immediately stops the task event if there is a running job.
      *
      * @return true if the task was successfully stopped.
      */
-    fun cancelTask(taskID: Int): Boolean
+    public fun cancelTask(taskID: Int): Boolean
 
     /**
      * Checks if the task is currently active.
@@ -40,7 +40,7 @@ interface CoroutineScheduler {
      *
      * @return true if the task is currently active.
      */
-    fun isCurrentlyRunning(taskID: Int): Boolean
+    public fun isCurrentlyRunning(taskID: Int): Boolean
 
     /**
      * Returns an [CoroutineTask] that will run once
@@ -50,7 +50,7 @@ interface CoroutineScheduler {
      * @param coroutineTask The task to run.
      * @return An [CoroutineTask] that contains the id number
      */
-    fun runTask(
+    public fun runTask(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask
     ): CoroutineTask
@@ -63,7 +63,7 @@ interface CoroutineScheduler {
      * @param task The [Unit] to create a task from.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runTask(
+    public fun runTask(
         plugin: MinixPlugin,
         name: String? = null,
         task: CoroutineBlock
@@ -77,7 +77,7 @@ interface CoroutineScheduler {
      * @param runnable The [Unit] to create a task from.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runTask(
+    public fun runTask(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable
     ): CoroutineTask
@@ -92,7 +92,7 @@ interface CoroutineScheduler {
      * @param delay The delay before this task starts.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runTaskLater(
+    public fun runTaskLater(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
         delay: Duration
@@ -108,7 +108,7 @@ interface CoroutineScheduler {
      * @param delay The delay before this task starts.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runTaskLater(
+    public fun runTaskLater(
         plugin: MinixPlugin,
         name: String? = null,
         task: CoroutineBlock,
@@ -125,7 +125,7 @@ interface CoroutineScheduler {
      * @param delay The delay before this task starts.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runTaskLater(
+    public fun runTaskLater(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
         delay: Duration
@@ -143,7 +143,7 @@ interface CoroutineScheduler {
      * @param period The delay between each run on this task.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runTaskTimer(
+    public fun runTaskTimer(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
         delay: Duration,
@@ -162,7 +162,7 @@ interface CoroutineScheduler {
      * @param period The delay between each run on this task.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runTaskTimer(
+    public fun runTaskTimer(
         plugin: MinixPlugin,
         name: String? = null,
         task: CoroutineBlock,
@@ -182,7 +182,7 @@ interface CoroutineScheduler {
      * @param period The delay between each run on this task.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runTaskTimer(
+    public fun runTaskTimer(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
         delay: Duration,
@@ -197,7 +197,7 @@ interface CoroutineScheduler {
      * @param coroutineTask The task to run.
      * @return An [CoroutineTask] that contains the id number
      */
-    fun runAsyncTask(
+    public fun runAsyncTask(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask
     ): CoroutineTask
@@ -210,7 +210,7 @@ interface CoroutineScheduler {
      * @param task The [Unit] to create a task from.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runAsyncTask(
+    public fun runAsyncTask(
         plugin: MinixPlugin,
         name: String? = null,
         task: CoroutineBlock
@@ -224,7 +224,7 @@ interface CoroutineScheduler {
      * @param runnable The [Unit] to create a task from.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runAsyncTask(
+    public fun runAsyncTask(
         plugin: MinixPlugin,
         name: String? = null,
         runnable: CoroutineRunnable
@@ -240,7 +240,7 @@ interface CoroutineScheduler {
      * @param delay The delay before this task starts.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runAsyncTaskLater(
+    public fun runAsyncTaskLater(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
         delay: Duration
@@ -256,7 +256,7 @@ interface CoroutineScheduler {
      * @param delay The delay before this task starts.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runAsyncTaskLater(
+    public fun runAsyncTaskLater(
         plugin: MinixPlugin,
         name: String? = null,
         task: CoroutineBlock,
@@ -273,7 +273,7 @@ interface CoroutineScheduler {
      * @param delay The delay before this task starts.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runAsyncTaskLater(
+    public fun runAsyncTaskLater(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
         delay: Duration
@@ -291,7 +291,7 @@ interface CoroutineScheduler {
      * @param period The delay between each run on this task.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runAsyncTaskTimer(
+    public fun runAsyncTaskTimer(
         plugin: MinixPlugin,
         coroutineTask: CoroutineTask,
         delay: Duration,
@@ -310,7 +310,7 @@ interface CoroutineScheduler {
      * @param period The delay between each run on this task.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runAsyncTaskTimer(
+    public fun runAsyncTaskTimer(
         plugin: MinixPlugin,
         name: String? = null,
         task: CoroutineBlock,
@@ -330,12 +330,12 @@ interface CoroutineScheduler {
      * @param period The delay between each run on this task.
      * @return An [CoroutineTask] that contains the id number.
      */
-    fun runAsyncTaskTimer(
+    public fun runAsyncTaskTimer(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable,
         delay: Duration,
         period: Duration
     ): CoroutineTask
 
-    companion object : CoroutineScheduler by getKoin().get()
+    public companion object : CoroutineScheduler by getKoin().get()
 }

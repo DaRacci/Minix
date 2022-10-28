@@ -11,7 +11,7 @@ import kotlinx.coroutines.Job
 import kotlin.properties.Delegates
 import kotlin.time.Duration
 
-class CoroutineTaskImpl(
+public class CoroutineTaskImpl(
     override val owner: MinixPlugin
 ) : CoroutineTask {
 
@@ -25,14 +25,14 @@ class CoroutineTaskImpl(
     override var task: suspend (MinixPlugin, CoroutineScope) -> Unit by Delegates.notNull()
     override var runnable: CoroutineRunnable? = null
 
-    constructor(
+    public constructor(
         plugin: MinixPlugin,
         task: suspend (MinixPlugin, CoroutineScope) -> Unit
     ) : this(plugin) {
         this.task = task
     }
 
-    constructor(
+    public constructor(
         plugin: MinixPlugin,
         runnable: CoroutineRunnable
     ) : this(plugin) {
@@ -42,7 +42,7 @@ class CoroutineTaskImpl(
     override fun cancel(): Boolean =
         CoroutineScheduler.cancelTask(taskID)
 
-    fun cancel0(): Boolean {
+    internal fun cancel0(): Boolean {
         keepRunning.lazySet(false)
         return if (job.isActive) {
             job.cancel()

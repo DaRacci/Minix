@@ -39,6 +39,7 @@ dependencies {
     implementation("dev.racci.slimjar:slimjar:1.2.11")
     implementation(libs.minecraft.bstats)
 
+    slim("org.mariadb.jdbc:mariadb-java-client:3.0.6")
     slim("io.github.toolfactory:jvm-driver:9.3.0")
 }
 
@@ -168,4 +169,7 @@ allprojects {
             exclude("com.github.technove", "Flare")
         }
     }
+}
+repositories {
+    mavenCentral()
 }

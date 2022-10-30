@@ -12,6 +12,8 @@ abstract class DataService : Extension<Minix>(), StorageService<Minix> {
 
     abstract fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T?
 
+    abstract fun getMinixConfig(plugin: MinixPlugin): MinixConfig.Minix
+
     inline fun <reified T : MinixConfig<out MinixPlugin>> get(): T = this.getConfig(T::class)!!
 
     inline fun <reified T : MinixConfig<out MinixPlugin>> getOrNull(): T? = this.getConfig(T::class)

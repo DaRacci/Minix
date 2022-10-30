@@ -164,7 +164,7 @@ public final class dev/racci/minix/api/collections/ExpiringArray : java/util/Has
 	public final fun size ()I
 }
 
-public final class dev/racci/minix/api/collections/PlayerMap : java/util/HashMap, dev/racci/minix/api/extensions/WithPlugin {
+public class dev/racci/minix/api/collections/PlayerMap : java/util/HashMap, dev/racci/minix/api/extensions/WithPlugin {
 	public fun <init> ()V
 	public fun async (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public fun completableAsync (Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
@@ -366,10 +366,45 @@ public final class dev/racci/minix/api/data/MinixConfig$Minix : dev/racci/minix/
 	public fun getInitialized ()Z
 	public final fun getLoggingLevel ()Ljava/lang/String;
 	public fun getPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
+	public final fun getStorage ()Ldev/racci/minix/api/data/MinixConfig$Minix$Storage;
 	public final fun processLoggingLevel ()V
 	public fun setInitialized (Z)V
 	public final fun setLoggingLevel (Ljava/lang/String;)V
 	public fun setPlugin (Ldev/racci/minix/api/plugin/MinixPlugin;)V
+}
+
+public final class dev/racci/minix/api/data/MinixConfig$Minix$Storage : dev/racci/minix/api/data/MinixConfig$InnerConfig {
+	public fun <init> ()V
+	public fun <init> (Ldev/racci/minix/api/data/MinixConfig$Minix$Storage$StorageType;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ldev/racci/minix/api/data/MinixConfig$Minix$Storage$StorageType;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ldev/racci/minix/api/data/MinixConfig$Minix$Storage$StorageType;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()I
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun copy (Ldev/racci/minix/api/data/MinixConfig$Minix$Storage$StorageType;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ldev/racci/minix/api/data/MinixConfig$Minix$Storage;
+	public static synthetic fun copy$default (Ldev/racci/minix/api/data/MinixConfig$Minix$Storage;Ldev/racci/minix/api/data/MinixConfig$Minix$Storage$StorageType;Ljava/lang/String;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/racci/minix/api/data/MinixConfig$Minix$Storage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDatabase ()Ljava/lang/String;
+	public final fun getHost ()Ljava/lang/String;
+	public fun getInitialized ()Z
+	public final fun getPassword ()Ljava/lang/String;
+	public fun getPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
+	public final fun getPort ()I
+	public final fun getType ()Ldev/racci/minix/api/data/MinixConfig$Minix$Storage$StorageType;
+	public final fun getUsername ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun setInitialized (Z)V
+	public fun setPlugin (Ldev/racci/minix/api/plugin/MinixPlugin;)V
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/racci/minix/api/data/MinixConfig$Minix$Storage$StorageType : java/lang/Enum {
+	public static final field MARIADB Ldev/racci/minix/api/data/MinixConfig$Minix$Storage$StorageType;
+	public static final field SQLITE Ldev/racci/minix/api/data/MinixConfig$Minix$Storage$StorageType;
+	public static fun valueOf (Ljava/lang/String;)Ldev/racci/minix/api/data/MinixConfig$Minix$Storage$StorageType;
+	public static fun values ()[Ldev/racci/minix/api/data/MinixConfig$Minix$Storage$StorageType;
 }
 
 public final class dev/racci/minix/api/data/PlayerData {
@@ -2512,9 +2547,11 @@ public abstract class dev/racci/minix/api/services/DataService : dev/racci/minix
 	public abstract fun getConfig (Lkotlin/reflect/KClass;)Ldev/racci/minix/api/data/MinixConfig;
 	public fun getDataSourceProperties ()Ljava/util/Map;
 	public fun getDatabase (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getMinixConfig (Ldev/racci/minix/api/plugin/MinixPlugin;)Ldev/racci/minix/api/data/MinixConfig$Minix;
 	public fun getStorageDirectory ()Ljava/nio/file/Path;
 	public fun handleUnload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun withDatabase (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun withDatabaseAsync (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class dev/racci/minix/api/services/DataService$Companion : dev/racci/minix/api/extension/Extension$ExtensionCompanion {
@@ -2573,6 +2610,7 @@ public abstract interface class dev/racci/minix/api/services/StorageService : de
 	public abstract fun getStorageDirectory ()Ljava/nio/file/Path;
 	public abstract fun handleUnload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun withDatabase (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun withDatabaseAsync (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class dev/racci/minix/api/services/StorageService$DefaultImpls {
@@ -2598,6 +2636,7 @@ public final class dev/racci/minix/api/services/StorageService$DefaultImpls {
 	public static fun setProperty (Ldev/racci/minix/api/services/StorageService;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;
 	public static fun sync (Ldev/racci/minix/api/services/StorageService;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public static fun withDatabase (Ldev/racci/minix/api/services/StorageService;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun withDatabaseAsync (Ldev/racci/minix/api/services/StorageService;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class dev/racci/minix/api/services/UpdaterService {

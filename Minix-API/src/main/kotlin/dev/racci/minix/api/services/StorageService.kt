@@ -1,6 +1,7 @@
 package dev.racci.minix.api.services
 
 import com.zaxxer.hikari.HikariDataSource
+import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.extension.ExtensionSkeleton
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.logger.MinixLogger
@@ -51,8 +52,20 @@ interface StorageService<P : MinixPlugin> : ExtensionSkeleton<P> {
     )
 
     private fun createDatabaseConfig() {
+        val storageConfig = DataService.getService().getMinixConfig(plugin).storage
+
         with(HikariDataSource()) {
-            this.jdbcUrl = "jdbc:sqlite:${getStorageDirectory()}/database.db"
+            when (storageConfig.type) {
+                MinixConfig.Minix.Storage.StorageType.SQLITE -> {
+                    this.jdbcUrl = "jdbc:sqlite:${getStorageDirectory()}/database.db"
+                }
+                MinixConfig.Minix.Storage.StorageType.MARIADB -> {
+                    this.driverClassName = "org.mariadb.jdbc.Driver"
+                    this.jdbcUrl = "jdbc:mariadb://${storageConfig.host}:${storageConfig.port}/${storageConfig.database}"
+                    this.username = storageConfig.username
+                    this.password = storageConfig.password
+                }
+            }
 
             this@StorageService.getDataSourceProperties().forEach { (key, value) ->
                 this.addDataSourceProperty(key, value)

@@ -85,6 +85,7 @@ interface StorageService<P : MinixPlugin> : ExtensionSkeleton<P> {
         withDatabase {
             SchemaUtils.create(managedTable)
             SchemaUtils.addMissingColumnsStatements(managedTable)
+            SchemaUtils.createMissingTablesAndColumns(managedTable)
         }
     }
 

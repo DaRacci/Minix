@@ -10,17 +10,25 @@ enum class LiquidType {
     NON;
 
     companion object {
+        private val typeCache = mutableMapOf<Material, LiquidType>()
 
-        fun convert(block: Block) = when (block.type) {
-            Material.WATER -> WATER
-            Material.LAVA -> LAVA
-            else -> if ((block.blockData as? Waterlogged)?.isWaterlogged == true) WATER else NON
+        fun convert(block: Block): LiquidType {
+            val waterlogged = block.blockData as? Waterlogged ?: return convert(block.type)
+            return if (waterlogged.isWaterlogged) WATER else NON
         }
 
-        fun convert(bucket: Material) = when (bucket) {
-            Material.WATER_BUCKET -> WATER
-            Material.LAVA_BUCKET -> LAVA
-            else -> NON
+        fun convert(type: Material) = typeCache.computeIfAbsent(type) {
+            when (type) {
+                Material.LAVA,
+                Material.LAVA_BUCKET -> LAVA
+                Material.WATER,
+                Material.WATER_BUCKET,
+                Material.BUBBLE_COLUMN,
+                Material.KELP_PLANT,
+                Material.SEAGRASS,
+                Material.TALL_SEAGRASS -> WATER
+                else -> NON
+            }
         }
 
         val Block.liquidType get() = convert(this)

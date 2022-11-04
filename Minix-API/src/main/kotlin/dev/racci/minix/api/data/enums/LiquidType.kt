@@ -14,7 +14,7 @@ enum class LiquidType {
         fun convert(block: Block) = when (block.type) {
             Material.WATER -> WATER
             Material.LAVA -> LAVA
-            else -> if (block is Waterlogged && block.isWaterlogged) WATER else NON
+            else -> if ((block.blockData as? Waterlogged)?.isWaterlogged == true) WATER else NON
         }
 
         fun convert(bucket: Material) = when (bucket) {

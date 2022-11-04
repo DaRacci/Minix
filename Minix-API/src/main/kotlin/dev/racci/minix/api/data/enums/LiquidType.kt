@@ -3,6 +3,7 @@ package dev.racci.minix.api.data.enums
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.data.Waterlogged
+import java.util.concurrent.ConcurrentHashMap
 
 enum class LiquidType {
     WATER,
@@ -10,7 +11,7 @@ enum class LiquidType {
     NON;
 
     companion object {
-        private val typeCache = mutableMapOf<Material, LiquidType>()
+        private val typeCache = ConcurrentHashMap<Material, LiquidType>()
 
         fun convert(block: Block): LiquidType {
             val waterlogged = block.blockData as? Waterlogged ?: return convert(block.type)

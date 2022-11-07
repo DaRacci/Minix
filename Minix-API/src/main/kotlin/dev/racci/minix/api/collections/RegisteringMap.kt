@@ -1,7 +1,9 @@
 package dev.racci.minix.api.collections
 
 import dev.racci.minix.api.extensions.collections.computeAndRemove
+import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.utils.Loadable
+import dev.racci.minix.api.utils.getKoin
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
 import org.apiguardian.api.API
@@ -105,8 +107,13 @@ class RegisteringMap<D : Any, R : Any> : Map<D, Loadable<R>> {
 
     suspend fun registerAll() {
         for (value in internalMap.values) {
-            if (value.loaded) continue
-            println("Registering $value")
+            if (value.loaded) {
+                getKoin().get<MinixLogger>().fatal { "Tried to register $value but it was already registered!" }
+                continue
+            }
+            repeat(10) {
+                getKoin().get<MinixLogger>().info { "Registering $value" }
+            }
 
             value.load(false)
         }

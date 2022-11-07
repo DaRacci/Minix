@@ -44,6 +44,10 @@ class IntegrationService(override val plugin: Minix) : Extension<Minix>() {
         this.enabledPlugins = persistentHashMapOf()
     }
 
+    internal suspend fun serverLoad() {
+        this.integrations.registerAll()
+    }
+
     internal fun registerIntegration(integration: IntegrationLoader) {
         val descriptor = integration.pluginName.lowercase()
         this.integrations.put(descriptor, getLoadable(descriptor, integration))

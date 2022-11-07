@@ -4,6 +4,7 @@ import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.annotations.MinixInternal
 import dev.racci.minix.api.builders.ItemBuilderDSL
 import dev.racci.minix.api.data.PluginUpdater
+import dev.racci.minix.api.extensions.registerEvents
 import dev.racci.minix.api.plugin.Minix
 import dev.racci.minix.api.plugin.logger.MinixLogger
 import dev.racci.minix.api.plugin.logger.PluginDependentMinixLogger
@@ -53,6 +54,10 @@ class MinixImpl : Minix() {
 
     override suspend fun handleAfterLoad() {
         this.startSentry()
+    }
+
+    override suspend fun handleEnable() {
+        this.registerEvents(LoadListener())
     }
 
     @OptIn(DelicateCoroutinesApi::class)

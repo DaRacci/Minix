@@ -2,6 +2,26 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.0](https://github.com/DaRacci/Minix/compare/v4.2.4..v4.3.0) - 2022-11-07
+#### Bug Fixes
+- **(StorageService)** Make sure table is created - ([6ed8134](https://github.com/DaRacci/Minix/commit/6ed8134cd2a52378fa258bd6485f3d7fc47c3677)) - [@DaRacci](https://github.com/DaRacci)
+- Concurrency - ([169ae52](https://github.com/DaRacci/Minix/commit/169ae5212e8b2e39fe61ad0c7dd1deb9d0834081)) - [@DaRacci](https://github.com/DaRacci)
+- Add check for seagrass, kelp and bubble columns. - ([1ec40e0](https://github.com/DaRacci/Minix/commit/1ec40e02c68c2ef24a31fc89dee0803fa595ad53)) - [@DaRacci](https://github.com/DaRacci)
+- waterlogged check - ([4c5dcd3](https://github.com/DaRacci/Minix/commit/4c5dcd3dfd88e892e180da6a7467fd80e74a72a8)) - [@DaRacci](https://github.com/DaRacci)
+- Create missing tables and columns thingy - ([ceaf49d](https://github.com/DaRacci/Minix/commit/ceaf49d885a131d40484a278b98496de60e729bd)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- **(StorageService)** Allow for return types and add async function - ([1f36620](https://github.com/DaRacci/Minix/commit/1f366208cf20fdd79e739bac7d27652f883b5d0c)) - [@DaRacci](https://github.com/DaRacci)
+- MariaDB support - ([5e28865](https://github.com/DaRacci/Minix/commit/5e288651a8f8bbc22b7581fb24f61ad3cbe59039)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.2.4 - ([d5eb5dd](https://github.com/DaRacci/Minix/commit/d5eb5dde821c5a37c061114592c06af2767a675e)) - [@DaRacci](https://github.com/DaRacci)
+- Add fairly important note - ([b942b7c](https://github.com/DaRacci/Minix/commit/b942b7c5f74b2abf078a8173649bee3ba8f63867)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(Gradle)** Cleanup - ([d35ad83](https://github.com/DaRacci/Minix/commit/d35ad832c8c897bb68ebda6927b011f20acd2039)) - [@DaRacci](https://github.com/DaRacci)
+- **(Integrations)** Load listener - ([ca87315](https://github.com/DaRacci/Minix/commit/ca873157e8b9eaa3cacf522ed163d32ad0f6ee5e)) - [@DaRacci](https://github.com/DaRacci)
+- Allow for inheritance of playermap - ([0f91ada](https://github.com/DaRacci/Minix/commit/0f91ada857e2226241327357efeaa4abbe3620cd)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.2.4](https://github.com/DaRacci/Minix/compare/v4.2.3..v4.2.4) - 2022-10-08
 #### Bug Fixes
 - **(BlockPosSerializer)** incorrect serialisation - ([aa78101](https://github.com/DaRacci/Minix/commit/aa78101405499baae37955a453cef2b6a45932c2)) - [@DaRacci](https://github.com/DaRacci)

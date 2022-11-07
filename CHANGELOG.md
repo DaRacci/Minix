@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.1](https://github.com/DaRacci/Minix/compare/v4.3.0..v4.3.1) - 2022-11-07
+#### Bug Fixes
+- Publish - ([1d8e18d](https://github.com/DaRacci/Minix/commit/1d8e18d1d66719697fecc98eae7d500cd404689b)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.3.0 - ([30027f9](https://github.com/DaRacci/Minix/commit/30027f902910b264dbce2a13f17093eb6ffde0d8)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.3.0](https://github.com/DaRacci/Minix/compare/v4.2.4..v4.3.0) - 2022-11-07
 #### Bug Fixes
 - **(StorageService)** Make sure table is created - ([6ed8134](https://github.com/DaRacci/Minix/commit/6ed8134cd2a52378fa258bd6485f3d7fc47c3677)) - [@DaRacci](https://github.com/DaRacci)

@@ -1,4 +1,5 @@
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
+import org.jetbrains.dokka.Platform
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlinx.serialization.gradle.SerializationGradleSubplugin
@@ -7,6 +8,8 @@ import java.net.URL
 val minixVersion: String by project
 val version: String by project
 
+// Workaround for (https://youtrack.jetbrains.com/issue/KTIJ-19369)
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.minix.nms)
     alias(libs.plugins.minix.kotlin)
@@ -36,11 +39,11 @@ apiValidation {
 dependencies {
     implementation(project("Minix-Core"))
     implementation(project("Minix-API"))
-    implementation("dev.racci.slimjar:slimjar:1.2.11")
-    implementation(libs.minecraft.bstats)
+    implementation(libs.slimjar)
+    implementation(libs.minecraft.bstats.bukkit)
 
     slim("org.mariadb.jdbc:mariadb-java-client:3.0.6")
-    slim("io.github.toolfactory:jvm-driver:9.3.0")
+    slim(libs.toolfactory)
 }
 
 kotlin {
@@ -72,13 +75,18 @@ tasks {
 
 subprojects {
 
-    apply<Dev_racci_minix_nmsPlugin>()
     apply<Dev_racci_minix_kotlinPlugin>()
-    apply<Dev_racci_minix_copyjarPlugin>()
     apply<Dev_racci_minix_purpurmcPlugin>()
+    apply<Dev_racci_minix_nmsPlugin>()
     apply<SerializationGradleSubplugin>()
     apply<DokkaPlugin>()
     apply<MavenPublishPlugin>()
+//    apply(plugin = "dev.racci.minix.kotlin")
+//    apply(plugin = "dev.racci.minix.purpurmc")
+//    apply(plugin = "dev.racci.minix.nms")
+//    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+//    apply(plugin = "org.jetbrains.dokka")
+//    apply(plugin = "maven-publish")
 
     dependencies {
         testImplementation(platform(kotlin("bom")))
@@ -86,7 +94,7 @@ subprojects {
         testImplementation(rootProject.libs.bundles.kotlinx)
         testImplementation(rootProject.libs.bundles.testing)
         testImplementation(rootProject.libs.koin.test)
-        testImplementation(rootProject.libs.minecraft.bstats)
+        testImplementation(rootProject.libs.minecraft.bstats.bukkit)
         testImplementation(project(":Minix-API"))
     }
 
@@ -104,7 +112,7 @@ subprojects {
             includeNonPublic.set(false)
             skipEmptyPackages.set(true)
             displayName.set(project.name.split("-")[1])
-            platform.set(org.jetbrains.dokka.Platform.jvm)
+            platform.set(Platform.jvm)
             sourceLink {
                 localDirectory.set(file("src/main/kotlin"))
                 remoteUrl.set(URL("https://github.com/DaRacci/Minix/blob/master/src/main/kotlin"))
@@ -119,11 +127,7 @@ subprojects {
 
     afterEvaluate {
         val subSlim = this.configurations.findByName("slim") ?: return@afterEvaluate
-        subSlim.dependencies.forEach {
-            rootProject.dependencies {
-                slim(it)
-            }
-        }
+        subSlim.dependencies.forEach { dep -> rootProject.dependencies { slim(dep) } }
     }
 }
 
@@ -140,7 +144,7 @@ tasks {
         dependencyFilter.include {
             subprojects.map(Project::getName).contains(it.moduleName) ||
                 it.moduleGroup == libs.sentry.core.get().module.group ||
-                it.moduleGroup == libs.minecraft.bstats.get().module.group ||
+                it.moduleGroup == libs.minecraft.bstats.base.get().module.group ||
                 it.moduleGroup == "dev.racci.slimjar"
         }
         val prefix = "dev.racci.minix.libs"
@@ -169,7 +173,4 @@ allprojects {
             exclude("com.github.technove", "Flare")
         }
     }
-}
-repositories {
-    mavenCentral()
 }

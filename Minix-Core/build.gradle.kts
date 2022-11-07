@@ -1,8 +1,10 @@
 import java.net.URI
 
+// Workaround for (https://youtrack.jetbrains.com/issue/KTIJ-19369)
+@Suppress("DSL_SCOPE_VIOLATION")
 dependencies {
     compileOnly(project(":Minix-API"))
-    compileOnly("dev.racci.slimjar:slimjar:1.2.10")
+    compileOnly(libs.slimjar)
 }
 
 java.withSourcesJar()
@@ -19,7 +21,7 @@ dependencies {
     compileOnly(rootProject.libs.minecraft.api.landsAPI)
     compileOnly(rootProject.libs.bundles.cloud.kotlin)
 
-    compileOnly("io.github.toolfactory:jvm-driver:9.3.0")
+    compileOnly(libs.toolfactory)
     implementation(project(":minix-core:core-integrations"))
 }
 

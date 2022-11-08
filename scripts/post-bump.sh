@@ -13,6 +13,7 @@ if [ -f temp ]; then
   rm temp
 fi
 
+git resign
 git push origin v"${2}" || exit 1 # Push the new version tag for the release
 
 ./gradlew clean build test

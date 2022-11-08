@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.newFixedThreadPoolContext
 import org.koin.core.component.get
 import java.lang.management.ManagementFactory
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -35,7 +36,7 @@ class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), C
 
     private val bukkitContext by lazy { get<Minix>().minecraftDispatcher }
     private val ids by lazy { atomic(-1) }
-    private val tasks by lazy { mutableMapOf<Int, CoroutineTaskImpl>() }
+    private val tasks by lazy { ConcurrentHashMap<Int, CoroutineTaskImpl>() }
     override val dispatcher = object : Closeable<ExecutorCoroutineDispatcher>() {
         override fun create(): ExecutorCoroutineDispatcher {
             val threadCount = (ManagementFactory.getThreadMXBean().threadCount / 4).coerceIn(1..4)

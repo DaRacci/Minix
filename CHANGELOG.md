@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.2](https://github.com/DaRacci/Minix/compare/v4.3.1..v4.3.2) - 2022-11-08
+#### Bug Fixes
+- **(CoroutineScheduler)** ConcurrentModificationException - ([8862832](https://github.com/DaRacci/Minix/commit/88628326a73ae10c6dcdc71413b52a13fb95e137)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.3.1](https://github.com/DaRacci/Minix/compare/v4.3.0..v4.3.1) - 2022-11-07
 #### Bug Fixes
 - Publish - ([1d8e18d](https://github.com/DaRacci/Minix/commit/1d8e18d1d66719697fecc98eae7d500cd404689b)) - [@DaRacci](https://github.com/DaRacci)

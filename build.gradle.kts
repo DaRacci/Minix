@@ -81,12 +81,6 @@ subprojects {
     apply<SerializationGradleSubplugin>()
     apply<DokkaPlugin>()
     apply<MavenPublishPlugin>()
-//    apply(plugin = "dev.racci.minix.kotlin")
-//    apply(plugin = "dev.racci.minix.purpurmc")
-//    apply(plugin = "dev.racci.minix.nms")
-//    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
-//    apply(plugin = "org.jetbrains.dokka")
-//    apply(plugin = "maven-publish")
 
     dependencies {
         testImplementation(platform(kotlin("bom")))

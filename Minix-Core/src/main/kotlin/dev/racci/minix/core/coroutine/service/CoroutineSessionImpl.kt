@@ -34,7 +34,7 @@ internal class CoroutineSessionImpl(override val plugin: MinixPlugin) : WithPlug
         if (!plugin.isEnabled) return@CoroutineExceptionHandler
         async {
             val event = CaughtCoroutineExceptionEvent(plugin, err)
-            if (event.callEvent() || err is CancellationException) return@async
+            if (!event.callEvent() || err is CancellationException) return@async
 
             logger.fatal(err) { "There was an uncaught exception in a launched coroutine." }
         }

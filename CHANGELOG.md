@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.6](https://github.com/DaRacci/Minix/compare/v4.3.5..v4.3.6) - 2022-11-10
+#### Bug Fixes
+- maybe just remove it? - ([20fdda8](https://github.com/DaRacci/Minix/commit/20fdda8be401d94f95da8aa47ac31f9da23c009a)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.3.5](https://github.com/DaRacci/Minix/compare/v4.3.4..v4.3.5) - 2022-11-10
 #### Bug Fixes
 - Maybe this? - ([f7835cb](https://github.com/DaRacci/Minix/commit/f7835cbbf1c43cc438c6b41f08686e69d00e1414)) - [@DaRacci](https://github.com/DaRacci)

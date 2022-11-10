@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.5](https://github.com/DaRacci/Minix/compare/v4.3.4..v4.3.5) - 2022-11-10
+#### Bug Fixes
+- Maybe this? - ([f7835cb](https://github.com/DaRacci/Minix/commit/f7835cbbf1c43cc438c6b41f08686e69d00e1414)) - [@DaRacci](https://github.com/DaRacci)
+- Maybe fix tagging? - ([00a6692](https://github.com/DaRacci/Minix/commit/00a6692e62294eb17117bf7d94e1f72caeecc081)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.3.4 - ([2d6fea2](https://github.com/DaRacci/Minix/commit/2d6fea2554e357de213d970f9e8c3d008db392d9)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.3.4](https://github.com/DaRacci/Minix/compare/v4.3.3..v4.3.4) - 2022-11-10
 #### Bug Fixes
 - Maybe fix tagging? - ([a58f576](https://github.com/DaRacci/Minix/commit/a58f57621f4487dd24f322bc583a7925b637819c)) - [@DaRacci](https://github.com/DaRacci)

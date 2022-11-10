@@ -2,6 +2,18 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.3](https://github.com/DaRacci/Minix/compare/v4.3.2..v4.3.3) - 2022-11-10
+#### Bug Fixes
+- **(CoroutineScheduler)** ConcurrentModificationException - ([a8ef5e7](https://github.com/DaRacci/Minix/commit/a8ef5e73d6f96c0f48befa328381cb5fb4b28ce0)) - [@DaRacci](https://github.com/DaRacci)
+- Holy shit i hate myself for this. - ([748ca7a](https://github.com/DaRacci/Minix/commit/748ca7a2af7c78ef79b2e21f83add1a613ee86a2)) - [@DaRacci](https://github.com/DaRacci)
+- Add resign to post bump - ([23fa1d6](https://github.com/DaRacci/Minix/commit/23fa1d6ed7ee44ac9ed991a460768a4b34f5cee5)) - [@DaRacci](https://github.com/DaRacci)
+- Publish - ([a462f05](https://github.com/DaRacci/Minix/commit/a462f056ea44e3d940615eae5a534dd9c92fede1)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.3.2 - ([c1cdcdf](https://github.com/DaRacci/Minix/commit/c1cdcdf6b6c648818bc79af4465b35b5d72c3a85)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v4.3.1 - ([bb662c1](https://github.com/DaRacci/Minix/commit/bb662c11e1c42a058b16b5c00659adb0a6feb2dd)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.3.2](https://github.com/DaRacci/Minix/compare/v4.3.1..v4.3.2) - 2022-11-08
 #### Bug Fixes
 - **(CoroutineScheduler)** ConcurrentModificationException - ([8862832](https://github.com/DaRacci/Minix/commit/88628326a73ae10c6dcdc71413b52a13fb95e137)) - [@DaRacci](https://github.com/DaRacci)

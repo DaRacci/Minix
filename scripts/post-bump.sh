@@ -13,9 +13,9 @@ if [ -f temp ]; then
   rm temp
 fi
 
-git tag v"${2}" -f
-git resign
-git push origin v"${2}" || exit 1 # Push the new version tag for the release
+#git tag v"${2}" -f
+#git push origin master --tags
+#git push origin v"${2}" || exit 1 # Push the new version tag for the release
 
 ./gradlew clean build test
 

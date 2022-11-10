@@ -4,10 +4,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>dev.racci.minix.api.events</title>
 <link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
-const savedDarkMode = storage ? JSON.parse(storage) : false
-if(savedDarkMode === true){
-    document.getElementsByTagName("html")[0].classList.add("theme-dark")
-}</script>
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
 <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script>
 <link href="../../styles/style.css" rel="Stylesheet">
 <link href="../../styles/jetbrains-mono.css" rel="Stylesheet">
@@ -18,14 +26,15 @@ if(savedDarkMode === true){
 <script type="text/javascript" src="../../scripts/navigation-loader.js" async></script>
 <script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script>
 <script type="text/javascript" src="../../scripts/main.js" defer></script>
-<script type="text/javascript" src="../../scripts/prism.js" async></script></head>
+<script type="text/javascript" src="../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
 <body>
 <div class="navigation-wrapper" id="navigation-wrapper">
     <div id="leftToggler"><span class="icon-toggler"></span></div>
     <div class="library-name">
 <a href="../../index.html">
 <span>Minix</span>            </a>    </div>
-    <div>4.3.0
+    <div>4.3.2
     </div>
     <div class="pull-right d-flex">
         <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
@@ -38,9 +47,9 @@ if(savedDarkMode === true){
     </div>
     <div id="main">
 <div class="main-content" id="content" pageids="Minix-API::dev.racci.minix.api.events////PointingToDeclaration//1147827468">
-  <div class="breadcrumbs"><a href="../index.html">Minix-API</a><span class="delimiter">/</span><a href="index.html">dev.racci.minix.api.events</a></div>
+  <div class="breadcrumbs"><a href="../index.html">Minix-API</a><span class="delimiter">/</span><span class="current">dev.racci.minix.api.events</span></div>
   <div class="cover ">
-    <h1 class="cover"><span><span>Package</span></span> <span>dev.</span><wbr><span>racci.</span><wbr><span>minix.</span><wbr><span>api.</span><wbr><span>events</span></h1>
+    <h1 class="cover"><span><span>Package-level</span></span> <span><span>declarations</span></span></h1>
   </div>
   <div class="tabbedcontent">
     <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
@@ -56,7 +65,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#1168480955%2FClasslikes%2F1147827468">AbstractComboEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-combo-event/index.html">ComboEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#1168480955%2FClasslikes%2F1147827468">AbstractComboEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-combo-event/index.html">ComboEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -71,7 +80,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#-879248126%2FClasslikes%2F1147827468">BlockData</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-combo-event/-block-data/index.html">ComboEvent.BlockData</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#-879248126%2FClasslikes%2F1147827468">BlockData</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-combo-event/-block-data/index.html">ComboEvent.BlockData</a></div></div></div>
               </div>
             </div>
           </div>
@@ -86,7 +95,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-companion-event-handler/index.html">CompanionEventHandler</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Allows for an easy way to handle those pesky HandlerLists in Bukkit.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="-companion-event-handler/index.html">CompanionEventHandler</a></div><div class="brief "><p class="paragraph">Allows for an easy way to handle those pesky HandlerLists in Bukkit.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -101,7 +110,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-k-event/index.html">KEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">async<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span> : <span data-unresolved-link="org.bukkit.event/Event///PointingToDeclaration/">Event</span>, <span data-unresolved-link="org.bukkit.event/Cancellable///PointingToDeclaration/">Cancellable</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Represents an event.</p></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="-k-event/index.html">KEvent</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">async<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span> : <span data-unresolved-link="org.bukkit.event/Event///PointingToDeclaration/">Event</span>, <span data-unresolved-link="org.bukkit.event/Cancellable///PointingToDeclaration/">Cancellable</span></div><div class="brief "><p class="paragraph">Represents an event.</p></div></div></div>
               </div>
             </div>
           </div>
@@ -116,7 +125,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#-1473805989%2FClasslikes%2F1147827468">KPlayerEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.player/-k-player-event/index.html">dev.racci.minix.api.events.player.KPlayerEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#-1473805989%2FClasslikes%2F1147827468">KPlayerEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.player/-k-player-event/index.html">dev.racci.minix.api.events.player.KPlayerEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -131,7 +140,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#-1148725402%2FClasslikes%2F1147827468">KWorldEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.world/-k-world-event/index.html">dev.racci.minix.api.events.world.KWorldEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#-1148725402%2FClasslikes%2F1147827468">KWorldEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.world/-k-world-event/index.html">dev.racci.minix.api.events.world.KWorldEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -146,7 +155,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#1197352083%2FClasslikes%2F1147827468">LiquidType</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.data.enums/-liquid-type/index.html">dev.racci.minix.api.data.enums.LiquidType</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#1197352083%2FClasslikes%2F1147827468">LiquidType</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.data.enums/-liquid-type/index.html">dev.racci.minix.api.data.enums.LiquidType</a></div></div></div>
               </div>
             </div>
           </div>
@@ -161,7 +170,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#-2102340418%2FClasslikes%2F1147827468">PlayerDoubleLeftClickEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-double-primary-event/index.html">PlayerDoublePrimaryEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#-2102340418%2FClasslikes%2F1147827468">PlayerDoubleLeftClickEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-double-primary-event/index.html">PlayerDoublePrimaryEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -176,7 +185,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#1079007771%2FClasslikes%2F1147827468">PlayerDoubleOffhandEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-double-offhand-event/index.html">dev.racci.minix.api.events.keybind.PlayerDoubleOffhandEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#1079007771%2FClasslikes%2F1147827468">PlayerDoubleOffhandEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-double-offhand-event/index.html">dev.racci.minix.api.events.keybind.PlayerDoubleOffhandEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -191,7 +200,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#-1921534019%2FClasslikes%2F1147827468">PlayerDoubleRightClickEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-double-secondary-event/index.html">PlayerDoubleSecondaryEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#-1921534019%2FClasslikes%2F1147827468">PlayerDoubleRightClickEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-double-secondary-event/index.html">PlayerDoubleSecondaryEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -206,7 +215,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#2046059138%2FClasslikes%2F1147827468">PlayerEnterLiquidEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.player/-player-liquid-enter-event/index.html">PlayerLiquidEnterEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#2046059138%2FClasslikes%2F1147827468">PlayerEnterLiquidEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.player/-player-liquid-enter-event/index.html">PlayerLiquidEnterEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -221,7 +230,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#1590685242%2FClasslikes%2F1147827468">PlayerExitLiquidEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.player/-player-liquid-exit-event/index.html">PlayerLiquidExitEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#1590685242%2FClasslikes%2F1147827468">PlayerExitLiquidEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.player/-player-liquid-exit-event/index.html">PlayerLiquidExitEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -236,7 +245,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#-28729585%2FClasslikes%2F1147827468">PlayerLeftClickEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-primary-event/index.html">PlayerPrimaryEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#-28729585%2FClasslikes%2F1147827468">PlayerLeftClickEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-primary-event/index.html">PlayerPrimaryEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -251,7 +260,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#850498340%2FClasslikes%2F1147827468">PlayerLightEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.player/-player-light-event/index.html">dev.racci.minix.api.events.player.PlayerLightEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#850498340%2FClasslikes%2F1147827468">PlayerLightEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.player/-player-light-event/index.html">dev.racci.minix.api.events.player.PlayerLightEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -266,7 +275,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#1674953852%2FClasslikes%2F1147827468">PlayerLiquidEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.player/-player-liquid-event/index.html">dev.racci.minix.api.events.player.PlayerLiquidEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#1674953852%2FClasslikes%2F1147827468">PlayerLiquidEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.player/-player-liquid-event/index.html">dev.racci.minix.api.events.player.PlayerLiquidEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -281,7 +290,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#1924961543%2FClasslikes%2F1147827468">PlayerMoveFullXYZEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.player/-player-move-full-x-y-z-event/index.html">dev.racci.minix.api.events.player.PlayerMoveFullXYZEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#1924961543%2FClasslikes%2F1147827468">PlayerMoveFullXYZEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.player/-player-move-full-x-y-z-event/index.html">dev.racci.minix.api.events.player.PlayerMoveFullXYZEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -296,7 +305,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#1627184342%2FClasslikes%2F1147827468">PlayerMoveXYZEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.player/-player-move-x-y-z-event/index.html">dev.racci.minix.api.events.player.PlayerMoveXYZEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#1627184342%2FClasslikes%2F1147827468">PlayerMoveXYZEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.player/-player-move-x-y-z-event/index.html">dev.racci.minix.api.events.player.PlayerMoveXYZEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -311,7 +320,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#629769388%2FClasslikes%2F1147827468">PlayerOffhandEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-offhand-event/index.html">dev.racci.minix.api.events.keybind.PlayerOffhandEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#629769388%2FClasslikes%2F1147827468">PlayerOffhandEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-offhand-event/index.html">dev.racci.minix.api.events.keybind.PlayerOffhandEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -326,7 +335,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#-2064107636%2FClasslikes%2F1147827468">PlayerRightClickEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-secondary-event/index.html">PlayerSecondaryEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#-2064107636%2FClasslikes%2F1147827468">PlayerRightClickEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-secondary-event/index.html">PlayerSecondaryEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -341,7 +350,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#580805646%2FClasslikes%2F1147827468">PlayerShiftDoubleLeftClickEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-sneak-double-primary-event/index.html">PlayerSneakDoublePrimaryEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#580805646%2FClasslikes%2F1147827468">PlayerShiftDoubleLeftClickEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-sneak-double-primary-event/index.html">PlayerSneakDoublePrimaryEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -356,7 +365,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#-1510376085%2FClasslikes%2F1147827468">PlayerShiftDoubleOffhandEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-sneak-double-offhand-event/index.html">PlayerSneakDoubleOffhandEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#-1510376085%2FClasslikes%2F1147827468">PlayerShiftDoubleOffhandEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-sneak-double-offhand-event/index.html">PlayerSneakDoubleOffhandEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -371,7 +380,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#-348384659%2FClasslikes%2F1147827468">PlayerShiftDoubleRightClickEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-sneak-double-secondary-event/index.html">PlayerSneakDoubleSecondaryEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#-348384659%2FClasslikes%2F1147827468">PlayerShiftDoubleRightClickEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-sneak-double-secondary-event/index.html">PlayerSneakDoubleSecondaryEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -386,7 +395,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#1177086559%2FClasslikes%2F1147827468">PlayerShiftLeftClickEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-sneak-primary-event/index.html">PlayerSneakPrimaryEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#1177086559%2FClasslikes%2F1147827468">PlayerShiftLeftClickEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-sneak-primary-event/index.html">PlayerSneakPrimaryEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -401,7 +410,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#-1134337028%2FClasslikes%2F1147827468">PlayerShiftOffhandEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-sneak-offhand-event/index.html">PlayerSneakOffhandEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#-1134337028%2FClasslikes%2F1147827468">PlayerShiftOffhandEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-sneak-offhand-event/index.html">PlayerSneakOffhandEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -416,7 +425,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#956454460%2FClasslikes%2F1147827468">PlayerShiftRightClickEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.keybind/-player-sneak-secondary-event/index.html">PlayerSneakSecondaryEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#956454460%2FClasslikes%2F1147827468">PlayerShiftRightClickEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.keybind/-player-sneak-secondary-event/index.html">PlayerSneakSecondaryEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -431,7 +440,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#370885375%2FClasslikes%2F1147827468">PlayerUnloadEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.player/-player-unload-event/index.html">dev.racci.minix.api.events.player.PlayerUnloadEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#370885375%2FClasslikes%2F1147827468">PlayerUnloadEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.player/-player-unload-event/index.html">dev.racci.minix.api.events.player.PlayerUnloadEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -446,7 +455,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#896894697%2FClasslikes%2F1147827468">WorldDayEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.world/-world-day-event/index.html">dev.racci.minix.api.events.world.WorldDayEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#896894697%2FClasslikes%2F1147827468">WorldDayEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.world/-world-day-event/index.html">dev.racci.minix.api.events.world.WorldDayEvent</a></div></div></div>
               </div>
             </div>
           </div>
@@ -461,7 +470,7 @@ if(savedDarkMode === true){
                 </span></span></div>
             <div>
               <div class="title">
-                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace strikethrough"><strike><span class="token keyword">typealias </span></strike><a href="index.html#-1737037595%2FClasslikes%2F1147827468">WorldNightEvent</a><strike><span class="token operator"> = </span></strike><a href="../dev.racci.minix.api.events.world/-world-night-event/index.html">dev.racci.minix.api.events.world.WorldNightEvent</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Minix-API:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">typealias </span><strike><a href="index.html#-1737037595%2FClasslikes%2F1147827468">WorldNightEvent</a></strike><span class="token operator"> = </span><a href="../dev.racci.minix.api.events.world/-world-night-event/index.html">dev.racci.minix.api.events.world.WorldNightEvent</a></div></div></div>
               </div>
             </div>
           </div>

@@ -1,9 +1,9 @@
 package dev.racci.minix.core;
 
 import dev.racci.minix.api.annotations.MinixInternal;
-import dev.racci.minix.core.loader.MinixGsonDependencyDataProviderFactory;
 import dev.racci.minix.core.loader.MinixDependencyVerifierFactory;
 import dev.racci.minix.core.loader.MinixExternalDependencyDataProviderFactory;
+import dev.racci.minix.core.loader.MinixGsonDependencyDataProviderFactory;
 import dev.racci.minix.core.loader.MinixPreResolutionDataProviderFactory;
 import io.github.slimjar.app.Application;
 import io.github.slimjar.app.builder.InjectingApplicationBuilder;
@@ -24,6 +24,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.PluginClassLoader;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -84,7 +86,12 @@ public final class MinixApplicationBuilder {
         }
 
         try {
-            final var app = InjectingApplicationBuilder.createAppending(pluginName, classLoader)
+            final var loaderMethod = JavaPlugin.class.getDeclaredMethod("getClassLoader");
+            loaderMethod.setAccessible(true);
+            final var loader = (PluginClassLoader) loaderMethod.invoke(plugin);
+            loaderMethod.setAccessible(false);
+
+            final var app = InjectingApplicationBuilder.createAppending(pluginName, loader)
                 .downloadDirectoryPath(downloadFolder)
                 .preResolutionFileUrl(urlPair.preRes)
                 .dependencyFileUrl(urlPair.deps)

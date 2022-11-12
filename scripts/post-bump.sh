@@ -15,8 +15,6 @@ fi
 
 git push || exit 1
 
-./gradlew clean build test
-
 URL="https://github.com/DaRacci/Minix/compare/v$1..v$2"
 grep -Poz "(?s)(?<=## \\[v$2\\]\\(${URL}\\) - ....-..-..\n).*?(?=- - -)" CHANGELOG.md >> ./.templog.md
 head -n -1 .templog.md > .temp ; mv .temp .templog.md # Remove that weird null line

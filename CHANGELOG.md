@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.7](https://github.com/DaRacci/Minix/compare/v4.3.6..v4.3.7) - 2022-11-12
+#### Bug Fixes
+- Don't include particles library - ([30e1cf4](https://github.com/DaRacci/Minix/commit/30e1cf4d8d42410ebddb0318f8cb936ceab7961c)) - [@DaRacci](https://github.com/DaRacci)
+- push on bump - ([4bd2416](https://github.com/DaRacci/Minix/commit/4bd2416bfd8c55765741a607e57ac1fa762ce18d)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- API dump - ([b5af5c8](https://github.com/DaRacci/Minix/commit/b5af5c8d03e6c8a06b1b7c6797010b2caef5d5ef)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Use the plugins Classloader not always minix's. - ([a1255ec](https://github.com/DaRacci/Minix/commit/a1255ec4349902db4a4028a9ea6492f00d76cba8)) - [@DaRacci](https://github.com/DaRacci)
+- Add non refied versions for eventFlow and playerFlow - ([cb45a87](https://github.com/DaRacci/Minix/commit/cb45a87dd51a272ab4b092ea60eca8fda75940b2)) - [@DaRacci](https://github.com/DaRacci)
+- Weak Reference init plugin and try enable - ([3c3b09b](https://github.com/DaRacci/Minix/commit/3c3b09b17a488ccfeee9ad3054a2a7da86cedec6)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.3.6](https://github.com/DaRacci/Minix/compare/v4.3.5..v4.3.6) - 2022-11-10
 #### Bug Fixes
 - maybe just remove it? - ([20fdda8](https://github.com/DaRacci/Minix/commit/20fdda8be401d94f95da8aa47ac31f9da23c009a)) - [@DaRacci](https://github.com/DaRacci)

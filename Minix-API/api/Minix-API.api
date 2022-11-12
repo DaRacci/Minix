@@ -1463,6 +1463,22 @@ public final class dev/racci/minix/api/flow/ConcurrencyKt {
 	public static final fun mapInOrder (Lkotlinx/coroutines/flow/Flow;ILkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
 }
 
+public final class dev/racci/minix/api/flow/EventFlowKt {
+	public static final fun eventFlow (Ldev/racci/minix/api/extensions/WithPlugin;Lkotlin/reflect/KClass;Lorg/bukkit/entity/Player;Lorg/bukkit/event/EventPriority;ZZLkotlinx/coroutines/channels/Channel;Lorg/bukkit/event/Listener;Lorg/bukkit/event/Listener;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun eventFlow (Lkotlin/reflect/KClass;Ldev/racci/minix/api/plugin/MinixPlugin;Lorg/bukkit/entity/Player;Lorg/bukkit/event/EventPriority;ZZLkotlinx/coroutines/channels/Channel;Lorg/bukkit/event/Listener;Lorg/bukkit/event/Listener;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun eventFlow$default (Ldev/racci/minix/api/extensions/WithPlugin;Lkotlin/reflect/KClass;Lorg/bukkit/entity/Player;Lorg/bukkit/event/EventPriority;ZZLkotlinx/coroutines/channels/Channel;Lorg/bukkit/event/Listener;Lorg/bukkit/event/Listener;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun eventFlow$default (Lkotlin/reflect/KClass;Ldev/racci/minix/api/plugin/MinixPlugin;Lorg/bukkit/entity/Player;Lorg/bukkit/event/EventPriority;ZZLkotlinx/coroutines/channels/Channel;Lorg/bukkit/event/Listener;Lorg/bukkit/event/Listener;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class dev/racci/minix/api/flow/ExtensionsKt {
+	public static final fun playerEventFlow (Ldev/racci/minix/api/extensions/WithPlugin;Lkotlin/reflect/KClass;Lorg/bukkit/entity/Player;Lorg/bukkit/event/EventPriority;ZLkotlinx/coroutines/channels/Channel;Lorg/bukkit/event/Listener;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun playerEventFlow (Ldev/racci/minix/api/plugin/MinixPlugin;Lkotlin/reflect/KClass;Lorg/bukkit/entity/Player;Lorg/bukkit/event/EventPriority;ZLkotlinx/coroutines/channels/Channel;Lorg/bukkit/event/Listener;)Lkotlinx/coroutines/flow/Flow;
+	public static final fun playerEventFlow (Lkotlin/reflect/KClass;Lorg/bukkit/entity/Player;Ldev/racci/minix/api/plugin/MinixPlugin;Lorg/bukkit/event/EventPriority;ZLkotlinx/coroutines/channels/Channel;Lorg/bukkit/event/Listener;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun playerEventFlow$default (Ldev/racci/minix/api/extensions/WithPlugin;Lkotlin/reflect/KClass;Lorg/bukkit/entity/Player;Lorg/bukkit/event/EventPriority;ZLkotlinx/coroutines/channels/Channel;Lorg/bukkit/event/Listener;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun playerEventFlow$default (Ldev/racci/minix/api/plugin/MinixPlugin;Lkotlin/reflect/KClass;Lorg/bukkit/entity/Player;Lorg/bukkit/event/EventPriority;ZLkotlinx/coroutines/channels/Channel;Lorg/bukkit/event/Listener;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun playerEventFlow$default (Lkotlin/reflect/KClass;Lorg/bukkit/entity/Player;Ldev/racci/minix/api/plugin/MinixPlugin;Lorg/bukkit/event/EventPriority;ZLkotlinx/coroutines/channels/Channel;Lorg/bukkit/event/Listener;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
 public abstract interface class dev/racci/minix/api/integrations/Integration : dev/racci/minix/api/extensions/WithPlugin {
 	public abstract fun getPluginName ()Ljava/lang/String;
 	public abstract fun handleEnable (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

@@ -8,6 +8,7 @@ if [ -z "$1" ] || [ -z "$2" ]; then
   exit 1
 fi
 
+git push || exit 1
 git push origin v"${2}" || exit 1
 
 SEMIPATH=build/libs/Minix

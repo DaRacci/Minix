@@ -12,6 +12,7 @@ import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.updater.providers.GithubUpdateProvider
 import dev.racci.minix.api.utils.KoinUtils
+import dev.racci.minix.core.DummyLoader.Companion.setValue
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.data.MinixConfig
 import dev.racci.minix.core.loggers.KoinProxy
@@ -30,11 +31,12 @@ import org.koin.core.context.startKoin
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.mp.KoinPlatformTools
+import java.lang.ref.WeakReference
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(MinixInternal::class)
 @MappedPlugin(13706, Minix::class)
-class MinixImpl : Minix() {
+class MinixImpl(private val initPlugin: WeakReference<MinixInit>) : Minix() {
     private val config by lazy { DataService.getService().get<MinixConfig>() }
 
     override val updater: PluginUpdater = PluginUpdater().apply {
@@ -57,6 +59,7 @@ class MinixImpl : Minix() {
     }
 
     override suspend fun handleEnable() {
+        initPlugin.get()?.setValue("isEnabled", true)
         this.registerEvents(LoadListener())
     }
 

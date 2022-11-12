@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED", "UNCHECKED_CAST")
+@file:Suppress("UNUSED")
 
 package dev.racci.minix.api.flow
 
@@ -11,6 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerEvent
+import kotlin.reflect.KClass
 
 /**
  * Creates an event flow for [PlayerEvent] that auto filter for only events from [player].
@@ -20,16 +21,34 @@ inline fun <reified T : PlayerEvent> WithPlugin<*>.playerEventFlow(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
     channel: Channel<T> = Channel(Channel.CONFLATED),
-    listener: Listener = SimpleKListener(plugin),
-) = plugin.playerEventFlow(player, priority, ignoreCancelled, channel, listener)
+    listener: Listener = SimpleKListener(plugin)
+) = plugin.playerEventFlow(T::class, player, priority, ignoreCancelled, channel, listener)
+
+inline fun <T : PlayerEvent> WithPlugin<*>.playerEventFlow(
+    kClass: KClass<T>,
+    player: Player,
+    priority: EventPriority = EventPriority.NORMAL,
+    ignoreCancelled: Boolean = false,
+    channel: Channel<T> = Channel(Channel.CONFLATED),
+    listener: Listener = SimpleKListener(plugin)
+) = plugin.playerEventFlow(kClass, player, priority, ignoreCancelled, channel, listener)
 
 inline fun <reified T : PlayerEvent> MinixPlugin.playerEventFlow(
     player: Player,
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
     channel: Channel<T> = Channel(Channel.CONFLATED),
-    listener: Listener = SimpleKListener(this),
-) = playerEventFlow(player, this, priority, ignoreCancelled, channel, listener)
+    listener: Listener = SimpleKListener(this)
+) = playerEventFlow(T::class, player, this, priority, ignoreCancelled, channel, listener)
+
+inline fun <T : PlayerEvent> MinixPlugin.playerEventFlow(
+    kClass: KClass<T>,
+    player: Player,
+    priority: EventPriority = EventPriority.NORMAL,
+    ignoreCancelled: Boolean = false,
+    channel: Channel<T> = Channel(Channel.CONFLATED),
+    listener: Listener = SimpleKListener(this)
+) = playerEventFlow(kClass, player, this, priority, ignoreCancelled, channel, listener)
 
 inline fun <reified T : PlayerEvent> playerEventFlow(
     player: Player,
@@ -37,6 +56,16 @@ inline fun <reified T : PlayerEvent> playerEventFlow(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
     channel: Channel<T> = Channel(Channel.CONFLATED),
-    listener: Listener = SimpleKListener(plugin),
-) = eventFlow(T::class, plugin, player, priority, ignoreCancelled, false, channel, listener)
+    listener: Listener = SimpleKListener(plugin)
+) = playerEventFlow(T::class, player, plugin, priority, ignoreCancelled, channel, listener)
+
+inline fun <T : PlayerEvent> playerEventFlow(
+    kClass: KClass<T>,
+    player: Player,
+    plugin: MinixPlugin,
+    priority: EventPriority = EventPriority.NORMAL,
+    ignoreCancelled: Boolean = false,
+    channel: Channel<T> = Channel(Channel.CONFLATED),
+    listener: Listener = SimpleKListener(plugin)
+) = eventFlow(kClass, plugin, player, priority, ignoreCancelled, false, channel, listener)
     .filter { it.player.name == player.name }

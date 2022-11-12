@@ -1,4 +1,4 @@
-@file:Suppress("UNUSED", "UNCHECKED_CAST")
+@file:Suppress("UNUSED")
 
 package dev.racci.minix.api.flow
 
@@ -8,7 +8,6 @@ import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.events
 import dev.racci.minix.api.extensions.unregisterListener
 import dev.racci.minix.api.plugin.MinixPlugin
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -29,8 +28,19 @@ inline fun <reified T : Event> WithPlugin<*>.eventFlow(
     forceAsync: Boolean = false,
     channel: Channel<T> = Channel(Channel.CONFLATED),
     listener: Listener = plugin.events {},
-    assignListener: Listener = plugin.events {},
+    assignListener: Listener = plugin.events {}
 ): Flow<T> = plugin.eventFlow(assign, priority, ignoreCancelled, forceAsync, channel, listener, assignListener)
+
+inline fun <T : Event> WithPlugin<*>.eventFlow(
+    event: KClass<T>,
+    assign: Player? = null,
+    priority: EventPriority = EventPriority.NORMAL,
+    ignoreCancelled: Boolean = false,
+    forceAsync: Boolean = false,
+    channel: Channel<T> = Channel(Channel.CONFLATED),
+    listener: Listener = plugin.events {},
+    assignListener: Listener = plugin.events {}
+): Flow<T> = eventFlow(event, plugin, assign, priority, ignoreCancelled, forceAsync, channel, listener, assignListener)
 
 inline fun <reified T : Event> MinixPlugin.eventFlow(
     assign: Player? = null,
@@ -39,7 +49,7 @@ inline fun <reified T : Event> MinixPlugin.eventFlow(
     forceAsync: Boolean = false,
     channel: Channel<T> = Channel(Channel.CONFLATED),
     listener: Listener = events {},
-    assignListener: Listener = events {},
+    assignListener: Listener = events {}
 ): Flow<T> = eventFlow(T::class, this, assign, priority, ignoreCancelled, forceAsync, channel, listener, assignListener)
 
 /**
@@ -59,8 +69,8 @@ inline fun <reified T : Event> MinixPlugin.eventFlow(
  * @param assignListener ?
  * @return
  */
-@OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
-inline fun <reified T : Event> eventFlow(
+@OptIn(ExperimentalCoroutinesApi::class)
+fun <T : Event> eventFlow(
     type: KClass<T>,
     plugin: MinixPlugin,
     assign: Player? = null,
@@ -69,9 +79,8 @@ inline fun <reified T : Event> eventFlow(
     forceAsync: Boolean = false,
     channel: Channel<T> = Channel(Channel.CONFLATED),
     listener: Listener = SimpleKListener(plugin),
-    assignListener: Listener = SimpleKListener(plugin),
+    assignListener: Listener = SimpleKListener(plugin)
 ): Flow<T> {
-
     val flow = channel.consumeAsFlow().onStart {
         listener.event(type, plugin, priority, ignoreCancelled, forceAsync) {
             if (!channel.isClosedForSend && !channel.isClosedForReceive) {

@@ -62,9 +62,9 @@ dependencies {
     slim(libs.arrow.core)
     slim(libs.arrow.fx.coroutines)
 
-    // Unused Libraries for Minix Consumers
-
-    slim(libs.minecraft.particles)
+//    // Unused Libraries for Minix Consumers
+//
+//    slim(libs.minecraft.particles)
 
     // Supported Command framework
     slim(libs.cloud.core)

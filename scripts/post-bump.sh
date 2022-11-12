@@ -13,7 +13,7 @@ if [ -f temp ]; then
   rm temp
 fi
 
-git push v"${2}" || exit 1
+git push origin v"${2}" || exit 1
 
 URL="https://github.com/DaRacci/Minix/compare/v$1..v$2"
 grep -Poz "(?s)(?<=## \\[v$2\\]\\(${URL}\\) - ....-..-..\n).*?(?=- - -)" CHANGELOG.md >> ./.templog.md

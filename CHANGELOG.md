@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.9](https://github.com/DaRacci/Minix/compare/v4.3.8..v4.3.9) - 2022-11-12
+#### Bug Fixes
+- **(script)** Push tag - ([ea3adff](https://github.com/DaRacci/Minix/commit/ea3adffb2275d803932d249ffaa2f29eb55a6e6e)) - [@DaRacci](https://github.com/DaRacci)
+- Revert "refactor: Use the plugins Classloader not always minix's." - ([4de01eb](https://github.com/DaRacci/Minix/commit/4de01eb3443a60a571cf1c6fe03ec7caeea5a0b6)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.3.8](https://github.com/DaRacci/Minix/compare/v4.3.7..v4.3.8) - 2022-11-12
 #### Refactoring
 - **(script)** build with version in pre-bump - ([c285b6d](https://github.com/DaRacci/Minix/commit/c285b6dc2ef4bc3585c51c35a448e78ee57f9de3)) - [@DaRacci](https://github.com/DaRacci)

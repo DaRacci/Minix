@@ -14,7 +14,7 @@ tasks.dokkaHtml {
 }
 
 tasks.withType<GenerateModuleMetadata> {
-    enabled = false
+    enabled = false // We mutate the POM ourselves and can't support this.
 }
 
 dependencies {

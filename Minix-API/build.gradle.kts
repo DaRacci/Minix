@@ -60,7 +60,9 @@ dependencies {
     slim(libs.caffeine)
     slim(libs.minecraft.bstats.bukkit)
     slim(libs.arrow.core)
+    slim(libs.arrow.optics)
     slim(libs.arrow.fx.coroutines)
+    slim("io.arrow-kt", "arrow-analysis-laws", rootProject.libs.plugins.arrow.get().version.requiredVersion)
 
 //    // Unused Libraries for Minix Consumers
 //

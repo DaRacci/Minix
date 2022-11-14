@@ -1,9 +1,6 @@
 public abstract interface annotation class dev/racci/minix/api/annotations/MinixDsl : java/lang/annotation/Annotation {
 }
 
-public abstract interface annotation class dev/racci/minix/api/annotations/RunAsync : java/lang/annotation/Annotation {
-}
-
 public final class dev/racci/minix/api/collections/ExpiringArray : java/util/HashSet {
 	public synthetic fun <init> (JLkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun add (Ljava/lang/Object;)Z

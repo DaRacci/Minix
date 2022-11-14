@@ -256,16 +256,25 @@ tasks {
     }
 }
 
+fun Project.emptySources() = project.sourceSets.none { set -> set.allSource.any { file -> file.extension == "kt" } }
+
 allprojects {
-    apply<KtlintPlugin>()
+    if (!project.emptySources()) {
+        apply<KtlintPlugin>()
 
-    buildDir = file(rootProject.projectDir.resolve("build").resolve(project.name))
+        configure<KtlintExtension> {
+            this.baseline.set(file("$rootDir/config/ktlint/ktlint-baseline-${project.name}.xml"))
+        }
 
-    configure<KtlintExtension> {
-        filter {
-            this.exclude("**/generated/**") // exclude generated sources
+        tasks.withType<KotlinApiBuildTask>().first().outputApiDir = file("$rootDir/config/api")
+    } else {
+        tasks {
+            apiDump.get().enabled = false
+            apiCheck.get().enabled = false
         }
     }
+
+    buildDir = file(rootProject.projectDir.resolve("build").resolve(project.name))
 
     repositories {
         mavenLocal()
@@ -291,6 +300,7 @@ allprojects {
 
     tasks {
         withType<Test>().configureEach {
+            this.enabled = false
             useJUnitPlatform()
         }
 

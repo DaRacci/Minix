@@ -68,6 +68,12 @@ public final class dev/racci/minix/data/Version$Companion {
 	public final fun getVersionStringRegex ()Lkotlin/text/Regex;
 }
 
+public final class dev/racci/minix/data/delegates/DoubleAccessWatcher : kotlin/properties/ReadOnlyProperty {
+	public fun <init> ()V
+	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Boolean;
+	public synthetic fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+}
+
 public final class dev/racci/minix/data/exceptions/InvalidVersionStringException : java/lang/IllegalArgumentException {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
@@ -81,6 +87,10 @@ public final class dev/racci/minix/data/exceptions/SerializationException : java
 
 public final class dev/racci/minix/data/extensions/ExConfigurateKt {
 	public static final fun nonVirtualNode (Lorg/spongepowered/configurate/ConfigurationNode;[Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/data/extensions/ExDelegateKt {
+	public static final fun doubleAccessWatcher (Lkotlin/properties/Delegates;)Lkotlin/properties/ReadOnlyProperty;
 }
 
 public final class dev/racci/minix/data/extensions/ExKeyKt {

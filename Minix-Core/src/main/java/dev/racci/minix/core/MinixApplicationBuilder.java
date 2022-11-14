@@ -24,6 +24,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.zip.ZipInputStream;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
@@ -84,13 +85,18 @@ public final class MinixApplicationBuilder {
         }
 
         try {
+            final var classLoaderMethod = JavaPlugin.class.getDeclaredMethod("getClassLoader");
+            classLoaderMethod.setAccessible(true);
+            final var classLoader = (ClassLoader) classLoaderMethod.invoke(plugin);
+            classLoaderMethod.setAccessible(false);
+
             final var app = InjectingApplicationBuilder.createAppending(pluginName, classLoader)
                 .downloadDirectoryPath(downloadFolder)
                 .preResolutionFileUrl(urlPair.preRes)
                 .dependencyFileUrl(urlPair.deps)
                 .preResolutionDataProviderFactory(MinixPreResolutionDataProviderFactory::create)
                 .moduleDataProviderFactory(MinixExternalDependencyDataProviderFactory::create)
-                .dataProviderFactory(MinixGsonDependencyDataProviderFactory::create)
+//                .dataProviderFactory(MinixGsonDependencyDataProviderFactory::create)
                 .verifierFactory(MinixDependencyVerifierFactory::create)
                 .relocatorFactory(relocatorFactory)
                 .logger(logger)

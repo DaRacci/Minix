@@ -26,6 +26,7 @@ class DummyLoader {
         // These values need to be null when a JavaPlugin class creates a new instance on the classloader.
         classLoader.setValue<PluginClassLoader, Plugin?>("plugin", null)
         classLoader.setValue<PluginClassLoader, Plugin?>("pluginInit", null)
+
         val minix = MinixImpl(WeakReference(initPlugin))
         classLoader.setValue<PluginClassLoader, Plugin?>("plugin", minix)
         classLoader.setValue<PluginClassLoader, Plugin?>("pluginInit", minix)

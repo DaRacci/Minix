@@ -2,6 +2,19 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.10](https://github.com/DaRacci/Minix/compare/v4.3.9..v4.3.10) - 2022-11-14
+#### Bug Fixes
+- **(script)** actually push changes - ([49d3fc1](https://github.com/DaRacci/Minix/commit/49d3fc1ad648533d3b5928811ff902ff171d8023)) - [@DaRacci](https://github.com/DaRacci)
+- **(script)** Changelog from cog - ([c1ae39d](https://github.com/DaRacci/Minix/commit/c1ae39dd4604e7d550d9ba1765816175ac10eefd)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(deps)** Include optics and analysis in slim - ([1e1b8a2](https://github.com/DaRacci/Minix/commit/1e1b8a2259a20126a123b204be68bfd30a9992eb)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v4.3.9 - ([b9f5b39](https://github.com/DaRacci/Minix/commit/b9f5b39469d1691985dc06248c53eabbb263f8a0)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Temp solution for some libs listeners - ([44cb546](https://github.com/DaRacci/Minix/commit/44cb546f5f2b78f0ede7591a3ab0786fba169e90)) - [@DaRacci](https://github.com/DaRacci)
+- Don't call event if its a CancellationException - ([4004693](https://github.com/DaRacci/Minix/commit/4004693b0971d25ea66b0be31b9070a18182e875)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.3.9](https://github.com/DaRacci/Minix/compare/v4.3.8..v4.3.9) - 2022-11-12
 #### Bug Fixes
 - **(script)** Push tag - ([ea3adff](https://github.com/DaRacci/Minix/commit/ea3adffb2275d803932d249ffaa2f29eb55a6e6e)) - [@DaRacci](https://github.com/DaRacci)

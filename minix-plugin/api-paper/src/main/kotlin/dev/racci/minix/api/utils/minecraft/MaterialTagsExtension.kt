@@ -3,7 +3,6 @@ package dev.racci.minix.api.utils.minecraft
 import com.destroystokyo.paper.MaterialSetTag
 import com.destroystokyo.paper.MaterialTags
 import dev.racci.minix.api.extensions.reflection.castOrThrow
-import dev.racci.minix.api.utils.unsafeCast
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import kotlin.reflect.KFunction

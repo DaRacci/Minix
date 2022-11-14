@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BookMeta
 
 public class BookBuilderImpl internal constructor(
-    itemStack: ItemStack,
+    itemStack: ItemStack
 ) : BaseItemBuilderImpl<BookBuilder, BookMeta>(itemStack), BookBuilder {
 
     override var title: Component?

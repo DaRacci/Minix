@@ -1,7 +1,6 @@
 package dev.racci.minix.api.events.world
 
 import dev.racci.minix.api.events.CompanionEventHandler
-import dev.racci.minix.api.events.MinixEvent
 import org.bukkit.World
 import org.bukkit.event.HandlerList
 

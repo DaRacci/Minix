@@ -49,7 +49,6 @@ public inline fun <T : PlayerEvent> MinixPlugin.playerEventFlow(
     listener: Listener = SimpleKListener(this)
 ): Flow<T> = playerEventFlow(kClass, player, this, priority, ignoreCancelled, channel, listener)
 
-
 public inline fun <reified T : PlayerEvent> playerEventFlow(
     player: Player,
     plugin: MinixPlugin,

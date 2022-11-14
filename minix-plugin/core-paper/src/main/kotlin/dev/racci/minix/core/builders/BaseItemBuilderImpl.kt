@@ -19,7 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta
 public sealed class BaseItemBuilderImpl<B : BaseItemBuilder<B, M>, M : ItemMeta> constructor(
     override var itemStack: ItemStack = Material.AIR.toItemStack(),
     override var meta: M = itemStack.itemMeta as? M
-        ?: throw IncorrectItemTypeException("The meta type ${Class<M>::getName} and builder type" + " ${Class<B>::getName} is not valid for item type ${itemStack.type.name}"),
+        ?: throw IncorrectItemTypeException("The meta type ${Class<M>::getName} and builder type" + " ${Class<B>::getName} is not valid for item type ${itemStack.type.name}")
 ) : BaseItemBuilder<B, M> {
 
     override var amount: Int

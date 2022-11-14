@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BannerMeta
 
 public class BannerBuilderImpl internal constructor(
-    itemStack: ItemStack,
+    itemStack: ItemStack
 ) : BaseItemBuilderImpl<BannerBuilder, BannerMeta>(itemStack), BannerBuilder {
 
     override var patterns: List<Pattern>

@@ -25,7 +25,6 @@ import org.koin.core.annotation.Module
 import org.koin.core.component.get
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import org.koin.ksp.generated.*
 import java.lang.ref.WeakReference
 
 @Module
@@ -71,8 +70,8 @@ public actual class Minix actual constructor(private val initPlugin: WeakReferen
             )
 
             this.modules(
-                KoinUtils.getModule(PluginServiceImpl(get())),
-                KoinUtils.getModule(ExtensionMapper(get()))
+                KoinUtils.getModule(::PluginServiceImpl),
+                KoinUtils.getModule(::ExtensionMapper)
             )
         }
 

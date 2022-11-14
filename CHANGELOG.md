@@ -2,6 +2,99 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.10](https://github.com/DaRacci/Minix/compare/v4.3.9..v4.3.10) - 2022-11-14
+#### Bug Fixes
+- **(script)** actually push changes - ([49d3fc1](https://github.com/DaRacci/Minix/commit/49d3fc1ad648533d3b5928811ff902ff171d8023)) - [@DaRacci](https://github.com/DaRacci)
+- **(script)** Changelog from cog - ([c1ae39d](https://github.com/DaRacci/Minix/commit/c1ae39dd4604e7d550d9ba1765816175ac10eefd)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(deps)** Include optics and analysis in slim - ([1e1b8a2](https://github.com/DaRacci/Minix/commit/1e1b8a2259a20126a123b204be68bfd30a9992eb)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v4.3.9 - ([b9f5b39](https://github.com/DaRacci/Minix/commit/b9f5b39469d1691985dc06248c53eabbb263f8a0)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- Temp solution for some libs listeners - ([44cb546](https://github.com/DaRacci/Minix/commit/44cb546f5f2b78f0ede7591a3ab0786fba169e90)) - [@DaRacci](https://github.com/DaRacci)
+- Don't call event if its a CancellationException - ([4004693](https://github.com/DaRacci/Minix/commit/4004693b0971d25ea66b0be31b9070a18182e875)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
+## [v4.3.9](https://github.com/DaRacci/Minix/compare/v4.3.8..v4.3.9) - 2022-11-12
+#### Bug Fixes
+- **(script)** Push tag - ([ea3adff](https://github.com/DaRacci/Minix/commit/ea3adffb2275d803932d249ffaa2f29eb55a6e6e)) - [@DaRacci](https://github.com/DaRacci)
+- Revert "refactor: Use the plugins Classloader not always minix's." - ([4de01eb](https://github.com/DaRacci/Minix/commit/4de01eb3443a60a571cf1c6fe03ec7caeea5a0b6)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
+## [v4.3.8](https://github.com/DaRacci/Minix/compare/v4.3.7..v4.3.8) - 2022-11-12
+#### Refactoring
+- **(script)** build with version in pre-bump - ([c285b6d](https://github.com/DaRacci/Minix/commit/c285b6dc2ef4bc3585c51c35a448e78ee57f9de3)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
+## [v4.3.6](https://github.com/DaRacci/Minix/compare/v4.3.5..v4.3.6) - 2022-11-10
+#### Bug Fixes
+- maybe just remove it? - ([20fdda8](https://github.com/DaRacci/Minix/commit/20fdda8be401d94f95da8aa47ac31f9da23c009a)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
+## [v4.3.5](https://github.com/DaRacci/Minix/compare/v4.3.4..v4.3.5) - 2022-11-10
+#### Bug Fixes
+- Maybe this? - ([f7835cb](https://github.com/DaRacci/Minix/commit/f7835cbbf1c43cc438c6b41f08686e69d00e1414)) - [@DaRacci](https://github.com/DaRacci)
+- Maybe fix tagging? - ([00a6692](https://github.com/DaRacci/Minix/commit/00a6692e62294eb17117bf7d94e1f72caeecc081)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.3.4 - ([2d6fea2](https://github.com/DaRacci/Minix/commit/2d6fea2554e357de213d970f9e8c3d008db392d9)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
+## [v4.3.4](https://github.com/DaRacci/Minix/compare/v4.3.3..v4.3.4) - 2022-11-10
+#### Bug Fixes
+- Maybe fix tagging? - ([a58f576](https://github.com/DaRacci/Minix/commit/a58f57621f4487dd24f322bc583a7925b637819c)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
+## [v4.3.3](https://github.com/DaRacci/Minix/compare/v4.3.2..v4.3.3) - 2022-11-10
+#### Bug Fixes
+- **(CoroutineScheduler)** ConcurrentModificationException - ([a8ef5e7](https://github.com/DaRacci/Minix/commit/a8ef5e73d6f96c0f48befa328381cb5fb4b28ce0)) - [@DaRacci](https://github.com/DaRacci)
+- Holy shit i hate myself for this. - ([748ca7a](https://github.com/DaRacci/Minix/commit/748ca7a2af7c78ef79b2e21f83add1a613ee86a2)) - [@DaRacci](https://github.com/DaRacci)
+- Add resign to post bump - ([23fa1d6](https://github.com/DaRacci/Minix/commit/23fa1d6ed7ee44ac9ed991a460768a4b34f5cee5)) - [@DaRacci](https://github.com/DaRacci)
+- Publish - ([a462f05](https://github.com/DaRacci/Minix/commit/a462f056ea44e3d940615eae5a534dd9c92fede1)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.3.2 - ([c1cdcdf](https://github.com/DaRacci/Minix/commit/c1cdcdf6b6c648818bc79af4465b35b5d72c3a85)) - [@DaRacci](https://github.com/DaRacci)
+- **(version)** v4.3.1 - ([bb662c1](https://github.com/DaRacci/Minix/commit/bb662c11e1c42a058b16b5c00659adb0a6feb2dd)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
+## [v4.3.2](https://github.com/DaRacci/Minix/compare/v4.3.1..v4.3.2) - 2022-11-08
+#### Bug Fixes
+- **(CoroutineScheduler)** ConcurrentModificationException - ([8862832](https://github.com/DaRacci/Minix/commit/88628326a73ae10c6dcdc71413b52a13fb95e137)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
+## [v4.3.1](https://github.com/DaRacci/Minix/compare/v4.3.0..v4.3.1) - 2022-11-07
+#### Bug Fixes
+- Publish - ([1d8e18d](https://github.com/DaRacci/Minix/commit/1d8e18d1d66719697fecc98eae7d500cd404689b)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.3.0 - ([30027f9](https://github.com/DaRacci/Minix/commit/30027f902910b264dbce2a13f17093eb6ffde0d8)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
+## [v4.3.0](https://github.com/DaRacci/Minix/compare/v4.2.4..v4.3.0) - 2022-11-07
+#### Bug Fixes
+- **(StorageService)** Make sure table is created - ([6ed8134](https://github.com/DaRacci/Minix/commit/6ed8134cd2a52378fa258bd6485f3d7fc47c3677)) - [@DaRacci](https://github.com/DaRacci)
+- Concurrency - ([169ae52](https://github.com/DaRacci/Minix/commit/169ae5212e8b2e39fe61ad0c7dd1deb9d0834081)) - [@DaRacci](https://github.com/DaRacci)
+- Add check for seagrass, kelp and bubble columns. - ([1ec40e0](https://github.com/DaRacci/Minix/commit/1ec40e02c68c2ef24a31fc89dee0803fa595ad53)) - [@DaRacci](https://github.com/DaRacci)
+- waterlogged check - ([4c5dcd3](https://github.com/DaRacci/Minix/commit/4c5dcd3dfd88e892e180da6a7467fd80e74a72a8)) - [@DaRacci](https://github.com/DaRacci)
+- Create missing tables and columns thingy - ([ceaf49d](https://github.com/DaRacci/Minix/commit/ceaf49d885a131d40484a278b98496de60e729bd)) - [@DaRacci](https://github.com/DaRacci)
+#### Features
+- **(StorageService)** Allow for return types and add async function - ([1f36620](https://github.com/DaRacci/Minix/commit/1f366208cf20fdd79e739bac7d27652f883b5d0c)) - [@DaRacci](https://github.com/DaRacci)
+- MariaDB support - ([5e28865](https://github.com/DaRacci/Minix/commit/5e288651a8f8bbc22b7581fb24f61ad3cbe59039)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(version)** v4.2.4 - ([d5eb5dd](https://github.com/DaRacci/Minix/commit/d5eb5dde821c5a37c061114592c06af2767a675e)) - [@DaRacci](https://github.com/DaRacci)
+- Add fairly important note - ([b942b7c](https://github.com/DaRacci/Minix/commit/b942b7c5f74b2abf078a8173649bee3ba8f63867)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(Gradle)** Cleanup - ([d35ad83](https://github.com/DaRacci/Minix/commit/d35ad832c8c897bb68ebda6927b011f20acd2039)) - [@DaRacci](https://github.com/DaRacci)
+- **(Integrations)** Load listener - ([ca87315](https://github.com/DaRacci/Minix/commit/ca873157e8b9eaa3cacf522ed163d32ad0f6ee5e)) - [@DaRacci](https://github.com/DaRacci)
+- Allow for inheritance of playermap - ([0f91ada](https://github.com/DaRacci/Minix/commit/0f91ada857e2226241327357efeaa4abbe3620cd)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.2.4](https://github.com/DaRacci/Minix/compare/v4.2.3..v4.2.4) - 2022-10-08
 #### Bug Fixes
 - **(BlockPosSerializer)** incorrect serialisation - ([aa78101](https://github.com/DaRacci/Minix/commit/aa78101405499baae37955a453cef2b6a45932c2)) - [@DaRacci](https://github.com/DaRacci)

@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED")
+
 package dev.racci.minix.api.flow
 
 import dev.racci.minix.api.extensions.SimpleKListener
@@ -29,6 +31,17 @@ public inline fun <reified T : Event> WithPlugin<*>.eventFlow(
     assignListener: Listener = plugin.events {}
 ): Flow<T> = plugin.eventFlow(assign, priority, ignoreCancelled, forceAsync, channel, listener, assignListener)
 
+public inline fun <T : Event> WithPlugin<*>.eventFlow(
+    event: KClass<T>,
+    assign: Player? = null,
+    priority: EventPriority = EventPriority.NORMAL,
+    ignoreCancelled: Boolean = false,
+    forceAsync: Boolean = false,
+    channel: Channel<T> = Channel(Channel.CONFLATED),
+    listener: Listener = plugin.events {},
+    assignListener: Listener = plugin.events {}
+): Flow<T> = eventFlow(event, plugin, assign, priority, ignoreCancelled, forceAsync, channel, listener, assignListener)
+
 public inline fun <reified T : Event> MinixPlugin.eventFlow(
     assign: Player? = null,
     priority: EventPriority = EventPriority.NORMAL,
@@ -57,7 +70,7 @@ public inline fun <reified T : Event> MinixPlugin.eventFlow(
  * @return
  */
 @OptIn(ExperimentalCoroutinesApi::class)
-public inline fun <reified T : Event> eventFlow(
+public fun <T : Event> eventFlow(
     type: KClass<T>,
     plugin: MinixPlugin,
     assign: Player? = null,

@@ -8,22 +8,11 @@ if [ -z "$1" ] || [ -z "$2" ]; then
   exit 1
 fi
 
-if [ -f temp ]; then
-  echo "Removing temp file"
-  rm temp
-fi
-
-git push origin v"${2}" || exit 1 # Push the new version tag for the release
-
-./gradlew clean build test
-
-URL="https://github.com/DaRacci/Minix/compare/v$1..v$2"
-grep -Poz "(?s)(?<=## \\[v$2\\]\\(${URL}\\) - ....-..-..\n).*?(?=- - -)" CHANGELOG.md >> ./.templog.md
-head -n -1 .templog.md > .temp ; mv .temp .templog.md # Remove that weird null line
+git push || exit 1
+git push origin v"${2}" || exit 1
 
 SEMIPATH=build/libs/Minix
-gh release create "v$2" -F ./.templog.md -t "Minix release $2" $SEMIPATH-$2.jar Minix-API/$SEMIPATH-API-$2-sources.jar Minix-Core/$SEMIPATH-Core-$2.jar
-rm ./.templog.md
+cog changelog v"$1"..v"$2" | gh release create "v$2" -F - -t "Minix release $2" $SEMIPATH-$2.jar Minix-API/$SEMIPATH-API-$2-sources.jar Minix-Core/$SEMIPATH-Core-$2.jar
 
 gh workflow run "docs.yml" # Generate the documentation
 

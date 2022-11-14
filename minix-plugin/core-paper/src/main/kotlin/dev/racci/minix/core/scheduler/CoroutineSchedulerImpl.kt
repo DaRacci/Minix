@@ -3,7 +3,6 @@ package dev.racci.minix.core.scheduler
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.collections.clear
-import dev.racci.minix.api.lifecycles.Closeable
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.scheduler.CoroutineBlock
 import dev.racci.minix.api.scheduler.CoroutineRunnable
@@ -14,17 +13,14 @@ import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.newFixedThreadPoolContext
 import org.koin.core.annotation.Scope
 import org.koin.core.annotation.Scoped
 import org.koin.core.component.get
-import java.lang.management.ManagementFactory
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 
 @Scope(Minix::class)
@@ -36,7 +32,7 @@ public class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Mini
 
     private val bukkitContext by lazy { get<Minix>().minecraftContext }
     private val ids by lazy { atomic(-1) }
-    private val tasks by lazy { mutableMapOf<Int, CoroutineTaskImpl>() }
+    private val tasks by lazy { ConcurrentHashMap<Int, CoroutineTaskImpl>() }
 
     public override suspend fun handleLoad() {
         ids.getAndSet(-1)

@@ -3,6 +3,8 @@
 
 # Minix
 
+# NOTE: Minix is undergoing a large scale refactor and with release 5.0.0 there will be many many breaking changes.
+
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/DaRacci/Minix/Java%20CI?color=purple&style=for-the-badge)](https://github.com/DaRacci/Minix/actions/workflows/java-ci.yml)
 [![Maven metadata URL](https://img.shields.io/maven-metadata/v?color=purple&metadataUrl=https%3A%2F%2Frepo.racci.dev%2Freleases%2Fdev%2Fracci%2FMinix%2Fmaven-metadata.xml&style=for-the-badge)]()
 

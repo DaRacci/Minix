@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.PluginClassLoader;
 /**
  * Creating a dummy plugin without any kotlin methods, so we can dynamically load the libraries.
  */
+// FIXME -> Some plugins try hook into this using reflection and fail to register listeners since this never gets enabled.
 @SuppressWarnings({"java:S1171"}) // We need a non-static init.
 public class MinixInit extends JavaPlugin {
 

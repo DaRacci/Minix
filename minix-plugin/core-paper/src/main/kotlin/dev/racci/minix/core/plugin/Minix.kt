@@ -6,28 +6,32 @@ import dev.racci.minix.api.paper.builders.ItemBuilderDSL
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.KoinUtils
+import dev.racci.minix.core.LoadListener
 import dev.racci.minix.core.MinixApplicationBuilder
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.data.MinixActualConfig
 import dev.racci.minix.core.logger.KoinProxy
 import dev.racci.minix.core.logger.SentryProxy
 import dev.racci.minix.core.logger.SlimJarProxy
+import dev.racci.minix.core.plugin.DummyLoader.Companion.setValue
 import dev.racci.minix.core.services.PluginServiceImpl
 import dev.racci.minix.core.services.mapped.ExtensionMapper
 import io.sentry.Sentry
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.runBlocking
+import org.bukkit.plugin.Plugin
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.component.get
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.koin.ksp.generated.*
+import java.lang.ref.WeakReference
 
 @Module
 @ComponentScan
 @MappedPlugin(13706)
-public actual class Minix : MinixPlugin() {
+public actual class Minix actual constructor(private val initPlugin: WeakReference<Plugin>) : MinixPlugin() {
     private var sentryState = atomic(false)
 
     override fun onLoad() {
@@ -42,6 +46,11 @@ public actual class Minix : MinixPlugin() {
         this.startSentry()
     }
 
+    override suspend fun handleEnable() {
+        initPlugin.get()?.setValue("isEnabled", true)
+        this.registerEvents(LoadListener())
+    }
+
     override suspend fun handleReload() {
         this.startSentry()
     }
@@ -49,7 +58,7 @@ public actual class Minix : MinixPlugin() {
     protected actual suspend fun startKoin() {
         org.koin.core.context.startKoin {
             this.modules(
-                KoinUtils.getModule(this@Minix),
+                KoinUtils.getModule(this@Minix)
 //                module { single { .getLogger(get<MinixImpl>()) } bind MinixLogger::class }
             )
 

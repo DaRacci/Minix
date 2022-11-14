@@ -12,6 +12,8 @@ import kotlin.reflect.KClass
 public abstract class DataService : Extension<Minix>(), StorageService<Minix> {
     public abstract fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T?
 
+    public abstract fun getMinixConfig(plugin: MinixPlugin): MinixConfig.Minix
+
     public inline fun <reified T : MinixConfig<out MinixPlugin>> get(): T = this.getConfig(T::class)!!
 
     public inline fun <reified T : MinixConfig<out MinixPlugin>> getOrNull(): T? = this.getConfig(T::class)

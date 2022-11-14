@@ -131,6 +131,24 @@ public abstract class MinixConfig<P : MinixPlugin>(
         @Comment("What LoggingLevel to use. Default is INFO [FATAL, ERROR, WARN, INFO, DEBUG, TRACE]")
         public var loggingLevel: String = "INFO"
 
+        public val storage: Storage = Storage()
+
+        @ConfigSerializable
+        public data class Storage(
+            @Comment("What storage type to use. Default is YAML [SQLITE, MARIADB]")
+            val type: StorageType = StorageType.SQLITE,
+            val host: String = "localhost",
+            val port: Int = 3306,
+            val database: String = "minix",
+            val username: String = "minix",
+            val password: String = "minix"
+        ) : InnerConfig by InnerConfig.Default() {
+            public enum class StorageType {
+                SQLITE,
+                MARIADB
+            }
+        }
+
         public fun processLoggingLevel() {
             if (!initialized) return
 

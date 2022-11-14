@@ -1,6 +1,7 @@
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
 import net.minecrell.pluginyml.bukkit.BukkitPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
+import org.jetbrains.dokka.Platform
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
@@ -15,9 +16,9 @@ val version: String by project
 // Workaround for (https://youtrack.jetbrains.com/issue/KTIJ-19369)
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("multiplatform") version "1.7.20"
-// TODO -> FIX
-//  alias(libs.plugins.minix.kotlin)
+    kotlin("multiplatform") version "1.7.21"
+    // FIXME -> Fix in Conventions
+    // alias(libs.plugins.minix.kotlin)
     alias(libs.plugins.minix.copyjar) apply false
     alias(libs.plugins.minix.purpurmc) apply false
 
@@ -73,6 +74,11 @@ kotlin {
                 api(libs.kotlinx.atomicfu)
                 api(libs.kotlinx.coroutines)
                 api(libs.kotlinx.immutableCollections)
+
+                api(libs.arrow.core)
+                api(libs.arrow.optics)
+                api(libs.arrow.fx.coroutines)
+                api("io.arrow-kt", "arrow-analysis-laws", rootProject.libs.plugins.arrow.get().version.requiredVersion)
             }
         }
 
@@ -91,9 +97,10 @@ kotlin {
                 api(libs.koin.core)
                 api(libs.mordant)
                 api(libs.caffeine)
-                api("org.bstats:bstats-base:3.0.0")
-                api("io.github.toolfactory:jvm-driver:9.3.0")
-                api("dev.racci.slimjar:slimjar:1.2.11")
+                api(libs.minecraft.bstats.base)
+                api(libs.toolfactory)
+                api(libs.slimjar)
+                api("org.mariadb.jdbc:mariadb-java-client:3.0.6")
 
                 api(libs.sentry.core)
                 api(libs.sentry.kotlin)
@@ -137,7 +144,7 @@ kotlin {
                 compileOnly("net.minecrell:terminalconsoleappender:1.3.0")
                 compileOnly("org.jline:jline-terminal-jansi:3.21.0")
 
-                api(libs.minecraft.bstats)
+                api(libs.minecraft.bstats.bukkit)
                 api(libs.configurate.hocon)
                 api(libs.configurate.extra.kotlin)
             }
@@ -199,7 +206,7 @@ subprojects {
             includeNonPublic.set(false)
             skipEmptyPackages.set(true)
             displayName.set(project.name.split("-")[1])
-            platform.set(org.jetbrains.dokka.Platform.jvm)
+            platform.set(Platform.jvm)
             sourceLink {
                 localDirectory.set(file("src/main/kotlin"))
                 remoteUrl.set(URL("https://github.com/DaRacci/Minix/blob/master/src/main/kotlin"))
@@ -214,11 +221,7 @@ subprojects {
 
     afterEvaluate {
         val subSlim = this.configurations.findByName("slim") ?: return@afterEvaluate
-        subSlim.dependencies.forEach {
-            rootProject.dependencies {
-                slim(it)
-            }
-        }
+        subSlim.dependencies.forEach { dep -> rootProject.dependencies { slim(dep) } }
     }
 }
 
@@ -235,12 +238,12 @@ tasks {
         dependencyFilter.include {
             subprojects.map(Project::getName).contains(it.moduleName) ||
                 it.moduleGroup == libs.sentry.core.get().module.group ||
-                it.moduleGroup == libs.minecraft.bstats.get().module.group ||
+                it.moduleGroup == libs.minecraft.bstats.base.get().module.group ||
                 it.moduleGroup == "dev.racci.slimjar"
         }
         val prefix = "dev.racci.minix.libs"
-        relocate("io.sentry", "$prefix.io.sentry")
-        relocate("org.bstats", "$prefix.org.bstats")
+        relocate("io.sentry", "$prefix.io.sentry") // TODO -> Slimjar Relocate
+        relocate("org.bstats", "$prefix.org.bstats") // TODO -> Slimjar Relocate
         relocate("io.github.slimjar", "$prefix.io.github.slimjar")
     }
 

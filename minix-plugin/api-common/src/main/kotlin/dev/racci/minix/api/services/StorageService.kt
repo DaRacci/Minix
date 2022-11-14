@@ -1,6 +1,7 @@
 package dev.racci.minix.api.services
 
 import com.zaxxer.hikari.HikariDataSource
+import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.extension.ExtensionSkeleton
 import dev.racci.minix.api.extensions.deleteProperty
 import dev.racci.minix.api.extensions.getProperty
@@ -40,6 +41,7 @@ public interface StorageService<P : MinixPlugin> : ExtensionSkeleton<P> {
         withDatabase {
             SchemaUtils.create(managedTable)
             SchemaUtils.addMissingColumnsStatements(managedTable)
+            SchemaUtils.createMissingTablesAndColumns(managedTable)
         }
     }
 
@@ -68,12 +70,23 @@ public interface StorageService<P : MinixPlugin> : ExtensionSkeleton<P> {
         "prepStmtCacheSqlLimit" to 2048
     )
 
-    // TODO -> MariaDB support
     // TODO -> HyperSQL support
     // TODO -> Support changing through MinixConfig file
     private fun createDatabaseConfig(): DataSource {
+        val storageConfig = DataService.getService().getMinixConfig(plugin).storage
+
         return with(HikariDataSource()) {
-            this.jdbcUrl = "jdbc:sqlite:${getStorageDirectory()}/database.db"
+            when (storageConfig.type) {
+                MinixConfig.Minix.Storage.StorageType.SQLITE -> {
+                    this.jdbcUrl = "jdbc:sqlite:${getStorageDirectory()}/database.db"
+                }
+                MinixConfig.Minix.Storage.StorageType.MARIADB -> {
+                    this.driverClassName = "org.mariadb.jdbc.Driver"
+                    this.jdbcUrl = "jdbc:mariadb://${storageConfig.host}:${storageConfig.port}/${storageConfig.database}"
+                    this.username = storageConfig.username
+                    this.password = storageConfig.password
+                }
+            }
 
             this@StorageService.getDataSourceProperties().forEach { (key, value) ->
                 this.addDataSourceProperty(key, value)

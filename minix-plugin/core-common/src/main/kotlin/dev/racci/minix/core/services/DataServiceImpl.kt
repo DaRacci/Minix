@@ -118,4 +118,16 @@ public class DataServiceImpl internal constructor(
     }
 
     override fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T? = configDataHolder[kClass].configInstance.safeCast()
+
+    override fun getMinixConfig(plugin: MinixPlugin): MinixConfig.Minix {
+        for (config in configDataHolder.asMap().values) {
+            if (config.configInstance.plugin !== plugin) continue
+            if (!config.configInstance.primaryConfig) continue
+            config.node.nonVirtualNode("minix").onSuccess { node ->
+                return node.get(MinixConfig.Minix::class) ?: error("The minix config section was not of the correct type!")
+            }
+        }
+
+        return MinixConfig.Minix() // Return a default config
+    }
 }

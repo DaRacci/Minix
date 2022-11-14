@@ -72,7 +72,7 @@ public class ListenerService(override val plugin: Minix) : Extension<Minix>() {
         ) {
             if (!hasExplicitlyChangedBlock()) return@event
 
-            PlayerMoveFullXYZEvent(player, from, to).callEvent()
+            PlayerMoveFullXYZEvent(MinixPlayer.wrapped(player), from, to).callEvent()
         }
 
         event<PlayerMoveFullXYZEvent>(

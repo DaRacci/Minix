@@ -20,8 +20,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
 import org.bukkit.event.Event
 import org.bukkit.event.Listener
+import org.koin.core.annotation.Factory
 import kotlin.coroutines.CoroutineContext
 
+@Factory([CoroutineSession::class])
 internal class PaperCoroutineSession(
     plugin: MinixPlugin
 ) : CoroutineSession, WithPlugin<MinixPlugin> by plugin {

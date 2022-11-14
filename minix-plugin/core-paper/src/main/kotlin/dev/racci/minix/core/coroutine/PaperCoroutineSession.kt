@@ -34,7 +34,7 @@ internal class PaperCoroutineSession(
     /** Sync context that stays on the main thread. */
     override val minecraftContext: CoroutineContext = MinecraftCoroutineDispatcher(plugin, wakeUpBlockService)
 
-    override val scope: CoroutineScope = MinixCoroutineExceptionHandler(plugin)
+    override val coroutineScope: CoroutineScope = MinixCoroutineExceptionHandler(plugin)
         .let(::CoroutineScope) + SupervisorJob() + context
 
     override var isManipulatedServerHeartBeat: Boolean

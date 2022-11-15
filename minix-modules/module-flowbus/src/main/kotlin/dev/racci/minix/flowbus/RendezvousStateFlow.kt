@@ -12,8 +12,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 /** A simple wrapper for waiting for an event to be fully processed by the listeners. */
-public class RendezvousStateFlow<T> internal constructor(
-    initialValue: T,
+public open class RendezvousStateFlow<T> constructor(
+    initialValue: T
 ) : MutableStateFlow<T> {
     private val backingFlow: MutableStateFlow<T> = MutableStateFlow(initialValue)
     private val atomicHolders = atomic(0)

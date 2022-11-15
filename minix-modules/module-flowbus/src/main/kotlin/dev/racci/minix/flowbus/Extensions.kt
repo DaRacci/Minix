@@ -1,5 +1,6 @@
 package dev.racci.minix.flowbus
 
+import dev.racci.minix.api.data.Priority
 import dev.racci.minix.flowbus.receiver.EventReceiver
 import kotlinx.coroutines.flow.Flow
 
@@ -51,6 +52,12 @@ public inline fun <reified T : Any> EventReceiver.subscribe(
     ignoreCancelled: Boolean = false,
     callback: EventCallback<T>
 ): EventReceiver = subscribeTo(T::class, skipRetained, priority, ignoreCancelled, callback)
+
+public inline fun <reified T : Any> EventReceiver.subscribeFlow(
+    skipRetained: Boolean = false,
+    priority: Priority = Priority.DEFAULT,
+    ignoreCancelled: Boolean = false
+): Flow<T> = flowOf(T::class, skipRetained, priority, ignoreCancelled)
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER") // This is intentional
 public inline fun <reified T : Any> EventReceiver.unsubscribe() {

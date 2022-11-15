@@ -95,8 +95,10 @@ public open class FlowBus {
 
     @API(status = API.Status.INTERNAL)
     public open fun <T : Any> forEvent(clazz: KClass<out T>): RendezvousStateFlow<T?> {
-        return flows.getOrPut(clazz) { RendezvousStateFlow<T?>(null) }.castOrThrow()
+        return flows.getOrPut(clazz) { createFlow<T>() }.castOrThrow()
     }
+
+    protected open fun <T : Any> createFlow(): RendezvousStateFlow<T?> = RendezvousStateFlow(null)
 
     protected open fun <T : Any> postOn(
         flow: RendezvousStateFlow<T?>,

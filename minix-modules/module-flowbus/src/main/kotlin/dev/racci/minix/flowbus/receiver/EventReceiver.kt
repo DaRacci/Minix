@@ -26,15 +26,17 @@ public interface EventReceiver {
      * The [callback] can be called immediately if event of type [clazz] is present in the flow.
      *
      * @param clazz Type of event to subscribe to
-     * @param skipRetained Skips event already present in the flow. This is `false` by default
-     * @param callback The callback function
+     * @param priority Priority of the event.
+     * @param ignoreCancelled If true, the callback will not be called if the event is cancelled.
+     * @param skipRetained Skips event already present in the flow. This is `false` by default.
+     * @param callback The callback function.
      * @return This instance of [EventReceiver] for chaining
      */
     public fun <T : Any> subscribeTo(
         clazz: KClass<T>,
-        skipRetained: Boolean = false,
         priority: Priority = Priority.DEFAULT, // TODO
         ignoreCancelled: Boolean = false,
+        skipRetained: Boolean = false,
         callback: suspend (T) -> Unit
     ): EventReceiver
 
@@ -42,24 +44,26 @@ public interface EventReceiver {
      * A variant of [subscribeTo] that uses an instance of [EventCallback] as callback.
      *
      * @param clazz Type of event to subscribe to
-     * @param skipRetained Skips event already present in the flow. This is `false` by default
+     * @param priority Priority of the event.
+     * @param ignoreCancelled If true, the callback will not be called if the event is cancelled.
+     * @param skipRetained Skips event already present in the flow. This is `false` by default.
      * @param callback Interface with implemented callback function
      * @return This instance of [EventReceiver] for chaining
      * @see [subscribeTo]
      */
     public fun <T : Any> subscribeTo(
         clazz: KClass<T>,
-        skipRetained: Boolean = false,
         priority: Priority = Priority.DEFAULT,
         ignoreCancelled: Boolean = false,
+        skipRetained: Boolean = false,
         callback: EventCallback<T>
     ): EventReceiver
 
     public fun <T : Any> flowOf(
         clazz: KClass<T>,
-        skipRetained: Boolean,
         priority: Priority,
-        ignoreCancelled: Boolean
+        ignoreCancelled: Boolean,
+        skipRetained: Boolean
     ): Flow<T>
 
     /**

@@ -23,41 +23,41 @@ public inline fun <reified T : Any> FlowBus.getFlow(): Flow<T> = getFlow(T::clas
  * Simplified [EventReceiver.subscribeTo] for Kotlin.
  * Type of event is automatically inferred from [callback] parameter type.
  *
- * @param skipRetained Skips event already present in the flow. This is `false` by default.
  * @param priority The priority of this listener in the events' collection. (Currently Non Functional)
  * @param ignoreCancelled Whether to ignore events that are cancelled. (Currently Non functional)
+ * @param skipRetained Skips event already present in the flow. This is `false` by default.
  * @param callback The callback function.
  * @return This instance of [EventReceiver] for chaining
  */
 public inline fun <reified T : Any> EventReceiver.subscribe(
-    skipRetained: Boolean = false,
     priority: Priority = Priority.DEFAULT,
     ignoreCancelled: Boolean = false,
+    skipRetained: Boolean = false,
     noinline callback: suspend T.() -> Unit
-): EventReceiver = subscribeTo(T::class, skipRetained, priority, ignoreCancelled, callback)
+): EventReceiver = subscribeTo(T::class, priority, ignoreCancelled, skipRetained, callback)
 
 /**
  * A variant of [subscribe] that uses an instance of [EventCallback] as callback.
  *
- * @param skipRetained Skips event already present in the flow. This is `false` by default
  * @param priority The priority of this listener in the events' collection. (Currently Non Functional)
  * @param ignoreCancelled Whether to ignore events that are cancelled. (Currently Non functional)
+ * @param skipRetained Skips event already present in the flow. This is `false` by default
  * @param callback Interface with implemented callback function
  * @return This instance of [EventReceiver] for chaining
  * @see [subscribe]
  */
 public inline fun <reified T : Any> EventReceiver.subscribe(
-    skipRetained: Boolean = false,
     priority: Priority = Priority.DEFAULT,
     ignoreCancelled: Boolean = false,
+    skipRetained: Boolean = false,
     callback: EventCallback<T>
-): EventReceiver = subscribeTo(T::class, skipRetained, priority, ignoreCancelled, callback)
+): EventReceiver = subscribeTo(T::class, priority, ignoreCancelled, skipRetained, callback)
 
 public inline fun <reified T : Any> EventReceiver.subscribeFlow(
-    skipRetained: Boolean = false,
     priority: Priority = Priority.DEFAULT,
-    ignoreCancelled: Boolean = false
-): Flow<T> = flowOf(T::class, skipRetained, priority, ignoreCancelled)
+    ignoreCancelled: Boolean = false,
+    skipRetained: Boolean = false
+): Flow<T> = flowOf(T::class, priority, ignoreCancelled, skipRetained)
 
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER") // This is intentional
 public inline fun <reified T : Any> EventReceiver.unsubscribe() {

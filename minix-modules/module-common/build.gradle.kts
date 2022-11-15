@@ -9,10 +9,10 @@ plugins {
 val slim: Configuration by configurations.getting
 
 dependencies {
-    slim(platform("io.arrow-kt:arrow-stack:1.1.4-alpha.10"))
-    slim("io.arrow-kt:arrow-core")
-    slim("io.arrow-kt:arrow-fx-coroutines")
-    slim("io.arrow-kt:arrow-optics")
+    slim(libs.arrow.core)
+    slim(libs.arrow.optics)
+    slim(libs.arrow.fx.stm)
+    slim(libs.arrow.fx.coroutines)
 
     slim(libs.koin.core)
     slim(libs.adventure.api)
@@ -30,5 +30,7 @@ dependencies {
     compileOnly(libs.kotlinx.serialization.core)
 
     compileOnlyApi("io.insert-koin:koin-annotations:1.0.3")
-    compileOnlyApi("org.apiguardian:apiguardian-api:1.1.2")
+    compileOnlyApi(libs.apiguardian)
+
+    testApi(libs.koin.core)
 }

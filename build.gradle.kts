@@ -1,9 +1,11 @@
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
+import kotlinx.validation.KotlinApiBuildTask
 import net.minecrell.pluginyml.bukkit.BukkitPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
 import org.jetbrains.dokka.Platform
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
@@ -78,7 +80,7 @@ kotlin {
                 api(libs.arrow.core)
                 api(libs.arrow.optics)
                 api(libs.arrow.fx.coroutines)
-                api("io.arrow-kt", "arrow-analysis-laws", rootProject.libs.plugins.arrow.get().version.requiredVersion)
+                api("io.arrow-kt:arrow-analysis-laws:${libs.plugins.arrow.get().version.requiredVersion}")
             }
         }
 
@@ -109,7 +111,7 @@ kotlin {
                 api(libs.adventure.configurate)
 
                 // Annotations
-                compileOnly("org.apiguardian:apiguardian-api:1.1.2")
+                compileOnly(libs.apiguardian)
                 compileOnly("io.insert-koin:koin-annotations:1.0.3")
             }
         }
@@ -129,6 +131,7 @@ kotlin {
         }
 
         val paperMain by creating {
+
             this.setDirs("paper", false)
             this.kotlin.srcDir("minix-plugin/core-paper/src/main/java")
 
@@ -137,7 +140,7 @@ kotlin {
 
             this.dependencies {
                 // Integrations
-                compileOnly("net.frankheijden.serverutils:ServerUtils:3.5.3")
+                compileOnly(libs.minecraft.api.serverutils)
 
                 // MinixLogger backend hooks for paper logger
                 compileOnly("org.apache.logging.log4j:log4j-core:2.19.0")
@@ -153,6 +156,9 @@ kotlin {
 
     targets {
         jvm("paper") {
+            this.withJava()
+
+            this.project.apply<Dev_racci_minix_nmsPlugin>()
             this.project.apply<BukkitPlugin>()
             this.project.bukkit {
                 name = "Minix"
@@ -179,7 +185,7 @@ subprojects {
     apply<DokkaPlugin>()
     apply<JavaLibraryPlugin>()
     apply<MavenPublishPlugin>()
-    apply<Dev_racci_minix_kotlinPlugin>()
+    apply<KotlinPlatformJvmPlugin>()
     apply<KspGradleSubplugin>()
 
     configurations {
@@ -194,6 +200,7 @@ subprojects {
         val common = project(":minix-modules:module-common")
         if (this@subprojects.project !== common.dependencyProject) {
             compileOnly(common)
+            testImplementation(common)
         }
 
         ksp("io.arrow-kt:arrow-meta:1.6.1-SNAPSHOT")
@@ -205,6 +212,7 @@ subprojects {
         dokkaHtml.get().dokkaSourceSets.configureEach {
             includeNonPublic.set(false)
             skipEmptyPackages.set(true)
+            reportUndocumented.set(true)
             displayName.set(project.name.split("-")[1])
             platform.set(Platform.jvm)
             sourceLink {

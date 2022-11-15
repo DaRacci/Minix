@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services.mapped
 
+import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.reflection.safeCast
@@ -17,6 +18,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 
+@MappedExtension
 public actual class IntegrationMapper : MapperService<Minix>, Extension<Minix>() {
     override val plugin: Minix by inject()
     override val superclass: KClass<out Any> = Integration::class

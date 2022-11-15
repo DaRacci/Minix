@@ -62,6 +62,8 @@ internal constructor(
 ) : KoinComponent where P : MinixPlugin, C : MinixConfig<out P> {
     public val reference: ConfigurationReference<CommentedConfigurationNode>
 
+    public fun get(): C = getKoin().get(managedClass)
+
     public fun save() {
         this.ensureDirectory()
         this.reference.node().set(this.managedClass, getKoin().get(this.managedClass))

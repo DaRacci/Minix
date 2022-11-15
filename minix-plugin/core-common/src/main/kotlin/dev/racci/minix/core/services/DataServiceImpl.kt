@@ -1,14 +1,14 @@
 package dev.racci.minix.core.services
 
+import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.github.benmanes.caffeine.cache.LoadingCache
 import com.github.benmanes.caffeine.cache.RemovalCause
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.MinixConfig
+import dev.racci.minix.api.extensions.collections.clear
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.reflection.ifInitialised
-import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
@@ -19,20 +19,20 @@ import dev.racci.minix.core.data.ConfigData
 import dev.racci.minix.core.data.PluginData
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.core.services.mapped.MapperService
-import dev.racci.minix.flowbus.receiver.EventReceiver
+import dev.racci.minix.data.extensions.nonVirtualNode
 import io.github.classgraph.ClassInfo
-import kotlinx.coroutines.runBlocking
 import org.jetbrains.exposed.sql.Table
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.context.unloadKoinModules
 import org.koin.core.error.NoBeanDefFoundException
+import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.reference.WatchServiceListener
 import kotlin.reflect.KClass
 
 @MappedExtension([PluginService::class], DataService::class, threadCount = 2)
 public class DataServiceImpl internal constructor(
     @InjectedParam override val plugin: Minix
-) : StorageService<Minix>, MapperService<Minix>, DataService(), EventReceiver by getKoin().get() {
+) : StorageService<Minix>, MapperService<Minix>, DataService() {
     private val configurations = multiMapOf<KClass<out MinixPlugin>, ConfigData<*, *>>()
 
     internal lateinit var watcher: WatchServiceListener
@@ -60,7 +60,8 @@ public class DataServiceImpl internal constructor(
         plugin: MinixPlugin
     ) {
         try {
-            configDataHolder[classInfo.loadClass().kotlin.castOrThrow()]
+            val kClass = classInfo.loadClass().kotlin.castOrThrow<KClass<out MinixConfig<*>>>()
+            configDataHolder.put(kClass, ConfigData(kClass, plugin))
         } catch (e: NoBeanDefFoundException) {
             logger.error(e) { "Failed to register config [${plugin.value}:${classInfo.name}]" }
         } catch (e: Exception) {
@@ -69,65 +70,44 @@ public class DataServiceImpl internal constructor(
     }
 
     override suspend fun forgetMapped(plugin: MinixPlugin) {
-        configurations.clear { _, config ->
-            disposeConfig(config)
-            unloadKoinModules(KoinUtils.getModule(config))
+        configurations[plugin::class]?.clear {
+            disposeConfig(this)
+            unloadKoinModules(KoinUtils.getModule(this))
+            KoinUtils.clearBinds(this)
         }
-
-        ClassValueCtorCache.cache.configurations
-            .onEach(dataService.configDataHolder::invalidate)
-            .onEach { unloadKoinModules(KoinUtils.getModule(it)) }
-            .forEach(KoinUtils::clearBinds)
     }
 
-    internal val configDataHolder: LoadingCache<KClass<out MinixConfig<*>>, ConfigData<*, *>> = Caffeine.newBuilder()
+    internal val configDataHolder: Cache<KClass<out MinixConfig<*>>, ConfigData<*, *>> = Caffeine.newBuilder()
         .executor(dispatcher.get().executor)
         .removalListener<KClass<*>, ConfigData<*, *>> { key, value, cause ->
             if (key == null || value == null || cause == RemovalCause.REPLACED) return@removalListener
-            logger.info { "Saving and disposing configurate class [${value.configInstance.plugin}:${key.simpleName}]." }
-
-            value.configInstance.handleUnload()
-            if (value.configLoader.canSave()) {
-                value.save()
-            }
-
-            configurations.remove(plugin::class, value = value.configInstance)
-        }
-        .build { key -> runBlocking(dispatcher.get()) { ConfigData(key) } }
+            disposeConfig(value)
+        }.build()
 
     override suspend fun handlePostUnload() {
         super<StorageService>.handleUnload()
-        this.configurations.clear { kClass, config ->
-            val instance = getKoin().get<MinixConfig<*>>(kClass)
-            instance.handleUnload()
-            config.save()
-        }
+        this.configurations.clear { _, config -> disposeConfig(config) }
     }
 
     /** Save the configuration and remove references to it. */
     private fun disposeConfig(data: ConfigData<*, *>) {
-        val instance = getKoin().get<MinixConfig<*>>(data.managedClass)
+        val instance = data.get()
 
         logger.info { "Saving and disposing configurate class [${instance.value}]." }
-        value.configInstance.handleUnload()
-        if (value.configLoader.canSave()) {
-            value.save()
-        }
+        instance.handleUnload()
+        data.save()
 
-        configurations.remove(plugin::class, value = value.configInstance)
+        configurations.remove(plugin::class, data)
     }
 
-    override fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T? = configDataHolder[kClass].configInstance.safeCast()
+    override fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T? = getKoin().getOrNull<T>(kClass)
 
     override fun getMinixConfig(plugin: MinixPlugin): MinixConfig.Minix {
-        for (config in configDataHolder.asMap().values) {
-            if (config.configInstance.plugin !== plugin) continue
-            if (!config.configInstance.primaryConfig) continue
-            config.node.nonVirtualNode("minix").onSuccess { node ->
-                return node.get(MinixConfig.Minix::class) ?: error("The minix config section was not of the correct type!")
-            }
-        }
-
-        return MinixConfig.Minix() // Return a default config
+        return configDataHolder.asMap().values.asSequence()
+            .filter { data -> data.owner === plugin }
+            .filter { data -> data.get().primaryConfig }
+            .mapNotNull { data -> data.reference.node().nonVirtualNode("minix").getOrNull() }
+            .map { node -> node.get(MinixConfig.Minix::class) }
+            .firstOrNull() ?: MinixConfig.Minix.default // Return a default config if none are found
     }
 }

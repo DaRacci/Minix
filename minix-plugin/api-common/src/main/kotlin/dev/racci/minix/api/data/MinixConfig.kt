@@ -124,14 +124,30 @@ public abstract class MinixConfig<P : MinixPlugin>(
     }
 
     @ConfigSerializable
-    public class Minix : InnerConfig by InnerConfig.Default() {
-
-        // TODO -> Fix constraint
-        /*@Constraint(MinixConstraints.LoggingLevel::class)*/
+    public data class Minix(
+        // FIXME -> @Constraint(MinixConstraints.LoggingLevel::class)
         @Comment("What LoggingLevel to use. Default is INFO [FATAL, ERROR, WARN, INFO, DEBUG, TRACE]")
-        public var loggingLevel: String = "INFO"
-
+        public var loggingLevel: String = "INFO",
         public val storage: Storage = Storage()
+    ) : InnerConfig by InnerConfig.Default() {
+        public fun processLoggingLevel() {
+            if (!initialized) return
+
+            val field = with(loggingLevel.uppercase()) { loggingLevel.takeUnless { this != it } ?: this }
+
+            if (loggingLevel == field && plugin.logger.logLevel.name == field) {
+                return
+            }
+
+            var enum = enumValues<LoggingLevel>().find { it.name == field }
+            if (enum == null) {
+                plugin.logger.warn { "Invalid logging level '$field', using '${LoggingLevel.INFO.name}' instead." }
+                enum = LoggingLevel.INFO
+            }
+
+            plugin.logger.setLevel(enum)
+            loggingLevel = field
+        }
 
         @ConfigSerializable
         public data class Storage(
@@ -149,23 +165,8 @@ public abstract class MinixConfig<P : MinixPlugin>(
             }
         }
 
-        public fun processLoggingLevel() {
-            if (!initialized) return
-
-            val field = with(loggingLevel.uppercase()) { loggingLevel.takeUnless { this != it } ?: this }
-
-            if (loggingLevel == field && plugin.log.logLevel.name == field) {
-                return
-            }
-
-            var enum = enumValues<LoggingLevel>().find { it.name == field }
-            if (enum == null) {
-                plugin.log.warn { "Invalid logging level '$field', using '${LoggingLevel.INFO.name}' instead." }
-                enum = LoggingLevel.INFO
-            }
-
-            plugin.log.setLevel(enum)
-            loggingLevel = field
+        public companion object {
+            public val default: Minix by lazy(::Minix)
         }
     }
 }

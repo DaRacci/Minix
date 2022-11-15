@@ -13,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
+// TODO -> Provide 'SNAPSHOT' of class after unload with warning.
 public object KoinUtils {
     @PublishedApi
     internal val reference: ConcurrentHashMap<KClass<*>, Pair<Module?, Array<KClass<*>>>> = ConcurrentHashMap<KClass<*>, Pair<Module?, Array<KClass<*>>>>()

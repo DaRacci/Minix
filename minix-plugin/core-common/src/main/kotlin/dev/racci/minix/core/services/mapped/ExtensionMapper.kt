@@ -21,7 +21,6 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.job
-import org.koin.core.component.inject
 import org.koin.core.context.loadKoinModules
 import org.koin.core.context.unloadKoinModules
 import org.koin.ext.getFullName
@@ -37,8 +36,9 @@ import kotlin.reflect.full.starProjectedType
 @DoNotUnload
 @MappedExtension
 @Suppress("UnstableApiUsage")
-public class ExtensionMapper : MapperService<Minix> {
-    override val plugin: Minix by inject()
+public class ExtensionMapper(
+    override val plugin: Minix
+) : MapperService<Minix>, Extension<Minix>() {
     override val superclass: KClass<*> = Extension::class
     override val targetAnnotation: KClass<out Annotation> = MappedExtension::class
 

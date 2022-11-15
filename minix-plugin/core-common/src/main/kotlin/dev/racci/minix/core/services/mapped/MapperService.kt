@@ -3,16 +3,16 @@ package dev.racci.minix.core.services.mapped
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
+import dev.racci.minix.api.extension.ExtensionSkeleton
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.plugin.WithPlugin
 import io.github.classgraph.AnnotationClassRef
 import io.github.classgraph.ClassInfo
 import io.github.classgraph.ScanResult
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSuperclassOf
 
-public interface MapperService<T : MinixPlugin> : WithPlugin<T> {
+public interface MapperService<T : MinixPlugin> : ExtensionSkeleton<T> {
     public val superclass: KClass<out Any>
     public val targetAnnotation: KClass<out Annotation>
 

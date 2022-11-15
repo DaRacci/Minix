@@ -4,7 +4,6 @@ import arrow.core.filterIsInstance
 import dev.racci.minix.api.extensions.collections.findKCallable
 import dev.racci.minix.api.extensions.pluginManager
 import dev.racci.minix.api.extensions.reflection.castOrThrow
-import dev.racci.minix.core.MinixImpl
 import dev.racci.minix.core.MinixInit
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.PluginDescriptionFile
@@ -29,7 +28,7 @@ public class DummyLoader {
         classLoader.setValue<PluginClassLoader, Plugin?>("plugin", null)
         classLoader.setValue<PluginClassLoader, Plugin?>("pluginInit", null)
 
-        val minix = MinixImpl(WeakReference(initPlugin))
+        val minix = Minix(WeakReference(initPlugin))
         classLoader.setValue<PluginClassLoader, Plugin?>("plugin", minix)
         classLoader.setValue<PluginClassLoader, Plugin?>("pluginInit", minix)
         minix.onLoad()

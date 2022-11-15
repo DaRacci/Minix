@@ -2,13 +2,24 @@
 
 package dev.racci.minix.api.utils.kotlin
 
+import arrow.core.Either
 import dev.racci.minix.api.exceptions.LevelConversionException
+import dev.racci.minix.api.extensions.reflection.castOrThrow
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredFunctions
 import kotlin.reflect.full.functions
 import kotlin.reflect.full.memberProperties
+
+@Suppress("EXTENSION_SHADOWED_BY_MEMBER")
+public inline fun <reified T : Throwable, A> Either.Companion.catch(
+    block: () -> A
+): Either<T, A> = Either.catch {
+    block()
+}.tapLeft { err ->
+    if (err !is T) throw err
+}.castOrThrow()
 
 public inline fun <reified T : Throwable, reified U : Any> catch(
     err: (T) -> U,

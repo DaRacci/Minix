@@ -2,6 +2,7 @@ import com.google.devtools.ksp.gradle.KspGradleSubplugin
 import kotlinx.validation.KotlinApiBuildTask
 import net.minecrell.pluginyml.bukkit.BukkitPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
+import org.gradle.model.internal.core.ModelNodes.withType
 import org.jetbrains.dokka.Platform
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
@@ -95,6 +96,7 @@ kotlin {
                 api(project(":minix-modules:module-flowbus"))
                 api(project(":minix-modules:module-integrations"))
                 api(project(":minix-modules:module-wrappers"))
+                api(project(":minix-modules:module-ticker"))
 
                 api(libs.koin.core)
                 api(libs.mordant)

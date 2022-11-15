@@ -1,5 +1,7 @@
 package dev.racci.minix.flowbus
 
+import dev.racci.minix.api.data.Priority
+
 public class MutableEventCallbackBuilder internal constructor() {
 
     public var priority: Priority = Priority.DEFAULT

@@ -1,9 +1,9 @@
 package dev.racci.minix.api.extensions
 
+import dev.racci.minix.api.data.Priority
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.WithPlugin
-import dev.racci.minix.flowbus.Priority
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
@@ -11,7 +11,6 @@ import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.plugin.PluginManager
-import org.koin.core.component.get
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.primaryConstructor

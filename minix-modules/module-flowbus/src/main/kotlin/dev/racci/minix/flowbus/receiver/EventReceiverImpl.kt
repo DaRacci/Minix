@@ -12,7 +12,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
@@ -56,14 +56,19 @@ public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : E
         priority: Priority,
         ignoreCancelled: Boolean,
         skipRetained: Boolean,
-        callback: suspend (T) -> Unit
+        callback: suspend T.() -> Unit
+    ): EventReceiver = subscribeTo(clazz, EventCallback(priority, ignoreCancelled, skipRetained, callback))
+
+    override fun <T : Any> subscribeTo(
+        clazz: KClass<T>,
+        callback: EventCallback<T>
     ): EventReceiver {
         if (jobs.containsKey(clazz)) {
             throw IllegalArgumentException("Already subscribed for event type: $clazz")
         }
 
-        jobs[clazz] = flowOf(clazz, priority, ignoreCancelled, skipRetained)
-            .onEach(callback)
+        jobs[clazz] = flowOf(clazz, callback.priority, callback.ignoreCancelled, callback.skipRetained)
+            .onEach(callback.callback)
             .flowOn(returnDispatcher)
             .launchIn(createScope())
 
@@ -78,15 +83,7 @@ public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : E
     ): Flow<T> = bus.forEvent(clazz)
         .drop(if (skipRetained) 1 else 0)
         .filterNotNull()
-        .filter { !ignoreCancelled || !isCancelled(it) }
-
-    override fun <T : Any> subscribeTo(
-        clazz: KClass<T>,
-        priority: Priority,
-        ignoreCancelled: Boolean,
-        skipRetained: Boolean,
-        callback: EventCallback<T>
-    ): EventReceiver = subscribeTo(clazz, priority, ignoreCancelled, skipRetained, callback::onEvent)
+        .filterNot { ignoreCancelled && isCancelled(it) }
 
     override fun <T : Any> unsubscribe(clazz: KClass<T>) {
         jobs.remove(clazz)?.cancel()

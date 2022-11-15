@@ -24,4 +24,7 @@ public fun loadModule(
 /**
  * Retrieve the current [Koin] instance.
  **/
-public fun getKoin(): Koin = KoinPlatformTools.defaultContext().get()
+public fun getKoin(): Koin = koin
+
+@get:JvmName("getKoinInline")
+public inline val koin: Koin get() = KoinPlatformTools.defaultContext().get()

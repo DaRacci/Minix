@@ -46,12 +46,7 @@ public inline fun <reified T : Any> EventReceiver.subscribe(
  * @return This instance of [EventReceiver] for chaining
  * @see [subscribe]
  */
-public inline fun <reified T : Any> EventReceiver.subscribe(
-    priority: Priority = Priority.DEFAULT,
-    ignoreCancelled: Boolean = false,
-    skipRetained: Boolean = false,
-    callback: EventCallback<T>
-): EventReceiver = subscribeTo(T::class, priority, ignoreCancelled, skipRetained, callback)
+public inline fun <reified T : Any> EventReceiver.subscribe(callback: EventCallback<T>): EventReceiver = subscribeTo(T::class, callback)
 
 public inline fun <reified T : Any> EventReceiver.subscribeFlow(
     priority: Priority = Priority.DEFAULT,

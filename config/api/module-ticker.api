@@ -1,0 +1,37 @@
+public abstract class dev/racci/minix/ticker/Ticker {
+	public synthetic fun <init> (JLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	protected final fun appendTicking (Ldev/racci/minix/ticker/TickingEntity;)V
+	public final fun getLastTick ()Lkotlinx/datetime/Instant;
+	protected abstract fun getSubscriberDispatcher ()Lkotlinx/coroutines/ExecutorCoroutineDispatcher;
+	public final fun getTickCount ()J
+	public final fun getTickInterval-UwyO8pc ()J
+	protected abstract fun getTickerDispatcher ()Lkotlinx/coroutines/ExecutorCoroutineDispatcher;
+	protected abstract fun getTickerScope ()Lkotlinx/coroutines/CoroutineScope;
+	protected fun handleInit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	protected fun handleShutdown (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun isPaused ()Z
+	public final fun isRunning ()Z
+	protected final fun pause ()V
+	protected final fun removeTicking (Ldev/racci/minix/ticker/TickingEntity;)V
+	protected final fun resume ()V
+}
+
+public final class dev/racci/minix/ticker/TickingEntity : java/lang/Comparable {
+	public synthetic fun <init> (Ljava/lang/Object;IILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (Ljava/lang/Object;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun compareTo (Ldev/racci/minix/ticker/TickingEntity;)I
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public final fun component1 ()Ljava/lang/Object;
+	public final fun component2-oUxLd3o ()I
+	public final fun copy-lYxqsJE (Ljava/lang/Object;I)Ldev/racci/minix/ticker/TickingEntity;
+	public static synthetic fun copy-lYxqsJE$default (Ldev/racci/minix/ticker/TickingEntity;Ljava/lang/Object;IILjava/lang/Object;)Ldev/racci/minix/ticker/TickingEntity;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEntity ()Ljava/lang/Object;
+	public final fun getLastTick ()J
+	public final fun getPriority-oUxLd3o ()I
+	public fun hashCode ()I
+	public final fun isRunning ()Z
+	public final fun setRunning (Z)V
+	public fun toString ()Ljava/lang/String;
+}
+

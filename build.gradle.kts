@@ -207,6 +207,7 @@ subprojects {
 
         ksp("io.arrow-kt:arrow-meta:1.6.1-SNAPSHOT")
         ksp("io.insert-koin:koin-ksp-compiler:1.0.3")
+        ksp(rootProject.libs.arrow.optics.ksp)
     }
 
     tasks {

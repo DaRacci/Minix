@@ -1,9 +1,9 @@
 package dev.racci.minix.api.extension
 
+import dev.racci.minix.api.data.Priority
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.flowbus.EventCallback
-import dev.racci.minix.api.data.Priority
 import dev.racci.minix.flowbus.receiver.EventReceiver
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.reflect.KClass
@@ -22,17 +22,14 @@ public expect abstract class Extension<P : MinixPlugin>() : PlatformIndependentE
 
     public final override fun <T : Any> subscribeTo(
         clazz: KClass<T>,
-        skipRetained: Boolean,
         priority: Priority,
         ignoreCancelled: Boolean,
+        skipRetained: Boolean,
         callback: suspend (T) -> Unit
     ): EventReceiver
 
     public final override fun <T : Any> subscribeTo(
         clazz: KClass<T>,
-        skipRetained: Boolean,
-        priority: Priority,
-        ignoreCancelled: Boolean,
         callback: EventCallback<T>
     ): EventReceiver
 

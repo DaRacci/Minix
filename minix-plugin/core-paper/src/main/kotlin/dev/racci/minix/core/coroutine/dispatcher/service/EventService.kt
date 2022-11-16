@@ -66,7 +66,7 @@ internal class EventService(
             reg: RegisteredListener,
             event: Event
         ) = this.onFailure { err ->
-            plugin.log.error(err) { "Couldn't pass event ${event.eventName} to ${reg.plugin.description.fullName}" }
+            plugin.logger.error(err) { "Couldn't pass event ${event.eventName} to ${reg.plugin.description.fullName}" }
         }
 
         fun fireConcurrent() = filteredListeners().map { reg ->
@@ -99,13 +99,13 @@ internal class EventService(
     ): MutableMultiMap<KClass<*>, RegisteredListener> {
         val result = multiMapOf<KClass<*>, RegisteredListener>()
 
-        plugin.log.debug { "Creating coroutine listener for ${listener::class.simpleName}" }
+        plugin.logger.debug { "Creating coroutine listener for ${listener::class.simpleName}" }
 
         runCatching {
             listener::class.functions + listener::class.declaredFunctions
         }.onFailure { err ->
             if (err !is NoClassDefFoundError) throw err
-            plugin.log.error(err) { "Failed to register events for ${listener::class} because ${err.message} doesn't exist." }
+            plugin.logger.error(err) { "Failed to register events for ${listener::class} because ${err.message} doesn't exist." }
             return multiMapOf()
         }.getOrThrow().asSequence().filter { func ->
             func.hasAnnotation<EventHandler>()
@@ -131,7 +131,7 @@ internal class EventService(
                     AuthorNagException(null)
                 } else null
 
-                plugin.log.warn(err) { "${plugin.description.fullName} has registered a listener for ${kClass.qualifiedName}, but the event id Deprecated. $func; please notify the authors ${plugin.description.authors}." }
+                plugin.logger.warn(err) { "${plugin.description.fullName} has registered a listener for ${kClass.qualifiedName}, but the event id Deprecated. $func; please notify the authors ${plugin.description.authors}." }
             }
         }.forEach { (func, eventKClass) ->
             val executor = SuspendingEventExecutor(eventKClass, func, coroutineSession)

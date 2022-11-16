@@ -98,7 +98,7 @@ public actual class Minix actual constructor(private val initPlugin: WeakReferen
             Sentry.init { options ->
                 options.dsn = "https://80dedb0e861949509a7ed845deaca185@o1112455.ingest.sentry.io/6147185"
                 options.release = description.version
-                options.isDebug = log.isEnabled(LoggingLevel.DEBUG)
+                options.isDebug = logger.isEnabled(LoggingLevel.DEBUG)
                 options.environment = if (version.isPreRelease) "pre-release" else "release"
                 options.environment = "production"
                 options.inAppIncludes += "dev.racci.minix"

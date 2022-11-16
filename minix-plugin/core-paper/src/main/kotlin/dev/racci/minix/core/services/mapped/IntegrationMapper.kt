@@ -33,8 +33,8 @@ public actual class IntegrationMapper : MapperService<Minix>, Extension<Minix>()
         val managerKClass = annotation.integrationManager
 
         when {
-            managerKClass == IntegrationManager::class -> plugin.log.trace { "Integration [${kClass.simpleName}] is self-acting." }
-            managerKClass.objectInstance.safeCast<IntegrationManager<out Integration>>() == null -> return plugin.log.error { "Failed to obtain singleton instance of ${managerKClass.qualifiedName}." }
+            managerKClass == IntegrationManager::class -> plugin.logger.trace { "Integration [${kClass.simpleName}] is self-acting." }
+            managerKClass.objectInstance.safeCast<IntegrationManager<out Integration>>() == null -> return plugin.logger.error { "Failed to obtain singleton instance of ${managerKClass.qualifiedName}." }
         }
 
         IntegrationLoader(annotation.pluginName) {

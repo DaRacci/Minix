@@ -33,9 +33,6 @@ public abstract class PlatformIndependentExtension<P : MinixPlugin> internal con
         )
     }
 
-    @Deprecated("Use value instead.", replaceWith = ReplaceWith("value"))
-    final override val name: String get() = this.value
-
     final override val scope: Scope = createScope(value)
 
     final override val eventListener: PlatformListener<P> by lazy { PlatformListener(plugin) }

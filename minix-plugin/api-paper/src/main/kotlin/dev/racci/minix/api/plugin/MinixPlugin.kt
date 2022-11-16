@@ -36,7 +36,6 @@ public actual abstract class MinixPlugin :
 
     actual final override val version: Version by lazy { Version(this.description.version) }
 
-    public actual val log: MinixLogger get() = logger
     public actual val enabled: Boolean get() = this.isEnabled
     public actual val metrics: Metrics by lazy { Metrics(this) }
 

@@ -3,7 +3,6 @@ package dev.racci.minix.api.plugin
 import dev.racci.minix.api.lifecycles.ComplexManagedLifecycle
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.data.Version
-import org.jetbrains.annotations.ApiStatus
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
@@ -83,8 +82,4 @@ public expect abstract class MinixPlugin : PlatformPlugin, WithPlugin<MinixPlugi
 
     /** Called once after minix has completed its internal unloading process. */
     override suspend fun handlePostUnload()
-
-    @get:ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-    @Deprecated("Use logger instead", ReplaceWith("logger"))
-    public val log: MinixLogger
 }

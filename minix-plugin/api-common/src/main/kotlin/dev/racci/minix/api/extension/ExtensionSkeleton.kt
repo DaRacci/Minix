@@ -42,10 +42,6 @@ public interface ExtensionSkeleton<P : MinixPlugin> : WithPlugin<P>, KoinScopeCo
     @get:API(status = API.Status.INTERNAL)
     public val eventListener: PlatformListener<P>
 
-    /** The name of the extension. */
-    @Deprecated("Use value instead.", ReplaceWith("value"))
-    public val name: String
-
     /**
      * The current state of the extension.
      * You can listen to state changes on [FlowBus] with the event type of [ExtensionStateEvent].

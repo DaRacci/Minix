@@ -1,11 +1,12 @@
 package dev.racci.minix.core.services
 
-import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
+import com.github.benmanes.caffeine.cache.LoadingCache
 import com.github.benmanes.caffeine.cache.RemovalCause
 import dev.racci.minix.api.annotations.MappedConfig
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.MinixConfig
+import dev.racci.minix.api.events.plugin.MinixPluginStateEvent
 import dev.racci.minix.api.extensions.collections.clear
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.reflection.ifInitialised
@@ -20,7 +21,9 @@ import dev.racci.minix.core.data.PluginData
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.core.services.mapped.MapperService
 import dev.racci.minix.data.extensions.nonVirtualNode
+import dev.racci.minix.flowbus.subscribeFlow
 import io.github.classgraph.ClassInfo
+import kotlinx.coroutines.flow.filter
 import org.jetbrains.exposed.sql.Table
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.context.unloadKoinModules
@@ -33,9 +36,14 @@ import kotlin.reflect.KClass
 public class DataServiceImpl internal constructor(
     @InjectedParam override val plugin: Minix
 ) : StorageService<Minix>, MapperService<Minix>, DataService() {
-    private val configurations = multiMapOf<KClass<out MinixPlugin>, ConfigData<*, *>>()
-
     internal lateinit var watcher: WatchServiceListener
+    private val configurations = multiMapOf<KClass<out MinixPlugin>, ConfigData<*, *>>()
+    private val configDataHolder: LoadingCache<KClass<out MinixConfig<*>>, ConfigData<*, *>> = Caffeine.newBuilder()
+        .executor(dispatcher.get().executor)
+        .removalListener<KClass<*>, ConfigData<*, *>> { key, value, cause ->
+            if (key == null || value == null || cause == RemovalCause.REPLACED) return@removalListener
+            disposeConfig(value)
+        }.build { kClass -> ConfigData(kClass, plugin) }
 
     override val managedTable: Table = PluginData
     override val superclass: KClass<out Any> = MinixConfig::class
@@ -45,14 +53,20 @@ public class DataServiceImpl internal constructor(
         watcher = WatchServiceListener.builder()
             .taskExecutor(DataService.getService().dispatcher.get().executor)
             .build()
-    }
 
-    override suspend fun handleReload() {
-        // TODO -> Reload all configurations
+        subscribeFlow<MinixPluginStateEvent>()
+            .filter { event -> event.state == MinixPluginStateEvent.State.RELOAD }
+            .filter { event -> event.plugin::class in configurations.keys }
+            .launchIn()
     }
 
     override suspend fun handleUnload() {
         ::watcher.ifInitialised(WatchServiceListener::close)
+    }
+
+    override suspend fun handlePostUnload() {
+        super<StorageService>.handlePostUnload()
+        this.configurations.clear { _, config -> disposeConfig(config) }
     }
 
     override suspend fun registerMapped(
@@ -77,16 +91,11 @@ public class DataServiceImpl internal constructor(
         }
     }
 
-    internal val configDataHolder: Cache<KClass<out MinixConfig<*>>, ConfigData<*, *>> = Caffeine.newBuilder()
-        .executor(dispatcher.get().executor)
-        .removalListener<KClass<*>, ConfigData<*, *>> { key, value, cause ->
-            if (key == null || value == null || cause == RemovalCause.REPLACED) return@removalListener
-            disposeConfig(value)
-        }.build()
-
-    override suspend fun handlePostUnload() {
-        super<StorageService>.handleUnload()
-        this.configurations.clear { _, config -> disposeConfig(config) }
+    internal fun reloadConfigurations(plugin: MinixPlugin) {
+        configurations[plugin::class]?.forEach { config ->
+            logger.info { "Reloading configuration [${plugin.value}:${config.managedClass.simpleName}]" }
+            configDataHolder.refresh(config.managedClass.castOrThrow())
+        }
     }
 
     /** Save the configuration and remove references to it. */

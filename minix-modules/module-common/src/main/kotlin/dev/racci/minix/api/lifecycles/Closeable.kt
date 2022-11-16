@@ -3,6 +3,7 @@ package dev.racci.minix.api.lifecycles
 import kotlinx.atomicfu.AtomicRef
 import kotlinx.atomicfu.atomic
 import org.apiguardian.api.API
+import kotlin.properties.PropertyDelegateProvider
 import kotlin.reflect.KProperty
 
 /**
@@ -22,12 +23,17 @@ import kotlin.reflect.KProperty
  * @param T The type of the value.
  */
 @API(status = API.Status.STABLE, since = "2.7.1")
-public abstract class Closeable<T : Any> {
+public abstract class Closeable<T : Any> : PropertyDelegateProvider<Nothing, T> {
 
     protected val value: AtomicRef<T?> = atomic(null)
     private var closed = false
 
     public operator fun getValue(ref: Any, property: KProperty<*>): T = get()
+
+    final override fun provideDelegate(
+        thisRef: Nothing,
+        property: KProperty<*>
+    ): T = get()
 
     public fun get(): T {
         if (value.value == null || closed) {

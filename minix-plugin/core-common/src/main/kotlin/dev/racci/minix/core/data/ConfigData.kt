@@ -59,7 +59,7 @@ internal constructor(
     internal val managedClass: KClass<in C>,
     internal val owner: P,
     loader: HoconConfigurationLoader? = null
-) : KoinComponent where P : MinixPlugin, C : MinixConfig<out P> {
+) : KoinComponent where P : MinixPlugin, C : MinixConfig<P> {
     public val reference: ConfigurationReference<CommentedConfigurationNode>
 
     public fun get(): C = getKoin().get(managedClass)

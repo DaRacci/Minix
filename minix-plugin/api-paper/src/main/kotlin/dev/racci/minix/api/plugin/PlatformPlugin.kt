@@ -24,6 +24,7 @@ public actual interface PlatformPlugin : Qualifier, Comparable<PlatformPlugin> {
 
     public actual companion object : WrapperCompanion<PlatformPlugin> {
         actual override fun wrapped(obj: Any): PlatformPlugin {
+            if (obj is PlatformPlugin) return obj
             if (obj !is JavaPlugin) throw WrappingException(null, obj, JavaPlugin::class)
 
             return object : PlatformPlugin {

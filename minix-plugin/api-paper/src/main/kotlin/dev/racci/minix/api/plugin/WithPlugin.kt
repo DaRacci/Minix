@@ -1,7 +1,7 @@
 package dev.racci.minix.api.plugin
 
+import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.logger.MinixLogger
-import dev.racci.minix.api.services.PluginService
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -9,12 +9,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.future.asCompletableFuture
 import org.bukkit.event.Listener
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.scope.Scope
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.CoroutineContext
 
 // TODO -> Implement basic event receiver and flow additions
-public actual interface WithPlugin<in T : MinixPlugin> : KoinComponent {
+public actual interface WithPlugin<in T : MinixPlugin> : KoinComponent, KoinScopeComponent {
 
     /** A reference to the plugin instance. */
     public actual val plugin: @UnsafeVariance T
@@ -24,6 +26,9 @@ public actual interface WithPlugin<in T : MinixPlugin> : KoinComponent {
 
     /** This plugin's data folder. */
     public actual val dataFolder: Path get() = plugin.dataFolder
+
+    /** The plugin's koin scope. */
+    public actual override val scope: Scope get() = plugin.scope
 
     /** The plugins asynchronous context. */
     public actual val context: CoroutineContext get() = PluginService.coroutineSession[plugin].context

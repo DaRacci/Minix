@@ -17,7 +17,11 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.QualifierValue
 import kotlin.coroutines.CoroutineContext
 
-public interface ExtensionSkeleton<P : MinixPlugin> : WithPlugin<P>, KoinScopeComponent, Qualifier, ComplexManagedLifecycle {
+public interface ExtensionSkeleton<P : MinixPlugin> :
+    Qualifier,
+    EventReceiver,
+    WithPlugin<P>,
+    ComplexManagedLifecycle {
 
     /**
      * The qualified name of the extension

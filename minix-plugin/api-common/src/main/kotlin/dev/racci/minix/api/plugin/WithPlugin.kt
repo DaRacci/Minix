@@ -5,11 +5,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.KoinScopeComponent
+import org.koin.core.scope.Scope
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.CoroutineContext
 
-public expect interface WithPlugin<in T : MinixPlugin> : KoinComponent {
+public expect interface WithPlugin<in T : MinixPlugin> : KoinComponent, KoinScopeComponent {
 
     /** A reference to the plugin instance. */
     public val plugin: @UnsafeVariance T
@@ -19,6 +21,9 @@ public expect interface WithPlugin<in T : MinixPlugin> : KoinComponent {
 
     /** This plugin's data folder. */
     public open val dataFolder: Path
+
+    /** The plugins koin scope. */
+    public open override val scope: Scope
 
     /** The plugins asynchronous context. */
     public open val context: CoroutineContext

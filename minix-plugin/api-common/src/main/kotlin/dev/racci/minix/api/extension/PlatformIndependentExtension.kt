@@ -4,6 +4,8 @@ import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.events.PlatformListener
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.lifecycles.Closeable
+import dev.racci.minix.api.logger.MinixLogger
+import dev.racci.minix.api.logger.MinixLoggerFactory
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.flowbus.FlowBus
@@ -36,6 +38,8 @@ public abstract class PlatformIndependentExtension<P : MinixPlugin> internal con
     final override val scope: Scope = createScope(value)
 
     final override val eventListener: PlatformListener<P> by lazy { PlatformListener(plugin) }
+
+    final override val logger: MinixLogger by MinixLoggerFactory
 
     final override var state: ExtensionState = ExtensionState.UNLOADED
         set(value) { get<FlowBus>().post(ExtensionStateEvent(this.castOrThrow(), this.state, state)); field = value }

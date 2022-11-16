@@ -18,6 +18,7 @@ import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.plus
+import kotlinx.coroutines.runBlocking
 import org.bukkit.event.Event
 import org.bukkit.event.Listener
 import org.koin.core.annotation.Factory
@@ -39,11 +40,11 @@ internal class PaperCoroutineSession(
     override val coroutineScope: CoroutineScope = MinixCoroutineExceptionHandler(plugin)
         .let(::CoroutineScope) + SupervisorJob() + context
 
-    override var isManipulatedServerHeartBeat: Boolean
-        get() = wakeUpBlockService.isManipulatedServerHeartBeatEnabled
-        set(value) {
-            wakeUpBlockService.isManipulatedServerHeartBeatEnabled = value
-        }
+    override fun withManipulatedServerHeartBeat(block: suspend CoroutineScope.() -> Unit) {
+        wakeUpBlockService.isManipulatedServerHeartBeatEnabled = true
+        runBlocking { block() }
+        wakeUpBlockService.isManipulatedServerHeartBeatEnabled = false
+    }
 
     override suspend fun registerSuspendedListener(
         listener: Listener

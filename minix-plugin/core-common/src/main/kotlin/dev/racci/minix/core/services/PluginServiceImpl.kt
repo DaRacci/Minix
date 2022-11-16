@@ -82,17 +82,15 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
         }
     }
 
-    override fun startPlugin(plugin: MinixPlugin) {
-        coroutineSession[plugin].isManipulatedServerHeartBeat = true
-        runBlocking {
+    override fun enablePlugin(plugin: MinixPlugin) {
+        plugin.scope.get<CoroutineSession>().withManipulatedServerHeartBeat {
             logRunning(plugin, plugin::handleEnable)
 
             get<ExtensionMapper>().enableExtensions(plugin)
 
-            logRunning(plugin, plugin::handleAfterEnable)
+            logRunning(plugin, plugin::handlePostEnable)
             loadedPlugins += plugin::class to plugin
         }
-        coroutineSession[plugin].isManipulatedServerHeartBeat = false
     }
 
     override fun unloadPlugin(plugin: MinixPlugin) {

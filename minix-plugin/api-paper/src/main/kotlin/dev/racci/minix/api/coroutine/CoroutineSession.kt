@@ -6,6 +6,7 @@ import dev.racci.minix.api.plugin.WithPlugin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
+import org.apiguardian.api.API
 import org.bukkit.event.Event
 import org.bukkit.event.Listener
 import kotlin.coroutines.CoroutineContext
@@ -22,9 +23,12 @@ public actual interface CoroutineSession : WithPlugin<MinixPlugin> {
     actual override val context: CoroutineContext
 
     /** Synchronous context that stays on the main bukkit thread. */
-    override val minecraftContext: CoroutineContext
+    actual override val minecraftContext: CoroutineContext
 
-    public var isManipulatedServerHeartBeat: Boolean
+    @API(status = API.Status.INTERNAL)
+    public actual fun withManipulatedServerHeartBeat(
+        block: suspend CoroutineScope.() -> Unit
+    )
 
     /**
      * Launches the given function on the plugin coroutineService scope.

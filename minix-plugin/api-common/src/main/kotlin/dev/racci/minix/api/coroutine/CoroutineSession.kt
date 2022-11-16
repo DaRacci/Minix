@@ -3,6 +3,7 @@ package dev.racci.minix.api.coroutine
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
+import org.apiguardian.api.API
 import kotlin.coroutines.CoroutineContext
 
 public expect interface CoroutineSession {
@@ -17,6 +18,13 @@ public expect interface CoroutineSession {
      * Check the actual implementation for more information for that platform.
      */
     public val context: CoroutineContext
+
+    public val minecraftContext: CoroutineContext
+
+    @API(status = API.Status.INTERNAL)
+    public fun withManipulatedServerHeartBeat(
+        block: suspend CoroutineScope.() -> Unit
+    )
 
     /**
      * Launches the given function on the plugin coroutineService scope.

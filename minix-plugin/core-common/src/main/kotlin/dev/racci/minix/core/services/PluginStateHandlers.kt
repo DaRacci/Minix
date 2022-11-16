@@ -8,7 +8,6 @@ import dev.racci.minix.api.utils.getKoin
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.flowbus.receiver.EventReceiver
 import dev.racci.minix.flowbus.subscribe
-import org.jetbrains.exposed.dao.EntityHook.subscribe
 import org.koin.core.annotation.InjectedParam
 import org.koin.core.annotation.Singleton
 
@@ -18,7 +17,7 @@ public class PluginStateHandlers(@InjectedParam public override val plugin: Mini
 
     public override suspend fun handleLoad() {
         subscribe<MinixPluginStateEvent> {
-            when (this.changedState) {
+            when (this.state) {
                 MinixPluginStateEvent.State.LOAD -> bStatsRegister(this.plugin)
                 MinixPluginStateEvent.State.RELOAD -> bStatsRegister(this.plugin)
                 else -> { /* no-op */ }

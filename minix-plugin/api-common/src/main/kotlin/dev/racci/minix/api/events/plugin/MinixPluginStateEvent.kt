@@ -8,13 +8,11 @@ import dev.racci.minix.flowbus.FlowBus
  * whenever a [MinixPlugin]'s state changes.
  *
  * @property plugin The plugin that changed state.
- * @property previousState The previous state of the plugin.
- * @property changedState The new state of the plugin.
+ * @property state The new state of the plugin.
  */
 public class MinixPluginStateEvent internal constructor(
     plugin: MinixPlugin,
-    public val previousState: State,
-    public val changedState: State
+    public val state: State
 ) : MinixPluginEvent(plugin) {
     public enum class State {
         LOAD,

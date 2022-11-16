@@ -2,8 +2,6 @@ package dev.racci.minix.api.services
 
 import arrow.core.getOrElse
 import arrow.core.toOption
-import com.github.benmanes.caffeine.cache.LoadingCache
-import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.plugin.MinixPlugin
@@ -16,8 +14,6 @@ import kotlin.reflect.KProperty
 public interface PluginService {
 
     public val loadedPlugins: MutableMap<KClass<out MinixPlugin>, MinixPlugin>
-
-    public val coroutineSession: LoadingCache<MinixPlugin, CoroutineSession>
 
     public fun loadPlugin(plugin: MinixPlugin)
 

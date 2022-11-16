@@ -23,8 +23,7 @@ import org.bukkit.plugin.java.JavaPluginLoader
 import org.bukkit.plugin.java.PluginClassLoader
 import org.koin.core.component.get
 import org.koin.core.context.loadKoinModules
-import org.koin.core.context.unloadKoinModules
-import java.util.concurrent.ConcurrentHashMap
+import org.koin.core.parameter.parametersOf
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 import kotlin.reflect.KSuspendFunction0
@@ -35,20 +34,6 @@ import kotlin.reflect.jvm.javaField
 @MappedExtension([ExtensionMapper::class, ConfigurationMapper::class, IntegrationMapper::class], PluginService::class)
 class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<Minix>() {
     private lateinit var driver: Driver
-    private val sessionHolder = ConcurrentHashMap<MinixPlugin, CoroutineSession>(1)
-
-//    override val coroutineSession: LoadingCache<MinixPlugin, CoroutineSession> = Caffeine.newBuilder().build { plugin ->
-//        if (!plugin.isEnabled) {
-//            throw plugin.log.fatal {
-//                """
-//                Plugin ${plugin.name} attempted to start a new coroutine session while being disabled.
-//                Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already
-//                disposed of at this point and cannot be used.
-//                """.trimIndent()
-//            }
-//        }
-//        CoroutineSessionImpl(plugin)
-//    }
 
     override val loadedPlugins: MutableMap<KClass<out MinixPlugin>, MinixPlugin> by lazy { mutableMapOf() }
 
@@ -62,6 +47,11 @@ class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<M
 
     override fun loadPlugin(plugin: MinixPlugin) {
         runBlocking {
+            plugin.scope.declare(
+                get<CoroutineSession> { parametersOf(plugin) },
+                allowOverride = false
+            )
+
             if (plugin.version.isPreRelease) {
                 logger.warn { "Plugin ${plugin.value} is a pre-release version and may not be stable." }
                 plugin.logger.setLevel(LoggingLevel.TRACE)

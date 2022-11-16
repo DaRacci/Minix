@@ -2,8 +2,6 @@ package dev.racci.minix.api.coroutine
 
 import dev.racci.minix.api.data.enums.EventExecutionType
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.services.PluginService
-import dev.racci.minix.api.utils.getKoin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import org.bukkit.event.Event
@@ -11,13 +9,11 @@ import org.bukkit.event.Listener
 import org.bukkit.plugin.PluginManager
 import kotlin.coroutines.CoroutineContext
 
-private val pluginService by getKoin().inject<PluginService>()
-
 /**
  * Gets the plugin minecraft context.
  */
 public val MinixPlugin.minecraftDispatcher: CoroutineContext
-    get() = pluginService.coroutineSession[this].minecraftContext
+    get() = this.scope.get<CoroutineSession>().minecraftContext
 
 /**
  * Launches the given function in the Coroutine Scope of the given plugin async.
@@ -29,7 +25,7 @@ public val MinixPlugin.minecraftDispatcher: CoroutineContext
  */
 public fun MinixPlugin.launchAsync(
     block: suspend CoroutineScope.() -> Unit
-): Job = pluginService.coroutineSession[this].launch(this.context, block = block)
+): Job = this.scope.get<CoroutineSession>().launch(this.context, block = block)
 
 /**
  * Registers an event listener with suspending functions.
@@ -50,11 +46,11 @@ public fun MinixPlugin.launchAsync(
 public suspend fun PluginManager.registerSuspendingEvents(
     listener: Listener,
     plugin: MinixPlugin
-): Unit = pluginService.coroutineSession[plugin].registerSuspendedListener(listener)
+): Unit = plugin.scope.get<CoroutineSession>().registerSuspendedListener(listener)
 
 public suspend fun MinixPlugin.registerSuspendingEvents(
     listener: Listener
-): Unit = pluginService.coroutineSession[this].registerSuspendedListener(listener)
+): Unit = this.scope.get<CoroutineSession>().registerSuspendedListener(listener)
 
 /**
  * Calls an event with the given details.
@@ -70,4 +66,4 @@ public fun PluginManager.callSuspendingEvent(
     event: Event,
     plugin: MinixPlugin,
     executionType: EventExecutionType
-): Collection<Job> = pluginService.coroutineSession[plugin].fireSuspendingEvent(event, executionType)
+): Collection<Job> = plugin.scope.get<CoroutineSession>().fireSuspendingEvent(event, executionType)

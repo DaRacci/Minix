@@ -85,4 +85,16 @@ internal class PaperCoroutineSession(
         coroutineStart: CoroutineStart,
         f: suspend CoroutineScope.() -> Unit
     ): Job = (parentScope ?: coroutineScope).launch(dispatcher, coroutineStart, f)
+
+    init {
+        if (!plugin.enabled) {
+            throw plugin.logger.fatal {
+                """
+                Plugin ${plugin.value} attempted to start a new coroutine session while being disabled.
+                Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already
+                disposed of at this point and cannot be used.
+                """.trimIndent()
+            }
+        }
+    }
 }

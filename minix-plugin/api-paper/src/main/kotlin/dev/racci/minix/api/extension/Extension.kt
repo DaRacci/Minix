@@ -1,7 +1,7 @@
 package dev.racci.minix.api.extension
 
+import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.koin
 import dev.racci.minix.flowbus.receiver.EventReceiver
 import kotlinx.coroutines.CoroutineScope
@@ -14,5 +14,5 @@ public actual abstract class Extension<P : MinixPlugin> :
 
     public override fun sync(
         block: suspend CoroutineScope.() -> Unit
-    ): Job = PluginService.coroutineSession[plugin].launch(plugin.minecraftContext, this.supervisor, block = block)
+    ): Job = scope.get<CoroutineSession>().launch(plugin.minecraftContext, this.supervisor, block = block)
 }

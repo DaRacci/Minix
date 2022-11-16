@@ -1,19 +1,21 @@
 package dev.racci.minix.api.extension
 
 import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.events.PlatformListener
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.lifecycles.Closeable
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.logger.MinixLoggerFactory
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.flowbus.FlowBus
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.plus
 import org.koin.core.component.createScope
 import org.koin.core.component.get
@@ -56,11 +58,15 @@ public abstract class PlatformIndependentExtension<P : MinixPlugin> internal con
     final override fun launch(
         context: CoroutineContext,
         block: suspend CoroutineScope.() -> Unit
-    ): Job = PluginService.coroutineSession[this.plugin].launch(this.dispatcher.get(), this.supervisor, block = block)
+    ): Job = this.scope.get<CoroutineSession>().launch(this.dispatcher.get(), this.supervisor, block = block)
 
     final override fun async(
         block: suspend CoroutineScope.() -> Unit
-    ): Job = PluginService.coroutineSession[this.plugin].launch(this.dispatcher.get(), this.supervisor, block = block)
+    ): Job = this.scope.get<CoroutineSession>().launch(this.dispatcher.get(), this.supervisor, block = block)
+
+    public fun <T> Flow<T>.launchIn() {
+        this.launchIn(supervisor)
+    }
 
     final override fun toString(): String = "Extension(name=$value, state=$state)"
 

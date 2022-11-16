@@ -31,13 +31,13 @@ public actual interface WithPlugin<in T : MinixPlugin> : KoinComponent, KoinScop
     public actual override val scope: Scope get() = plugin.scope
 
     /** The plugins asynchronous context. */
-    public actual val context: CoroutineContext get() = PluginService.coroutineSession[plugin].context
+    public actual val context: CoroutineContext get() = this.scope.get<CoroutineSession>().context
 
     /** The plugins parent scope and error handler. */
-    public actual val coroutineScope: CoroutineScope get() = PluginService.coroutineSession[plugin].coroutineScope
+    public actual val coroutineScope: CoroutineScope get() = this.scope.get<CoroutineSession>().coroutineScope
 
     /** A bukkit main thread confined coroutine context. */
-    public val minecraftContext: CoroutineContext get() = PluginService.coroutineSession[plugin].minecraftContext
+    public val minecraftContext: CoroutineContext get() = this.scope.get<CoroutineSession>().minecraftContext
 
     /**
      * Launches the given function in the Coroutine Scope of the given plugin.
@@ -50,7 +50,7 @@ public actual interface WithPlugin<in T : MinixPlugin> : KoinComponent, KoinScop
     public actual fun launch(
         context: CoroutineContext,
         block: suspend CoroutineScope.() -> Unit
-    ): Job = PluginService.coroutineSession[plugin].launch(context, block = block)
+    ): Job = this.scope.get<CoroutineSession>().launch(context, block = block)
 
     /**
      * Launches the given function in the Coroutine Scope of the given plugin.

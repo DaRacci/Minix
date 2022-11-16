@@ -1,18 +1,18 @@
 package dev.racci.minix.api.extension
 
 import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.events.PlatformListener
 import dev.racci.minix.api.lifecycles.Closeable
 import dev.racci.minix.api.lifecycles.ComplexManagedLifecycle
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.WithPlugin
-import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.flowbus.FlowBus
+import dev.racci.minix.flowbus.receiver.EventReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.Job
 import org.apiguardian.api.API
-import org.koin.core.component.KoinScopeComponent
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.QualifierValue
 import kotlin.coroutines.CoroutineContext
@@ -59,5 +59,5 @@ public interface ExtensionSkeleton<P : MinixPlugin> :
     override fun launch(
         context: CoroutineContext,
         block: suspend CoroutineScope.() -> Unit
-    ): Job = PluginService.coroutineSession[plugin].launch(dispatcher.get(), this.supervisor, block = block)
+    ): Job = this.scope.get<CoroutineSession>().launch(dispatcher.get(), this.supervisor, block = block)
 }

@@ -13,7 +13,7 @@ import kotlin.reflect.KProperty
 // TODO -> Add support for scopes, which wrap the parent logger.
 @API(status = API.Status.EXPERIMENTAL, since = "5.0.0")
 public object MinixLoggerFactory : KoinComponent {
-    private val EXISTING: MutableMap<MinixPlugin, MinixLogger> = mutableMapOf()
+    internal val EXISTING: MutableMap<MinixPlugin, MinixLogger> = mutableMapOf()
 
     public operator fun getValue(
         thisRef: Any,

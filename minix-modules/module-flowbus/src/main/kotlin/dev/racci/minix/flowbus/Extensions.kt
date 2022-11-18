@@ -54,7 +54,6 @@ public inline fun <reified T : Any> EventReceiver.subscribeFlow(
     skipRetained: Boolean = false
 ): Flow<T> = flowOf(T::class, priority, ignoreCancelled, skipRetained)
 
-@Suppress("EXTENSION_SHADOWED_BY_MEMBER") // This is intentional
 public inline fun <reified T : Any> EventReceiver.unsubscribe() {
     unsubscribe(T::class)
 }

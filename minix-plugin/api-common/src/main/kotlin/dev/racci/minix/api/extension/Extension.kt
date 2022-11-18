@@ -6,6 +6,9 @@ import dev.racci.minix.api.services.DataService
 import dev.racci.minix.flowbus.EventCallback
 import dev.racci.minix.flowbus.receiver.EventReceiver
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlin.reflect.KClass
 
 /**
@@ -16,11 +19,17 @@ import kotlin.reflect.KClass
  * @see DataService
  */
 public expect abstract class Extension<P : MinixPlugin>() : PlatformIndependentExtension<P>, EventReceiver {
-    public final override fun returnOn(dispatcher: CoroutineDispatcher): EventReceiver
+    final override val EventReceiver.exceptionHandler: CoroutineExceptionHandler
 
-    public final override fun isCancelled(event: Any): Boolean
+    final override val EventReceiver.supervisorScope: CoroutineScope
 
-    public final override fun <T : Any> subscribeTo(
+    final override fun returnOn(dispatcher: CoroutineDispatcher): EventReceiver
+
+    final override fun isCancelled(event: Any): Boolean
+
+    final override fun EventReceiver.createEventScope(): CoroutineScope
+
+    final override fun <T : Any> EventReceiver.subscribeTo(
         clazz: KClass<T>,
         priority: Priority,
         ignoreCancelled: Boolean,
@@ -28,12 +37,21 @@ public expect abstract class Extension<P : MinixPlugin>() : PlatformIndependentE
         callback: suspend (T) -> Unit
     ): EventReceiver
 
-    public final override fun <T : Any> subscribeTo(
+    final override fun <T : Any> EventReceiver.subscribeTo(
         clazz: KClass<T>,
         callback: EventCallback<T>
     ): EventReceiver
 
-    public final override fun <T : Any> unsubscribe(clazz: KClass<T>)
+    public final override fun <T : Any> EventReceiver.flowOf(
+        clazz: KClass<T>,
+        priority: Priority,
+        ignoreCancelled: Boolean,
+        skipRetained: Boolean
+    ): Flow<T>
 
-    public final override fun unsubscribe()
+    final override fun <T : Any> EventReceiver.unsubscribe(clazz: KClass<T>)
+
+    final override fun EventReceiver.unsubscribe()
+
+
 }

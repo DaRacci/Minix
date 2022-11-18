@@ -30,36 +30,36 @@ public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : E
 
     private var returnDispatcher: CoroutineDispatcher = DispatcherProvider.get()
 
-    protected open val exceptionHandler: CoroutineExceptionHandler by lazy {
+    override val EventReceiver.exceptionHandler: CoroutineExceptionHandler by lazy {
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
         }
     }
 
-    protected open val supervisorScope: CoroutineScope by lazy {
+    override val EventReceiver.supervisorScope: CoroutineScope by lazy {
         CoroutineScope(SupervisorJob() + exceptionHandler + returnDispatcher)
     }
 
     override fun returnOn(dispatcher: CoroutineDispatcher): EventReceiver {
         returnDispatcher = dispatcher
-        return this
+        return this@EventReceiverImpl
     }
 
     override fun isCancelled(event: Any): Boolean {
         return event is EmitterCancellable && event.cancelled
     }
 
-    override fun createScope(): CoroutineScope = CoroutineScope(supervisorScope as Job + exceptionHandler)
+    override fun EventReceiver.createEventScope(): CoroutineScope = CoroutineScope(supervisorScope as Job + exceptionHandler)
 
-    override fun <T : Any> subscribeTo(
+    override fun <T : Any> EventReceiver.subscribeTo(
         clazz: KClass<T>,
         priority: Priority,
         ignoreCancelled: Boolean,
         skipRetained: Boolean,
         callback: suspend T.() -> Unit
-    ): EventReceiver = subscribeTo(clazz, EventCallback(priority, ignoreCancelled, skipRetained, callback))
+    ): EventReceiver = this@EventReceiverImpl.subscribeTo(clazz, EventCallback(priority, ignoreCancelled, skipRetained, callback))
 
-    override fun <T : Any> subscribeTo(
+    override fun <T : Any> EventReceiver.subscribeTo(
         clazz: KClass<T>,
         callback: EventCallback<T>
     ): EventReceiver {
@@ -67,15 +67,15 @@ public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : E
             throw IllegalArgumentException("Already subscribed for event type: $clazz")
         }
 
-        jobs[clazz] = flowOf(clazz, callback.priority, callback.ignoreCancelled, callback.skipRetained)
+        jobs[clazz] = this@EventReceiverImpl.flowOf(clazz, callback.priority, callback.ignoreCancelled, callback.skipRetained)
             .onEach(callback.callback)
             .flowOn(returnDispatcher)
-            .launchIn(createScope())
+            .launchIn(createEventScope())
 
-        return this
+        return this@EventReceiverImpl
     }
 
-    override fun <T : Any> flowOf(
+    override fun <T : Any> EventReceiver.flowOf(
         clazz: KClass<T>,
         priority: Priority,
         ignoreCancelled: Boolean,
@@ -85,11 +85,11 @@ public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : E
         .filterNotNull()
         .filterNot { ignoreCancelled && isCancelled(it) }
 
-    override fun <T : Any> unsubscribe(clazz: KClass<T>) {
+    override fun <T : Any> EventReceiver.unsubscribe(clazz: KClass<T>) {
         jobs.remove(clazz)?.cancel()
     }
 
-    override fun unsubscribe() {
+    override fun EventReceiver.unsubscribe() {
         jobs.values.forEach { it.cancel() }
         jobs.clear()
     }

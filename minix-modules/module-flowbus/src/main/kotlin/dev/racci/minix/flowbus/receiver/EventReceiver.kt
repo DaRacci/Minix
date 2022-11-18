@@ -3,11 +3,16 @@ package dev.racci.minix.flowbus.receiver
 import dev.racci.minix.api.data.Priority
 import dev.racci.minix.flowbus.EventCallback
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlin.reflect.KClass
 
 public interface EventReceiver {
+    public val EventReceiver.exceptionHandler: CoroutineExceptionHandler
+
+    public val EventReceiver.supervisorScope: CoroutineScope
+
     /**
      * Set the `CoroutineDispatcher` which will be used to launch your callbacks.
      *
@@ -19,7 +24,7 @@ public interface EventReceiver {
     /** Checks if this implementation of [EventReceiver] determines that an event is cancelled. */
     public fun isCancelled(event: Any): Boolean
 
-    public fun createScope(): CoroutineScope
+    public fun EventReceiver.createEventScope(): CoroutineScope
 
     /**
      * Subscribe to events that are type of [clazz] with the given [callback] function.
@@ -32,7 +37,7 @@ public interface EventReceiver {
      * @param callback The callback function.
      * @return This instance of [EventReceiver] for chaining
      */
-    public fun <T : Any> subscribeTo(
+    public fun <T : Any> EventReceiver.subscribeTo(
         clazz: KClass<T>,
         priority: Priority = Priority.DEFAULT, // TODO
         ignoreCancelled: Boolean = false,
@@ -48,12 +53,12 @@ public interface EventReceiver {
      * @return This instance of [EventReceiver] for chaining
      * @see [subscribeTo]
      */
-    public fun <T : Any> subscribeTo(
+    public fun <T : Any> EventReceiver.subscribeTo(
         clazz: KClass<T>,
         callback: EventCallback<T>
     ): EventReceiver
 
-    public fun <T : Any> flowOf(
+    public fun <T : Any> EventReceiver.flowOf(
         clazz: KClass<T>,
         priority: Priority,
         ignoreCancelled: Boolean,
@@ -63,10 +68,10 @@ public interface EventReceiver {
     /**
      * Unsubscribe from events type of [clazz]
      */
-    public fun <T : Any> unsubscribe(clazz: KClass<T>)
+    public fun <T : Any> EventReceiver.unsubscribe(clazz: KClass<T>)
 
     /**
      * Unsubscribe from all events
      */
-    public fun unsubscribe()
+    public fun EventReceiver.unsubscribe()
 }

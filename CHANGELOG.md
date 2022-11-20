@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.11](https://github.com/DaRacci/Minix/compare/v4.3.10..v4.3.11) - 2022-11-20
+#### Bug Fixes
+- NullPointer Exception - ([3ce5949](https://github.com/DaRacci/Minix/commit/3ce59499e669dbb28799d786dfa623a86f8d72bd)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- Enter snapshot - ([09b6617](https://github.com/DaRacci/Minix/commit/09b6617223723965b7947cd8edc4f01d58223d2b)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.3.10](https://github.com/DaRacci/Minix/compare/v4.3.9..v4.3.10) - 2022-11-14
 #### Bug Fixes
 - **(script)** actually push changes - ([49d3fc1](https://github.com/DaRacci/Minix/commit/49d3fc1ad648533d3b5928811ff902ff171d8023)) - [@DaRacci](https://github.com/DaRacci)

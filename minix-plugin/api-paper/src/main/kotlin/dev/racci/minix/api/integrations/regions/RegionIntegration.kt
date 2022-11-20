@@ -1,5 +1,6 @@
 package dev.racci.minix.api.integrations.regions
 
+import arrow.core.Option
 import dev.racci.minix.data.structs.minecraft.BlockPos
 import dev.racci.minix.integrations.Integration
 import org.bukkit.World
@@ -13,7 +14,7 @@ public interface RegionIntegration : Integration {
     public fun getRegion(
         pos: BlockPos,
         world: World
-    ): Optional<Region>
+    ): Option<Region>
 
     /** @return True, if there is a region at the given position. */
     public fun insideRegion(

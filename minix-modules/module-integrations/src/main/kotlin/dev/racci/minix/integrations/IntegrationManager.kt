@@ -1,5 +1,6 @@
 package dev.racci.minix.integrations
 
+import arrow.core.Option
 import dev.racci.minix.api.exceptions.MissingAnnotationException
 import dev.racci.minix.integrations.annotations.MappedIntegration
 import org.apiguardian.api.API
@@ -23,14 +24,16 @@ public open class IntegrationManager<I : Integration> {
         this.integrations.add(ref)
     }
 
-    /** Runs the action of the first found registered integration */
-    public fun onFirstRegistered(action: (I) -> Unit) {
-        if (this.integrations.isEmpty()) return
+    public fun get(): Option<I> = integrations.firstOrNull().let { Option.fromNullable(it?.ref) }
 
-        this.integrations.first().let { action(it.ref) }
+    /** Runs the action of the first found registered integration */
+    @Deprecated("Use get instead", ReplaceWith("get().ifPresent(action)"))
+    public fun onFirstRegistered(action: (I) -> Unit) {
+        this.integrations.firstOrNull()?.ref?.let(action)
     }
 
     /** Runs the action of the first found registered integration and returns an optional of [T]. */
+    @Deprecated("Use get instead", ReplaceWith("get().map(action)"))
     public fun <T : Any> getFirstRegistered(action: (I) -> T): Optional<T> {
         var result: T? = null
         this.onFirstRegistered { integration -> result = action(integration) }

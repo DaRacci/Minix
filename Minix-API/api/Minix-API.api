@@ -1510,6 +1510,7 @@ public final class dev/racci/minix/api/integrations/Integration$DefaultImpls {
 public class dev/racci/minix/api/integrations/IntegrationManager {
 	public static final field Companion Ldev/racci/minix/api/integrations/IntegrationManager$Companion;
 	public fun <init> ()V
+	public final fun get ()Ljava/util/Optional;
 	public final fun getFirstRegistered (Lkotlin/jvm/functions/Function1;)Ljava/util/Optional;
 	public final fun getREGISTERED ()Ljava/util/Set;
 	public final fun getUNREGISTERED ()Ljava/util/Set;
@@ -1556,6 +1557,7 @@ public final class dev/racci/minix/api/integrations/placeholders/PlaceholderMana
 }
 
 public abstract interface class dev/racci/minix/api/integrations/regions/Region {
+	public static final field Companion Ldev/racci/minix/api/integrations/regions/Region$Companion;
 	public abstract fun canAttack (Lorg/bukkit/entity/Player;Lorg/bukkit/entity/Entity;)Z
 	public abstract fun canBreak (Lorg/bukkit/entity/Player;)Z
 	public abstract fun canBuild (Lorg/bukkit/entity/Player;)Z
@@ -1564,6 +1566,9 @@ public abstract interface class dev/racci/minix/api/integrations/regions/Region 
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getOwner ()Ljava/util/UUID;
 	public abstract fun getWorld ()Lorg/bukkit/World;
+}
+
+public final class dev/racci/minix/api/integrations/regions/Region$Companion {
 }
 
 public abstract interface class dev/racci/minix/api/integrations/regions/RegionIntegration : dev/racci/minix/api/integrations/Integration {

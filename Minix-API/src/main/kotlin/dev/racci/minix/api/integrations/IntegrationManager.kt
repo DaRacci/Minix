@@ -18,14 +18,16 @@ open class IntegrationManager<I : Integration> {
         this.REGISTERED.add(integration)
     }
 
-    /** Runs the action of the first found registered integration */
-    fun onFirstRegistered(action: (I) -> Unit) {
-        if (this.REGISTERED.isEmpty()) return
+    fun get(): Optional<I> = REGISTERED.firstOrNull().let { Optional.ofNullable(it) }
 
-        this.REGISTERED.first().let(action)
+    /** Runs the action of the first found registered integration */
+    @Deprecated("Use get instead", ReplaceWith("get().ifPresent(action)"))
+    fun onFirstRegistered(action: (I) -> Unit) {
+        this.REGISTERED.firstOrNull()?.let(action)
     }
 
     /** Runs the action of the first found registered integration and returns an optional of [T]. */
+    @Deprecated("Use get instead", ReplaceWith("get().map(action)"))
     fun <T : Any> getFirstRegistered(action: (I) -> T): Optional<T> {
         var result: T? = null
         this.onFirstRegistered { integration -> result = action(integration) }

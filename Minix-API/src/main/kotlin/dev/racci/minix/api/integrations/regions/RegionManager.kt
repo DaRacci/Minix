@@ -12,14 +12,12 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
     fun getRegion(
         pos: BlockPos,
         world: World
-    ): Optional<Region> = this.getFirstRegistered {
-        it.getRegion(pos, world).orElse(null)
-    }
+    ): Optional<Region> = this.get().map { it.getRegion(pos, world).orElse(Region.NONE) }
 
     fun insideRegion(
         pos: BlockPos,
         world: World
-    ): Boolean = this.getFirstRegistered {
+    ): Boolean = this.get().map {
         it.insideRegion(pos, world)
     }.orElse(false)
 
@@ -27,7 +25,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         pos: BlockPos,
         world: World,
         player: Player
-    ): Boolean = this.getFirstRegistered {
+    ): Boolean = this.get().map {
         it.canBuild(pos, world, player)
     }.orElse(true)
 
@@ -35,7 +33,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         pos: BlockPos,
         world: World,
         player: Player
-    ): Boolean = this.getFirstRegistered {
+    ): Boolean = this.get().map {
         it.canBreak(pos, world, player)
     }.orElse(true)
 
@@ -43,7 +41,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         pos: BlockPos,
         world: World,
         player: Player
-    ): Boolean = this.getFirstRegistered {
+    ): Boolean = this.get().map {
         it.canInteract(pos, world, player)
     }.orElse(true)
 
@@ -52,7 +50,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         world: World,
         player: Player,
         target: Entity
-    ): Boolean = this.getFirstRegistered {
+    ): Boolean = this.get().map {
         it.canAttack(pos, world, player, target)
     }.orElse(true)
 
@@ -60,7 +58,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         pos: BlockPos,
         world: World,
         action: () -> Unit
-    ): Boolean = this.getFirstRegistered {
+    ): Boolean = this.get().map {
         it.ifWilderness(pos, world, action)
     }.orElse(true) // if no region integration is found, assume wilderness
 
@@ -68,7 +66,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         pos: BlockPos,
         player: Player,
         action: () -> Unit
-    ): Boolean = this.getFirstRegistered {
+    ): Boolean = this.get().map {
         it.ifTrustedInRegion(pos, player, action)
     }.orElse(false)
 
@@ -76,7 +74,7 @@ object RegionManager : IntegrationManager<RegionIntegration>() {
         pos: BlockPos,
         player: Player,
         action: () -> Unit
-    ): Boolean = this.getFirstRegistered {
+    ): Boolean = this.get().map {
         it.ifWildernessOrTrusted(pos, player, action)
     }.orElse(true)
 }

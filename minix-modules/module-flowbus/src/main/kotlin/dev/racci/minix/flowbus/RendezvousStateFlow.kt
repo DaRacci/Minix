@@ -57,3 +57,92 @@ public open class RendezvousStateFlow<T> constructor(
         }
     }
 }
+
+// @ExperimentalCoroutinesApi
+// internal class PriorityChannel<T>(
+//    private val maxCapacity: Int = 4096,
+//    scope: CoroutineScope = GlobalScope,
+//    comparator: Comparator<T>
+// ) : ProcessChannel<T>(
+//    // why a rendezvous channel should be the input channel?
+//    // because we buffer and sort the messages in the co-routine
+//    // that is where the capacity constraint is enforced
+//    // and the buffer we keep sorted, the input channel we can't
+//    inChannel = Channel(RENDEZVOUS),
+//    // output channel is rendezvous channel because we may still
+//    // get higher priority input meanwhile and we will send that
+//    // when output consumer is ready to take it
+//    outChannel = Channel(RENDEZVOUS)
+// ) {
+//    private val buffer = PriorityQueue(comparator)
+//
+//    private fun PriorityQueue<T>.isNotFull() = this.size < maxCapacity
+//
+//    private fun PriorityQueue<T>.isFull() = this.size >= maxCapacity
+//
+//    // non-suspending way to get all messages available at the moment
+//    // as long as we have anything to receive and the buffer is not full
+//    // we should keep receiving
+//    private fun tryGetSome() {
+//        if (buffer.isNotFull()) {
+//            var received = inChannel.tryReceive().getOrNull()
+//            if (received != null) {
+//                buffer.add(received)
+//                while (buffer.isNotFull() && received != null) {
+//                    received = inChannel.tryReceive().getOrNull()
+//                    received?.let { buffer.add(it) }
+//                }
+//            }
+//        }
+//    }
+//
+//    private suspend fun getAtLeastOne() {
+//        buffer.add(inChannel.receive())
+//        tryGetSome()
+//    }
+//
+//    private suspend fun trySendSome() {
+//        when {
+//            buffer.isEmpty() -> {
+//                yield()
+//            }
+//            buffer.isFull() -> {
+//                outChannel.send(buffer.poll())
+//            }
+//            else -> {
+//                while (buffer.isNotEmpty() && outChannel.trySend(buffer.peek()).isSuccess) {
+//                    buffer.poll()
+//                    tryGetSome()
+//                }
+//            }
+//        }
+//    }
+//
+//    private suspend fun sendAll() {
+//        while (buffer.isNotEmpty()) {
+//            outChannel.send(buffer.poll())
+//        }
+//    }
+//
+//    init {
+//        require(maxCapacity >= 2) {
+//            "priorityChannel maxCapacity < 2 does not make any sense"
+//        }
+//
+//        scope.async {
+//            try {
+//                getAtLeastOne()
+//
+//                while (!inChannel.isClosedForReceive) {
+//                    trySendSome()
+//                    tryGetSome()
+//                }
+//            } finally {
+//                // input channel closed, send the buffer to out channel
+//                sendAll()
+//                // and finally close the output channel, signaling that that this was it
+//                outChannel.close()
+//            }
+//        }.start()
+//    }
+// }

@@ -10,6 +10,8 @@ import java.util.UUID
 public interface PlatformProxy {
     public fun createLogger(plugin: MinixPlugin): MinixLogger
 
+    public fun firstNonMinixPlugin(): MinixPlugin?
+
     /** Get the UUID of a platforms player object. */
     public fun getUUID(obj: Any): UUID
 

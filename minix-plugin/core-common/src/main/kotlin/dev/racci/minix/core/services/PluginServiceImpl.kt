@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services
 
+import dev.racci.minix.api.PlatformProxy
 import dev.racci.minix.api.annotations.DoNotUnload
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.CoroutineSession
@@ -17,11 +18,9 @@ import dev.racci.minix.core.services.mapped.IntegrationMapper
 import io.github.classgraph.ClassGraph
 import io.github.toolfactory.jvm.Driver
 import kotlinx.coroutines.runBlocking
-import org.bukkit.plugin.java.PluginClassLoader
 import org.koin.core.component.get
 import org.koin.core.context.loadKoinModules
 import org.koin.core.parameter.parametersOf
-import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 import kotlin.reflect.KSuspendFunction0
 
@@ -182,19 +181,7 @@ public class PluginServiceImpl(override val plugin: Minix) : PluginService, Exte
 // //            }
 //    }
 
-    @OptIn(ExperimentalStdlibApi::class)
-    override fun firstNonMinixPlugin(): MinixPlugin? {
-        return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
-            .walk { stream ->
-                stream.filter { frame ->
-                    val loader = frame.declaringClass.classLoader
-                    loader is PluginClassLoader && loader.plugin !is MinixImpl && loader.plugin !is MinixInit
-                }.map { frame ->
-                    val classLoader = frame.declaringClass.classLoader as PluginClassLoader
-                    classLoader.plugin as MinixPlugin
-                }.findFirst()
-            }.getOrNull()
-    }
+    override fun firstNonMinixPlugin(): MinixPlugin? = PlatformProxy.firstNonMinixPlugin()
 
     override fun fromClassloader(classLoader: ClassLoader): MinixPlugin? = loadedPlugins.values
         .find { plugin -> plugin.platformClassLoader === classLoader }
@@ -223,10 +210,10 @@ public class PluginServiceImpl(override val plugin: Minix) : PluginService, Exte
             .rejectClasses(PluginServiceImpl::class.qualifiedName, ExtensionMapper::class.qualifiedName)
             .scan(4)
 
-        if (plugin !is MinixImpl) plugin.logger.info { "Ignore the following warning, this is expected behavior." }
+        if (plugin !is Minix) plugin.logger.info { "Ignore the following warning, this is expected behavior." }
 
         get<ExtensionMapper>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
-        get<ConfigurationMapper>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
+        get<DataServiceImpl>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
         get<IntegrationMapper>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
 
         scanResult.close()

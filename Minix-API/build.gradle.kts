@@ -62,7 +62,8 @@ dependencies {
     slim(libs.arrow.core)
     slim(libs.arrow.optics)
     slim(libs.arrow.fx.coroutines)
-    slim("io.arrow-kt", "arrow-analysis-laws", rootProject.libs.plugins.arrow.get().version.requiredVersion)
+    slim("io.arrow-kt:arrow-optics-reflect:${libs.versions.arrow.get()}")
+    slim("io.arrow-kt", "arrow-analysis-laws", libs.plugins.arrow.get().version.requiredVersion)
 
 //    // Unused Libraries for Minix Consumers
 //

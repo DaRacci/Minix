@@ -11,7 +11,6 @@ repositories {
 
 dependencies {
     compileOnly(libs.minecraft.api.placeholderAPI)
-    compileOnly(platform("io.arrow-kt:arrow-stack:1.1.3"))
 
     slim("dev.racci:Minix-NMS:$minixVersion")
 
@@ -52,12 +51,15 @@ dependencies {
     // Misc
     slim(libs.caffeine)
     slim(libs.minecraft.bstats)
-    slim("io.arrow-kt:arrow-core:1.1.3")
-    slim("io.arrow-kt:arrow-fx-coroutines:1.1.3")
+    slim(libs.arrow.core)
+    slim(libs.arrow.optics)
+    slim(libs.arrow.fx.coroutines)
+    slim("io.arrow-kt:arrow-optics-reflect:${libs.versions.arrow.get()}")
+    slim("io.arrow-kt", "arrow-analysis-laws", libs.plugins.arrow.get().version.requiredVersion)
 
-    // Unused Libraries for Minix Consumers
-
-    slim(libs.minecraft.particles)
+//    // Unused Libraries for Minix Consumers
+//
+//    slim(libs.minecraft.particles)
 
     // Supported Command framework
     slim(libs.cloud.core)

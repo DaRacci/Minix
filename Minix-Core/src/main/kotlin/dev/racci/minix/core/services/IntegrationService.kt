@@ -1,5 +1,6 @@
 package dev.racci.minix.core.services
 
+import com.google.common.collect.MultimapBuilder
 import dev.racci.minix.api.annotations.DoNotUnload
 import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.annotations.MappedIntegration
@@ -77,11 +78,23 @@ class IntegrationService(override val plugin: Minix) : Extension<Minix>() {
     }
 
     private fun registerEvents() {
+        val waitingEnable = MultimapBuilder.hashKeys().hashSetValues().build<Plugin, Integration>()
         event<PluginEnableEvent> {
             val descriptor = this.plugin.name.lowercase()
             enabledPlugins = enabledPlugins.put(descriptor, this.plugin)
+
+            if (waitingEnable.containsKey(this.plugin)) {
+                waitingEnable[this.plugin].forEach { integration -> integration.handleEnable() }
+                waitingEnable.removeAll(this.plugin)
+            }
+
             integrations.register(descriptor)
-            integrations[descriptor]?.get(false)?.onSuccess { it.handleEnable() }
+            integrations[descriptor]?.get(false)?.onSuccess { integration ->
+                when {
+                    !integration.plugin.isEnabled -> waitingEnable.put(integration.plugin, integration)
+                    else -> integration.handleEnable()
+                }
+            }
         }
 
         event<PluginDisableEvent> {

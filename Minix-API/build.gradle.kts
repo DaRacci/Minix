@@ -58,12 +58,13 @@ dependencies {
 
     // Misc
     slim(libs.caffeine)
+    slim(libs.aedile)
     slim(libs.minecraft.bstats.bukkit)
     slim(libs.arrow.core)
     slim(libs.arrow.optics)
     slim(libs.arrow.fx.coroutines)
-    slim("io.arrow-kt:arrow-optics-reflect:${libs.versions.arrow.get()}")
-    slim("io.arrow-kt", "arrow-analysis-laws", libs.plugins.arrow.get().version.requiredVersion)
+    slim(libs.arrow.optics.reflect)
+    slim(libs.arrow.laws)
 
 //    // Unused Libraries for Minix Consumers
 //

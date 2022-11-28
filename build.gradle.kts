@@ -42,7 +42,7 @@ dependencies {
     implementation(libs.slimjar)
     implementation(libs.minecraft.bstats.bukkit)
 
-    slim("org.mariadb.jdbc:mariadb-java-client:3.0.6")
+    slim(libs.mariadb)
     slim(libs.toolfactory)
 }
 

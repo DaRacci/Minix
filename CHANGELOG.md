@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.12](https://github.com/DaRacci/Minix/compare/v4.3.11..v4.3.12) - 2022-11-28
+#### Bug Fixes
+- **(TimeService)** Fire event with no players online. - ([3931e46](https://github.com/DaRacci/Minix/commit/3931e462687b15654d36cb016de00bd7a2a8f528)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- **(deps)** Update conventions and add aedile dep - ([a579620](https://github.com/DaRacci/Minix/commit/a5796200939259acf0d59cc15406a4080942003d)) - [@DaRacci](https://github.com/DaRacci)
+- **(deps)** Include optics reflect - ([ccee316](https://github.com/DaRacci/Minix/commit/ccee316530b2951f1bf3e4e29d5ddd4d33adfa1f)) - [@DaRacci](https://github.com/DaRacci)
+#### Refactoring
+- **(IntegrationService)** Make sure the MinixPlugin instance is enable too - ([c54bb95](https://github.com/DaRacci/Minix/commit/c54bb957f0e0fffe1bc939fccddd9447838c106c)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.3.11](https://github.com/DaRacci/Minix/compare/v4.3.10..v4.3.11) - 2022-11-20
 #### Bug Fixes
 - NullPointer Exception - ([3ce5949](https://github.com/DaRacci/Minix/commit/3ce59499e669dbb28799d786dfa623a86f8d72bd)) - [@DaRacci](https://github.com/DaRacci)

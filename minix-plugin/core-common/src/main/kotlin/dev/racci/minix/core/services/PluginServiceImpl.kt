@@ -1,5 +1,7 @@
 package dev.racci.minix.core.services
 
+import arrow.core.Option
+import arrow.core.firstOrNone
 import dev.racci.minix.api.PlatformProxy
 import dev.racci.minix.api.annotations.DoNotUnload
 import dev.racci.minix.api.annotations.MappedExtension
@@ -183,8 +185,9 @@ public class PluginServiceImpl(override val plugin: Minix) : PluginService, Exte
 
     override fun firstNonMinixPlugin(): MinixPlugin? = PlatformProxy.firstNonMinixPlugin()
 
-    override fun fromClassloader(classLoader: ClassLoader): MinixPlugin? = loadedPlugins.values
-        .find { plugin -> plugin.platformClassLoader === classLoader }
+    override fun fromClassloader(classLoader: ClassLoader): Option<MinixPlugin> = loadedPlugins.values.firstOrNone { plugin ->
+        plugin.platformClassLoader === classLoader
+    }
 
     private suspend fun logRunning(
         plugin: MinixPlugin,
@@ -219,6 +222,7 @@ public class PluginServiceImpl(override val plugin: Minix) : PluginService, Exte
         scanResult.close()
     }
 
+    // TODO: Extern this to the platformproxy
     private suspend fun loadDependencies(plugin: MinixPlugin) {
         logger.debug { "Loading dependencies for ${plugin.value}, with class ${plugin::class}, with loader ${plugin.classLoader.name}" }
 

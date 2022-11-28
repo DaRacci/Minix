@@ -1,5 +1,6 @@
 package dev.racci.minix.api.services
 
+import arrow.core.Option
 import arrow.core.getOrElse
 import arrow.core.toOption
 import dev.racci.minix.api.extensions.reflection.castOrThrow
@@ -25,9 +26,12 @@ public interface PluginService {
 
     public fun unloadPlugin(plugin: MinixPlugin)
 
-    public fun fromClassloader(classLoader: ClassLoader): MinixPlugin?
-
     public fun firstNonMinixPlugin(): MinixPlugin?
+
+    /** Returns the plugin instance, which is related to this classloader. */
+    public fun fromClassloader(classLoader: ClassLoader): Option<MinixPlugin>
+
+    public fun fromClass(clazz: KClass<*>): Option<MinixPlugin> = fromClassloader(clazz.java.classLoader)
 
     public companion object : PluginService by getKoin().get() {
         // TODO -> Error with class, location and property

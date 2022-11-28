@@ -3,7 +3,6 @@ package dev.racci.minix.api.plugin
 import dev.racci.minix.api.lifecycles.ComplexManagedLifecycle
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.data.Version
-import org.koin.core.component.KoinScopeComponent
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import java.nio.file.Path
@@ -11,7 +10,12 @@ import java.nio.file.Path
 /**
  * The main plugin class.
  */
-public expect abstract class MinixPlugin : PlatformPlugin, WithPlugin<MinixPlugin>, Qualifier, ComplexManagedLifecycle, KoinScopeComponent {
+public expect abstract class MinixPlugin :
+    PlatformPlugin,
+    WithPlugin<MinixPlugin>,
+    Qualifier,
+    ComplexManagedLifecycle {
+
     public final override val value: String
 
     public final override val scope: Scope

@@ -1,8 +1,8 @@
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
+import io.github.slimjar.func.GradleKtsKt.slim
 import kotlinx.validation.KotlinApiBuildTask
 import net.minecrell.pluginyml.bukkit.BukkitPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
-import org.gradle.model.internal.core.ModelNodes.withType
 import org.jetbrains.dokka.Platform
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
@@ -81,7 +81,8 @@ kotlin {
                 api(libs.arrow.core)
                 api(libs.arrow.optics)
                 api(libs.arrow.fx.coroutines)
-                api("io.arrow-kt:arrow-analysis-laws:${libs.plugins.arrow.get().version.requiredVersion}")
+                api(libs.arrow.optics.reflect)
+                api(libs.arrow.laws)
             }
         }
 
@@ -101,10 +102,11 @@ kotlin {
                 api(libs.koin.core)
                 api(libs.mordant)
                 api(libs.caffeine)
+                api(libs.aedile)
                 api(libs.minecraft.bstats.base)
                 api(libs.toolfactory)
                 api(libs.slimjar)
-                api("org.mariadb.jdbc:mariadb-java-client:3.0.6")
+                api(libs.mariadb)
 
                 api(libs.sentry.core)
                 api(libs.sentry.kotlin)

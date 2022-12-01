@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## [v4.3.13](https://github.com/DaRacci/Minix/compare/v4.3.12..v4.3.13) - 2022-12-01
+#### Bug Fixes
+- **(KPlayerEvent)** Add component1 for player - ([8552b15](https://github.com/DaRacci/Minix/commit/8552b15ba8aa3b5c96966c212b8a036817535c0d)) - [@DaRacci](https://github.com/DaRacci)
+- **(LiquidEvent)** Cleanup and don't fire same newType events - ([97beab7](https://github.com/DaRacci/Minix/commit/97beab77ec6f7f6d16ac70e34a0434b0ced27925)) - [@DaRacci](https://github.com/DaRacci)
+- **(PlayerData)** Set the liquidType in onJoin - ([0fd3a19](https://github.com/DaRacci/Minix/commit/0fd3a19c56162a0a60c42ea16747e806b50db83f)) - [@DaRacci](https://github.com/DaRacci)
+#### Miscellaneous Chores
+- API Dump - ([1738a3e](https://github.com/DaRacci/Minix/commit/1738a3e4b2faae2d57fecd11c1e2f7b538d6ad6e)) - [@DaRacci](https://github.com/DaRacci)
+- snapshot - ([6838bca](https://github.com/DaRacci/Minix/commit/6838bcac413285bd2a516ababc42f6a23b6178f2)) - [@DaRacci](https://github.com/DaRacci)
+
+- - -
+
 ## [v4.3.12](https://github.com/DaRacci/Minix/compare/v4.3.11..v4.3.12) - 2022-11-28
 #### Bug Fixes
 - **(TimeService)** Fire event with no players online. - ([3931e46](https://github.com/DaRacci/Minix/commit/3931e462687b15654d36cb016de00bd7a2a8f528)) - [@DaRacci](https://github.com/DaRacci)

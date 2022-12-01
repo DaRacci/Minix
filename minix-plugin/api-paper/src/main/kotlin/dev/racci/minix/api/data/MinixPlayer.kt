@@ -29,7 +29,7 @@ public actual class MinixPlayer constructor(internal val actualPlayer: OfflinePl
     public val isDoubleAttack: Boolean by Delegates.doubleAccessWatcher()
     public val isDoubleInteract: Boolean by Delegates.doubleAccessWatcher()
 
-    public var liquidType: LiquidType = LiquidType.NON
+    public var liquidType: LiquidType by Delegates.notNull()
 
     // TODO -> Better caching
     public actual companion object : WrapperCompanion<MinixPlayer> {

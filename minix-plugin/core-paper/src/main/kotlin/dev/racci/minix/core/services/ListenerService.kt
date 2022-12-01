@@ -17,7 +17,6 @@ import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.callEvent
 import dev.racci.minix.api.extensions.cancel
 import dev.racci.minix.api.extensions.event
-import dev.racci.minix.api.extensions.log
 import dev.racci.minix.api.extensions.pluginManager
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.services.PlayerService
@@ -29,6 +28,7 @@ import dev.racci.minix.core.plugin.Minix
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.Block
+import org.bukkit.craftbukkit.v1_19_R1.block.impl.CraftFluids
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventPriority
@@ -40,6 +40,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.server.PluginEnableEvent
@@ -56,6 +57,8 @@ import kotlin.reflect.full.primaryConstructor
 public class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
     override suspend fun handleEnable() {
+        event<PlayerJoinEvent> { PlayerService[player].liquidType = player.location.block.liquidType }
+
         event<PlayerMoveEvent>(
             EventPriority.HIGHEST,
             ignoreCancelled = true,

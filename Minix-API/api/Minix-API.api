@@ -717,6 +717,7 @@ public final class dev/racci/minix/api/events/keybind/PlayerSneakSecondaryEvent$
 public abstract class dev/racci/minix/api/events/player/KPlayerEvent : org/bukkit/event/player/PlayerEvent, org/bukkit/event/Cancellable {
 	public fun <init> (Lorg/bukkit/entity/Player;Z)V
 	public synthetic fun <init> (Lorg/bukkit/entity/Player;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lorg/bukkit/entity/Player;
 	public fun getHandlers ()Lorg/bukkit/event/HandlerList;
 	public fun isCancelled ()Z
 	public fun setCancelled (Z)V

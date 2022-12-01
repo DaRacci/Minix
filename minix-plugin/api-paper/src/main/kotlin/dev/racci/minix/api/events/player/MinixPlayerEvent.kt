@@ -2,6 +2,7 @@ package dev.racci.minix.api.events.player
 
 import dev.racci.minix.api.data.MinixPlayer
 import dev.racci.minix.api.events.MinixEvent
+import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
 
@@ -19,5 +20,6 @@ public actual abstract class MinixPlayerEvent(
     public actual val minixPlayer: MinixPlayer,
     public actual val async: Boolean = false
 ) : PlayerEvent(minixPlayer.actualPlayer.player ?: error("Player event cannot be called without an online player!"), async) {
+    public actual operator fun component1(): Player = player
     final override fun getHandlers(): HandlerList = MinixEvent.handlerMap[this::class]
 }

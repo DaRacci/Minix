@@ -3,34 +3,44 @@ package dev.racci.minix.core.services
 import com.google.common.graph.Graphs
 import com.google.common.graph.MutableGraph
 import dev.racci.minix.api.annotations.MappedExtension
-import dev.racci.minix.api.coroutine.launchAsync
 import dev.racci.minix.api.data.MinixPlayer
 import dev.racci.minix.api.data.enums.LiquidType
 import dev.racci.minix.api.data.enums.LiquidType.Companion.liquidType
 import dev.racci.minix.api.events.keybinds.ComboEvent
 import dev.racci.minix.api.events.keybinds.OffhandComboEvent
 import dev.racci.minix.api.events.player.PlayerLiquidEnterEvent
+import dev.racci.minix.api.events.player.PlayerLiquidEvent
 import dev.racci.minix.api.events.player.PlayerLiquidExitEvent
 import dev.racci.minix.api.events.player.PlayerMoveFullXYZEvent
 import dev.racci.minix.api.events.player.PlayerMoveXYZEvent
 import dev.racci.minix.api.extension.Extension
-import dev.racci.minix.api.extensions.callEvent
 import dev.racci.minix.api.extensions.cancel
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.pluginManager
 import dev.racci.minix.api.extensions.reflection.castOrThrow
+import dev.racci.minix.api.flow.eventFlow
 import dev.racci.minix.api.services.PlayerService
 import dev.racci.minix.api.utils.accessReturn
 import dev.racci.minix.api.utils.collections.CollectionUtils.first
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.unsafeCast
 import dev.racci.minix.core.plugin.Minix
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterNot
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.plus
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.Block
 import org.bukkit.craftbukkit.v1_19_R1.block.impl.CraftFluids
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockFromToEvent
@@ -48,6 +58,7 @@ import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.SimplePluginManager
 import org.koin.core.component.get
+import org.koin.core.component.inject
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.isSubclassOf
@@ -55,55 +66,40 @@ import kotlin.reflect.full.primaryConstructor
 
 @MappedExtension
 public class ListenerService(override val plugin: Minix) : Extension<Minix>() {
+    private val liquidEventChannel = Channel<PlayerLiquidEvent>(Channel.UNLIMITED)
+    private val playerService by inject<PlayerService>()
 
     override suspend fun handleEnable() {
-        event<PlayerJoinEvent> { PlayerService[player].liquidType = player.location.block.liquidType }
+        event<PlayerJoinEvent> { playerService[player].liquidType = player.location.block.liquidType }
 
-        event<PlayerMoveEvent>(
-            EventPriority.HIGHEST,
-            ignoreCancelled = true,
-            forceAsync = true
-        ) {
-            if (!hasExplicitlyChangedPosition()) return@event
+        liquidEventChannel.receiveAsFlow()
+            .filterNot { event -> playerService[event.player].liquidType == event.newType }
+            .conflate()
+            .onEach(Event::callEvent)
+            .onEach { event -> playerService[event.player].liquidType = event.newType }
+            .launchIn(plugin.coroutineScope + plugin.context)
 
-            PlayerMoveXYZEvent(MinixPlayer.wrapped(player), from, to).callEvent()
-        }
+        eventFlow<PlayerMoveEvent>(priority = EventPriority.MONITOR, ignoreCancelled = true)
+            .filter(PlayerMoveEvent::hasExplicitlyChangedPosition)
+            .map { event -> PlayerMoveXYZEvent(MinixPlayer.wrapped(event.player), event.from, event.to).also(Event::callEvent) }
+            .conflate()
+            .filter(PlayerMoveXYZEvent::hasExplicitlyChangedBlock)
+            .onEach { event -> PlayerMoveFullXYZEvent(MinixPlayer.wrapped(event.player), event.from, event.to).also(Event::callEvent) }
+            .conflate()
+            // TODO -> Clean the water events up
+            .onEach { (player, from, to) ->
+                val fromLiquid = from.block.liquidType
+                val toLiquid = to.block.liquidType
+                if (fromLiquid == toLiquid) return@onEach
 
-        event<PlayerMoveXYZEvent>(
-            EventPriority.HIGH,
-            ignoreCancelled = true
-        ) {
-            if (!hasExplicitlyChangedBlock()) return@event
-
-            PlayerMoveFullXYZEvent(MinixPlayer.wrapped(player), from, to).callEvent()
-        }
-
-        event<PlayerMoveFullXYZEvent>(
-            EventPriority.HIGH,
-            ignoreCancelled = true
-        ) {
-            val fromLiquid = from.block.liquidType
-            val toLiquid = to.block.liquidType
-            if (fromLiquid == toLiquid ||
-                fromLiquid == LiquidType.NON &&
-                toLiquid == LiquidType.NON
-            ) return@event
-
-            val type = if (fromLiquid != LiquidType.NON && toLiquid == LiquidType.NON) {
-                PlayerLiquidExitEvent::class
-            } else PlayerLiquidEnterEvent::class
-
-            callEvent(type) {
-                mapOf(
-                    this[0] to player,
-                    this[1] to fromLiquid,
-                    this[2] to toLiquid
-                )
-            }
-        }
+                val event = if (fromLiquid != LiquidType.NON && toLiquid == LiquidType.NON) {
+                    PlayerLiquidExitEvent(MinixPlayer.wrapped(player), fromLiquid, toLiquid)
+                } else PlayerLiquidEnterEvent(MinixPlayer.wrapped(player), fromLiquid, toLiquid)
+                liquidEventChannel.send(event)
+            }.launchIn(plugin.coroutineScope + plugin.context)
 
         event<PlayerBucketEmptyEvent>(
-            EventPriority.HIGHEST,
+            EventPriority.MONITOR,
             ignoreCancelled = true
         ) {
             val from = block.liquidType
@@ -117,14 +113,12 @@ public class ListenerService(override val plugin: Minix) : Extension<Minix>() {
         }
 
         event<PlayerBucketFillEvent>(
-            EventPriority.HIGHEST,
+            EventPriority.MONITOR,
             ignoreCancelled = true
-        ) {
-            liquidEvent(block, block.liquidType, LiquidType.NON, true)
-        }
+        ) { liquidEvent(block, block.liquidType, LiquidType.NON, true) }
 
         event<BlockFromToEvent>(
-            EventPriority.HIGH,
+            EventPriority.MONITOR,
             ignoreCancelled = true
         ) {
             val new = block.liquidType
@@ -138,14 +132,6 @@ public class ListenerService(override val plugin: Minix) : Extension<Minix>() {
             if (block.blockData as? CraftFluids == null || newData as? CraftFluids != null) return@event
 
             liquidEvent(block, block.liquidType, LiquidType.NON, true)
-        }
-
-        event<PlayerLiquidEnterEvent> {
-            log.debug { "Player ${player.name} is entering liquid ${newType.name} from the previous ${previousType.name}" }
-        }
-
-        event<PlayerLiquidExitEvent> {
-            log.debug { "Player ${player.name} is exiting liquid ${newType.name} from the previous ${previousType.name}" }
         }
 
         event<PlayerInteractEvent>(
@@ -276,20 +262,15 @@ public class ListenerService(override val plugin: Minix) : Extension<Minix>() {
     ) {
         if (previous == LiquidType.NON && new == LiquidType.NON || previous == new) return
 
-        val nearby = block.location
-            .toCenterLocation()
-            .getNearbyEntitiesByType(Player::class.java, 0.5, 0.5) {
-                !it.isDead || it.location.block.liquidType == new || PlayerServiceImpl.getService()[it.uniqueId].liquidType == new // Don't trigger if the player is dead or already in that liquid type
-            }.takeUnless(Collection<*>::isEmpty) ?: return
+        val nearby = block.world.getNearbyEntities(block.boundingBox) { entity -> entity is Player && !entity.isDead } as Collection<Player>
+        if (nearby.isEmpty()) return
 
-        plugin.launchAsync {
+        async {
             for (player in nearby) {
-                val cancelled = if (exiting) {
-                    PlayerLiquidExitEvent(player, previous!!, new).callEvent()
-                } else PlayerLiquidEnterEvent(player, previous ?: LiquidType.NON, new).callEvent()
-
-                if (cancelled) continue
-                PlayerServiceImpl.getService()[player.uniqueId].liquidType = new
+                val event = if (exiting) {
+                    PlayerLiquidExitEvent(MinixPlayer.wrapped(player), previous!!, new)
+                } else PlayerLiquidEnterEvent(MinixPlayer.wrapped(player), previous ?: LiquidType.NON, new)
+                liquidEventChannel.send(event)
             }
         }
     }

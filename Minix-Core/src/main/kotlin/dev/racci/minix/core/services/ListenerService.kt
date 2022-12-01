@@ -31,6 +31,7 @@ import org.bukkit.block.Block
 import org.bukkit.craftbukkit.v1_19_R1.block.impl.CraftFluids
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockFromToEvent
@@ -40,6 +41,7 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent
 import org.bukkit.event.player.PlayerBucketFillEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerSwapHandItemsEvent
 import org.bukkit.event.server.PluginEnableEvent
@@ -56,15 +58,7 @@ import kotlin.reflect.full.primaryConstructor
 class ListenerService(override val plugin: Minix) : Extension<Minix>() {
 
     override suspend fun handleEnable() {
-        event<PlayerMoveEvent>(
-            EventPriority.HIGHEST,
-            ignoreCancelled = true,
-            forceAsync = true
-        ) {
-            if (!hasExplicitlyChangedPosition()) return@event
-
-            PlayerMoveXYZEvent(player, from, to).callEvent()
-        }
+        event<PlayerJoinEvent> { PlayerService[player].liquidType = player.location.block.liquidType }
 
         event<PlayerMoveXYZEvent>(
             EventPriority.HIGH,

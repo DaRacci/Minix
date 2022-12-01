@@ -1,13 +1,14 @@
 package dev.racci.minix.api.data
 
-import dev.racci.minix.api.events.LiquidType
-import dev.racci.minix.api.events.PlayerUnloadEvent
+import dev.racci.minix.api.data.enums.LiquidType
+import dev.racci.minix.api.events.player.PlayerUnloadEvent
 import dev.racci.minix.api.services.PlayerService
 import dev.racci.minix.api.utils.now
 import kotlinx.atomicfu.AtomicInt
 import kotlinx.atomicfu.atomic
 import kotlinx.datetime.Instant
 import java.util.UUID
+import kotlin.properties.Delegates
 import kotlin.time.Duration.Companion.milliseconds
 
 data class PlayerData(val uuid: UUID) {
@@ -44,7 +45,7 @@ data class PlayerData(val uuid: UUID) {
     val isDoubleAttack: Boolean get() = doubleOrAdd(3)
     val isDoubleInteract: Boolean get() = doubleOrAdd(4)
 
-    var liquidType: LiquidType = LiquidType.NON
+    var liquidType: LiquidType by Delegates.notNull()
 
     companion object {
         val DOUBLE_DELAY = 500.milliseconds

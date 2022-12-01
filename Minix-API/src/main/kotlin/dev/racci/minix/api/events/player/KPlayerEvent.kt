@@ -28,4 +28,6 @@ abstract class KPlayerEvent(
     override fun setCancelled(cancel: Boolean) { cancelled = cancel }
 
     override fun getHandlers(): HandlerList = handlerMap[this::class]
+
+    operator fun component1(): Player = player
 }

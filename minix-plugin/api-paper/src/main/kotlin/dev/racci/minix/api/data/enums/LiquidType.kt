@@ -2,6 +2,7 @@ package dev.racci.minix.api.data.enums
 
 import org.bukkit.Material
 import org.bukkit.block.Block
+import org.bukkit.block.BlockState
 import org.bukkit.block.data.Waterlogged
 import java.util.concurrent.ConcurrentHashMap
 
@@ -13,9 +14,11 @@ public enum class LiquidType {
     public companion object {
         private val typeCache = ConcurrentHashMap<Material, LiquidType>()
 
-        public fun convert(block: Block): LiquidType {
-            val waterlogged = block.blockData as? Waterlogged ?: return convert(block.type)
-            return if (waterlogged.isWaterlogged) WATER else NON
+        public fun convert(block: Block): LiquidType = convert(block.state)
+
+        public fun convert(state: BlockState): LiquidType {
+            val waterLogged = state.blockData as? Waterlogged ?: return convert(state.type)
+            return if (waterLogged.isWaterlogged) WATER else NON
         }
 
         public fun convert(type: Material): LiquidType = typeCache.computeIfAbsent(type) {
@@ -32,7 +35,8 @@ public enum class LiquidType {
             }
         }
 
-        public val Block.liquidType: LiquidType get() = convert(this)
-        public val Material.liquidType: LiquidType get() = convert(this)
+        public val BlockState.liquidType: LiquidType get() = convert(this)
+        public val Block.liquidType get() = convert(this)
+        public val Material.liquidType get() = convert(this)
     }
 }

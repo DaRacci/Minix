@@ -2,8 +2,8 @@ package dev.racci.minix.core.coroutine.dispatcher
 
 import arrow.core.toOption
 import dev.racci.minix.api.coroutine.CoroutineTimings
-import dev.racci.minix.api.extensions.scheduler
 import dev.racci.minix.core.coroutine.service.WakeUpBlockService
+import io.papermc.paper.util.MCUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import org.bukkit.plugin.Plugin
 import kotlin.coroutines.CoroutineContext
@@ -32,14 +32,9 @@ internal class MinecraftCoroutineDispatcher(
         context: CoroutineContext,
         block: Runnable
     ) {
-        if (!plugin.isEnabled) {
-            println("Plugin isn't enabled, not dispatching")
-            return
-        }
-
         context[CoroutineTimings.Key].toOption()
-            .tapNone { scheduler.runTask(plugin, block) }
+            .tapNone { MCUtil.MAIN_EXECUTOR.execute(block) }
             .tap { timed -> timed.queue.add(block) }
-            .tap { timed -> scheduler.runTaskAsynchronously(plugin, timed) }
+            .tap { timed -> MCUtil.MAIN_EXECUTOR.execute(timed) }
     }
 }

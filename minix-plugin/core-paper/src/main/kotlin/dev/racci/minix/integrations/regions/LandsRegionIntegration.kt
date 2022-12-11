@@ -1,7 +1,11 @@
 package dev.racci.minix.integrations.regions
 
+import arrow.core.None
+import arrow.core.Option
+import arrow.core.Some
 import com.google.common.collect.HashBiMap
 import dev.racci.minix.api.extensions.asBukkitLocation
+import dev.racci.minix.api.extensions.orFalse
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.integrations.regions.Region
 import dev.racci.minix.api.integrations.regions.RegionIntegration
@@ -16,7 +20,6 @@ import me.angeschossen.lands.api.land.LandArea
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import java.util.Optional
 
 @MappedIntegration("Lands", RegionManager::class)
 public class LandsRegionIntegration(plugin: Minix) : RegionIntegration {
@@ -26,13 +29,13 @@ public class LandsRegionIntegration(plugin: Minix) : RegionIntegration {
     override fun getRegion(
         pos: BlockPos,
         world: World
-    ): Optional<Region> {
+    ): Option<Region> {
         val land = this.integration.getLand(world, pos.x.toInt(), pos.z.toInt())
-        if (land == null || !land.exists()) return Optional.empty()
+        if (land == null || !land.exists()) return None
 
         val area = land.getArea(pos.asBukkitLocation(world)).castOrThrow<LandArea>()
         val areaRegion = areaReference.computeIfAbsent(area, ::AreaRegion)
-        return Optional.of(areaRegion)
+        return Some(areaRegion)
     }
 
     override fun insideRegion(
@@ -44,26 +47,26 @@ public class LandsRegionIntegration(plugin: Minix) : RegionIntegration {
         pos: BlockPos,
         world: World,
         player: Player
-    ): Boolean = this.getRegion(pos, world).map { it.canBuild(player) }.orElse(false)
+    ): Boolean = this.getRegion(pos, world).map { it.canBuild(player) }.orFalse()
 
     override fun canBreak(
         pos: BlockPos,
         world: World,
         player: Player
-    ): Boolean = this.getRegion(pos, world).map { it.canBreak(player) }.orElse(false)
+    ): Boolean = this.getRegion(pos, world).map { it.canBreak(player) }.orFalse()
 
     override fun canInteract(
         pos: BlockPos,
         world: World,
         player: Player
-    ): Boolean = this.getRegion(pos, world).map { it.canInteract(player) }.orElse(false)
+    ): Boolean = this.getRegion(pos, world).map { it.canInteract(player) }.orFalse()
 
     override fun canAttack(
         pos: BlockPos,
         world: World,
         player: Player,
         target: Entity
-    ): Boolean = this.getRegion(pos, world).map { it.canAttack(player, target) }.orElse(false)
+    ): Boolean = this.getRegion(pos, world).map { it.canAttack(player, target) }.orFalse()
 
     override fun ifWilderness(
         pos: BlockPos,

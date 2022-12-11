@@ -38,6 +38,10 @@ internal actual class PlatformProxyImpl : PlatformProxy {
                 .filter { plugin -> plugin !is Minix }
         }.findFirst().getOrNull() as? MinixPlugin
 
+    override fun loadDependencies(plugin: MinixPlugin) {
+        MinixApplicationBuilder.createApplication(plugin)
+    }
+
     internal actual fun initialize() {
         // TODO -> Annotation scan for logger converters
     }

@@ -22,6 +22,12 @@ public actual interface PlatformPlugin : Qualifier, Comparable<PlatformPlugin> {
     public actual val dependencies: ImmutableSet<String>
     public actual val platformClassLoader: ClassLoader
 
+    override fun compareTo(other: PlatformPlugin): Int {
+        if ((other.dependencies).contains(this.value)) return 1
+        if ((this.dependencies).contains(other.value)) return -1
+        return 0
+    }
+
     public actual companion object : WrapperCompanion<PlatformPlugin> {
         actual override fun wrapped(obj: Any): PlatformPlugin {
             if (obj is PlatformPlugin) return obj
@@ -39,12 +45,6 @@ public actual interface PlatformPlugin : Qualifier, Comparable<PlatformPlugin> {
                             { error("Couldn't get the classLoader property, unsupported version?") },
                             { prop -> prop.accessGet(obj).castOrThrow<PluginClassLoader>() }
                         )
-                }
-
-                override fun compareTo(other: PlatformPlugin): Int {
-                    if ((other.dependencies).contains(obj.name)) return 1
-                    if ((this.dependencies).contains(other.value)) return -1
-                    return 0
                 }
             }
         }

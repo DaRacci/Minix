@@ -5,6 +5,8 @@ import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.logger.MinixLoggerFactory
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.data.Version
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableSet
 import org.apiguardian.api.API
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.annotations.ApiStatus
@@ -33,8 +35,8 @@ public actual abstract class MinixPlugin :
     actual final override val plugin: MinixPlugin get() = this
     actual final override val logger: MinixLogger by MinixLoggerFactory
     actual final override val dataFolder: Path get() = this.getDataFolder().toPath()
-
     actual final override val version: Version by lazy { Version(this.description.version) }
+    actual final override val dependencies: ImmutableSet<String> by lazy<ImmutableSet<String>>((this.description.depend + this.description.softDepend)::toImmutableSet)
 
     public actual val enabled: Boolean get() = this.isEnabled
     public actual val metrics: Metrics by lazy { Metrics(this) }

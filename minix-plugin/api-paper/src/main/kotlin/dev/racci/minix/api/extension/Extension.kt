@@ -6,6 +6,7 @@ import dev.racci.minix.api.utils.koin
 import dev.racci.minix.flowbus.receiver.EventReceiver
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
 import org.koin.core.parameter.parametersOf
 
@@ -22,4 +23,8 @@ public actual abstract class Extension<P : MinixPlugin> :
     public final override fun sync(
         block: suspend CoroutineScope.() -> Unit
     ): Job = scope.get<CoroutineSession>().launch(plugin.minecraftContext, this.supervisor, block = block)
+
+    public final override suspend fun <R> deferredSync(
+        block: suspend () -> R
+    ): Deferred<R> = super.deferredSync(block)
 }

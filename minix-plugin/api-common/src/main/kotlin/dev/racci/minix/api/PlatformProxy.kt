@@ -15,5 +15,7 @@ public interface PlatformProxy {
     /** Get the UUID of a platforms player object. */
     public fun getUUID(obj: Any): UUID
 
+    public fun loadDependencies(plugin: MinixPlugin)
+
     public companion object : PlatformProxy by getKoin().get()
 }

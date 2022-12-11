@@ -5,6 +5,7 @@ import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.core.data.IntegrationLoader
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.core.services.IntegrationService
@@ -49,7 +50,7 @@ public actual class IntegrationMapper : MapperService<Minix>, Extension<Minix>()
     actual override suspend fun forgetMapped(plugin: MinixPlugin) {
         val service = get<IntegrationService>()
         service.integrations.entries
-            .filter { it.value.plugin == plugin }
+            .filter { entry -> PluginService.fromClass(entry.value::class).exists { it == plugin } }
             .onEach { service.integrations.unregister(it.key) }
             .forEach { service.integrations.remove(it.key) }
     }

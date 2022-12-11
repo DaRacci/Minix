@@ -3,6 +3,7 @@ package dev.racci.minix.api.plugin
 import dev.racci.minix.api.lifecycles.ComplexManagedLifecycle
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.data.Version
+import kotlinx.collections.immutable.ImmutableSet
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.scope.Scope
 import java.nio.file.Path
@@ -25,6 +26,8 @@ public expect abstract class MinixPlugin :
     public final override val logger: MinixLogger
 
     public final override val platformClassLoader: ClassLoader
+
+    public final override val dependencies: ImmutableSet<String>
 
     public final override val dataFolder: Path
 

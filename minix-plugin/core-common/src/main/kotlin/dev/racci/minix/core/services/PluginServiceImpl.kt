@@ -54,7 +54,7 @@ public class PluginServiceImpl(override val plugin: Minix) : PluginService, Exte
                 plugin.logger.lockLevel()
             }
 
-            loadDependencies(plugin)
+            PlatformProxy.loadDependencies(plugin)
 
             if (plugin !is Minix) loadKoinModules(KoinUtils.getModule(plugin))
 
@@ -220,15 +220,5 @@ public class PluginServiceImpl(override val plugin: Minix) : PluginService, Exte
         get<IntegrationMapper>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
 
         scanResult.close()
-    }
-
-    // TODO: Extern this to the platformproxy
-    private suspend fun loadDependencies(plugin: MinixPlugin) {
-        logger.debug { "Loading dependencies for ${plugin.value}, with class ${plugin::class}, with loader ${plugin.classLoader.name}" }
-
-        if (MinixApplicationBuilder.createApplication(plugin) == null) {
-            logger.debug { "Plugin ${plugin.name} does not have any needed libraries." }
-            return
-        }
     }
 }

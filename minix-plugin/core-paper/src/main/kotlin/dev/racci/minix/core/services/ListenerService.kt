@@ -170,7 +170,7 @@ public class ListenerService(override val plugin: Minix) : Extension<Minix>() {
                 deferredSync {
                     val fromLiquid = event.from.block.liquidType
                     val toLiquid = event.to.block.liquidType
-                    if (fromLiquid != toLiquid) Triple(event.player, fromLiquid, toLiquid) else null
+                    if (fromLiquid != toLiquid) Triple(MinixPlayer.wrapped(event.player), fromLiquid, toLiquid) else null
                 }.await()
             }.conflate().onEach { (player, fromLiquid, toLiquid) ->
                 when (toLiquid == LiquidType.NON) {

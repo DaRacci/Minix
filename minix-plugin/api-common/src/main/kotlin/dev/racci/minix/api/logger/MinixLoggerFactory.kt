@@ -1,6 +1,5 @@
 package dev.racci.minix.api.logger
 
-import arrow.core.Option
 import arrow.core.getOrElse
 import dev.racci.minix.api.PlatformProxy
 import dev.racci.minix.api.plugin.MinixPlugin
@@ -18,7 +17,7 @@ public object MinixLoggerFactory : KoinComponent {
     public operator fun getValue(
         thisRef: Any,
         property: KProperty<*>
-    ): MinixLogger = Option.catch { PluginService.fromClassloader(thisRef::class.java.classLoader)!! }
+    ): MinixLogger = PluginService.fromClassloader(thisRef::class.java.classLoader)
         .map { EXISTING.getOrPut(it) { get<PlatformProxy>().createLogger(it) } }
         .getOrElse { get() }
 }

@@ -213,6 +213,42 @@ public final class dev/racci/minix/api/collections/registering/RegisteringMap$En
 	public fun setValue (Ljava/lang/Object;)Ljava/lang/Object;
 }
 
+public final class dev/racci/minix/api/data/Priority : java/lang/Comparable {
+	public static final field Companion Ldev/racci/minix/api/data/Priority$Companion;
+	public static final synthetic fun box-impl (I)Ldev/racci/minix/api/data/Priority;
+	public synthetic fun compareTo (Ljava/lang/Object;)I
+	public fun compareTo-d6hTxXk (I)I
+	public static fun compareTo-d6hTxXk (II)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public final fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class dev/racci/minix/api/data/Priority$Companion {
+	public final fun getDEFAULT-oUxLd3o ()I
+	public final fun getFINAL-oUxLd3o ()I
+	public final fun getINITIAL-oUxLd3o ()I
+	public final fun getMONITOR-oUxLd3o ()I
+	public final fun of-s-MKjoU (I)I
+	public final fun of-s-MKjoU (Ljava/lang/String;)I
+}
+
+public final class dev/racci/minix/api/data/Priority$Const : java/lang/Enum {
+	public static final field DEFAULT Ldev/racci/minix/api/data/Priority$Const;
+	public static final field FINAL Ldev/racci/minix/api/data/Priority$Const;
+	public static final field INITIAL Ldev/racci/minix/api/data/Priority$Const;
+	public static final field MONITOR Ldev/racci/minix/api/data/Priority$Const;
+	public final fun getPriority-oUxLd3o ()I
+	public static fun valueOf (Ljava/lang/String;)Ldev/racci/minix/api/data/Priority$Const;
+	public static fun values ()[Ldev/racci/minix/api/data/Priority$Const;
+}
+
 public final class dev/racci/minix/api/exceptions/AnnotatedRegistryException : java/lang/RuntimeException {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
@@ -280,6 +316,11 @@ public final class dev/racci/minix/api/extensions/ExMiniMessageKt {
 	public static synthetic fun parse$default (Lnet/kyori/adventure/text/minimessage/MiniMessage;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lnet/kyori/adventure/text/Component;
 	public static final fun template (Lnet/kyori/adventure/text/minimessage/MiniMessage;Ljava/lang/String;[Lkotlin/Pair;Lkotlin/jvm/functions/Function1;)Lnet/kyori/adventure/text/Component;
 	public static synthetic fun template$default (Lnet/kyori/adventure/text/minimessage/MiniMessage;Ljava/lang/String;[Lkotlin/Pair;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lnet/kyori/adventure/text/Component;
+}
+
+public final class dev/racci/minix/api/extensions/ExOptionKt {
+	public static final fun orFalse (Larrow/core/Option;)Z
+	public static final fun orTrue (Larrow/core/Option;)Z
 }
 
 public final class dev/racci/minix/api/extensions/ExRangeKt {
@@ -374,7 +415,7 @@ public final class dev/racci/minix/api/flow/ConcurrencyKt {
 	public static final fun mapInOrder (Lkotlinx/coroutines/flow/Flow;ILkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/flow/Flow;
 }
 
-public abstract class dev/racci/minix/api/lifecycles/Closeable {
+public abstract class dev/racci/minix/api/lifecycles/Closeable : kotlin/properties/PropertyDelegateProvider {
 	public fun <init> ()V
 	public final fun close ()Ljava/lang/Object;
 	public abstract fun create ()Ljava/lang/Object;
@@ -382,6 +423,8 @@ public abstract class dev/racci/minix/api/lifecycles/Closeable {
 	protected final fun getValue ()Lkotlinx/atomicfu/AtomicRef;
 	public final fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
 	public fun onClose ()V
+	public synthetic fun provideDelegate (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
+	public final fun provideDelegate (Ljava/lang/Void;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
 }
 
 public abstract interface class dev/racci/minix/api/lifecycles/ComplexLifecycle : dev/racci/minix/api/lifecycles/Lifecycle {
@@ -474,6 +517,7 @@ public final class dev/racci/minix/api/lifecycles/ManagedLifecycle$DefaultImpls 
 
 public final class dev/racci/minix/api/utils/KoinKt {
 	public static final fun getKoin ()Lorg/koin/core/Koin;
+	public static final fun getKoinInline ()Lorg/koin/core/Koin;
 	public static final fun loadModule (ZLkotlin/jvm/functions/Function1;)Lorg/koin/core/module/Module;
 	public static synthetic fun loadModule$default (ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/koin/core/module/Module;
 }

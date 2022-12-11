@@ -1,8 +1,8 @@
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
-import io.github.slimjar.func.GradleKtsKt.slim
-import kotlinx.validation.KotlinApiBuildTask
+import kotlinx.validation.KotlinApiCompareTask
 import net.minecrell.pluginyml.bukkit.BukkitPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
+import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.dokka.Platform
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
@@ -276,10 +276,16 @@ allprojects {
         apply<KtlintPlugin>()
 
         configure<KtlintExtension> {
-            this.baseline.set(file("$rootDir/config/ktlint/ktlint-baseline-${project.name}.xml"))
+            this.baseline.set(file("$rootDir/config/ktlint/baseline-${project.name}.xml"))
         }
 
-        tasks.withType<KotlinApiBuildTask>().first().outputApiDir = file("$rootDir/config/api")
+        tasks {
+            // For some reason this task likes to delete the entire folder contents,
+            // So we need all projects to have their own sub folder.
+            val apiDir = file("$rootDir/config/api/${project.name.toLowerCase()}")
+            (apiDump as TaskProvider<Sync>) { destinationDir = apiDir }
+            (apiCheck as TaskProvider<KotlinApiCompareTask>) { projectApiDir = apiDir }
+        }
     } else {
         tasks {
             apiDump.get().enabled = false

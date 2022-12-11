@@ -239,8 +239,10 @@ subprojects {
 }
 
 inline fun <reified T : Task> TaskProvider<T>.alsoSubprojects(crossinline block: T.() -> Unit = {}) {
+    val targets = project.kotlin.targets.map { it.project.tasks.findByName("${it.name}${name.capitalized()}") }
     this {
-        dependsOn(gradle.includedBuilds.map { it.task(":$name") })
+        val subprojects = gradle.includedBuilds.map { it.task(":$name") }
+        dependsOn(targets + subprojects)
         block()
     }
 }

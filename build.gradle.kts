@@ -1,4 +1,5 @@
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
+import dev.racci.paperweight.mpp.paperweightDevBundle
 import kotlinx.validation.KotlinApiCompareTask
 import net.minecrell.pluginyml.bukkit.BukkitPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
@@ -8,7 +9,7 @@ import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.jlleitschuh.gradle.ktlint.KtlintPlugin
 import java.net.URL
@@ -19,12 +20,13 @@ val version: String by project
 // Workaround for (https://youtrack.jetbrains.com/issue/KTIJ-19369)
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("multiplatform") version "1.7.21"
+    kotlin("multiplatform") version "1.7.22"
     // FIXME -> Fix in Conventions
     // alias(libs.plugins.minix.kotlin)
     alias(libs.plugins.minix.copyjar) apply false
     alias(libs.plugins.minix.purpurmc) apply false
 
+    alias(libs.plugins.ksp)
     alias(libs.plugins.dokka)
     alias(libs.plugins.kotlin.atomicfu) apply false
     alias(libs.plugins.kotlin.serialization) apply false
@@ -33,37 +35,165 @@ plugins {
     alias(libs.plugins.shadow)
     alias(libs.plugins.slimjar)
     alias(libs.plugins.minecraft.pluginYML)
-
-    id("com.google.devtools.ksp") version "1.7.20-1.0.7"
+    alias(libs.plugins.minecraft.runPaper)
+    id("dev.racci.paperweight.mpp")
 }
 
 apiValidation {
     ignoredProjects = subprojects.filter { it.name.contains("core") }.map(Project::getName).toMutableSet()
-    ignoredPackages += "minix-modules"
 
     ignoredPackages.add("dev.racci.minix.core")
     nonPublicMarkers.add("dev.racci.minix.api.MinixInternal")
 }
 
+runPaper.disablePluginJarDetection()
+
+fun Project.emptySources() = project.sourceSets.none { set -> set.allSource.any { file -> file.extension == "kt" } }
+
+fun SourceDirectorySet.maybeExtend(vararg objects: Any) {
+    objects.map {
+        when (it) {
+            is File -> it
+            is String -> project.file(it)
+            else -> error("Unknown type: $it")
+        }
+    }.filter { it.exists() }.also { srcDirs(it) }
+}
+
+inline fun <reified T : Task> TaskContainer.apiTask(
+    prefix: String?,
+    suffix: String,
+    configure: T.() -> Unit = {}
+): T = buildString {
+    if (prefix != null) append(prefix)
+    if (prefix != null) append("Api") else append("api")
+    append(suffix)
+}.let<String, T>(::getByName).also(configure)
+
+fun Project.maybeConfigureBinaryValidator(prefix: String? = null) {
+    this.tasks {
+        // For some reason this task likes to delete the entire folder contents,
+        // So we need all projects to have their own sub folder.
+        val name = if (prefix != null) "plugin-$prefix" else project.name
+        val apiDir = file("$rootDir/config/api/${name.toLowerCase()}")
+        apiTask<Sync>(prefix, "Dump") { destinationDir = apiDir }
+        apiTask<KotlinApiCompareTask>(prefix, "Check") { projectApiDir = apiDir }
+    }
+}
+
 tasks {
-    val quickBuild by creating {
-        group = "build"
-        dependsOn(compileJava)
-        dependsOn(shadowJar)
-//        dependsOn(reobfJar)
-        findByName("copyJar")?.let { dependsOn(it) }
+//    afterEvaluate {
+
+//    }
+//    val quickBuild by creating {
+//        group = "build"
+//        dependsOn(compileJava)
+//        dependsOn(shadowJar)
+// //        dependsOn(reobfJar)
+//        findByName("copyJar")?.let { dependsOn(it) }
+//    }
+
+    runServer {
+        val dependTask = kotlin.targets["paper"].compilations["main"].compileKotlinTask
+        this.dependsOn(dependTask)
+        this.minecraftVersion("1.19.2")
+        this.pluginJars(dependTask.outputs.files.singleFile)
+    }
+}
+
+allprojects {
+    buildDir = file(rootProject.projectDir.resolve("build").resolve(project.name))
+
+    configurations.whenObjectAdded {
+        if (this.name == "testImplementation") {
+            exclude("org.jetbrains.kotlin", "kotlin-test-junit")
+        }
+
+        // These refuse to resolve sometimes
+        exclude("me.carleslc.Simple-YAML", "Simple-Configuration")
+        exclude("me.carleslc.Simple-YAML", "Simple-Yaml")
+        exclude("com.github.technove", "Flare")
+    }
+
+    afterEvaluate {
+
+        // TODO: Disable unwanted modules
+        kotlinExtension.apply {
+            this.jvmToolchain(17)
+            this.explicitApiWarning() // Koin generated sources aren't complicit.
+            this.kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
+
+            sourceSets.forEach { set -> set.kotlin.maybeExtend("$buildDir/generated/ksp/main/kotlin") }
+            (sourceSets.findByName("test") ?: sourceSets.getByName("commonTest")).apply { kotlin.maybeExtend("$buildDir/generated/ksp/main/kotlin") }
+        }
+
+        if (project.emptySources()) {
+            tasks.apiDump.get().enabled = false
+            tasks.apiCheck.get().enabled = false
+        } else {
+            apply<KtlintPlugin>()
+            configure<KtlintExtension> {
+                this.baseline.set(file("$rootDir/config/ktlint/baseline-${project.name}.xml"))
+            }
+
+            project.maybeConfigureBinaryValidator()
+        }
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven("https://repo.racci.dev/releases/") {
+            mavenContent {
+                releasesOnly()
+                includeGroupByRegex("dev.racci(\\.[a-z]+)?")
+            }
+        }
+
+        maven("https://repo.racci.dev/snapshots/")
+
+        maven("https://repo.fvdh.dev/releases") {
+            mavenContent {
+                releasesOnly()
+                includeGroup("net.frankheijden.serverutils")
+            }
+        }
+
+        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") {
+            mavenContent {
+                releasesOnly()
+                includeModule("me.clip", "placeholderapi")
+            }
+        }
+        maven("https://jitpack.io")
+        maven("https://papermc.io/repo/repository/maven-public/")
+        maven("https://repo.purpurmc.org/snapshots")
+    }
+
+    tasks {
+        withType<Test>().configureEach {
+            this.enabled = false
+            useJUnitPlatform()
+        }
     }
 }
 
 kotlin {
     fun KotlinSourceSet.setDirs(module: String, api: Boolean) {
         this.kotlin.srcDirs.clear()
+        val prefix = buildString {
+            append("minix-plugin/")
+            if (api) append("api") else append("core")
+            append('-').append(module)
+            append("/src/main")
+        }.let(::file)
 
-        if (api) {
-            this.kotlin.setSrcDirs(listOf("minix-plugin/api-$module/src/main/kotlin"))
-        } else {
-            this.kotlin.setSrcDirs(listOf("minix-plugin/core-$module/src/main/kotlin"))
-        }
+        this.kotlin.maybeExtend(
+            prefix.resolve("kotlin"),
+            prefix.resolve("java")
+        )
+
+        this.resources.maybeExtend(prefix.resolve("resources"))
     }
 
     sourceSets {
@@ -91,13 +221,13 @@ kotlin {
             this.dependsOn(commonAPI)
 
             dependencies {
-                api(project(":minix-modules:module-autoscanner"))
-                api(project(":minix-modules:module-common"))
-                api(project(":minix-modules:module-data"))
-                api(project(":minix-modules:module-flowbus"))
-                api(project(":minix-modules:module-integrations"))
-                api(project(":minix-modules:module-wrappers"))
-                api(project(":minix-modules:module-ticker"))
+                api(project(":module-autoscanner"))
+                api(project(":module-common"))
+                api(project(":module-data"))
+                api(project(":module-flowbus"))
+                api(project(":module-integrations"))
+//                api(project(":minix-modules:module-wrappers"))
+                api(project(":module-ticker"))
 
                 api(libs.koin.core)
                 api(libs.mordant)
@@ -137,7 +267,7 @@ kotlin {
         val paperMain by creating {
 
             this.setDirs("paper", false)
-            this.kotlin.srcDir("minix-plugin/core-paper/src/main/java")
+            this.resources.srcDir(tasks.generateBukkitPluginDescription.get())
 
             this.dependsOn(commonMain)
             this.dependsOn(paperAPI)
@@ -154,35 +284,41 @@ kotlin {
                 api(libs.minecraft.bstats.bukkit)
                 api(libs.configurate.hocon)
                 api(libs.configurate.extra.kotlin)
+                paperweightDevBundle("org.purpurmc.purpur", project.properties["serverVersion"] as String)
+            }
+        }
+
+        targets {
+            fun KotlinJvmTarget.registerQuickBuild() {
+                this.project.rootProject.tasks.register("${this.name.toLowerCase().capitalized()}QuickBuild") {
+                    this.group = "build"
+                    this.dependsOn(this@registerQuickBuild.compilations.getByName("main").compileKotlinTask)
+                }
+            }
+
+            jvm("paper") {
+                this.project.maybeConfigureBinaryValidator(this.name)
+                this.project.apply<BukkitPlugin>()
+                this.project.bukkit {
+                    this.name = "Minix"
+                    this.prefix = "Minix"
+                    this.author = "Racci"
+                    this.apiVersion = "1.19"
+                    this.version = rootProject.version.toString()
+                    this.main = "dev.racci.minix.core.MinixInit"
+                    this.load = PluginLoadOrder.STARTUP
+                    this.loadBefore = listOf("eco")
+                    this.softDepend = listOf("PlaceholderAPI", "Lands", "ServerUtils")
+                    this.website = "https://github.com/DaRacci/Minix"
+                }
             }
         }
     }
-
-    targets {
-        jvm("paper") {
-            this.withJava()
-
-            this.project.apply<Dev_racci_minix_nmsPlugin>()
-            this.project.apply<BukkitPlugin>()
-            this.project.bukkit {
-                name = "Minix"
-                prefix = "Minix"
-                author = "Racci"
-                apiVersion = "1.19"
-                version = rootProject.version.toString()
-                main = "dev.racci.minix.core.MinixInit"
-                load = PluginLoadOrder.STARTUP
-                loadBefore = listOf("eco")
-                softDepend = listOf("PlaceholderAPI", "Lands", "ServerUtils")
-                website = "https://github.com/DaRacci/Minix"
-            }
-        }
+}.also { // Order matters
+    dependencies {
+        add("kspCommonMainMetadata", "io.insert-koin:koin-ksp-compiler:1.0.3")
+        add("kspPaper", "io.insert-koin:koin-ksp-compiler:1.0.3")
     }
-}
-
-dependencies {
-    add("kspCommonMainMetadata", "io.insert-koin:koin-ksp-compiler:1.0.3")
-    add("kspPaper", "io.insert-koin:koin-ksp-compiler:1.0.3")
 }
 
 subprojects {
@@ -201,13 +337,12 @@ subprojects {
     }
 
     dependencies {
-        val common = project(":minix-modules:module-common")
+        val common = project(":module-common")
         if (this@subprojects.project !== common.dependencyProject) {
             compileOnly(common)
             testImplementation(common)
         }
 
-        ksp("io.arrow-kt:arrow-meta:1.6.1-SNAPSHOT")
         ksp("io.insert-koin:koin-ksp-compiler:1.0.3")
         ksp(rootProject.libs.arrow.optics.ksp)
     }
@@ -239,16 +374,16 @@ subprojects {
 }
 
 inline fun <reified T : Task> TaskProvider<T>.alsoSubprojects(crossinline block: T.() -> Unit = {}) {
-    val targets = project.kotlin.targets.map { it.project.tasks.findByName("${it.name}${name.capitalized()}") }
+    val targets = project.kotlin.targets.mapNotNull { it.project.tasks.findByName("${it.name}${name.capitalized()}") }
+    val subprojects = subprojects.mapNotNull { it.tasks.findByName(name) }
+    val builds = gradle.includedBuilds.mapNotNull { it.task(":$name") }
     this {
-        val subprojects = gradle.includedBuilds.map { it.task(":$name") }
-        dependsOn(targets + subprojects)
+        dependsOn(targets + subprojects + builds)
         block()
     }
 }
 
 tasks {
-
     shadowJar {
         dependencyFilter.include {
             subprojects.map(Project::getName).contains(it.moduleName) ||
@@ -257,9 +392,10 @@ tasks {
                 it.moduleGroup == "dev.racci.slimjar"
         }
         val prefix = "dev.racci.minix.libs"
-        relocate("io.sentry", "$prefix.io.sentry") // TODO -> Slimjar Relocate
-        relocate("org.bstats", "$prefix.org.bstats") // TODO -> Slimjar Relocate
-        relocate("io.github.slimjar", "$prefix.io.github.slimjar")
+        relocate("io.sentry", "$prefix.sentry") // TODO -> Slimjar Relocate
+        relocate("org.bstats", "$prefix.bstats") // TODO -> Slimjar Relocate
+        relocate("io.github.slimjar", "$prefix.slimjar")
+        relocate("org.koin.ksp.generated", "$prefix.generated.koin")
     }
 
 //    ktlintFormat.alsoSubprojects()
@@ -268,81 +404,5 @@ tasks {
 
     withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask> {
         outputDirectory.set(File("$rootDir/docs"))
-    }
-}
-
-fun Project.emptySources() = project.sourceSets.none { set -> set.allSource.any { file -> file.extension == "kt" } }
-
-allprojects {
-    if (!project.emptySources()) {
-        apply<KtlintPlugin>()
-
-        configure<KtlintExtension> {
-            this.baseline.set(file("$rootDir/config/ktlint/baseline-${project.name}.xml"))
-        }
-
-        tasks {
-            // For some reason this task likes to delete the entire folder contents,
-            // So we need all projects to have their own sub folder.
-            val apiDir = file("$rootDir/config/api/${project.name.toLowerCase()}")
-            (apiDump as TaskProvider<Sync>) { destinationDir = apiDir }
-            (apiCheck as TaskProvider<KotlinApiCompareTask>) { projectApiDir = apiDir }
-        }
-    } else {
-        tasks {
-            apiDump.get().enabled = false
-            apiCheck.get().enabled = false
-        }
-    }
-
-    buildDir = file(rootProject.projectDir.resolve("build").resolve(project.name))
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven("https://jitpack.io")
-        maven("https://repo.fvdh.dev/releases")
-        maven("https://repo.racci.dev/releases")
-        maven("https://repo.purpurmc.org/snapshots")
-        maven("https://papermc.io/repo/repository/maven-public/")
-        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-    }
-
-    configurations {
-        testImplementation.get().exclude("org.jetbrains.kotlin", "kotlin-test-junit")
-
-        // These refuse to resolve sometimes
-        configureEach {
-            exclude("me.carleslc.Simple-YAML", "Simple-Configuration")
-            exclude("me.carleslc.Simple-YAML", "Simple-Yaml")
-            exclude("com.github.technove", "Flare")
-        }
-    }
-
-    tasks {
-        withType<Test>().configureEach {
-            this.enabled = false
-            useJUnitPlatform()
-        }
-
-        withType<KotlinCompile>().configureEach {
-            kotlinOptions.suppressWarnings = true
-        }
-    }
-
-    kotlinExtension.apply {
-        this.jvmToolchain(17)
-        this.explicitApiWarning() // Koin generated sources aren't complicit.
-        this.kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
-
-        sourceSets.forEach {
-            it.kotlin.srcDir("$buildDir/generated/ksp/main/kotlin")
-        }
-//        (sourceSets.findByName("main") ?: sourceSets.getByName("commonMain")).apply {
-//            this.kotlin.srcDir("$buildDir/generated/ksp/main/kotlin")
-//        }
-        (sourceSets.findByName("test") ?: sourceSets.getByName("commonTest")).apply {
-            this.kotlin.srcDir("$buildDir/generated/ksp/test/kotlin")
-        }
     }
 }

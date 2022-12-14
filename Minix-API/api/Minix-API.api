@@ -486,8 +486,10 @@ public final class dev/racci/minix/api/data/enums/LiquidType : java/lang/Enum {
 public final class dev/racci/minix/api/data/enums/LiquidType$Companion {
 	public final fun convert (Lorg/bukkit/Material;)Ldev/racci/minix/api/data/enums/LiquidType;
 	public final fun convert (Lorg/bukkit/block/Block;)Ldev/racci/minix/api/data/enums/LiquidType;
+	public final fun convert (Lorg/bukkit/block/BlockState;)Ldev/racci/minix/api/data/enums/LiquidType;
 	public final fun getLiquidType (Lorg/bukkit/Material;)Ldev/racci/minix/api/data/enums/LiquidType;
 	public final fun getLiquidType (Lorg/bukkit/block/Block;)Ldev/racci/minix/api/data/enums/LiquidType;
+	public final fun getLiquidType (Lorg/bukkit/block/BlockState;)Ldev/racci/minix/api/data/enums/LiquidType;
 }
 
 public final class dev/racci/minix/api/destructors/CommonDestructorKt {

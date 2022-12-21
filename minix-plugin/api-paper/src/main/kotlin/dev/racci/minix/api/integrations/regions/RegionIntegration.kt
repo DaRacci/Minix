@@ -6,7 +6,6 @@ import dev.racci.minix.integrations.Integration
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import java.util.Optional
 
 public interface RegionIntegration : Integration {
 

@@ -10,7 +10,6 @@ import java.util.logging.Level;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.PluginClassLoader;
 
-
 /**
  * Creating a dummy plugin without any kotlin methods, so we can dynamically load the libraries.
  */

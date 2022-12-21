@@ -22,8 +22,7 @@ dependencyResolutionManagement {
     }
 
     versionCatalogs.create("libs") {
-        val properties = Properties()
-            .apply { load(rootDir.toPath().resolveSibling(Project.GRADLE_PROPERTIES).toFile().inputStream()) }
+        val properties = Properties().apply { load(rootDir.toPath().resolveSibling(Project.GRADLE_PROPERTIES).toFile().inputStream()) }
 
         val minixVersion: String by properties
         val kotlinVersion: String by properties

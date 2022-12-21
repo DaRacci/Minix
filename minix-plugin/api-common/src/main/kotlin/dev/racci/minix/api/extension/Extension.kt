@@ -52,6 +52,4 @@ public expect abstract class Extension<P : MinixPlugin>() : PlatformIndependentE
     final override fun <T : Any> EventReceiver.unsubscribe(clazz: KClass<T>)
 
     final override fun EventReceiver.unsubscribe()
-
-
 }

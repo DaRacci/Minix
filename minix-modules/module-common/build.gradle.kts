@@ -2,11 +2,9 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     `java-library`
-    alias(libs.plugins.kotlin.atomicfu)
-    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.plugin.atomicfu)
+    alias(libs.plugins.kotlin.plugin.serialization)
 }
-
-val slim: Configuration by configurations.getting
 
 dependencies {
     slim(libs.arrow.core)

@@ -1,39 +1,40 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
 import dev.racci.paperweight.mpp.paperweightDevBundle
+import dev.racci.paperweight.mpp.reobfJar
 import kotlinx.validation.KotlinApiCompareTask
 import net.minecrell.pluginyml.bukkit.BukkitPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
 import org.gradle.configurationcache.extensions.capitalized
 import org.jetbrains.dokka.Platform
+import org.jetbrains.dokka.gradle.DokkaMultiModuleTask
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
-import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.jlleitschuh.gradle.ktlint.KtlintPlugin
 import java.net.URL
 
 val minixVersion: String by project
 val version: String by project
+val relocatePrefix = "dev.racci.minix.libs"
 
 // Workaround for (https://youtrack.jetbrains.com/issue/KTIJ-19369)
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    kotlin("multiplatform") version "1.7.22"
-    // FIXME -> Fix in Conventions
-    // alias(libs.plugins.minix.kotlin)
-    alias(libs.plugins.minix.copyjar) apply false
+    alias(libs.plugins.kotlin.mpp)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.slimjar) // TODO: MPP
+    alias(libs.plugins.minix.common)
     alias(libs.plugins.minix.purpurmc) apply false
 
     alias(libs.plugins.ksp)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.kotlin.atomicfu) apply false
-    alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.kotlin.binaryValidator)
+    alias(libs.plugins.kotlin.plugin.dokka)
+    alias(libs.plugins.kotlin.plugin.atomicfu) apply false
+    alias(libs.plugins.kotlin.plugin.serialization) apply false
+    alias(libs.plugins.kotlin.plugin.binaryValidator)
 
-    alias(libs.plugins.shadow)
-    alias(libs.plugins.slimjar)
     alias(libs.plugins.minecraft.pluginYML)
     alias(libs.plugins.minecraft.runPaper)
     id("dev.racci.paperweight.mpp")
@@ -44,6 +45,11 @@ apiValidation {
 
     ignoredPackages.add("dev.racci.minix.core")
     nonPublicMarkers.add("dev.racci.minix.api.MinixInternal")
+}
+
+slimJar {
+    relocate("io.sentry", "$relocatePrefix.sentry")
+    relocate("org.bstats", "$relocatePrefix.bstats")
 }
 
 runPaper.disablePluginJarDetection()
@@ -82,28 +88,15 @@ fun Project.maybeConfigureBinaryValidator(prefix: String? = null) {
 }
 
 tasks {
-//    afterEvaluate {
-
-//    }
-//    val quickBuild by creating {
-//        group = "build"
-//        dependsOn(compileJava)
-//        dependsOn(shadowJar)
-// //        dependsOn(reobfJar)
-//        findByName("copyJar")?.let { dependsOn(it) }
-//    }
-
     runServer {
-        val dependTask = kotlin.targets["paper"].compilations["main"].compileKotlinTask
+        val dependTask = kotlin.targets["paper"].reobfJar()
         this.dependsOn(dependTask)
         this.minecraftVersion("1.19.2")
-        this.pluginJars(dependTask.outputs.files.singleFile)
+        this.pluginJars(dependTask.get().outputJar)
     }
 }
 
 allprojects {
-    buildDir = file(rootProject.projectDir.resolve("build").resolve(project.name))
-
     configurations.whenObjectAdded {
         if (this.name == "testImplementation") {
             exclude("org.jetbrains.kotlin", "kotlin-test-junit")
@@ -119,7 +112,7 @@ allprojects {
 
         // TODO: Disable unwanted modules
         kotlinExtension.apply {
-            this.jvmToolchain(17)
+            // this.jvmToolchain(17)
             this.explicitApiWarning() // Koin generated sources aren't complicit.
             this.kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
 
@@ -132,9 +125,9 @@ allprojects {
             tasks.apiCheck.get().enabled = false
         } else {
             apply<KtlintPlugin>()
-            configure<KtlintExtension> {
-                this.baseline.set(file("$rootDir/config/ktlint/baseline-${project.name}.xml"))
-            }
+//            configure<KtlintExtension> {
+//                this.baseline.set(file("$rootDir/config/ktlint/baseline-${project.name}.xml"))
+//            }
 
             project.maybeConfigureBinaryValidator()
         }
@@ -328,14 +321,6 @@ subprojects {
     apply<KotlinPlatformJvmPlugin>()
     apply<KspGradleSubplugin>()
 
-    configurations {
-        val slim by creating
-
-        compileClasspath.get().extendsFrom(slim)
-        runtimeClasspath.get().extendsFrom(slim)
-        apiElements.get().extendsFrom(slim)
-    }
-
     dependencies {
         val common = project(":module-common")
         if (this@subprojects.project !== common.dependencyProject) {
@@ -366,11 +351,6 @@ subprojects {
             }
         }
     }
-
-    afterEvaluate {
-        val subSlim = this.configurations.findByName("slim") ?: return@afterEvaluate
-        subSlim.dependencies.forEach { dep -> rootProject.dependencies { slim(dep) } }
-    }
 }
 
 inline fun <reified T : Task> TaskProvider<T>.alsoSubprojects(crossinline block: T.() -> Unit = {}) {
@@ -384,25 +364,24 @@ inline fun <reified T : Task> TaskProvider<T>.alsoSubprojects(crossinline block:
 }
 
 tasks {
-    shadowJar {
-        dependencyFilter.include {
-            subprojects.map(Project::getName).contains(it.moduleName) ||
-                it.moduleGroup == libs.sentry.core.get().module.group ||
-                it.moduleGroup == libs.minecraft.bstats.base.get().module.group ||
-                it.moduleGroup == "dev.racci.slimjar"
-        }
-        val prefix = "dev.racci.minix.libs"
-        relocate("io.sentry", "$prefix.sentry") // TODO -> Slimjar Relocate
-        relocate("org.bstats", "$prefix.bstats") // TODO -> Slimjar Relocate
-        relocate("io.github.slimjar", "$prefix.slimjar")
-        relocate("org.koin.ksp.generated", "$prefix.generated.koin")
+    withType<ShadowJar> {
+//        dependencyFilter.include {
+//            subprojects.map(Project::getName).contains(it.moduleName) ||
+//                it.moduleGroup == libs.sentry.core.get().module.group ||
+//                it.moduleGroup == libs.minecraft.bstats.base.get().module.group ||
+//                it.moduleGroup == "dev.racci.slimjar"
+//        }
+
+//        relocate("io.sentry", "$relocatePrefix.sentry") // TODO -> Slimjar Relocate
+//        relocate("org.bstats", "$relocatePrefix.bstats") // TODO -> Slimjar Relocate
+        relocate("io.github.slimjar", "$relocatePrefix.slimjar")
+        relocate("org.koin.ksp.generated", "$relocatePrefix.generated.koin")
     }
 
-//    ktlintFormat.alsoSubprojects()
     build.alsoSubprojects()
     clean.alsoSubprojects()
 
-    withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask> {
+    withType<DokkaMultiModuleTask> {
         outputDirectory.set(File("$rootDir/docs"))
     }
 }

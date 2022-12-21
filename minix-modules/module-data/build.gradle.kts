@@ -1,11 +1,11 @@
 // Workaround for (https://youtrack.jetbrains.com/issue/KTIJ-19369)
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.plugin.serialization)
 }
 
 dependencies {
-    compileOnly("org.purpurmc.purpur:purpur-api:1.19.2-R0.1-SNAPSHOT")
+    compileOnly("org.purpurmc.purpur:purpur-api:1.19.3-R0.1-SNAPSHOT")
 
     compileOnlyApi(libs.exposed.core)
     compileOnlyApi(libs.exposed.dao)

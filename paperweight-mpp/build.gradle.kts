@@ -8,7 +8,7 @@ plugins {
 
 kotlin {
     jvmToolchain {
-        this.languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
@@ -16,16 +16,17 @@ tasks.withType<KotlinCompile> {
     kotlinOptions {
         languageVersion = "1.7"
         jvmTarget = "17"
-        freeCompilerArgs = listOf(
-            "-Xjvm-default=all",
-            "-Xopt-in=kotlin.io.path.ExperimentalPathApi"
-        )
     }
+}
+
+fun Provider<MinimalExternalModuleDependency>.withVersion(version: String): String {
+    return "${this.get().module}:$version"
 }
 
 dependencies {
     compileOnly(gradleApi())
     compileOnly("org.jetbrains.kotlin.multiplatform:org.jetbrains.kotlin.multiplatform.gradle.plugin:1.7.22")
+    compileOnly(libs.gradle.shadow.withVersion("7.0.0"))
     implementation("org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:$embeddedKotlinVersion")
     implementation("org.gradle.kotlin:gradle-kotlin-dsl-plugins:3.2.6")
     implementation("org.gradle.kotlin.kotlin-dsl:org.gradle.kotlin.kotlin-dsl.gradle.plugin:2.1.7")

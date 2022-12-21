@@ -20,8 +20,9 @@ internal class KoinConverter : LoggerConverter<Level> {
     override fun convert(level: Level): LoggingLevel {
         return when (level) {
             Level.DEBUG -> LoggingLevel.DEBUG
-            Level.INFO -> LoggingLevel.INFO
             Level.ERROR -> LoggingLevel.ERROR
+            Level.WARNING -> LoggingLevel.WARN
+            Level.INFO -> LoggingLevel.INFO
             Level.NONE -> LoggingLevel.FATAL // We don't support absolutely no logging
         }
     }

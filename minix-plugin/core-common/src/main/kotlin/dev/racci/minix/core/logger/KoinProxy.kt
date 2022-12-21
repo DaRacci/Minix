@@ -8,8 +8,8 @@ import org.koin.core.logger.Level
 import org.koin.core.logger.Logger
 import org.koin.core.logger.MESSAGE
 
-public object KoinProxy : Logger(), KoinComponent {
-    override fun log(
+internal object KoinProxy : Logger(), KoinComponent {
+    override fun display(
         level: Level,
         msg: MESSAGE
     ) {

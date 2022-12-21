@@ -1,5 +1,6 @@
 package dev.racci.minix.core.logger
 
+import dev.racci.minix.api.logger.LoggingLevel
 import dev.racci.minix.api.logger.MinixLogger
 import io.sentry.ILogger
 import io.sentry.SentryLevel
@@ -45,5 +46,12 @@ public object SentryProxy : ILogger, KoinComponent {
         }
     }
 
-    override fun isEnabled(level: SentryLevel?): Boolean = false
+    override fun isEnabled(level: SentryLevel?): Boolean = when (level) {
+        SentryLevel.DEBUG -> get<MinixLogger>().isEnabled(LoggingLevel.DEBUG)
+        SentryLevel.INFO -> get<MinixLogger>().isEnabled(LoggingLevel.INFO)
+        SentryLevel.WARNING -> get<MinixLogger>().isEnabled(LoggingLevel.WARN)
+        SentryLevel.ERROR -> get<MinixLogger>().isEnabled(LoggingLevel.ERROR)
+        SentryLevel.FATAL -> get<MinixLogger>().isEnabled(LoggingLevel.FATAL)
+        else -> false
+    }
 }

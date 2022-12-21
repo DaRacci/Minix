@@ -31,11 +31,9 @@ public enum class LoggingLevel(public val level: Int) {
         internal lateinit var CONVERTERS: MutableMap<KClass<out Any>, LoggerConverter<out Any>>
 
         @PublishedApi
-        @Suppress("UNCHECKED_CAST")
         @Throws(LevelConversionException::class)
         internal inline fun <reified T : Any> getConverter(): LoggerConverter<T> {
-            // For some reason this needs the explicit type cast.
-            return CONVERTERS[T::class as KClass<out Any>] as? LoggerConverter<T> ?: throw LevelConversionException {
+            return CONVERTERS[T::class] as? LoggerConverter<T> ?: throw LevelConversionException {
                 "No converter found for ${T::class.simpleName}"
             }
         }

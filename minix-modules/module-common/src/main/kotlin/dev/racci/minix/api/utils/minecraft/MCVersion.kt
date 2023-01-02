@@ -205,6 +205,8 @@ public class MCVersion private constructor(
         public val MC_NMS_1_19_R1: MCVersion by MCVersionDelegate(131, 759)
         public val MC_1_19_1: MCVersion by MCVersionDelegate(131, 760)
         public val MC_1_19_2: MCVersion by MCVersionDelegate(131, 760)
+        public val MC_NMS_1_19_R2: MCVersion by MCVersionDelegate(131, 760)
+        public val MC_1_19_3: MCVersion by MCVersionDelegate(131, 761)
 
         init {
             val nameMap = mutableMapOf<String, MCVersion>()

@@ -7,27 +7,27 @@ plugins {
 }
 
 dependencies {
-    slim(libs.arrow.core)
-    slim(libs.arrow.optics)
-    slim(libs.arrow.fx.stm)
-    slim(libs.arrow.fx.coroutines)
+    api(libs.arrow.core)
+    api(libs.arrow.optics)
+    api(libs.arrow.fx.stm)
+    api(libs.arrow.fx.coroutines)
 
-    slim(libs.koin.core)
-    slim(libs.adventure.api)
-    slim(libs.adventure.minimessage)
+    api(libs.koin.core)
+    api(libs.adventure.api)
+    api(libs.adventure.minimessage)
 
-    slim(libs.kotlin.stdlib)
-    slim(libs.kotlin.reflect)
-    slim(libs.kotlinx.dateTime)
-    slim(libs.kotlinx.atomicfu)
-    slim(libs.kotlinx.coroutines)
-    slim(libs.kotlinx.immutableCollections)
+    api(libs.kotlin.stdlib)
+    api(libs.kotlin.reflect)
+    api(libs.kotlinx.dateTime)
+    api(libs.kotlinx.atomicfu)
+    api(libs.kotlinx.coroutines)
+    api(libs.kotlinx.immutableCollections)
 
     compileOnly(libs.configurate)
     compileOnly(libs.configurate.extra.kotlin)
     compileOnly(libs.kotlinx.serialization.core)
 
-    compileOnlyApi("io.insert-koin:koin-annotations:1.0.3")
+    compileOnlyApi(libs.koin.annotations)
     compileOnlyApi(libs.apiguardian)
 
     testApi(libs.koin.core)

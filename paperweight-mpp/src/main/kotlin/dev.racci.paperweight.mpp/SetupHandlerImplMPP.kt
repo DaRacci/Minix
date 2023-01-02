@@ -4,28 +4,30 @@ import io.papermc.paperweight.tasks.* // ktlint-disable no-wildcard-imports
 import io.papermc.paperweight.userdev.internal.setup.ExtractedBundle
 import io.papermc.paperweight.userdev.internal.setup.RunPaperclip
 import io.papermc.paperweight.userdev.internal.setup.SetupHandler
+import io.papermc.paperweight.userdev.internal.setup.UserdevSetup
 import io.papermc.paperweight.userdev.internal.setup.step.* // ktlint-disable no-wildcard-imports
 import io.papermc.paperweight.userdev.internal.setup.util.HashFunctionBuilder
 import io.papermc.paperweight.util.* // ktlint-disable no-wildcard-imports
 import io.papermc.paperweight.util.constants.* // ktlint-disable no-wildcard-imports
-import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
+import org.slf4j.LoggerFactory
 import java.nio.file.Path
 
-class SetupHandlerImplMPP(
-    private val project: Project,
-    private val service: UserdevSetupMPP,
+public class SetupHandlerImplMPP(
+    private val parameters: UserdevSetup.Parameters,
     private val bundle: ExtractedBundle<GenerateDevBundle.DevBundleConfig>,
-    private val cache: Path = service.parameters.cache.path
+    private val cache: Path = parameters.cache.path
 ) : SetupHandlerMPP {
+    private val logger = LoggerFactory.getLogger(PaperweightMppPlugin::class.java)
+
     private val vanillaSteps by lazy {
         VanillaSteps(
             bundle.config.minecraftVersion,
             cache,
-            service.parameters.downloadService.get(),
+            parameters.downloadService.get(),
             bundle.changed
         )
     }
@@ -51,7 +53,7 @@ class SetupHandlerImplMPP(
 
         // Start - GenerateMappingsStep.create
         vanillaSteps.downloadServerMappings()
-        val paramMappings = context.project.configurations.named(context.source.prefixedName(PARAM_MAPPINGS_CONFIG)).map { it.singleFile }.convertToPath()
+        val paramMappings = context.project.configurations.named(context.source.disambiguateName(PARAM_MAPPINGS_CONFIG)).map { it.singleFile }.convertToPath()
         val genMappingsStep = GenerateMappingsStep(
             vanillaSteps,
             filteredVanillaServerJar,
@@ -62,7 +64,7 @@ class SetupHandlerImplMPP(
         // End - GenerateMappingsStep.create
 
         // Start - RemapMinecraft.create
-        val remapper = context.project.configurations.getByName(context.source.prefixedName(REMAPPER_CONFIG)).also(Configuration::resolve) // resolve remapper
+        val remapper = context.project.configurations.getByName(context.source.disambiguateName(REMAPPER_CONFIG)).also(Configuration::resolve) // resolve remapper
         val remapMinecraftStep = RemapMinecraft(
             bundle.config.buildData.minecraftRemapArgs,
             filteredVanillaServerJar,
@@ -87,7 +89,7 @@ class SetupHandlerImplMPP(
         )
 
         // Start - DecompileMinecraft.create
-        val decompiler = context.project.configurations.getByName(context.source.prefixedName(DECOMPILER_CONFIG)).also(Configuration::resolve) // resolve decompiler
+        val decompiler = context.project.configurations.getByName(context.source.disambiguateName(DECOMPILER_CONFIG)).also(Configuration::resolve) // resolve decompiler
         val decomp = DecompileMinecraft(
             accessTransformedServerJar,
             decompiledMinecraftServerJar,
@@ -142,10 +144,11 @@ class SetupHandlerImplMPP(
     @Synchronized
     override fun createOrUpdateIvyRepository(context: SetupHandlerMPP.Context) {
         if (setupCompleted) {
+            logger.info("Skipping PaperweightMPP setup for ${context.source.name}, already completed.")
             return
-        }
+        } else logger.info("Running PaperweightMPP setup for ${context.source.name}.")
 
-        val source = if (service.parameters.genSources.get()) {
+        val source = if (parameters.genSources.get()) {
             generateSources(context)
             patchedSourcesJar
         } else {
@@ -177,7 +180,11 @@ class SetupHandlerImplMPP(
         }
     }
 
-    override fun populateCompileConfiguration(context: SetupHandlerMPP.Context, dependencySet: DependencySet) {
+    override fun populateCompileConfiguration(
+        context: SetupHandlerMPP.Context,
+        dependencySet: DependencySet
+    ) {
+        logger.info("Populating compile configuration with dependencies from ${bundle.dir}")
         dependencySet.add(context.project.dependencies.create(bundle.config.mappedServerCoordinates))
     }
 

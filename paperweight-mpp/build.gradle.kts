@@ -7,6 +7,7 @@ plugins {
 }
 
 kotlin {
+    explicitApiWarning()
     jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
     }
@@ -25,8 +26,11 @@ fun Provider<MinimalExternalModuleDependency>.withVersion(version: String): Stri
 
 dependencies {
     compileOnly(gradleApi())
-    compileOnly("org.jetbrains.kotlin.multiplatform:org.jetbrains.kotlin.multiplatform.gradle.plugin:1.7.22")
+    compileOnly(gradleKotlinDsl())
     compileOnly(libs.gradle.shadow.withVersion("7.0.0"))
+    compileOnly(libs.gradle.kotlin.mpp)
+
+    implementation(libs.arrow.core)
     implementation("org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:$embeddedKotlinVersion")
     implementation("org.gradle.kotlin:gradle-kotlin-dsl-plugins:3.2.6")
     implementation("org.gradle.kotlin.kotlin-dsl:org.gradle.kotlin.kotlin-dsl.gradle.plugin:2.1.7")

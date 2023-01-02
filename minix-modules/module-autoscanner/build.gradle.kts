@@ -3,5 +3,5 @@ plugins {
 }
 
 dependencies {
-    slim(libs.classgraph)
+    api(libs.classgraph)
 }

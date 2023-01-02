@@ -10,19 +10,14 @@ import io.papermc.paperweight.util.setupIvyRepository
 import org.gradle.api.Project
 import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.artifacts.repositories.IvyArtifactRepository
-import org.gradle.api.logging.Logger
 import org.gradle.api.logging.Logging
 import org.gradle.api.services.BuildService
-import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.repositories
 import java.nio.file.Path
 
-abstract class UserdevSetupMPP : BuildService<UserdevSetup.Parameters>, SetupHandlerMPP {
+public abstract class UserdevSetupMPP : BuildService<UserdevSetup.Parameters>, SetupHandlerMPP {
+    private val logger = Logging.getLogger(UserdevSetupMPP::class.java)
     internal lateinit var cachedProject: Project
-
-    companion object {
-        val LOGGER: Logger = Logging.getLogger(UserdevSetupMPP::class.java)
-    }
 
     private val extractDevBundle = extractDevBundle(
         parameters.cache.path.resolve(paperSetupOutput("extractDevBundle", "dir")),
@@ -33,15 +28,17 @@ abstract class UserdevSetupMPP : BuildService<UserdevSetup.Parameters>, SetupHan
         cachedProject = project
     }
 
-    private val setup: SetupHandlerMPP by lazy { createSetup() }
+    private val setup: SetupHandlerMPP = createSetup()
 
-    private fun createSetup(): SetupHandlerMPP = SetupHandlerMPP.create(this, extractDevBundle)
+    // FIXME: I think the issue has to do with the extractDevBundle having incorrect configurations
+    private fun createSetup(): SetupHandlerMPP = SetupHandlerMPP.create(parameters, extractDevBundle)
 
-    fun addIvyRepository() {
+    public fun addIvyRepository() {
+        logger.info("Adding Ivy repository")
         cachedProject.repositories {
-            setupIvyRepository(parameters.cache.path.resolve(IVY_REPOSITORY)) {
-                configureIvyRepo(this)
-            }
+            val ivyRepo = parameters.cache.path.resolve(IVY_REPOSITORY)
+            logger.info("Ivy repository path: $ivyRepo")
+            setupIvyRepository(ivyRepo, ::configureIvyRepo)
         }
     }
 
@@ -54,13 +51,15 @@ abstract class UserdevSetupMPP : BuildService<UserdevSetup.Parameters>, SetupHan
         setup.configureIvyRepo(repo)
     }
 
-    override fun populateCompileConfiguration(context: SetupHandlerMPP.Context, dependencySet: DependencySet) {
-        setup.populateCompileConfiguration(context, dependencySet)
-    }
+    override fun populateCompileConfiguration(
+        context: SetupHandlerMPP.Context,
+        dependencySet: DependencySet
+    ): Unit = setup.populateCompileConfiguration(context, dependencySet)
 
-    override fun populateRuntimeConfiguration(context: SetupHandlerMPP.Context, dependencySet: DependencySet) {
-        setup.populateRuntimeConfiguration(context, dependencySet)
-    }
+    override fun populateRuntimeConfiguration(
+        context: SetupHandlerMPP.Context,
+        dependencySet: DependencySet
+    ): Unit = setup.populateRuntimeConfiguration(context, dependencySet)
 
     override fun serverJar(context: SetupHandlerMPP.Context): Path {
         return setup.serverJar(context)

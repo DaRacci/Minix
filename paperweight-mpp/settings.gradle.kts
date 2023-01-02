@@ -5,6 +5,8 @@ import java.util.Properties
 enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
+rootProject.name = "paperweight-mpp"
+
 pluginManagement {
     repositories {
         mavenCentral()

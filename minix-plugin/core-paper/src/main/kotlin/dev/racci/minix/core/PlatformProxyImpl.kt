@@ -1,10 +1,14 @@
 package dev.racci.minix.core
 
 import dev.racci.minix.api.PlatformProxy
+import dev.racci.minix.api.autoscanner.Scanner
+import dev.racci.minix.api.logger.LoggingLevel
 import dev.racci.minix.api.logger.MinixLogger
+import dev.racci.minix.api.logger.converters.LoggerConverter
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.core.logger.PaperMinixLogger
 import dev.racci.minix.core.plugin.Minix
+import dev.racci.minix.jumper.MinixApplicationBuilder
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.PluginClassLoader
@@ -43,7 +47,7 @@ internal actual class PlatformProxyImpl : PlatformProxy {
     }
 
     internal actual fun initialize() {
-        // TODO -> Annotation scan for logger converters
+        Scanner.callerBased().withSuperclassKClass<LoggerConverter<*>>().forEach { clazz -> LoggingLevel.CONVERTERS[clazz] = clazz.objectInstance!! }
     }
 
     internal actual fun shutdown() {

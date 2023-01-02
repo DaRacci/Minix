@@ -7,7 +7,7 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.core.LoadListener
-import dev.racci.minix.core.MinixApplicationBuilder
+import dev.racci.minix.jumper.MinixApplicationBuilder
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.data.MinixActualConfig
 import dev.racci.minix.core.logger.KoinProxy

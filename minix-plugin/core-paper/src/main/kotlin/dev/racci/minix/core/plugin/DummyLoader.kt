@@ -4,7 +4,7 @@ import arrow.core.filterIsInstance
 import dev.racci.minix.api.extensions.collections.findKCallable
 import dev.racci.minix.api.extensions.pluginManager
 import dev.racci.minix.api.extensions.reflection.castOrThrow
-import dev.racci.minix.core.MinixInit
+import dev.racci.minix.jumper.MinixInit
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.PluginDescriptionFile
 import org.bukkit.plugin.SimplePluginManager

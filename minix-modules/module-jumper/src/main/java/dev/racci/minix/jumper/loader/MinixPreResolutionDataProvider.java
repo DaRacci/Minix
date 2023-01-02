@@ -1,4 +1,4 @@
-package dev.racci.minix.core.loader;
+package dev.racci.minix.jumper.loader;
 
 import io.github.slimjar.resolver.ResolutionResult;
 import io.github.slimjar.resolver.reader.resolution.PreResolutionDataProvider;

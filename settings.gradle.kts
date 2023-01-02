@@ -36,6 +36,7 @@ sequenceOf(
     "common",
     "autoscanner",
     "data",
+    "jumper",
 //    "wrappers",
     "flowbus",
     "integrations",

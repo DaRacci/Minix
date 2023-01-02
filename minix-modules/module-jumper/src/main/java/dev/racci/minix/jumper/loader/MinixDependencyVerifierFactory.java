@@ -1,4 +1,4 @@
-package dev.racci.minix.core.loader;
+package dev.racci.minix.jumper.loader;
 
 import io.github.slimjar.downloader.output.DependencyOutputWriterFactory;
 import io.github.slimjar.downloader.strategy.ChecksumFilePathStrategy;

@@ -15,7 +15,7 @@ import org.bukkit.plugin.java.PluginClassLoader;
 // FIXME -> Some plugins try hook into this using reflection and fail to register listeners since this never gets enabled.
 public final class MinixInit extends JavaPlugin {
 
-    MinixInit() {
+    public MinixInit() {
         final var downloadFolder = Path.of(String.format("%s/libraries", getDataFolder()));
 
         if (!Files.exists(downloadFolder) && !downloadFolder.toFile().mkdirs()) {

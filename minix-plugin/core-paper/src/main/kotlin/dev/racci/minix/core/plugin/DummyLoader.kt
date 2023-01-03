@@ -14,13 +14,12 @@ import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
-public class DummyLoader {
-
-    public fun loadPlugin(
-        description: PluginDescriptionFile,
-        initPlugin: MinixInit,
-        classLoader: PluginClassLoader
-    ) {
+internal class DummyLoader(
+    description: PluginDescriptionFile,
+    initPlugin: MinixInit,
+    classLoader: PluginClassLoader
+) {
+    init {
         // Update the main class path
         description.setValue("main", "dev.racci.minix.core.MinixImpl")
 

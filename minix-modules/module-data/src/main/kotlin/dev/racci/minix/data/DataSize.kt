@@ -3,7 +3,6 @@ package dev.racci.minix.data
 import dev.racci.minix.data.serializers.kotlin.DataSerializer
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
-import org.spongepowered.configurate.kotlin.extensions.get
 
 @Serializable(with = DataSerializer::class)
 public data class DataSize(val bytes: Long) : Comparable<DataSize> {

@@ -1,19 +1,20 @@
 package dev.racci.minix.data.serializers.kotlin.minecraft
 
-import dev.racci.minix.data.exceptions.SerializationException
+import dev.racci.minix.data.extensions.encodeIf
+import dev.racci.minix.data.extensions.encodeNonDefault
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.CompositeDecoder
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.encoding.encodeStructure
+import kotlinx.serialization.serializer
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
-import kotlin.properties.Delegates
 
 public object ItemStackSerializer : KSerializer<ItemStack> {
 
@@ -26,32 +27,23 @@ public object ItemStackSerializer : KSerializer<ItemStack> {
     override fun serialize(
         encoder: Encoder,
         value: ItemStack
-    ) {
-        encoder.encodeStructure(descriptor) {
-            encodeStringElement(descriptor, 0, value.type.name)
-            if (value.amount > 1) encodeIntElement(descriptor, 1, value.amount)
-            if (value.hasItemMeta()) encodeSerializableElement(descriptor, 2, ItemMetaSerializer, value.itemMeta)
-        }
+    ): Unit = encoder.encodeStructure(descriptor) {
+        encodeStringElement(descriptor, 0, value.type.name)
+        encodeNonDefault(descriptor, 1, value.amount, 1)
+        encodeIf(descriptor, 2, value.itemMeta, predicate = value::hasItemMeta)
     }
 
-    override fun deserialize(decoder: Decoder): ItemStack {
-        var type: Material by Delegates.notNull()
-        var amount = 1
-        var meta: ItemMeta? = null
-        decoder.decodeStructure(descriptor) {
-            while (true) {
-                when (val i = decodeElementIndex(descriptor)) {
-                    0 -> runCatching { type = Material.valueOf(decodeStringElement(descriptor, i)) }.onFailure { throw SerializationException(descriptor, i) }
-                    1 -> amount = decodeIntElement(descriptor, i)
-                    2 -> meta = decodeSerializableElement(descriptor, i, ItemMetaSerializer)
-                    CompositeDecoder.DECODE_DONE -> break
-                }
-            }
-        }
+    @OptIn(ExperimentalSerializationApi::class)
+    override fun deserialize(decoder: Decoder): ItemStack = decoder.decodeStructure(descriptor) {
+        val type = decodeSerializableElement(descriptor, 0, serializer<Material>())
+        val amount = decodeIntElement(descriptor, 1)
+        val meta = decodeNullableSerializableElement(descriptor, 2, ItemMetaSerializer.nullable)
 
-        return ItemStack(type).apply {
+        require(amount > 0) { "ItemStack amount must be greater than 0" }
+
+        ItemStack(type).apply {
             this.amount = amount
-            if (this.itemMeta != null) this.itemMeta = meta
+            if (itemMeta != null) this.itemMeta = meta
         }
     }
 }

@@ -51,9 +51,6 @@ internal fun KotlinTarget.disambiguateName(simpleName: String): String = lowerCa
 internal fun KotlinTarget.projectAndTargetName(simpleName: String): String = lowerCamelCaseName(project.name, "-", name, simpleName)
 
 internal fun KotlinSourceSet.devBundleConfiguration(project: Project): Configuration = with(project) {
-    val configName = disambiguateName(DEV_BUNDLE_CONFIG)
-    val config = configurations.findByName(configName)?.let { return it }
-
     configurations.create(disambiguateName(DEV_BUNDLE_CONFIG)) {
         isTransitive = true
         configurations[compileOnlyConfigurationName].extendsFrom(this)

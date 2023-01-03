@@ -1,8 +1,10 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import com.google.devtools.ksp.gradle.KspGradleSubplugin
-import dev.racci.minix.gradle.data.MCTarget
+import dev.racci.minix.gradle.data.MCTarget.Platform
+import dev.racci.minix.gradle.ex.shadowJar
 import dev.racci.minix.gradle.ex.withMCTarget
 import dev.racci.paperweight.mpp.paperweightDevBundle
+import dev.racci.paperweight.mpp.reobfJar
 import dev.racci.slimjar.extensions.slimApi
 import dev.racci.slimjar.extensions.slimJar
 import kotlinx.kover.KoverPlugin
@@ -63,7 +65,10 @@ apiValidation {
 
 minix {
     minecraft {
-        // withMCTarget()
+        fun target(project: String) = withMCTarget(project(":module-$project"), Platform.PAPER, "1.19.3", applyMinix = false)
+        target("integrations")
+        target("jumper")
+        target("data")
     }
 }
 

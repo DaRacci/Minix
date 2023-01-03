@@ -5,8 +5,6 @@ plugins {
 }
 
 dependencies {
-    compileOnly("org.purpurmc.purpur:purpur-api:1.19.3-R0.1-SNAPSHOT")
-
     compileOnlyApi(libs.exposed.core)
     compileOnlyApi(libs.exposed.dao)
     compileOnlyApi(libs.configurate)

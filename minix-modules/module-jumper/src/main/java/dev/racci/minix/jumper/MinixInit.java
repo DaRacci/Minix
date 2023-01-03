@@ -33,7 +33,7 @@ public final class MinixInit extends JavaPlugin {
         }
 
         try {
-            Class.forName("dev.racci.minix.plugin.DummyLoader", true, this.getClassLoader()).getConstructor(
+            Class.forName("dev.racci.minix.core.plugin.DummyLoader", true, this.getClassLoader()).getConstructor(
                 PluginDescriptionFile.class,
                 MinixInit.class,
                 PluginClassLoader.class

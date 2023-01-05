@@ -1,6 +1,5 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
-import com.google.devtools.ksp.gradle.KspGradleSubplugin
-import dev.racci.minix.gradle.data.MCTarget.Platform
+import dev.racci.minix.gradle.data.MCTarget
 import dev.racci.minix.gradle.ex.shadowJar
 import dev.racci.minix.gradle.ex.withMCTarget
 import dev.racci.paperweight.mpp.paperweightDevBundle
@@ -15,18 +14,15 @@ import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import org.jlleitschuh.gradle.ktlint.KtlintExtension
 import org.jlleitschuh.gradle.ktlint.KtlintPlugin
 
-val minixVersion: String by project
-val version: String by project
 val relocatePrefix = "dev.racci.minix.libs"
 
 // Workaround for (https://youtrack.jetbrains.com/issue/KTIJ-19369)
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kotlin.mpp)
-    id("dev.racci.minix") version "0.2.2"
+    id("dev.racci.minix") version "0.3.1"
     id("dev.racci.paperweight.mpp")
     alias(libs.plugins.shadow)
     alias(libs.plugins.kotlin.plugin.ktlint)
@@ -65,10 +61,13 @@ apiValidation {
 
 minix {
     minecraft {
-        fun target(project: String) = withMCTarget(project(":module-$project"), Platform.PAPER, "1.19.3", applyMinix = false)
+        fun target(
+            project: String,
+            platform: MCTarget.Platform = MCTarget.Platform.PAPER
+        ) = withMCTarget(project(":module-$project"), platform, "1.19.3", applyMinix = false)
         target("integrations")
         target("jumper")
-        target("data")
+        target("data", MCTarget.Platform.PURPUR)
     }
 }
 
@@ -107,15 +106,6 @@ fun Project.maybeConfigureBinaryValidator(prefix: String? = null) {
     }
 }
 
-tasks {
-//    runServer {
-//        val dependTask = kotlin.targets["paper"].reobfJar
-//        dependsOn(dependTask)
-//        minecraftVersion("1.19.2")
-//        pluginJars(dependTask.get().outputJar)
-//    }
-}
-
 allprojects {
     configurations.whenObjectAdded {
         if (this.name == "testImplementation") {
@@ -133,10 +123,7 @@ allprojects {
         // TODO: Disable unwanted modules
         kotlinExtension.apply {
             explicitApiWarning() // Koin generated sources aren't complicit.
-            this.kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
-
-            sourceSets.forEach { set -> set.kotlin.maybeExtend("$buildDir/generated/ksp/main/kotlin") }
-            (sourceSets.findByName("test") ?: sourceSets.getByName("commonTest")).apply { kotlin.maybeExtend("$buildDir/generated/ksp/main/kotlin") }
+            kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
         }
 
         if (project.emptySources()) {
@@ -144,7 +131,6 @@ allprojects {
             tasks.apiCheck.get().enabled = false
         } else {
             apply<KtlintPlugin>()
-            configure<KtlintExtension> { baseline.set(file("$rootDir/config/ktlint/baseline-${project.name}.xml")) }
             project.maybeConfigureBinaryValidator()
         }
     }
@@ -197,9 +183,12 @@ kotlin {
             append("/src/main")
         }.let(::file)
 
+        val generated = buildDir.resolve("generated/ksp/$module/$name/")
+
         kotlin.maybeExtend(
             prefix.resolve("kotlin"),
-            prefix.resolve("java")
+            prefix.resolve("java"),
+            generated
         )
 
         resources.maybeExtend(prefix.resolve("resources"))
@@ -265,8 +254,6 @@ kotlin {
             dependencies {
                 compileOnly(libs.minecraft.api.landsAPI)
                 compileOnly(libs.minecraft.api.placeholderAPI)
-
-                withMCTarget(MCTarget.Platform.PAPER, "1.19.3", applyMinix = false)
             }
         }
 
@@ -292,7 +279,7 @@ kotlin {
                 slimApi(libs.configurate.extra.kotlin)
 
                 withMCTarget(MCTarget.Platform.PAPER, "1.19.3", applyMinix = false)
-                paperweightDevBundle("org.purpurmc.purpur", project.properties["serverVersion"] as String)
+                paperweightDevBundle("org.purpurmc.purpur", libs.versions.minecraft.get())
             }
         }
 
@@ -303,6 +290,13 @@ kotlin {
                     relocate("org.bstats", "$relocatePrefix.bstats")
                 }
 
+                shadowJar {
+                    dependencyFilter.include { dep ->
+                        dep.moduleGroup.startsWith("dev.racci") ||
+                            dep.moduleGroup.startsWith("io.github.slimjar")
+                    }
+                }
+
                 project.maybeConfigureBinaryValidator(this.name)
                 project.apply<BukkitPlugin>()
                 project.bukkit {
@@ -311,7 +305,7 @@ kotlin {
                     author = "Racci"
                     apiVersion = "1.19"
                     version = rootProject.version.toString()
-                    main = "dev.racci.minix.core.MinixInit"
+                    main = "dev.racci.minix.jumper.MinixInit"
                     load = PluginLoadOrder.STARTUP
                     loadBefore = listOf("eco")
                     softDepend = listOf("PlaceholderAPI", "Lands", "ServerUtils")
@@ -332,7 +326,6 @@ subprojects {
     apply<JavaLibraryPlugin>()
     apply<MavenPublishPlugin>()
     apply<KotlinPlatformJvmPlugin>()
-    apply<KspGradleSubplugin>()
     apply<KoverPlugin>()
 
     dependencies {
@@ -341,33 +334,30 @@ subprojects {
             "compileOnly"(common)
             "testImplementation"(common)
         }
-
-        ksp(rootProject.libs.koin.ksp)
-        ksp(rootProject.libs.arrow.optics.ksp)
     }
-
-//    tasks {
-//
-//        dokkaHtml.get().dokkaSourceSets.configureEach {
-//            includeNonPublic.set(false)
-//            skipEmptyPackages.set(true)
-//            reportUndocumented.set(true)
-//            displayName.set(project.name.split("-")[1])
-//            platform.set(Platform.jvm)
-//            sourceLink {
-//                localDirectory.set(file("src/main/kotlin"))
-//                remoteUrl.set(URL("https://github.com/DaRacci/Minix/blob/master/src/main/kotlin"))
-//                remoteLineSuffix.set("#L")
-//            }
-//            jdkVersion.set(17)
-//            externalDocumentationLink {
-//                url.set(URL("https://minix.racci.dev/"))
-//            }
-//        }
-//    }
 }
 
-tasks.withType<ShadowJar> {
-    relocate("io.github.slimjar", "$relocatePrefix.slimjar")
-    relocate("org.koin.ksp.generated", "$relocatePrefix.generated.koin")
+tasks {
+    val dependTask = kotlin.targets["paper"].reobfJar // Cannot be called inside configure block.
+    runServer {
+        dependsOn(dependTask)
+        minecraftVersion("1.19.2")
+        pluginJars(dependTask.get().outputJar)
+    }
+
+    withType<ShadowJar> {
+        mergeServiceFiles()
+        relocate("io.github.slimjar", "$relocatePrefix.slimjar")
+        relocate("org.koin.ksp.generated", "$relocatePrefix.generated.koin")
+    }
+}
+
+subprojects {
+    apply<IdeaPlugin>()
+
+    idea.module {
+        val generatedDir = buildDir.resolve("generated/ksp/main/kotlin")
+        sourceDirs = sourceDirs + generatedDir
+        generatedSourceDirs = generatedSourceDirs + generatedDir
+    }
 }

@@ -27,14 +27,11 @@ fun Provider<MinimalExternalModuleDependency>.withVersion(version: String): Stri
 dependencies {
     compileOnly(gradleApi())
     compileOnly(gradleKotlinDsl())
-    compileOnly(libs.gradle.shadow.withVersion("7.0.0"))
+    compileOnly(libs.gradle.shadow)
     compileOnly(libs.gradle.kotlin.mpp)
+    compileOnly(libs.gradle.kotlin.jvm)
 
-    implementation(libs.arrow.core)
-    implementation("org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gradle.plugin:$embeddedKotlinVersion")
-    implementation("org.gradle.kotlin:gradle-kotlin-dsl-plugins:3.2.6")
-    implementation("org.gradle.kotlin.kotlin-dsl:org.gradle.kotlin.kotlin-dsl.gradle.plugin:2.1.7")
-    implementation("io.papermc.paperweight.userdev:io.papermc.paperweight.userdev.gradle.plugin:1.3.11")
+    implementation(libs.gradle.minecraft.paperweight)
 }
 
 gradlePlugin {

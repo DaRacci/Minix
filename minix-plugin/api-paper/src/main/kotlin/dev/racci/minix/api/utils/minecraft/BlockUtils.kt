@@ -1,5 +1,3 @@
-@file:Suppress("UNUSED", "MemberVisibilityCanBePrivate")
-
 package dev.racci.minix.api.utils.minecraft
 
 import org.bukkit.Material
@@ -7,7 +5,6 @@ import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.Directional
 import org.bukkit.block.data.Waterlogged
-import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 
 /**
  * Utilities for Blocks.
@@ -45,30 +42,6 @@ public object BlockUtils {
         materials: List<Material>,
         limit: Int
     ): ArrayList<Block> = getNearbyBlocks(start, materials, ArrayList(), limit)
-
-    @ScheduledForRemoval(inVersion = "4.5.0")
-    @Deprecated("Use BlockFace#getOppositeFace instead", ReplaceWith("face.oppositeFace", "org.bukkit.block.BlockFace"))
-    public fun getOpposite(face: BlockFace): BlockFace = when (face) {
-        BlockFace.UP -> BlockFace.DOWN
-        BlockFace.DOWN -> BlockFace.UP
-        BlockFace.SOUTH -> BlockFace.NORTH
-        BlockFace.NORTH -> BlockFace.SOUTH
-        BlockFace.EAST -> BlockFace.WEST
-        BlockFace.WEST -> BlockFace.EAST
-        BlockFace.SOUTH_EAST -> BlockFace.NORTH_WEST
-        BlockFace.SOUTH_WEST -> BlockFace.NORTH_EAST
-        BlockFace.SOUTH_SOUTH_EAST -> BlockFace.NORTH_NORTH_WEST
-        BlockFace.SOUTH_SOUTH_WEST -> BlockFace.NORTH_NORTH_EAST
-        BlockFace.NORTH_EAST -> BlockFace.SOUTH_WEST
-        BlockFace.NORTH_WEST -> BlockFace.SOUTH_EAST
-        BlockFace.NORTH_NORTH_EAST -> BlockFace.SOUTH_SOUTH_WEST
-        BlockFace.NORTH_NORTH_WEST -> BlockFace.SOUTH_SOUTH_EAST
-        BlockFace.EAST_NORTH_EAST -> BlockFace.WEST_SOUTH_WEST
-        BlockFace.EAST_SOUTH_EAST -> BlockFace.WEST_NORTH_WEST
-        BlockFace.WEST_NORTH_WEST -> BlockFace.EAST_SOUTH_EAST
-        BlockFace.WEST_SOUTH_WEST -> BlockFace.EAST_NORTH_EAST
-        BlockFace.SELF -> BlockFace.SELF
-    }
 
     /**
      * Gets the block another block (e.g. a ladder) is attached to.

@@ -27,18 +27,18 @@ public suspend inline fun <R, C : Collection<*>> C.ifNotEmpty(
 ): Option<R> = CollectionUtils.If.ifNotEmpty(this, action)
 
 /** @see CollectionUtils.Contains.containsString */
-public inline fun Collection<String>.contains(
+public fun Collection<String>.contains(
     value: String,
     ignoreCase: Boolean = false
 ): Boolean = CollectionUtils.Contains.containsString(this, value, ignoreCase)
 
 /** @see CollectionUtils.Get.getCast */
-public inline fun <T : Any> Collection<*>.getCast(
+public fun <T : Any> Collection<*>.getCast(
     index: Int
 ): Validated<Throwable, T> = CollectionUtils.Get.getCast(this, index)
 
 /** @see CollectionUtils.Find.findKCallable */
-public inline fun <T : KCallable<*>> Collection<T>.findKCallable(
+public fun <T : KCallable<*>> Collection<T>.findKCallable(
     name: String,
     ignoreCase: Boolean = false
 ): Option<T> = CollectionUtils.Find.findKCallable(this, name, ignoreCase)

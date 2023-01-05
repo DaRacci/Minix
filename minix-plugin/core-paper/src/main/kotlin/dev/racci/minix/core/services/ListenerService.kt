@@ -15,18 +15,17 @@ import dev.racci.minix.api.events.player.PlayerMoveFullXYZEvent
 import dev.racci.minix.api.events.player.PlayerMoveXYZEvent
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.cancel
+import dev.racci.minix.api.extensions.collections.findKCallable
 import dev.racci.minix.api.extensions.event
 import dev.racci.minix.api.extensions.pluginManager
+import dev.racci.minix.api.extensions.reflection.accessWith
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.scheduler
 import dev.racci.minix.api.extensions.server
 import dev.racci.minix.api.flow.eventFlow
 import dev.racci.minix.api.services.PlayerService
-import dev.racci.minix.api.utils.accessReturn
-import dev.racci.minix.api.utils.collections.CollectionUtils.first
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.api.utils.ticks
-import dev.racci.minix.api.utils.unsafeCast
 import dev.racci.minix.core.plugin.Minix
 import io.papermc.paper.event.block.BlockBreakBlockEvent
 import kotlinx.coroutines.channels.Channel
@@ -44,7 +43,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.Block
-import org.bukkit.craftbukkit.v1_19_R1.block.impl.CraftFluids
+import org.bukkit.craftbukkit.v1_19_R2.block.impl.CraftFluids
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.Event
@@ -119,7 +118,9 @@ public class ListenerService(override val plugin: Minix) : Extension<Minix>() {
     private suspend inline fun maybeAwaitNextTick(
         startTick: Int = server.currentTick,
         tickDelay: Int = 1
-    ) { maybeAwaitUntilTick(startTick + tickDelay) }
+    ) {
+        maybeAwaitUntilTick(startTick + tickDelay)
+    }
 
     private suspend inline fun maybeAwaitUntilTick(
         targetTick: Int
@@ -288,21 +289,21 @@ public class ListenerService(override val plugin: Minix) : Extension<Minix>() {
             }
         }
 
-        @Suppress("UnstableApiUsage")
+        @Suppress("UnstableApiUsage", "UNCHECKED_CAST", "REMOVAL", "DEPRECATION", "kotlin:S1874")
         event<PluginEnableEvent> {
             if (this.plugin.name != "eco") return@event
 
-            val graph = SimplePluginManager::class.declaredMemberProperties
-                .first("dependencyGraph")
-                .accessReturn { get(pluginManager.unsafeCast()) } as MutableGraph<String>
-            val patched = Graphs.reachableNodes(graph, this.plugin.description.name).contains("Minix")
-
-            if (!patched) {
-                logger.error { "Eco doesn't appear to be patched to work with Minix, Please obtain the patch or disable all Eco plugins." }
-                pluginManager.disablePlugin(this.plugin)
-            }
-
-            logger.info { "Eco is patched, hopefully no linkage errors!" }
+            SimplePluginManager::class.declaredMemberProperties
+                .findKCallable("dependencyGraph")
+                .map { prop -> prop.accessWith { get(pluginManager.castOrThrow()) } as MutableGraph<String> }
+                .filter { graph -> Graphs.reachableNodes(graph, plugin.description.name).contains("Minix") }
+                .fold(
+                    ifSome = { logger.info { "Eco is patched, hopefully no linkage errors!" } },
+                    ifEmpty = {
+                        logger.error { "Eco doesn't appear to be patched to work with Minix, Please obtain the patch or disable all Eco plugins." }
+                        pluginManager.disablePlugin(this.plugin)
+                    }
+                )
         }
     }
 

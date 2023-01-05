@@ -3,9 +3,9 @@ package dev.racci.minix.data.utils
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.toPersistentMap
-import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
+import kotlinx.serialization.Transient as SerializationTransient
 
 /**
  * A helper class which when inherited will create a map of properties with type [R].
@@ -16,29 +16,20 @@ import kotlin.reflect.full.declaredMemberProperties
  * @param R
  * @constructor Create empty Property finder
  */
-public abstract class PropertyFinder<R> {
-    @[Transient kotlinx.serialization.Transient]
-    private val keyMode: KeyMode
+public abstract class PropertyFinder<R> public constructor(
+    @[Transient SerializationTransient]
+    private val keyMode: KeyMode = KeyMode.CAPITAL_TO_DOT
+) {
 
-    @[Transient kotlinx.serialization.Transient]
+    @[Transient SerializationTransient]
     public val propertyMap: PersistentMap<String, KProperty1<Any, R>>
 
     public val keys: ImmutableSet<String> get() = propertyMap.keys
 
-    public constructor(keyMode: KeyMode = KeyMode.CAPITAL_TO_DOT) {
-        this.keyMode = keyMode
-
+    init {
         val properties = this::class.declaredMemberProperties.filterIsInstance<KProperty1<Any, R>>()
         propertyMap = properties.associateBy { property -> keyMode.format(property.name) }.toPersistentMap()
     }
-
-    @ScheduledForRemoval(inVersion = "4.5.0")
-    @Deprecated("Use the new constructor instead")
-    public constructor() : this(KeyMode.CAPITAL_TO_DOT)
-
-    @ScheduledForRemoval(inVersion = "4.5.0")
-    @Deprecated("Use the new constructor instead")
-    public operator fun get(key: String): R = get(key, true)
 
     public open operator fun get(
         key: String,

@@ -5,6 +5,9 @@ package dev.racci.minix.api.utils.kotlin
 import arrow.core.Either
 import dev.racci.minix.api.exceptions.LevelConversionException
 import dev.racci.minix.api.extensions.reflection.castOrThrow
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.KProperty1
@@ -15,7 +18,7 @@ import kotlin.reflect.full.memberProperties
 @Suppress("EXTENSION_SHADOWED_BY_MEMBER")
 public inline fun <reified T : Throwable, A> Either.Companion.catch(
     block: () -> A
-): Either<T, A> = Either.catch {
+): Either<T, A> = catch {
     block()
 }.tapLeft { err ->
     if (err !is T) throw err
@@ -105,57 +108,84 @@ public inline fun <reified T : Any> T.invokeIfOverrides(
     return false
 }
 
-@Deprecated("Use new api instead", ReplaceWith("function.ifOverriddenIn(this, action)"))
-public inline fun <reified T : Any> T.ifOverrides(
-    function: KFunction<*>,
-    action: () -> Unit
-): Boolean = this::class.doesOverride(function).ifTrue(action)
-
 /**
- * Invokes the given block if the receiver is not null.
+ * Calls the supplied action if the receiver is not null.
  *
  * @param T The type of the receiver.
- * @param block The block to invoke.
- * @return If the block was invoked.
+ * @param action The action to invoke if the receiver is not null.
+ * @return true if the receiver is not null, false otherwise.
  */
-public inline fun <T> T?.invokeIfNotNull(block: (T) -> Unit): Boolean = if (this != null) {
-    block(this)
-    true
-} else false
+@OptIn(ExperimentalContracts::class)
+public inline fun <T> T?.ifNotNull(action: T.() -> Unit): Boolean {
+    contract {
+        callsInPlace(action, InvocationKind.AT_MOST_ONCE)
+        returns(true) implies (this@ifNotNull != null)
+        returns(false) implies (this@ifNotNull == null)
+    }
+
+    return if (this != null) {
+        action(this)
+        true
+    } else false
+}
 
 /**
- * Invokes the given block if the receiver is null.
+ * Calls the supplied action if the receiver is null.
  *
  * @param T The type of the receiver.
- * @param block The block to invoke.
- * @return If the block was invoked
+ * @param action The action to invoke if the receiver is null.
+ * @return true if the receiver is null, false otherwise.
  */
-public inline fun <T> T?.invokeIfNull(block: () -> Unit): Boolean = if (this == null) {
-    block()
-    true
-} else false
+@OptIn(ExperimentalContracts::class)
+public inline fun <T : Any> T?.ifNull(action: () -> Unit): Boolean {
+    contract {
+        callsInPlace(action, InvocationKind.AT_MOST_ONCE)
+        returns(true) implies (this@ifNull == null)
+    }
+
+    return if (this == null) {
+        action()
+        true
+    } else false
+}
 
 /**
- * Invokes the given block if the boolean is true.
+ * Calls the supplied action if the receiver is true.
  *
- * @param block The block to invoke.
- * @return If the block was invoked.
+ * @param action The action to invoke if the receiver is true.
+ * @return true if the receiver is true, false otherwise.
  */
-public inline fun Boolean?.ifTrue(block: () -> Unit): Boolean = if (this == true) {
-    block()
-    true
-} else false
+@OptIn(ExperimentalContracts::class)
+public inline fun Boolean?.ifTrue(action: () -> Unit): Boolean {
+    contract {
+        callsInPlace(action, InvocationKind.AT_MOST_ONCE)
+        returns(true) implies (this@ifTrue != null)
+    }
+
+    return if (this == true) {
+        action()
+        true
+    } else false
+}
 
 /**
- * Invokes the given block if the boolean is false.
+ * Calls the supplied action if the receiver is false.
  *
- * @param block The block to invoke.
- * @return If the block was invoked.
+ * @param action The action to invoke if the receiver is false.
+ * @return true if the receiver is false, false otherwise.
  */
-public inline fun Boolean?.ifFalse(block: () -> Unit): Boolean = if (this == false) {
-    block()
-    true
-} else false
+@OptIn(ExperimentalContracts::class)
+public inline fun Boolean?.ifFalse(action: () -> Unit): Boolean {
+    contract {
+        callsInPlace(action, InvocationKind.AT_MOST_ONCE)
+        returns(true) implies (this@ifFalse != null)
+    }
+
+    return if (this == false) {
+        action()
+        true
+    } else false
+}
 
 /**
  * Invokes the given block if the receiver is not empty.
@@ -164,15 +194,16 @@ public inline fun Boolean?.ifFalse(block: () -> Unit): Boolean = if (this == fal
  * @param block The block to invoke.
  * @return The collection itself.
  */
-public inline fun <reified T> Collection<T>?.ifNotEmpty(block: (Collection<T>) -> Unit): Collection<T>? {
+@OptIn(ExperimentalContracts::class)
+public inline fun <reified T> Collection<T>?.ifNotEmpty(block: Collection<T>.() -> Unit): Collection<T>? {
+    contract {
+        callsInPlace(block, InvocationKind.AT_MOST_ONCE)
+        returns(true) implies (this@ifNotEmpty != null)
+    }
+
     if (!this.isNullOrEmpty()) block(this)
     return this
 }
-
-public inline fun <reified T : () -> R, R> T.ifFulfilled(
-    boolean: Boolean? = null,
-    block: () -> Boolean = { false }
-) { if (boolean == true || block()) this() }
 
 public infix fun <F, S, T> Pair<F, S>.to(other: T): Triple<F, S, T> = Triple(first, second, other)
 

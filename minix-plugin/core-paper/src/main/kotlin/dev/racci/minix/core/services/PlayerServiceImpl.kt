@@ -14,7 +14,7 @@ import dev.racci.minix.api.extensions.cancel
 import dev.racci.minix.api.extensions.collections.clear
 import dev.racci.minix.api.extensions.displaced
 import dev.racci.minix.api.services.PlayerService
-import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
+import dev.racci.minix.api.utils.kotlin.ifNotNull
 import dev.racci.minix.api.utils.minecraft.PlayerUtils
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.flowbus.FlowBus
@@ -59,7 +59,7 @@ public actual class PlayerServiceImpl internal actual constructor(actual overrid
         subscribe<AsyncChatEvent>(ignoreCancelled = true) {
             get(player).withAccess { player ->
                 val input = inputCallbacks.remove(player)
-                input?.callback?.invoke(this.message()).invokeIfNotNull { this.cancel() }
+                input?.callback?.invoke(this.message()).ifNotNull { cancel() }
             }
         }
 

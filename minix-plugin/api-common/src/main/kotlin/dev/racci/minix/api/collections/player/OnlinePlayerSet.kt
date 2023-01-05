@@ -3,9 +3,9 @@ package dev.racci.minix.api.collections.player
 import dev.racci.minix.api.callbacks.PlayerQuitCallback
 import dev.racci.minix.api.data.MinixPlayer
 import dev.racci.minix.api.utils.getKoin
+import dev.racci.minix.api.utils.kotlin.ifNotNull
+import dev.racci.minix.api.utils.kotlin.ifNull
 import dev.racci.minix.api.utils.kotlin.ifTrue
-import dev.racci.minix.api.utils.kotlin.invokeIfNotNull
-import dev.racci.minix.api.utils.kotlin.invokeIfNull
 import dev.racci.minix.flowbus.receiver.EventReceiver
 import org.apiguardian.api.API
 
@@ -22,10 +22,10 @@ public class OnlinePlayerSet internal constructor(
     }
 
     override fun add(element: MinixPlayer): Boolean = this.backingMap
-        .put(element, PlayerQuitCallback.empty).invokeIfNull(::checkRegistration)
+        .put(element, PlayerQuitCallback.empty).ifNull(::checkRegistration)
 
     override fun remove(element: MinixPlayer): Boolean = this.backingMap.remove(element)
-        .invokeIfNotNull { this.checkRegistration() }
+        .ifNotNull { checkRegistration() }
 
     override fun removeAll(elements: Collection<MinixPlayer>): Boolean {
         return this.backingMap.keys.removeAll(elements.toSet()).also { this.checkRegistration() }
@@ -41,7 +41,7 @@ public class OnlinePlayerSet internal constructor(
 
     override fun addAll(elements: Collection<MinixPlayer>): Boolean = this.backingMap
         .putAll(elements.associateWith { PlayerQuitCallback.empty })
-        .invokeIfNull(::checkRegistration)
+        .ifNull(::checkRegistration)
 
     override fun clear() {
         this.clearCallbacks()

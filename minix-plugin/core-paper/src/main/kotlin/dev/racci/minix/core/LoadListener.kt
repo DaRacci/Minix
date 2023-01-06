@@ -8,10 +8,14 @@ import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import org.bukkit.event.server.ServerLoadEvent
 
-public class LoadListener : Listener {
+/**
+ * Handles listening for the initial server load event try early load any integrations.
+ * Listener is unregistered after the event is received.
+ */
+internal class LoadListener : Listener {
 
     @EventHandler
-    public fun onLoad(event: ServerLoadEvent) {
+    fun onLoad(event: ServerLoadEvent) {
         HandlerList.unregisterAll(this)
         runBlocking { getKoin().get<IntegrationService>().serverLoad() }
     }

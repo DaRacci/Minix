@@ -14,10 +14,14 @@ import kotlin.reflect.KProperty
 public object MinixLoggerFactory : KoinComponent {
     internal val EXISTING: MutableMap<MinixPlugin, MinixLogger> = mutableMapOf()
 
+    internal fun initLogger(plugin: MinixPlugin): MinixLogger = EXISTING.getOrPut(plugin) {
+        get<PlatformProxy>().createLogger(plugin)
+    }
+
     public operator fun getValue(
         thisRef: Any,
         property: KProperty<*>
     ): MinixLogger = PluginService.fromClassloader(thisRef::class.java.classLoader)
-        .map { EXISTING.getOrPut(it) { get<PlatformProxy>().createLogger(it) } }
+        .map(::initLogger)
         .getOrElse { get() }
 }

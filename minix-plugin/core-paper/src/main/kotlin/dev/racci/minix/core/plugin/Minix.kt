@@ -2,7 +2,8 @@ package dev.racci.minix.core.plugin
 
 import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.logger.LoggingLevel
-import dev.racci.minix.api.paper.builders.ItemBuilderDSL
+import dev.racci.minix.api.logger.MinixLogger
+import dev.racci.minix.api.logger.MinixLoggerFactory
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.KoinUtils
@@ -31,6 +32,8 @@ import java.lang.ref.WeakReference
 @ComponentScan
 @MappedPlugin(13706)
 public actual class Minix actual constructor(private val initPlugin: WeakReference<Plugin>) : MinixPlugin() {
+    override val logger: MinixLogger by lazy { MinixLoggerFactory.initLogger(this) } // Required since koin is not initialized yet.
+
     private var sentryState = atomic(false)
 
     override fun onLoad() {

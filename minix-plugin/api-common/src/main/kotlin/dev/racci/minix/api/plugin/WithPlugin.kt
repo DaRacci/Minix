@@ -4,14 +4,13 @@ import dev.racci.minix.api.logger.MinixLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
-import org.koin.core.component.KoinComponent
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.scope.Scope
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.CoroutineContext
 
-public expect interface WithPlugin<in T : MinixPlugin> : KoinComponent, KoinScopeComponent {
+public expect interface WithPlugin<in T : MinixPlugin> : KoinScopeComponent {
 
     /** A reference to the plugin instance. */
     public val plugin: @UnsafeVariance T

@@ -1,5 +1,3 @@
-@file:OptIn(InternalCoroutinesApi::class, ExperimentalCoroutinesApi::class)
-
 package dev.racci.minix.core.coroutine.dispatcher
 
 import arrow.core.Either
@@ -22,7 +20,7 @@ import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.cancelFutureOnCancellation
 import kotlinx.coroutines.internal.MainDispatcherFactory
-import org.bukkit.craftbukkit.v1_19_R1.CraftServer
+import org.bukkit.craftbukkit.v1_19_R2.CraftServer
 import java.util.concurrent.Future
 import java.util.concurrent.RejectedExecutionException
 import java.util.concurrent.ScheduledExecutorService
@@ -30,10 +28,11 @@ import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
-@Suppress("unused")
+@Suppress("UnusedReceiverParameter")
 public val Dispatchers.bukkit: BukkitDispatcher
     get() = Bukkit
 
+@OptIn(InternalCoroutinesApi::class)
 public sealed class BukkitDispatcher : MainCoroutineDispatcher(), Delay {
     @Suppress("UnstableApiUsage")
     private val executor: AbstractListeningExecutorService = Option.catch { server as CraftServer }
@@ -47,6 +46,7 @@ public sealed class BukkitDispatcher : MainCoroutineDispatcher(), Delay {
             .tapLeft { err -> cancelJobOnRejection(context, err) }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     override fun scheduleResumeAfterDelay(
         timeMillis: Long,
         continuation: CancellableContinuation<Unit>
@@ -91,6 +91,7 @@ public sealed class BukkitDispatcher : MainCoroutineDispatcher(), Delay {
     ): Unit = context.cancel(CancellationException("The task was rejected", exception))
 }
 
+@OptIn(InternalCoroutinesApi::class)
 public object BukkitDispatcherFactory : MainDispatcherFactory, DispatcherFactory {
     override val loadPriority: Int get() = 2
 
@@ -103,6 +104,7 @@ private object ImmediateBukkitDispatcher : BukkitDispatcher() {
 
     override fun isDispatchNeeded(context: CoroutineContext): Boolean = server.isPrimaryThread
 
+    @OptIn(InternalCoroutinesApi::class)
     override fun toString() = toStringInternalImpl() ?: "Bukkit.immediate"
 }
 
@@ -110,6 +112,7 @@ private class DisposableFutureHandle(private val future: Future<*>) : Disposable
     override fun dispose() {
         future.cancel(false)
     }
+
     override fun toString(): String = "DisposableFutureHandle[$future]"
 }
 
@@ -121,5 +124,6 @@ internal object Bukkit : BukkitDispatcher() {
     override val immediate: MainCoroutineDispatcher
         get() = ImmediateBukkitDispatcher
 
+    @OptIn(InternalCoroutinesApi::class)
     override fun toString() = toStringInternalImpl() ?: "Bukkit"
 }

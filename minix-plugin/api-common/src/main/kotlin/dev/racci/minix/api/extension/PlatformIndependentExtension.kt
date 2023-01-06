@@ -46,23 +46,25 @@ public abstract class PlatformIndependentExtension<P : MinixPlugin> internal con
         )
     }
 
-    final override val scope: Scope = createScope(value)
-
     final override val eventListener: PlatformListener<P> by lazy { PlatformListener(plugin) }
 
     final override val logger: MinixLogger by MinixLoggerFactory
 
     final override var state: ExtensionState = ExtensionState.UNLOADED
-        set(value) { get<FlowBus>().post(ExtensionStateEvent(this.castOrThrow(), this.state, state)); field = value }
+        set(value) {
+            get<FlowBus>().post(ExtensionStateEvent(this.castOrThrow(), state, value))
+            field = value
+        }
 
-    final override val dispatcher: Closeable<ExecutorCoroutineDispatcher> = scope.get(parameters = { parametersOf(this) })
+    final override val dispatcher: Closeable<ExecutorCoroutineDispatcher> = get(parameters = { parametersOf(this) })
 
-    final override val supervisor: CoroutineScope by lazy {
-        scope.get<CoroutineExceptionHandler>(parameters = { parametersOf(this, value) })
-            .let(::CoroutineScope)
-            .plus(SupervisorJob(plugin.coroutineScope as Job)) // Supervisor job is a child of the plugin supervisor.
-            .plus(dispatcher.get()) // Dispatcher for the execution context
-    }
+    final override val supervisor: CoroutineScope = get<CoroutineExceptionHandler>(parameters = { parametersOf(this, value) })
+        .let(::CoroutineScope)
+        .plus(SupervisorJob(plugin.coroutineScope as Job)) // Supervisor job is a child of the plugin supervisor.
+        .plus(dispatcher.get()) // Dispatcher for the execution context
+
+    // Must be after all properties used in hashCode because it is used in the constructor.
+    final override val scope: Scope = createScope(value).also { innerScope -> innerScope.linkTo(plugin.scope) }
 
     final override fun launch(
         context: CoroutineContext,

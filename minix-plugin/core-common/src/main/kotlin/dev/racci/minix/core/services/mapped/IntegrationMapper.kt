@@ -6,7 +6,6 @@ import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.core.services.IntegrationService
 import io.github.classgraph.ClassInfo
-import org.koin.core.component.get
 
 @DoNotUnload
 @MappedExtension([IntegrationService::class])

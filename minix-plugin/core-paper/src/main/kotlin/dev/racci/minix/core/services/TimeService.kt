@@ -17,7 +17,7 @@ import kotlin.reflect.full.primaryConstructor
 import kotlin.time.Duration.Companion.milliseconds
 
 @MappedExtension
-public class TimeService(override val plugin: Minix) : Extension<Minix>() {
+public class TimeService internal constructor() : Extension<Minix>() {
     private val timeStates = Caffeine.newBuilder().weakKeys()
         .build<World, Atomic<Boolean>> { Atomic.unsafe(it.isDayTime) }
 

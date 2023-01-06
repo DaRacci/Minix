@@ -24,7 +24,7 @@ import org.bukkit.plugin.Plugin
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
 
-public actual class IntegrationService(override val plugin: Minix) : Extension<Minix>() {
+public actual class IntegrationService internal constructor() : Extension<Minix>() {
     private lateinit var enabledPlugins: PersistentMap<String, Plugin>
     internal actual val integrations: MutableRegisteringMap<String, Integration> = registeringMapOf()
 
@@ -72,6 +72,7 @@ public actual class IntegrationService(override val plugin: Minix) : Extension<M
 
             return integration
         }
+
         override suspend fun onUnload(value: Integration) {
             logger.info { "Unloading integration with ${integrationLoader.pluginName}" }
             value.handleUnload()

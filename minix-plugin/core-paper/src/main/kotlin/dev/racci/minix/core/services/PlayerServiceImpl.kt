@@ -27,7 +27,7 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 @MappedExtension(bindToKClass = PlayerService::class)
-public actual class PlayerServiceImpl internal actual constructor(actual override val plugin: Minix) : Extension<Minix>(), PlayerService {
+public actual class PlayerServiceImpl internal actual constructor() : Extension<Minix>(), PlayerService {
     private val playerCache = ConcurrentHashMap<UUID, MinixPlayer>()
 
     actual override val inputCallbacks: OnlinePlayerMap<PlayerUtils.ChatInput> by lazy(::onlinePlayerMapOf)

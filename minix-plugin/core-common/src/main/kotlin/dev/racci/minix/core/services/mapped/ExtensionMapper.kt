@@ -33,9 +33,7 @@ import kotlin.reflect.full.starProjectedType
 
 @DoNotUnload
 @MappedExtension
-public class ExtensionMapper(
-    override val plugin: Minix
-) : MapperService<Minix>, Extension<Minix>() {
+public class ExtensionMapper : MapperService<Minix>, Extension<Minix>() {
     override val superclass: KClass<*> = Extension::class
     override val targetAnnotation: KClass<out Annotation> = MappedExtension::class
 

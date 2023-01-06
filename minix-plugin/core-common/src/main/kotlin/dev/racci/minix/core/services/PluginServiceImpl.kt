@@ -28,7 +28,7 @@ import kotlin.reflect.KSuspendFunction0
 
 @DoNotUnload
 @MappedExtension([ExtensionMapper::class, DataServiceImpl::class, IntegrationMapper::class], PluginService::class)
-public class PluginServiceImpl(override val plugin: Minix) : PluginService, Extension<Minix>() {
+public class PluginServiceImpl internal constructor() : PluginService, Extension<Minix>() {
     private lateinit var driver: Driver
 
     override val loadedPlugins: MutableMap<KClass<out MinixPlugin>, MinixPlugin> by lazy { mutableMapOf() }

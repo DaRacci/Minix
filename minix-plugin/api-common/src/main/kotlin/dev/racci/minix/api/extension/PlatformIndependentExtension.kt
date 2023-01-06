@@ -8,6 +8,7 @@ import dev.racci.minix.api.lifecycles.Closeable
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.logger.MinixLoggerFactory
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.utils.koin
 import dev.racci.minix.flowbus.FlowBus
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -21,12 +22,20 @@ import org.koin.core.component.createScope
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.koin.core.scope.Scope
-import org.koin.core.scope.get
 import kotlin.coroutines.CoroutineContext
+import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
 /** Global platform independent extension. */
 public abstract class PlatformIndependentExtension<P : MinixPlugin> internal constructor() : ExtensionSkeleton<P> {
+    final override val plugin: P = koin.get(
+        this::class.supertypes[0]
+            .arguments[0]
+            .type!!
+            .classifier
+            .castOrThrow<KClass<P>>()
+    )
+
     final override val value: String = buildString {
         append(plugin.value)
         append(':')

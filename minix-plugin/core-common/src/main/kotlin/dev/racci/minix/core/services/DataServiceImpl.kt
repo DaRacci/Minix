@@ -25,7 +25,6 @@ import dev.racci.minix.flowbus.subscribeFlow
 import io.github.classgraph.ClassInfo
 import kotlinx.coroutines.flow.filter
 import org.jetbrains.exposed.sql.Table
-import org.koin.core.annotation.InjectedParam
 import org.koin.core.context.unloadKoinModules
 import org.koin.core.error.NoBeanDefFoundException
 import org.spongepowered.configurate.kotlin.extensions.get
@@ -33,9 +32,7 @@ import org.spongepowered.configurate.reference.WatchServiceListener
 import kotlin.reflect.KClass
 
 @MappedExtension([PluginService::class], DataService::class, threadCount = 2)
-public class DataServiceImpl internal constructor(
-    @InjectedParam override val plugin: Minix
-) : StorageService<Minix>, MapperService<Minix>, DataService() {
+public class DataServiceImpl internal constructor() : StorageService<Minix>, MapperService<Minix>, DataService() {
     internal lateinit var watcher: WatchServiceListener
     private val configurations = multiMapOf<KClass<out MinixPlugin>, ConfigData<*, *>>()
     private val configDataHolder: LoadingCache<KClass<out MinixConfig<*>>, ConfigData<*, *>> = Caffeine.newBuilder()

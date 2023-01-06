@@ -25,16 +25,14 @@ import org.apache.logging.log4j.core.appender.AbstractManager
 import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
-import org.koin.core.annotation.Singleton
+import org.koin.core.annotation.InjectedParam
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.full.staticProperties
 
-@Singleton([MinixLogger::class]) // The fallback main instance
-public class PaperMinixLogger<T> internal constructor(
-    override val plugin: T,
-    loggingLevel: LoggingLevel = LoggingLevel.INFO
-) : WithPlugin<T> by plugin, MinixLogger(loggingLevel) where T : MinixPlugin, T : WithPlugin<MinixPlugin> {
+public class PaperMinixLogger<P> internal constructor(
+    @InjectedParam override val plugin: P
+) : WithPlugin<P> by plugin, MinixLogger(LoggingLevel.INFO) where P : MinixPlugin, P : WithPlugin<MinixPlugin> {
 
     override fun format(
         message: String,

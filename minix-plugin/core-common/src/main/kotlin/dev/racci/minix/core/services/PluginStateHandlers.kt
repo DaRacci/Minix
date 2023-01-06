@@ -6,19 +6,19 @@ import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.flowbus.subscribe
-import org.koin.core.annotation.InjectedParam
+import org.koin.core.annotation.Scope
 import org.koin.core.annotation.Singleton
 
-@Singleton
-@MappedExtension
-public class PluginStateHandlers(@InjectedParam public override val plugin: Minix) : Extension<Minix>() {
+@[Scope(Minix::class) Singleton MappedExtension]
+public class PluginStateHandlers : Extension<Minix>() {
 
     public override suspend fun handleLoad() {
         subscribe<MinixPluginStateEvent> {
             when (this.state) {
                 MinixPluginStateEvent.State.LOAD -> bStatsRegister(this.plugin)
                 MinixPluginStateEvent.State.RELOAD -> bStatsRegister(this.plugin)
-                else -> { /* no-op */ }
+                else -> { /* no-op */
+                }
             }
         }
     }

@@ -2,7 +2,6 @@ package dev.racci.minix.core.coroutine.dispatcher
 
 import arrow.core.toOption
 import dev.racci.minix.api.coroutine.CoroutineTimings
-import dev.racci.minix.api.logger.MinixLoggerFactory
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.core.coroutine.dispatcher.service.WakeUpBlockService
 import io.papermc.paper.util.MCUtil
@@ -13,8 +12,6 @@ internal class MinecraftCoroutineDispatcher(
     private val plugin: MinixPlugin,
     private val wakeUpBlockService: WakeUpBlockService
 ) : CoroutineDispatcher() {
-    private val logger by MinixLoggerFactory
-
     /**
      * Returns `true` if the execution of the coroutine should be performed with [dispatch] method.
      * The default behavior for most dispatchers is to return `true`.

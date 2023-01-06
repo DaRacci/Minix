@@ -13,8 +13,7 @@ import dev.racci.minix.core.plugin.Minix
 import java.util.UUID
 
 @MappedExtension(bindToKClass = PlayerService::class)
-public expect class PlayerServiceImpl internal constructor(plugin: Minix) : Extension<Minix>, PlayerService {
-    override val plugin: Minix
+public expect class PlayerServiceImpl internal constructor() : Extension<Minix>, PlayerService {
     override val inputCallbacks: OnlinePlayerMap<PlayerUtils.ChatInput>
     override val quitCallbacks: OnlinePlayerMap<PlayerQuitCallback>
     override val moveCallbacks: OnlinePlayerMap<PlayerMoveCallback>

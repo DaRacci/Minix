@@ -17,16 +17,12 @@ import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.core.annotation.Scope
-import org.koin.core.annotation.Scoped
 import org.koin.core.component.get
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 
-@Scope(Minix::class)
-@Scoped([CoroutineScheduler::class])
 @MappedExtension(bindToKClass = CoroutineScheduler::class, name = "Coroutine Scheduler", threadCount = 4)
-public class CoroutineSchedulerImpl(override val plugin: Minix) : Extension<Minix>(), CoroutineScheduler {
+public class CoroutineSchedulerImpl internal constructor() : Extension<Minix>(), CoroutineScheduler {
 
     override val parentJob: CompletableJob by lazy { SupervisorJob() }
 

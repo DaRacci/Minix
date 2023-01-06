@@ -14,14 +14,12 @@ import dev.racci.minix.integrations.IntegrationManager
 import dev.racci.minix.integrations.annotations.MappedIntegration
 import io.github.classgraph.ClassInfo
 import org.koin.core.component.get
-import org.koin.core.component.inject
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
 
 @MappedExtension
 public actual class IntegrationMapper : MapperService<Minix>, Extension<Minix>() {
-    override val plugin: Minix by inject()
     override val superclass: KClass<out Any> = Integration::class
     override val targetAnnotation: KClass<out Annotation> = MappedIntegration::class
 

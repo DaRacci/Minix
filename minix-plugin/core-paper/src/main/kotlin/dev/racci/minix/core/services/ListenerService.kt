@@ -78,7 +78,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.toJavaDuration
 
 @MappedExtension
-public class ListenerService(override val plugin: Minix) : Extension<Minix>() {
+public class ListenerService internal constructor() : Extension<Minix>() {
     private class MaybeChangingLocation(
         val loc: Location,
         val expiringTick: Int

@@ -8,11 +8,20 @@ import kotlinx.coroutines.channels.TickerMode
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.jetbrains.annotations.ApiStatus
 import java.util.WeakHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
-public class ExpirationMapImpl<K, V>(
+/**
+ * The implementation as a map as an [ExpirationMap].
+ *
+ * @param K The type of the key.
+ * @param V The type of the value.
+ */
+@ApiStatus.Experimental
+@ApiStatus.AvailableSince("5.0.0")
+public class ExpirationMapImpl<K, V> internal constructor(
     private val defaultDuration: Duration = Duration.INFINITE,
     private val backgroundContext: CoroutineContext = Dispatchers.Default,
     private val backingMap: MutableMap<K, ExpirationMapValue<K, V>> = WeakHashMap()
@@ -95,10 +104,10 @@ public class ExpirationMapImpl<K, V>(
         key: K,
         value: V,
         expireIn: Duration,
-        callback: ExpirationMapCallback<K, V>?
+        onExpire: ExpirationMapCallback<K, V>?
     ): V? = backingMap.compute(key) { _, existing ->
         if (existing == null) generateTask()
-        ExpirationMapValue(value, expireIn, now(), callback)
+        ExpirationMapValue(value, expireIn, now(), onExpire)
     }?.value
 
     override fun remove(key: K): V? = backingMap.remove(key)?.value

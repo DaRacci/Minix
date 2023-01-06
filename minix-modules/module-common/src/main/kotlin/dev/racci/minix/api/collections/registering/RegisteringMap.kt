@@ -1,49 +1,55 @@
 package dev.racci.minix.api.collections.registering
 
+import arrow.core.Option
+import arrow.core.getOrElse
+import arrow.core.getOrNone
 import dev.racci.minix.api.lifecycles.Loadable
+import kotlinx.collections.immutable.ImmutableCollection
+import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
-import org.apiguardian.api.API
-import java.util.Optional
+import org.jetbrains.annotations.ApiStatus
 
-@API(status = API.Status.MAINTAINED, since = "5.0.0")
+@ApiStatus.Experimental
+@ApiStatus.AvailableSince("5.0.0")
 public sealed class RegisteringMap<K : Any, V : Any> {
     protected abstract val internalMap: Map<K, Loadable<V>>
 
-    public val entries: ImmutableSet<Entry<K, V>> get() {
-        return this.internalMap.entries
-            .filter { it.value.get().isSuccess }
-            .map { Entry(it.key, it.value.get().getOrThrow()) }
-            .toImmutableSet()
-    }
+    public val entries: ImmutableSet<Map.Entry<K, V>>
+        get() = getRegistered().entries
 
-    public val keys: ImmutableSet<K> get() = this.internalMap.keys.toImmutableSet()
+    /** An [ImmutableSet] of the keys in this map. */
+    public val keys: ImmutableSet<K>
+        get() = internalMap.keys.toImmutableSet()
 
-    public val values: ImmutableSet<V> get() = this.getRegistered()
+    /** An [ImmutableCollection] of the registered values. */
+    public val values: ImmutableCollection<V>
+        get() = getRegistered().values
 
-    public val size: Int get() = this.internalMap.size
+    /** The size of this map. */
+    public val size: Int
+        get() = this.internalMap.size
 
+    /** @returns The value of a given key if the key is present, and the value is registered. */
     public operator fun get(key: K): V? = this.internalMap[key]?.get()?.getOrNull()
 
+    /** @returns True if the given key is present in this map. */
     public fun containsKey(key: K): Boolean = this.internalMap.containsKey(key)
 
+    /** @returns True if the given [Loadable] value is registered in this map. */
     public fun containsValue(value: Loadable<V>): Boolean = this.internalMap.containsValue(value)
 
+    /** @returns True if the given value is registered in this map. */
     public fun containsValue(value: V): Boolean = this.internalMap.values.any { it.get().isSuccess && it.get().getOrThrow() == value }
 
-    public fun getLoaded(key: K): V? = this.internalMap[key]?.get()?.getOrNull()
-
-    /** @return All registered values in this map. */
-    public fun getRegistered(): ImmutableSet<V> {
-        val set = mutableSetOf<V>()
-        for (value in this.internalMap.values) {
-            if (value.unloaded) continue
-
-            value.get(false).onSuccess(set::add)
-        }
-
-        return set.toImmutableSet()
-    }
+    /**
+     * @return An [ImmutableMap] of all the currently registered entries.
+     */
+    public fun getRegistered(): ImmutableMap<K, V> = this.internalMap.entries
+        .filterNot { (_, value) -> value.loaded }
+        .associate { (key, value) -> key to value.get().getOrThrow() }
+        .toImmutableMap()
 
     /**
      * Attempts to register the value with the given descriptor.
@@ -55,20 +61,22 @@ public sealed class RegisteringMap<K : Any, V : Any> {
      * @param descriptor The descriptor to register the value with.
      * @return A [Result] containing the value if it was successfully registered, or an error if it was not.
      */
-    public fun register(descriptor: K): Result<V> {
-        val loadable = this.internalMap[descriptor] ?: return Result.failure(IllegalStateException("Descriptor $descriptor is not registered."))
-        if (loadable.loaded) return Result.failure(IllegalStateException("Descriptor $descriptor is already registered."))
+    public fun register(descriptor: K): Result<V> = internalMap.getOrNone(descriptor)
+        .map { loadable ->
+            if (loadable.loaded) {
+                Result.failure(IllegalStateException("Descriptor $descriptor is already registered."))
+            } else loadable.get(false)
+        }.getOrElse { Result.failure(IllegalStateException("Descriptor $descriptor is not registered.")) }
 
-        return loadable.get(false)
-    }
-
-    public suspend fun tryRegisterAll() {
-        for (value in this.internalMap.values) {
-            if (value.loaded) continue
-
-            value.load(false)
-        }
-    }
+    /**
+     * Attempts to register all still unregistered values.
+     *
+     * @return An [ImmutableSet] containing all values that were successfully registered.
+     */
+    public suspend fun tryRegisterAll(): ImmutableSet<V> = internalMap.values
+        .filter(Loadable<V>::loaded)
+        .mapNotNull { it.load(false).getOrNull() }
+        .toImmutableSet()
 
     /**
      * Attempts to register the value with the given descriptor.
@@ -79,34 +87,28 @@ public sealed class RegisteringMap<K : Any, V : Any> {
      * @param descriptor The descriptor to unregister the value with.
      * @return If the value was successfully unregistered.
      */
-    public suspend fun unregister(descriptor: K): Boolean {
-        val loadable = this.internalMap[descriptor] ?: return false
-        if (loadable.unloaded) return false
+    public suspend fun unregister(descriptor: K): Boolean = internalMap.getOrNone(descriptor)
+        .filterNot(Loadable<V>::loaded)
+        .tap { it.unload() }
+        .fold({ false }, { true })
 
-        return loadable.unload()
-    }
-
-    /** Unregisters all registered values. */
-    public suspend fun unregisterAll() {
-        for (value in this.internalMap.values) {
-            if (value.unloaded) continue
-
-            value.unload()
-        }
-    }
+    /**
+     * Unregisters all registered values.
+     *
+     * @returns An [ImmutableSet] containing all the keys that got unregistered.
+     */
+    public suspend fun unregisterAll(): ImmutableSet<K> = this.internalMap.entries
+        .filterNot { (_, value) -> value.loaded }
+        .onEach { (_, value) -> value.unload() }
+        .map { (key, _) -> key }.toImmutableSet()
 
     /**
      * Attempts to get the value with the given descriptor.
      *
      * @param descriptor The descriptor to get the value with.
-     * @return An [Optional] containing the value if it is registered, or an empty [Optional] if it was not.
+     * @return An [Option] containing the value if it is registered, or None if it was not.
      */
-    public fun getRegistered(descriptor: K): Optional<V> {
-        val loadable = this.internalMap[descriptor] ?: return Optional.empty()
-        if (loadable.unloaded) return Optional.empty()
-
-        return Optional.of(loadable.get(false).getOrThrow())
-    }
-
-    public class Entry<K : Any, V : Any> internal constructor(override val key: K, override val value: V) : Map.Entry<K, V>
+    public fun getRegistered(descriptor: K): Option<V> = internalMap.getOrNone(descriptor)
+        .filterNot(Loadable<V>::loaded)
+        .map { it.get(false).getOrThrow() }
 }

@@ -6,13 +6,19 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.TickerMode
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
-import kotlinx.datetime.Instant
+import org.jetbrains.annotations.ApiStatus
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KMutableProperty1
 import kotlin.time.Duration
 
+/**
+ * The implementation of a list as an [ExpirationCollection].
+ *
+ * @param E The type of element in the collection.
+ */
+@ApiStatus.Experimental
+@ApiStatus.AvailableSince("5.0.0")
 public class ExpirationListImpl<E> internal constructor(
     private val backgroundContext: CoroutineContext
 ) : ExpirationCollection<E> {
@@ -26,36 +32,23 @@ public class ExpirationListImpl<E> internal constructor(
 
     override operator fun contains(element: E): Boolean = indexOf(element) > -1
 
-    public override operator fun get(index: Int): E? = getNode(index)?.element
+    public override operator fun get(index: Int): E? = getNode(index)?.value
 
-    public override fun first(): E? = head?.element
+    public override fun first(): E? = head?.value
 
-    public override fun last(): E? = tail?.element
-
-    override fun addAll(
-        expireIn: Duration,
-        vararg elements: Pair<E, ExpirationCallback<E>>
-    ) {
-        for ((element, callback) in elements) {
-            add(element, expireIn, callback)
-        }
-    }
+    public override fun last(): E? = tail?.value
 
     override fun addAll(
         expireIn: Duration,
         vararg elements: E,
         onExpire: ExpirationCallback<E>?
-    ) {
-        for (element in elements) {
-            add(element, expireIn, onExpire)
-        }
-    }
+    ): Unit = elements.forEach { add(it, expireIn, onExpire) }
 
     override operator fun iterator(): MutableIterator<E> = object : MutableIterator<E> {
         private val nodeIterator = nodeIterator()
 
         override fun hasNext() = nodeIterator.hasNext()
-        override fun next() = nodeIterator.next().element
+        override fun next() = nodeIterator.next().value
         override fun remove() = nodeIterator.remove()
     }
 
@@ -64,7 +57,7 @@ public class ExpirationListImpl<E> internal constructor(
         var node = head
         var count = 0
         do {
-            if (node?.element === element) {
+            if (node?.value === element) {
                 return count
             }
             node = node?.next
@@ -73,11 +66,18 @@ public class ExpirationListImpl<E> internal constructor(
         return -1
     }
 
-    override fun containsAll(elements: Collection<E>): Boolean {
-        return elements.all { contains(it) }
-    }
+    override fun containsAll(elements: Collection<E>): Boolean = elements.all { contains(it) }
 
-    override fun clear() {
+    override fun clear(callCallbacks: Boolean) {
+        if (callCallbacks) {
+            val nodeIterator = nodeIterator()
+            while (nodeIterator.hasNext()) {
+                val next = nodeIterator.next()
+                next.onExpire?.onExpire(next.value)
+                nodeIterator.remove()
+            }
+        }
+
         head = null
         tail = null
         size = 0
@@ -87,29 +87,31 @@ public class ExpirationListImpl<E> internal constructor(
         element: E,
         expireIn: Duration,
         onExpire: ExpirationCallback<E>?
-    ) {
-        insert(
-            element,
-            expireIn,
-            onExpire,
-            ::tail,
-            ExpirationNode<E>::next
-        )
-    }
+    ): Unit = insert(
+        element,
+        expireIn,
+        onExpire,
+        ::tail,
+        ExpirationNode<E>::next
+    )
 
     public override fun addFirst(
         element: E,
         expireIn: Duration,
         onExpire: ExpirationCallback<E>?
-    ) {
-        insert(
-            element,
-            expireIn,
-            onExpire,
-            ::head,
-            ExpirationNode<E>::previous
-        )
-    }
+    ): Unit = insert(
+        element,
+        expireIn,
+        onExpire,
+        ::head,
+        ExpirationNode<E>::previous
+    )
+
+    override fun addLast(
+        element: E,
+        expireIn: Duration,
+        onExpire: ExpirationCallback<E>?
+    ): Unit = add(element, expireIn, onExpire)
 
     private fun insert(
         element: E,
@@ -119,7 +121,8 @@ public class ExpirationListImpl<E> internal constructor(
         nodeReplace: KMutableProperty1<ExpirationNode<E>, ExpirationNode<E>?>
     ) {
         require(expireIn.isNegative()) { "expireIn must be greater then 0." }
-        val newNode = ExpirationNode(element, expireIn).also { it.onExpire = onExpire }
+
+        val newNode = ExpirationNode(element, expireIn, now(), onExpire)
         if (head == null) {
             head = newNode
             tail = newNode
@@ -130,23 +133,20 @@ public class ExpirationListImpl<E> internal constructor(
             }
             node.set(newNode)
         }
+
         size++
         generateTask()
     }
 
-    override fun addLast(element: E, expireIn: Duration, onExpire: ExpirationCallback<E>?) {
-        TODO("Not yet implemented")
-    }
-
     override fun removeAt(index: Int): E? = getNode(index)?.also {
         removeNode(it)
-    }?.element
+    }?.value
 
     override fun remove(element: E): Boolean = getNodeByElement(element)?.let { true.apply { removeNode(it) } } ?: false
 
     override fun removeFirst(): E? {
         val next = head?.next
-        val headElement = head?.element
+        val headElement = head?.value
         if (next == null) {
             tail = null
             head = null
@@ -159,7 +159,7 @@ public class ExpirationListImpl<E> internal constructor(
 
     override fun removeLast(): E? {
         val previous = tail?.previous
-        val tailElement = tail?.element
+        val tailElement = tail?.value
         if (previous == null) {
             tail = null
             head = null
@@ -183,7 +183,7 @@ public class ExpirationListImpl<E> internal constructor(
         if (head == null) return null
         var node = head
         do {
-            if (node?.element === element) {
+            if (node?.value === element) {
                 return node
             }
             node = node?.next
@@ -226,11 +226,6 @@ public class ExpirationListImpl<E> internal constructor(
         }
     }
 
-    private fun checkTime(
-        current: Instant,
-        node: ExpirationNode<E>
-    ) = (node.startTime + node.expireIn) < current
-
     @OptIn(ObsoleteCoroutinesApi::class)
     private fun generateTask() {
         if (builtTicker != null) return
@@ -242,24 +237,22 @@ public class ExpirationListImpl<E> internal constructor(
             mode = TickerMode.FIXED_DELAY
         )
 
-        runBlocking {
-            withContext(backgroundContext) {
-                if (isEmpty()) {
-                    emptyCount++
-                } else {
-                    emptyCount = 0
-                    val current = now()
-                    for (node in nodeIterator()) {
-                        if (!checkTime(current, node)) continue
-                        node.onExpire?.onExpire(node.element)
-                        removeNode(node)
-                    }
+        runBlocking(backgroundContext) {
+            if (isEmpty()) {
+                emptyCount++
+            } else {
+                emptyCount = 0
+                val current = now()
+                for (node in nodeIterator()) {
+                    if (node.remainingTime(current) != Duration.ZERO) continue
+                    node.onExpire?.onExpire(node.value)
+                    removeNode(node)
                 }
+            }
 
-                if (emptyCount > 9) {
-                    builtTicker?.cancel()
-                    builtTicker = null
-                }
+            if (emptyCount > 9) {
+                builtTicker?.cancel()
+                builtTicker = null
             }
         }
     }

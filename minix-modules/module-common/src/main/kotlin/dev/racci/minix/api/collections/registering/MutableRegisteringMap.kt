@@ -2,13 +2,14 @@ package dev.racci.minix.api.collections.registering
 
 import dev.racci.minix.api.extensions.collections.computeAndRemove
 import dev.racci.minix.api.lifecycles.Loadable
-import org.apiguardian.api.API
+import org.jetbrains.annotations.ApiStatus
 
 /**
  * A collection that contains registrable values
  */
 // TODO -> Concurrent version
-@API(status = API.Status.MAINTAINED, since = "5.0.0")
+@ApiStatus.Experimental
+@ApiStatus.AvailableSince("5.0.0")
 public open class MutableRegisteringMap<K : Any, V : Any> private constructor(
     override val internalMap: MutableMap<K, Loadable<V>>
 ) : RegisteringMap<K, V>() {

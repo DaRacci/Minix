@@ -39,7 +39,7 @@ public actual class Minix actual constructor(private val initPlugin: WeakReferen
     override fun onLoad() {
         runBlocking {
             startKoin()
-            MinixApplicationBuilder.logger = SlimJarProxy
+            MinixApplicationBuilder.logger = SlimJarProxy(logger)
             get<PluginService>().loadPlugin(this@Minix)
         }
     }

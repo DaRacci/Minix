@@ -17,15 +17,14 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.core.annotation.InjectedParam
 import kotlin.reflect.KClass
 
 /**
-* Class for receiving events posted to [FlowBus]
-* @param bus [FlowBus] instance to subscribe to. If not set, the koin singleton will be used.
-*/
+ * Class for receiving events posted to [FlowBus]
+ * @param bus [FlowBus] instance to subscribe to. If not set, the koin singleton will be used.
+ */
 // TODO -> Cancelable, Priority, Bukkit listener conversion
-public open class EventReceiverImpl(@InjectedParam private val bus: FlowBus) : EventReceiver {
+public open class EventReceiverImpl(private val bus: FlowBus) : EventReceiver {
     private val jobs = mutableMapOf<KClass<*>, Job>()
 
     private var returnDispatcher: CoroutineDispatcher = DispatcherProvider.get()

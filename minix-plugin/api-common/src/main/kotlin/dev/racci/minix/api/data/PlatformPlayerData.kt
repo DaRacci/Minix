@@ -11,6 +11,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 
 // Workaround for https://youtrack.jetbrains.com/issue/KT-20427
+// TODO: Allow extendable data using a map which can be used from other plugins and the like.
 @API(status = API.Status.INTERNAL, since = "5.0.0")
 public abstract class PlatformPlayerData internal constructor() : KoinComponent {
     private val _accessCount: AtomicInt = atomic(0)

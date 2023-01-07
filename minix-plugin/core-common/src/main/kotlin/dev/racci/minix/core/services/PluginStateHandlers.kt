@@ -6,10 +6,8 @@ import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.flowbus.subscribe
-import org.koin.core.annotation.Scope
-import org.koin.core.annotation.Singleton
 
-@[Scope(Minix::class) Singleton MappedExtension]
+@MappedExtension
 public class PluginStateHandlers : Extension<Minix>() {
 
     public override suspend fun handleLoad() {

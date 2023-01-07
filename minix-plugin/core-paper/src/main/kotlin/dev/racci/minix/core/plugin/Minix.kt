@@ -2,21 +2,18 @@ package dev.racci.minix.core.plugin
 
 import dev.racci.minix.api.annotations.MappedPlugin
 import dev.racci.minix.api.logger.LoggingLevel
-import dev.racci.minix.api.logger.MinixLogger
-import dev.racci.minix.api.logger.MinixLoggerFactory
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.core.LoadListener
-import dev.racci.minix.jumper.MinixApplicationBuilder
 import dev.racci.minix.core.builders.ItemBuilderImpl
 import dev.racci.minix.core.data.MinixActualConfig
-import dev.racci.minix.core.logger.KoinProxy
 import dev.racci.minix.core.logger.SentryProxy
 import dev.racci.minix.core.logger.SlimJarProxy
 import dev.racci.minix.core.plugin.DummyLoader.Companion.setValue
 import dev.racci.minix.core.services.PluginServiceImpl
 import dev.racci.minix.core.services.mapped.ExtensionMapper
+import dev.racci.minix.jumper.MinixApplicationBuilder
 import io.sentry.Sentry
 import kotlinx.atomicfu.atomic
 import kotlinx.coroutines.runBlocking
@@ -24,16 +21,18 @@ import org.bukkit.plugin.Plugin
 import org.koin.core.annotation.ComponentScan
 import org.koin.core.annotation.Module
 import org.koin.core.component.get
-import org.koin.dsl.bind
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
+import org.koin.core.module.dsl.new
+import org.koin.dsl.binds
 import org.koin.dsl.module
+import org.koin.ksp.generated.defaultModule
 import java.lang.ref.WeakReference
 
 @Module
 @ComponentScan
 @MappedPlugin(13706)
 public actual class Minix actual constructor(private val initPlugin: WeakReference<Plugin>) : MinixPlugin() {
-    override val logger: MinixLogger by lazy { MinixLoggerFactory.initLogger(this) } // Required since koin is not initialized yet.
-
     private var sentryState = atomic(false)
 
     override fun onLoad() {
@@ -57,25 +56,18 @@ public actual class Minix actual constructor(private val initPlugin: WeakReferen
         this.startSentry()
     }
 
+    @Suppress("ProtectedInFinal")
     protected actual suspend fun startKoin() {
-        org.koin.core.context.startKoin {
-            this.modules(
-                KoinUtils.getModule(this@Minix)
-//                module { single { .getLogger(get<MinixImpl>()) } bind MinixLogger::class }
-            )
-
-            this.logger(KoinProxy)
-
-            this.modules(
-                module {
-                    single { ItemBuilderImpl } bind ItemBuilderDSL::class
-                }
-            )
-
-            this.modules(
-                KoinUtils.getModule(::PluginServiceImpl),
-                KoinUtils.getModule(::ExtensionMapper)
-            )
+        // TODO: Logger
+        startKoin {
+            printLogger(Level.DEBUG)
+            defaultModule()
+            modules(KoinUtils.initModule(this@Minix))
+            module(true) {
+                single { new(::PluginServiceImpl) } binds arrayOf(PluginServiceImpl::class, PluginService::class)
+                single { new(::ExtensionMapper) }
+                single { ItemBuilderImpl }
+            }.also(::modules)
         }
 
         with(get<ExtensionMapper>()) {

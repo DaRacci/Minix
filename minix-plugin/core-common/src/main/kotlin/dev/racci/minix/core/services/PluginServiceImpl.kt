@@ -8,7 +8,6 @@ import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.logger.LoggingLevel
-import dev.racci.minix.api.logger.MinixLoggerFactory
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.PluginService
@@ -112,7 +111,6 @@ public class PluginServiceImpl internal constructor() : PluginService, Extension
             }
 
             loadedPlugins -= plugin::class
-            MinixLoggerFactory.EXISTING -= plugin
         }
     }
 

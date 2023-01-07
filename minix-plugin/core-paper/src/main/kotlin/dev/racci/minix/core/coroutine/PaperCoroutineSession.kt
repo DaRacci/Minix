@@ -3,7 +3,6 @@ package dev.racci.minix.core.coroutine
 import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.data.enums.EventExecutionType
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.plugin.WithPlugin
 import dev.racci.minix.core.coroutine.dispatcher.MinecraftCoroutineDispatcher
 import dev.racci.minix.core.coroutine.dispatcher.MinixCoroutineDispatcher
 import dev.racci.minix.core.coroutine.dispatcher.service.EventService
@@ -22,12 +21,13 @@ import kotlinx.coroutines.runBlocking
 import org.bukkit.event.Event
 import org.bukkit.event.Listener
 import org.koin.core.annotation.Factory
+import org.koin.core.annotation.InjectedParam
 import kotlin.coroutines.CoroutineContext
 
 @Factory([CoroutineSession::class])
-internal class PaperCoroutineSession(
-    plugin: MinixPlugin
-) : CoroutineSession, WithPlugin<MinixPlugin> by plugin {
+internal class PaperCoroutineSession constructor(
+    @InjectedParam plugin: MinixPlugin
+) : CoroutineSession {
     private val wakeUpBlockService = WakeUpBlockService(plugin)
     private val eventService = EventService(plugin, this)
 

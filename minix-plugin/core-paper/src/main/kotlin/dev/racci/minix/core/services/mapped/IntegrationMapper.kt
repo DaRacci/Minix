@@ -48,7 +48,7 @@ public actual class IntegrationMapper : MapperService<Minix>, Extension<Minix>()
     actual override suspend fun forgetMapped(plugin: MinixPlugin) {
         val service = get<IntegrationService>()
         service.integrations.entries
-            .filter { entry -> PluginService.fromClass(entry.value::class).exists { it == plugin } }
+            .filter { entry -> get<PluginService>().fromClass(entry.value::class).exists { it == plugin } }
             .onEach { service.integrations.unregister(it.key) }
             .forEach { service.integrations.remove(it.key) }
     }

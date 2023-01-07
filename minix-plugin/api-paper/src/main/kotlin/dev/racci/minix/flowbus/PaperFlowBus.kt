@@ -12,7 +12,7 @@ import org.bukkit.event.Listener
 import org.koin.core.annotation.Singleton
 import kotlin.reflect.KClass
 
-@Singleton
+@[Singleton([PaperFlowBus::class, FlowBus::class])]
 public class PaperFlowBus : FlowBus() {
     private val logger by MinixLoggerFactory
     private val listener = object : Listener {}

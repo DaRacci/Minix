@@ -1,4 +1,4 @@
-package dev.racci.minix.core.coroutine // ktlint-disable filename
+package dev.racci.minix.core.coroutine
 
 import dev.racci.minix.api.events.plugin.CaughtCoroutineExceptionEvent
 import dev.racci.minix.api.plugin.MinixPlugin
@@ -7,17 +7,15 @@ import dev.racci.minix.flowbus.FlowBus
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import org.koin.core.annotation.Factory
-import org.koin.core.annotation.Scoped
+import org.koin.core.annotation.InjectedParam
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
-@Scoped
 @Factory([CoroutineExceptionHandler::class])
-@Suppress("FunctionName")
-internal fun MinixCoroutineExceptionHandler(
-    plugin: MinixPlugin,
-    scope: String? = null
-): CoroutineExceptionHandler = object : AbstractCoroutineContextElement(CoroutineExceptionHandler), CoroutineExceptionHandler {
+internal class MinixCoroutineExceptionHandler(
+    @InjectedParam private val plugin: MinixPlugin,
+    @InjectedParam private val scope: String? = null
+) : AbstractCoroutineContextElement(CoroutineExceptionHandler), CoroutineExceptionHandler {
     override fun handleException(context: CoroutineContext, exception: Throwable) {
         if (!plugin.enabled) {
             plugin.logger.debug { "Received exception while plugin was disabled: $exception" }

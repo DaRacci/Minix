@@ -21,6 +21,7 @@ import kotlinx.collections.immutable.toPersistentHashMap
 import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.event.server.PluginEnableEvent
 import org.bukkit.plugin.Plugin
+import org.koin.core.component.get
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
 
@@ -92,7 +93,7 @@ public actual class IntegrationService internal constructor() : Extension<Minix>
 
             integrations.register(descriptor)
             integrations[descriptor]?.let { integration ->
-                val plugin = PluginService.fromClass(integration::class).getOrElse { error("No plugin found for integration ${integration::class}") }
+                val plugin = get<PluginService>().fromClass(integration::class).getOrElse { error("No plugin found for integration ${integration::class}") }
                 when {
                     !plugin.enabled -> waitingEnable.put(plugin, integration)
                     else -> integration.handleEnable()

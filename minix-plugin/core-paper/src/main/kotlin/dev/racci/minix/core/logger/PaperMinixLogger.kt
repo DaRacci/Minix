@@ -13,7 +13,6 @@ import dev.racci.minix.api.logger.LoggingLevel
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.logger.UnsafeMessage
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.plugin.WithPlugin
 import dev.racci.minix.api.utils.suspendBlockingLazy
 import io.sentry.Breadcrumb
 import io.sentry.Sentry
@@ -25,14 +24,16 @@ import org.apache.logging.log4j.core.appender.AbstractManager
 import org.apache.logging.log4j.core.appender.rolling.RollingRandomAccessFileManager
 import org.jline.terminal.Terminal
 import org.jline.terminal.TerminalBuilder
+import org.koin.core.annotation.Factory
 import org.koin.core.annotation.InjectedParam
 import java.util.Optional
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.full.staticProperties
 
+@Factory([MinixLogger::class])
 public class PaperMinixLogger<P> internal constructor(
-    @InjectedParam override val plugin: P
-) : WithPlugin<P> by plugin, MinixLogger(LoggingLevel.INFO) where P : MinixPlugin, P : WithPlugin<MinixPlugin> {
+    @InjectedParam private val plugin: P
+) : MinixLogger(LoggingLevel.INFO) where P : MinixPlugin {
 
     override fun format(
         message: String,
@@ -73,9 +74,7 @@ public class PaperMinixLogger<P> internal constructor(
         msg: UnsafeMessage,
         colour: TextColors?
     ) {
-        plugin.launch(context) {
-            super.log(level, err, scope, msg, colour)
-        }
+        plugin.launch { super.log(level, err, scope, msg, colour) }
     }
 
     override fun printLog(formattedMessage: FormattedMessage) {

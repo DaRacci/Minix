@@ -64,7 +64,7 @@ minix {
         fun target(
             project: String,
             platform: MCTarget.Platform = MCTarget.Platform.PAPER
-        ) = withMCTarget(project(":module-$project"), platform, "1.19.3", applyMinix = false)
+        ) = withMCTarget(project(":module-$project"), platform, applyMinix = false)
         target("integrations")
         target("jumper")
         target("data", MCTarget.Platform.PURPUR)
@@ -316,7 +316,6 @@ kotlin {
     }
 }.also { // Order matters
     dependencies {
-        kspCommonMainMetadata(libs.koin.ksp)
         add("kspPaper", libs.koin.ksp)
     }
 }
@@ -341,7 +340,7 @@ tasks {
     val dependTask = kotlin.targets["paper"].reobfJar // Cannot be called inside configure block.
     runServer {
         dependsOn(dependTask)
-        minecraftVersion("1.19.2")
+        minecraftVersion(libs.versions.minecraft.get().substringBefore('-'))
         pluginJars(dependTask.get().outputJar)
     }
 

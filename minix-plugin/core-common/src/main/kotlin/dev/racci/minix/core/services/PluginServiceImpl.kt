@@ -54,9 +54,10 @@ public class PluginServiceImpl internal constructor() : PluginService, Extension
                 plugin.logger.lockLevel()
             }
 
-            PlatformProxy.loadDependencies(plugin)
-
-            if (plugin !is Minix) loadKoinModules(KoinUtils.getModule(plugin))
+            if (plugin !is Minix) {
+                PlatformProxy.loadDependencies(plugin)
+                loadKoinModules(KoinUtils.getModule(plugin))
+            }
 
             logRunning(plugin, plugin::handleLoad)
 

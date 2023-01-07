@@ -19,10 +19,12 @@ public actual abstract class Extension<P : MinixPlugin> :
     actual final override val EventReceiver.supervisorScope: CoroutineScope
         get() = this.supervisorScope
 
+    @Suppress("NOTHING_TO_OVERRIDE") // Multiplatform issue
     public final override fun sync(
         block: suspend CoroutineScope.() -> Unit
     ): Job = scope.get<CoroutineSession>().launch(coroutineSession.synchronousContext, supervisor, block = block)
 
+    @Suppress("NOTHING_TO_OVERRIDE", "UNRESOLVED_REFERENCE") // Multiplatform issue
     public final override suspend fun <R> deferredSync(
         block: suspend () -> R
     ): Deferred<R> = super.deferredSync(block)

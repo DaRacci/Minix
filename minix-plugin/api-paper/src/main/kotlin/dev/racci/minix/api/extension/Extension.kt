@@ -8,11 +8,10 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
-import org.koin.core.parameter.parametersOf
 
 public actual abstract class Extension<P : MinixPlugin> :
     PlatformIndependentExtension<P>(),
-    EventReceiver by koin.get(parameters = { parametersOf(koin.get()) }) {
+    EventReceiver by koin.get() {
 
     actual final override val EventReceiver.exceptionHandler: CoroutineExceptionHandler
         get() = this.supervisorScope.coroutineContext[CoroutineExceptionHandler]!!

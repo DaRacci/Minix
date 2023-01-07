@@ -211,6 +211,8 @@ kotlin {
                 slimApi(libs.arrow.fx.coroutines)
                 slimApi(libs.arrow.optics.reflect)
                 slimApi(libs.arrow.laws)
+
+                slimApi(libs.classgraph)
             }
         }
 

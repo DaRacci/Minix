@@ -1,5 +1,6 @@
 package dev.racci.minix.api.plugin
 
+import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.lifecycles.ComplexManagedLifecycle
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.logger.MinixLoggerFactory
@@ -37,6 +38,7 @@ public actual abstract class MinixPlugin :
     actual final override val dataFolder: Path get() = this.getDataFolder().toPath()
     actual final override val version: Version by lazy { Version(this.description.version) }
     actual final override val dependencies: ImmutableSet<String> by lazy<ImmutableSet<String>>((this.description.depend + this.description.softDepend)::toImmutableSet)
+    actual final override val coroutineSession: CoroutineSession by lazy { scope.get() }
 
     public actual val enabled: Boolean get() = this.isEnabled
     public actual val metrics: Metrics by lazy { Metrics(this) }

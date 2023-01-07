@@ -18,26 +18,15 @@ import kotlin.coroutines.CoroutineContext
 // TODO -> Implement basic event receiver and flow additions
 public actual interface WithPlugin<in T : MinixPlugin> : KoinComponent, KoinScopeComponent {
 
-    /** A reference to the plugin instance. */
     public actual val plugin: @UnsafeVariance T
 
-    /** This plugin's main logger. */
     public actual val logger: MinixLogger get() = plugin.logger
 
-    /** This plugin's data folder. */
     public actual val dataFolder: Path get() = plugin.dataFolder
 
-    /** The plugin's koin scope. */
+    public actual val coroutineSession: CoroutineSession get() = plugin.coroutineSession
+
     public actual override val scope: Scope get() = plugin.scope
-
-    /** The plugins asynchronous context. */
-    public actual val context: CoroutineContext get() = this.scope.get<CoroutineSession>().context
-
-    /** The plugins parent scope and error handler. */
-    public actual val coroutineScope: CoroutineScope get() = this.scope.get<CoroutineSession>().coroutineScope
-
-    /** A bukkit main thread confined coroutine context. */
-    public val minecraftContext: CoroutineContext get() = this.scope.get<CoroutineSession>().minecraftContext
 
     /**
      * Launches the given function in the Coroutine Scope of the given plugin.
@@ -61,12 +50,12 @@ public actual interface WithPlugin<in T : MinixPlugin> : KoinComponent, KoinScop
      */
     public fun sync(
         block: suspend CoroutineScope.() -> Unit
-    ): Job = launch(this.minecraftContext, block = block)
+    ): Job = launch(coroutineSession.synchronousContext, block = block)
 
     /** Syntax sugar for [launch] with the default context. */
     public actual fun async(
         block: suspend CoroutineScope.() -> Unit
-    ): Job = this.launch(this.context, block)
+    ): Job = this.launch(coroutineSession.context, block)
 
     /**
      * A [Deferred], which is completed on the server thread.
@@ -77,7 +66,7 @@ public actual interface WithPlugin<in T : MinixPlugin> : KoinComponent, KoinScop
      */
     public suspend fun <R> deferredSync(
         block: suspend () -> R
-    ): Deferred<R> = getDeferred(this.plugin.minecraftContext, block)
+    ): Deferred<R> = getDeferred(coroutineSession.synchronousContext, block)
 
     /**
      * A [Deferred], which is completed off the server thread.
@@ -88,7 +77,7 @@ public actual interface WithPlugin<in T : MinixPlugin> : KoinComponent, KoinScop
      */
     public actual fun <R> deferredAsync(
         block: suspend () -> R
-    ): Deferred<R> = getDeferred(this.plugin.context, block)
+    ): Deferred<R> = getDeferred(coroutineSession.context, block)
 
     /**
      * A [CompletableFuture], which is completed on the server thread.
@@ -99,7 +88,7 @@ public actual interface WithPlugin<in T : MinixPlugin> : KoinComponent, KoinScop
      */
     public fun <R> completableSync(
         block: suspend () -> R
-    ): CompletableFuture<R> = getCompletable(this.plugin.minecraftContext, block)
+    ): CompletableFuture<R> = getCompletable(coroutineSession.synchronousContext, block)
 
     /**
      * A [CompletableFuture], which is completed off the server thread.
@@ -110,7 +99,7 @@ public actual interface WithPlugin<in T : MinixPlugin> : KoinComponent, KoinScop
      */
     public actual fun <R> completableAsync(
         block: suspend () -> R
-    ): CompletableFuture<R> = getCompletable(this.plugin.context, block)
+    ): CompletableFuture<R> = getCompletable(coroutineSession.context, block)
 
     private fun <R> getDeferred(
         dispatcher: CoroutineContext,

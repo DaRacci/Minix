@@ -176,7 +176,7 @@ internal class EventService(
 
             val dispatcher = when {
                 event.isAsynchronous || listener::class.hasAnnotation<RunAsync>() -> coroutineSession.context
-                else -> coroutineSession.minecraftContext
+                else -> coroutineSession.synchronousContext
             }
 
             return runCatching {

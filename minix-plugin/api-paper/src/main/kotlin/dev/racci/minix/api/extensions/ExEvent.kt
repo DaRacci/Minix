@@ -30,8 +30,8 @@ public fun <T : Event> WithPlugin<*>.events(
             priority,
             { _, event ->
                 val dispatcher = if (forceAsync || event.isAsynchronous) {
-                    plugin.context
-                } else plugin.minecraftContext
+                    coroutineSession.context
+                } else coroutineSession.synchronousContext
 
                 plugin.launch(dispatcher) {
                     if (clazz.isInstance(event)) {
@@ -128,8 +128,8 @@ public fun <T : Event> Listener.event(
         priority,
         { _, event ->
             val dispatcher = if (forceAsync || event.isAsynchronous) {
-                plugin.context
-            } else plugin.minecraftContext
+                plugin.coroutineSession.context
+            } else plugin.coroutineSession.synchronousContext
 
             plugin.launch(dispatcher) {
                 if (type.isInstance(event) && event as? T != null) {

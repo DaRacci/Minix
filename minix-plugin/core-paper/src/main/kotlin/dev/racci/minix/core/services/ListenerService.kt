@@ -147,7 +147,7 @@ public class ListenerService internal constructor() : Extension<Minix>() {
             .conflate()
             .onEach(Event::callEvent)
             .onEach { event -> playerService[event.player].liquidType = event.newType }
-            .launchIn(plugin.coroutineScope + plugin.context)
+            .launchIn(coroutineSession.scope + coroutineSession.context)
 
         eventFlow<PlayerMoveEvent>(priority = EventPriority.MONITOR, ignoreCancelled = true)
             .filter(PlayerMoveEvent::hasExplicitlyChangedPosition)
@@ -178,7 +178,7 @@ public class ListenerService internal constructor() : Extension<Minix>() {
                     true -> PlayerLiquidExitEvent(player, fromLiquid, toLiquid)
                     else -> PlayerLiquidEnterEvent(player, fromLiquid, toLiquid)
                 }.also { event -> liquidEventChannel.send(event) }
-            }.launchIn(plugin.coroutineScope + plugin.context)
+            }.launchIn(coroutineSession.scope + coroutineSession.context)
 
         event<PlayerBucketEmptyEvent>(
             EventPriority.MONITOR,

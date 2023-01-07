@@ -1,5 +1,6 @@
 package dev.racci.minix.api.plugin
 
+import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.lifecycles.ComplexManagedLifecycle
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.data.Version
@@ -32,6 +33,8 @@ public expect abstract class MinixPlugin :
     public final override val dataFolder: Path
 
     public final override val version: Version
+
+    public final override val coroutineSession: CoroutineSession
 
     public val enabled: Boolean
 

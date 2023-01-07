@@ -13,7 +13,7 @@ import kotlin.coroutines.CoroutineContext
  * Gets the plugin minecraft context.
  */
 public val MinixPlugin.minecraftDispatcher: CoroutineContext
-    get() = this.scope.get<CoroutineSession>().minecraftContext
+    get() = this.scope.get<CoroutineSession>().synchronousContext
 
 /**
  * Launches the given function in the Coroutine Scope of the given plugin async.
@@ -25,7 +25,7 @@ public val MinixPlugin.minecraftDispatcher: CoroutineContext
  */
 public fun MinixPlugin.launchAsync(
     block: suspend CoroutineScope.() -> Unit
-): Job = this.scope.get<CoroutineSession>().launch(this.context, block = block)
+): Job = this.scope.get<CoroutineSession>().launch(this.coroutineSession.context, block = block)
 
 /**
  * Registers an event listener with suspending functions.

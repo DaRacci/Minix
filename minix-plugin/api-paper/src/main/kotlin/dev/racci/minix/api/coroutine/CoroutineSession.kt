@@ -1,8 +1,6 @@
 package dev.racci.minix.api.coroutine
 
 import dev.racci.minix.api.data.enums.EventExecutionType
-import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.plugin.WithPlugin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -11,19 +9,19 @@ import org.bukkit.event.Event
 import org.bukkit.event.Listener
 import kotlin.coroutines.CoroutineContext
 
-public actual interface CoroutineSession : WithPlugin<MinixPlugin> {
+public actual interface CoroutineSession {
     /**
      * Gets the scope.
      */
-    actual override val coroutineScope: CoroutineScope
+    public actual val scope: CoroutineScope
 
     /**
      * Asynchronous context that stays off the main thread.
      */
-    actual override val context: CoroutineContext
+    public actual val context: CoroutineContext
 
     /** Synchronous context that stays on the main bukkit thread. */
-    actual override val minecraftContext: CoroutineContext
+    public val synchronousContext: CoroutineContext
 
     @API(status = API.Status.INTERNAL)
     public actual fun withManipulatedServerHeartBeat(
@@ -36,7 +34,7 @@ public actual interface CoroutineSession : WithPlugin<MinixPlugin> {
      */
     public actual fun launch(
         context: CoroutineContext,
-        parentScope: CoroutineScope,
+        scope: CoroutineScope,
         start: CoroutineStart,
         block: suspend CoroutineScope.() -> Unit
     ): Job

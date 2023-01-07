@@ -31,14 +31,11 @@ internal class PaperCoroutineSession(
     private val wakeUpBlockService = WakeUpBlockService(plugin)
     private val eventService = EventService(plugin, this)
 
-    /** Async context that stays off the main thread. */
     override val context: CoroutineContext = MinixCoroutineDispatcher(plugin, wakeUpBlockService)
 
-    /** Sync context that stays on the main thread. */
-    override val minecraftContext: CoroutineContext = MinecraftCoroutineDispatcher(plugin, wakeUpBlockService)
+    override val synchronousContext: CoroutineContext = MinecraftCoroutineDispatcher(plugin, wakeUpBlockService)
 
-    override val coroutineScope: CoroutineScope = MinixCoroutineExceptionHandler(plugin)
-        .let(::CoroutineScope) + SupervisorJob() + context
+    override val scope: CoroutineScope = MinixCoroutineExceptionHandler(plugin).let(::CoroutineScope) + SupervisorJob() + context
 
     override fun withManipulatedServerHeartBeat(block: suspend CoroutineScope.() -> Unit) {
         wakeUpBlockService.isManipulatedServerHeartBeatEnabled = true
@@ -71,12 +68,12 @@ internal class PaperCoroutineSession(
     }
 
     override fun dispose() {
-        coroutineScope.coroutineContext.cancelChildren()
-        coroutineScope.cancel()
+        scope.coroutineContext.cancelChildren()
+        scope.cancel()
 
         wakeUpBlockService.dispose()
         context.cancel()
-        minecraftContext.cancel()
+        synchronousContext.cancel()
     }
 
     private fun launchInternal(
@@ -84,17 +81,5 @@ internal class PaperCoroutineSession(
         dispatcher: CoroutineContext,
         coroutineStart: CoroutineStart,
         f: suspend CoroutineScope.() -> Unit
-    ): Job = (parentScope ?: coroutineScope).launch(dispatcher, coroutineStart, f)
-
-    init {
-        if (!plugin.enabled) {
-            throw plugin.logger.fatal {
-                """
-                Plugin ${plugin.value} attempted to start a new coroutine session while being disabled.
-                Dispatchers such as plugin.minecraftDispatcher and plugin.asyncDispatcher are already
-                disposed of at this point and cannot be used.
-                """.trimIndent()
-            }
-        }
-    }
+    ): Job = (parentScope ?: scope).launch(dispatcher, coroutineStart, f)
 }

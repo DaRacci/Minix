@@ -22,7 +22,7 @@ public actual abstract class Extension<P : MinixPlugin> :
 
     public final override fun sync(
         block: suspend CoroutineScope.() -> Unit
-    ): Job = scope.get<CoroutineSession>().launch(plugin.minecraftContext, this.supervisor, block = block)
+    ): Job = scope.get<CoroutineSession>().launch(coroutineSession.synchronousContext, supervisor, block = block)
 
     public final override suspend fun <R> deferredSync(
         block: suspend () -> R

@@ -11,15 +11,13 @@ public expect interface CoroutineSession {
     /**
      * Gets the scope.
      */
-    public val coroutineScope: CoroutineScope
+    public val scope: CoroutineScope
 
     /**
      * The context for the plugin.
      * Check the actual implementation for more information for that platform.
      */
     public val context: CoroutineContext
-
-    public val minecraftContext: CoroutineContext
 
     @API(status = API.Status.INTERNAL)
     public fun withManipulatedServerHeartBeat(
@@ -32,7 +30,7 @@ public expect interface CoroutineSession {
      */
     public fun launch(
         context: CoroutineContext = this.context,
-        parentScope: CoroutineScope = coroutineScope,
+        scope: CoroutineScope = this.scope,
         start: CoroutineStart = CoroutineStart.DEFAULT,
         block: suspend CoroutineScope.() -> Unit
     ): Job

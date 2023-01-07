@@ -26,7 +26,7 @@ public class CoroutineSchedulerImpl internal constructor() : Extension<Minix>(),
 
     override val parentJob: CompletableJob by lazy { SupervisorJob() }
 
-    private val bukkitContext by lazy { get<Minix>().minecraftContext }
+    private val bukkitContext by lazy { get<Minix>().coroutineSession.synchronousContext }
     private val ids by lazy { atomic(-1) }
     private val tasks by lazy { ConcurrentHashMap<Int, CoroutineTaskImpl>() }
 

@@ -1,5 +1,6 @@
 package dev.racci.minix.api.plugin
 
+import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.logger.MinixLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -24,11 +25,8 @@ public expect interface WithPlugin<in T : MinixPlugin> : KoinScopeComponent {
     /** The plugins koin scope. */
     public open override val scope: Scope
 
-    /** The plugins asynchronous context. */
-    public open val context: CoroutineContext
-
-    /** The plugins parent scope and error handler. */
-    public open val coroutineScope: CoroutineScope
+    /** The plugins coroutine session. */
+    public open val coroutineSession: CoroutineSession
 
     /**
      * Launches the given function in the Coroutine Scope of the given plugin.
@@ -39,7 +37,7 @@ public expect interface WithPlugin<in T : MinixPlugin> : KoinScopeComponent {
      * @return Cancelable coroutine job.
      */
     public open fun launch(
-        context: CoroutineContext = this.context,
+        context: CoroutineContext = coroutineSession.scope.coroutineContext,
         block: suspend CoroutineScope.() -> Unit
     ): Job
 

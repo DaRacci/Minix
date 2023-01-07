@@ -4,6 +4,7 @@ import dev.racci.minix.api.data.Priority
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.getKoin
+import dev.racci.minix.api.utils.koin
 import dev.racci.minix.flowbus.receiver.EventReceiver
 import dev.racci.minix.flowbus.subscribeFlow
 import dev.racci.minix.integrations.Integration
@@ -21,7 +22,7 @@ public abstract class ServerUtilsIntegration : Integration, EventReceiver by get
             subscribeFlow<BukkitPluginUnloadEvent>(Priority.MONITOR)
                 .filter { event -> event.stage == PluginEvent.Stage.PRE }
                 .mapNotNull { event -> event.plugin as? MinixPlugin }
-                .collect(PluginService::unloadPlugin)
+                .collect(koin.get<PluginService>()::unloadPlugin)
         }
     }
 }

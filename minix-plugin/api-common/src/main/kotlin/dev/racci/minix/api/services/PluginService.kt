@@ -2,12 +2,12 @@ package dev.racci.minix.api.services
 
 import arrow.core.Option
 import arrow.core.getOrElse
-import arrow.core.toOption
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.utils.getKoin
 import org.apiguardian.api.API
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
@@ -33,13 +33,12 @@ public interface PluginService {
 
     public fun fromClass(clazz: KClass<*>): Option<MinixPlugin> = fromClassloader(clazz.java.classLoader)
 
-    public companion object : PluginService by getKoin().get() {
+    public companion object : KoinComponent {
         // TODO -> Error with class, location and property
         /** Gets the plugin that this class belongs to. */
-        public operator fun <P : MinixPlugin> getValue(thisRef: Any, property: KProperty<*>?): P {
-            return fromClassloader(thisRef::class.java.classLoader).toOption()
-                .tap { require(it.safeCast<P>() != null) { "Plugin ${it::class.simpleName} is not of type ${property?.returnType}" } }
-                .getOrElse { error("Could not find plugin for ${thisRef::class.java.name}") }.castOrThrow()
-        }
+        public operator fun <P : MinixPlugin> getValue(thisRef: Any, property: KProperty<*>?): P = get<PluginService>()
+            .fromClassloader(thisRef::class.java.classLoader)
+            .tap { require(it.safeCast<P>() != null) { "Plugin ${it::class.simpleName} is not of type ${property?.returnType}" } }
+            .getOrElse { error("Could not find plugin for ${thisRef::class.java.name}") }.castOrThrow()
     }
 }

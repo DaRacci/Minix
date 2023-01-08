@@ -12,13 +12,12 @@ import org.bukkit.plugin.PluginManager
 /**
  * Alias for [Bukkit.getServer]
  */
-public val server: Server get() = Bukkit.getServer()
+public inline val server: Server get() = Bukkit.getServer()
 
 /**
  * Alias for [Bukkit.getPluginManager]
  */
-@Suppress("VariableMinLength")
-public val pm: PluginManager get() = Bukkit.getPluginManager()
+public inline val pm: PluginManager get() = Bukkit.getPluginManager()
 
 /**
  * Broadcast a component to the server.

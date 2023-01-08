@@ -104,7 +104,7 @@ public data class Scanner(
         public fun callerBased(
             refinedSubpackage: String? = null,
             excludes: Collection<String> = emptyList()
-        ): Scanner = with(StackWalker.getInstance().callerClass) {
+        ): Scanner = with(StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).callerClass) {
             return Scanner(
                 listOf(this.classLoader),
                 this.packageName.replace('.', '/').let { path -> if (!refinedSubpackage.isNullOrBlank()) "$path/$refinedSubpackage" else path },

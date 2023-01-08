@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.coroutines.CoroutineContext
 
 internal actual class MinixCoroutineDispatcher(
-    protected actual val plugin: MinixPlugin,
+    @Suppress("ProtectedInFinal") protected actual val plugin: MinixPlugin,
     private val wakeUpBlockService: WakeUpBlockService
 ) : CoroutineDispatcher() {
 

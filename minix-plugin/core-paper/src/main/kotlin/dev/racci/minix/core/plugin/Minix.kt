@@ -81,6 +81,7 @@ public actual class Minix actual constructor(private val initPlugin: WeakReferen
         }
     }
 
+    @Suppress("ProtectedInFinal")
     protected actual suspend fun startSentry() {
         val isEnabled = get<MinixActualConfig>().sentryEnabled
 

@@ -5,6 +5,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlin.coroutines.CoroutineContext
 
 internal expect class MinixCoroutineDispatcher : CoroutineDispatcher {
+    @Suppress("ProtectedInFinal")
     protected val plugin: MinixPlugin
 
     /**

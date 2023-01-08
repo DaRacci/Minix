@@ -1,5 +1,6 @@
 package dev.racci.minix.api.annotations
 
+import org.jetbrains.annotations.ApiStatus
 import kotlin.reflect.KClass
 
 /**
@@ -7,6 +8,8 @@ import kotlin.reflect.KClass
  *
  * @param type The levels class representation.
  */
+@ApiStatus.Experimental
+@ApiStatus.AvailableSince("5.0.0")
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 public annotation class LevelConverter(

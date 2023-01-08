@@ -1,13 +1,12 @@
 package dev.racci.minix.integrations.regions
 
-import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
+import arrow.core.filterIsInstance
 import com.google.common.collect.HashBiMap
 import dev.racci.minix.api.extensions.asBukkitLocation
 import dev.racci.minix.api.extensions.orFalse
-import dev.racci.minix.api.extensions.reflection.castOrThrow
-import dev.racci.minix.api.integrations.regions.Region
+import dev.racci.minix.api.extensions.orTrue
 import dev.racci.minix.api.integrations.regions.RegionIntegration
 import dev.racci.minix.api.integrations.regions.RegionManager
 import dev.racci.minix.api.utils.kotlin.ifFalse
@@ -15,7 +14,7 @@ import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.data.structs.minecraft.BlockPos
 import dev.racci.minix.integrations.annotations.MappedIntegration
-import me.angeschossen.lands.api.integration.LandsIntegration
+import me.angeschossen.lands.api.LandsIntegration
 import me.angeschossen.lands.api.land.LandArea
 import org.bukkit.World
 import org.bukkit.entity.Entity
@@ -23,31 +22,26 @@ import org.bukkit.entity.Player
 
 @MappedIntegration("Lands", RegionManager::class)
 public class LandsRegionIntegration(plugin: Minix) : RegionIntegration {
-    private val integration = LandsIntegration(plugin)
+    private val integration = LandsIntegration.of(plugin)
     private val areaReference = HashBiMap.create<LandArea, AreaRegion>()
 
     override fun getRegion(
         pos: BlockPos,
         world: World
-    ): Option<Region> {
-        val land = this.integration.getLand(world, pos.x.toInt(), pos.z.toInt())
-        if (land == null || !land.exists()) return None
-
-        val area = land.getArea(pos.asBukkitLocation(world)).castOrThrow<LandArea>()
-        val areaRegion = areaReference.computeIfAbsent(area, ::AreaRegion)
-        return Some(areaRegion)
-    }
+    ): Option<AreaRegion> = Option.fromNullable(integration.getArea(pos.asBukkitLocation(world)))
+        .filterIsInstance<LandArea>()
+        .map { areaReference.computeIfAbsent(it, ::AreaRegion) }
 
     override fun insideRegion(
         pos: BlockPos,
         world: World
-    ): Boolean = this.integration.isClaimed(world, pos.x.toInt(), pos.z.toInt())
+    ): Boolean = getRegion(pos, world) is Some
 
     override fun canBuild(
         pos: BlockPos,
         world: World,
         player: Player
-    ): Boolean = this.getRegion(pos, world).map { it.canBuild(player) }.orFalse()
+    ): Boolean = getRegion(pos, world).map { it.canBuild(player) }.orFalse()
 
     override fun canBreak(
         pos: BlockPos,
@@ -78,17 +72,11 @@ public class LandsRegionIntegration(plugin: Minix) : RegionIntegration {
         pos: BlockPos,
         player: Player,
         action: () -> Unit
-    ): Boolean {
-        val area = this.integration.getArea(player.world, pos.x.toInt(), pos.y.toInt(), pos.z.toInt())
-        return area != null && area.isTrusted(player.uniqueId).ifFalse(action)
-    }
+    ): Boolean = getRegion(pos, player.world).map { it.canBuild(player) }.orFalse().ifTrue(action)
 
     override fun ifWildernessOrTrusted(
         pos: BlockPos,
         player: Player,
         action: () -> Unit
-    ): Boolean {
-        val area = this.integration.getArea(player.world, pos.x.toInt(), pos.y.toInt(), pos.z.toInt())
-        return (area == null || area.isTrusted(player.uniqueId)).ifTrue(action)
-    }
+    ): Boolean = getRegion(pos, player.world).map { it.isMember(player) }.orTrue().ifTrue(action)
 }

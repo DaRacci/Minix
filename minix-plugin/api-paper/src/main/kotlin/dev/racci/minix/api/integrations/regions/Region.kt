@@ -11,6 +11,8 @@ public interface Region {
     public val owner: UUID
     public val world: World
 
+    public fun isMember(player: Player): Boolean
+
     public fun canBuild(player: Player): Boolean
 
     public fun canBreak(player: Player): Boolean

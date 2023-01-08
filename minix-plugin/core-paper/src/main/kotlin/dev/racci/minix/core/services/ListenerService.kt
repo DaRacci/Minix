@@ -2,7 +2,6 @@ package dev.racci.minix.core.services
 
 import com.google.common.graph.Graphs
 import com.google.common.graph.MutableGraph
-import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.data.MinixPlayer
 import dev.racci.minix.api.data.enums.LiquidType
 import dev.racci.minix.api.data.enums.LiquidType.Companion.liquidType
@@ -77,7 +76,6 @@ import kotlin.reflect.full.primaryConstructor
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.toJavaDuration
 
-@MappedExtension
 public class ListenerService internal constructor() : Extension<Minix>() {
     private class MaybeChangingLocation(
         val loc: Location,

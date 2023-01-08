@@ -1,6 +1,6 @@
 package dev.racci.minix.core.coroutine
 
-import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.annotations.Threads
 import dev.racci.minix.api.extension.ExtensionSkeleton
 import dev.racci.minix.api.lifecycles.Closeable
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -15,12 +15,21 @@ import kotlin.reflect.full.findAnnotation
 internal class MinixExecutorCoroutineDispatcher(
     @InjectedParam private val extension: ExtensionSkeleton<*>
 ) : Closeable<ExecutorCoroutineDispatcher>() {
+    private var usingDefaultDispatcher = false
+
+    @OptIn(ExperimentalStdlibApi::class)
     override fun create(): ExecutorCoroutineDispatcher {
-        val threadCount = extension::class.findAnnotation<MappedExtension>()!!.threadCount
-        return newFixedThreadPoolContext(threadCount, "${extension.value.substringAfter(':')}-Thread")
+        val threadCount = extension::class.findAnnotation<Threads>()?.threads ?: 0
+        if (threadCount == 0.toShort()) {
+            usingDefaultDispatcher = true
+            return extension.plugin.coroutineSession.context[ExecutorCoroutineDispatcher.Key]!! // TODO: Add dispatcher to context
+        }
+
+        return newFixedThreadPoolContext(threadCount.toInt(), "${extension.value.substringAfter(':')}-thread")
     }
 
     override fun onClose() {
+        if (usingDefaultDispatcher) return
         value.value?.close()
     }
 }

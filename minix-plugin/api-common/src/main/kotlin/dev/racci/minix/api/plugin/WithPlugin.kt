@@ -5,16 +5,18 @@ import dev.racci.minix.api.logger.MinixLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import org.jetbrains.annotations.ApiStatus.Internal
+import org.jetbrains.annotations.ApiStatus.NonExtendable
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.scope.Scope
 import java.nio.file.Path
 import java.util.concurrent.CompletableFuture
 import kotlin.coroutines.CoroutineContext
 
-public expect interface WithPlugin<in T : MinixPlugin> : KoinScopeComponent {
+public expect interface WithPlugin<in P : MinixPlugin> : KoinScopeComponent {
 
     /** A reference to the plugin instance. */
-    public val plugin: @UnsafeVariance T
+    public val plugin: @UnsafeVariance P
 
     /** This plugin's main logger. */
     public open val logger: MinixLogger
@@ -67,4 +69,8 @@ public expect interface WithPlugin<in T : MinixPlugin> : KoinScopeComponent {
     public open fun <R> completableAsync(
         block: suspend () -> R
     ): CompletableFuture<R>
+
+    @Internal
+    @NonExtendable
+    public open fun pluginDelegate(): Lazy<@UnsafeVariance P>
 }

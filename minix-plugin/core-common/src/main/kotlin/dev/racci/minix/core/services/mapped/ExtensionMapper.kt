@@ -6,8 +6,8 @@ import arrow.core.Some
 import arrow.core.getOrElse
 import arrow.core.toOption
 import com.google.common.collect.TreeMultimap
-import dev.racci.minix.api.annotations.DoNotUnload
-import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.annotations.Depends
+import dev.racci.minix.api.annotations.Required
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extension.ExtensionState
 import dev.racci.minix.api.extensions.reflection.castOrThrow
@@ -31,103 +31,14 @@ import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.starProjectedType
 
-@DoNotUnload
-@MappedExtension
-public class ExtensionMapper : MapperService<Minix>, Extension<Minix>() {
-    override val superclass: KClass<*> = Extension::class
-    override val targetAnnotation: KClass<out Annotation> = MappedExtension::class
-
-    // Create a function that orders extensions by their dependencies
-//    private fun orderExtensions(g: MutableGraph<Extension<*>>): ImmutableList<Extension<*>> {
-//        val extensions = g.nodes().toList()
-//        // Create a graph of the extensions
-//        val graph: MutableGraph<Extension<*>> = GraphBuilder.directed().build()
-//
-//        // Add all the extensions to the graph
-//        extensions.forEach { graph.addNode(it) }
-//
-//        // Add all the dependencies to the graph
-//        extensions.forEach { extension ->
-//            extension::class.findAnnotation<MappedExtension>()!!.dependencies.forEach { dependencyClazz ->
-//                val dependency = getKoin().get<Extension<*>>(dependencyClazz)
-//                graph.putEdge(extension, dependency)
-//            }
-//        }
-// //
-// //        graph = g
-//
-//        // Create a list of extensions that are not dependent on any other extensions
-//        val independentExtensions = extensions.filter { extension ->
-//            graph.inDegree(extension) == 0
-//        }
-//
-//        // Create a list of extensions that are dependent on other extensions
-//        val dependentExtensions = extensions.filter { extension ->
-//            graph.inDegree(extension) != 0
-//        }
-//
-//        // Create a list of extensions that are dependent on other extensions
-//        val orderedExtensions = mutableListOf<Extension<*>>()
-//
-//        // Add all the independent extensions to the ordered list
-//        orderedExtensions.addAll(independentExtensions)
-//
-//        // Add all the dependent extensions to the ordered list
-//        dependentExtensions.forEach { extension ->
-//            // Get the index of the extension in the ordered list
-//            val index = orderedExtensions.indexOfFirst { orderedExtension ->
-//                // Check if the extension is dependent on the ordered extension
-//                graph.hasEdgeConnecting(extension, orderedExtension)
-//            }
-//
-//            if (index == -1) {
-//                orderedExtensions.add(extension)
-//                return@forEach
-//            }
-//
-//            // Add the extension to the ordered list
-//            orderedExtensions.add(index, extension)
-//        }
-//
-//        // Reverse the list so that the extensions are in the correct order
-//        orderedExtensions.reverse()
-//
-//        return orderedExtensions.toImmutableList()
-//    }
-//
-//    private val topoSorted = ConcurrentHashMap<MinixPlugin, ImmutableList<Extension<*>>>() // Topologically sorted extensions
-//
-//    private val extensionGraph = GraphBuilder.directed().build<Extension<*>>()
-//    private val neededEdges = ConcurrentHashMap<Extension<*>, MutableList<KClass<*>>>()
-
+@Required
+public class ExtensionMapper : MapperService<Minix, Extension<*>>() {
     private val extensions = TreeMultimap.create(PlatformPlugin::compareTo, ExtensionComparator)
 
     internal fun registerMapped(
         extension: Extension<*>,
         plugin: MinixPlugin
     ) {
-//        val graph = extensionGraph
-//        graph.addNode(extension)
-//
-//        for ((node, needed) in neededEdges.entries) {
-//            if (!needed.contains(extension::class)) continue
-//            graph.putEdge(extension, node)
-//            needed.remove(extension::class)
-//
-//            if (needed.isNotEmpty()) continue
-//            neededEdges.remove(node)
-//        }
-//
-//        for (dependency in extension::class.findAnnotation<MappedExtension>()!!.dependencies) {
-//            val dependencyExtension = extensionGraph.nodes().find { dependency in KoinUtils.getBinds(it) }
-//            if (dependencyExtension != null) {
-//                graph.putEdge(extension, dependencyExtension)
-//            } else {
-//                neededEdges.computeIfAbsent(extension) { mutableListOf() }.add(dependency)
-//            }
-//        }
-//
-//        topoSorted.remove(plugin) // Ensures resorting of extensions
         extensions.put(plugin, extension)
     }
 
@@ -238,7 +149,7 @@ public class ExtensionMapper : MapperService<Minix>, Extension<Minix>() {
 
         extension.eventListener.close()
 
-        if (extension::class.hasAnnotation<DoNotUnload>()) return
+        if (extension::class.hasAnnotation<Required>()) return
 
         extension.supervisor.coroutineContext.job.castOrThrow<CompletableJob>().complete()
         extension.dispatcher.close()
@@ -305,8 +216,8 @@ public class ExtensionMapper : MapperService<Minix>, Extension<Minix>() {
             9,
             { allExtensions },
             {
-                val annotation = this::class.findAnnotation<MappedExtension>()!!
-                annotation.dependencies.isNotEmpty() && annotation.dependencies.none { it in KoinUtils.getBinds(requiredExt) }
+                val dependencies = this::class.findAnnotation<Depends>()?.dependencies.orEmpty()
+                dependencies.isNotEmpty() && dependencies.none { it in KoinUtils.getBinds(requiredExt) }
             }
         )
 //

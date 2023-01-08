@@ -1,7 +1,7 @@
 package dev.racci.minix.core.comparator
 
 import com.github.benmanes.caffeine.cache.Caffeine
-import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.annotations.Depends
 import dev.racci.minix.api.extension.Extension
 import java.util.concurrent.TimeUnit
 import kotlin.reflect.KClass
@@ -12,7 +12,7 @@ public object ExtensionComparator : Comparator<Extension<*>> {
     private val dependencies = Caffeine.newBuilder()
         .maximumSize(100)
         .expireAfterAccess(10, TimeUnit.SECONDS)
-        .build<Extension<*>, List<KClass<*>>> { it::class.findAnnotation<MappedExtension>()?.dependencies?.toList() ?: emptyList() }
+        .build<Extension<*>, List<KClass<*>>> { it::class.findAnnotation<Depends>()?.dependencies?.toList() ?: emptyList() }
 
     override fun compare(
         o1: Extension<*>,

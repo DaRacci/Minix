@@ -1,13 +1,11 @@
 package dev.racci.minix.core.services
 
-import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.events.plugin.MinixPluginStateEvent
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.flowbus.subscribe
 
-@MappedExtension
 public class PluginStateHandlers : Extension<Minix>() {
 
     public override suspend fun handleLoad() {

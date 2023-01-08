@@ -1,9 +1,5 @@
 package dev.racci.minix.api.extension
 
-import arrow.core.Option
-import arrow.core.getOrElse
-import arrow.core.orElse
-import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.events.PlatformListener
 import dev.racci.minix.api.lifecycles.Closeable
@@ -21,7 +17,6 @@ import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.QualifierValue
 import org.koin.core.scope.Scope
 import kotlin.coroutines.CoroutineContext
-import kotlin.reflect.full.findAnnotation
 
 public interface ExtensionSkeleton<P : MinixPlugin> :
     Qualifier,
@@ -39,10 +34,11 @@ public interface ExtensionSkeleton<P : MinixPlugin> :
     public override val value: QualifierValue
 
     /**
-     * The bound dispatcher for sub coroutines. If thread count in
-     * [MappedExtension] is -1, then this will instead return the plugins'
-     * dispatcher.
+     * The bound dispatcher for sub coroutines.
+     * If [dev.racci.minix.api.annotations.Threads] is not present, or equal to 0,
+     * then this will instead return the plugins' dispatcher.
      */
+    // TODO: Lazy delegate
     public val dispatcher: Closeable<ExecutorCoroutineDispatcher>
 
     /**
@@ -74,16 +70,23 @@ public interface ExtensionSkeleton<P : MinixPlugin> :
 
     public companion object {
 
-        /** Creates a new QualifierValue for the extension, such as `minix:pluginservice` */
+        /**
+         * Creates a new QualifierValue for the extension,
+         * This name will be in the format of “pluginId:extensionId”.
+         *
+         * The pluginId will be the lowercase value of [MinixPlugin.value],
+         * The extensionId will be the extensions simple class-name transformed like `PluginServiceImpl` -> `plugin-service`.
+         */
         internal fun valueFor(thisRef: ExtensionSkeleton<*>): Lazy<QualifierValue> = lazy {
             buildString {
                 append(thisRef.plugin.value.lowercase())
                 append(':')
-                Option.fromNullable(thisRef::class.findAnnotation<MappedExtension>()?.name)
-                    .filterNot { it === MappedExtension.REPLACE_ME }
-                    .orElse { Option.fromNullable(thisRef::class.simpleName) }
-                    .getOrElse { error("No name in annotation and extension was anonymous.") }
-                    .let(::append)
+
+                val rawName = thisRef::class.simpleName ?: error("Anonymous extension classes aren't supported. `$thisRef`")
+                rawName.removeSuffix("Impl").forEachIndexed { i, c ->
+                    if (i != 0 && c.isUpperCase()) append('-')
+                    append(c.lowercase())
+                }
             }
         }
 

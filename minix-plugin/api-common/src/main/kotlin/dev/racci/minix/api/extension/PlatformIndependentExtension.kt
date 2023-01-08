@@ -3,6 +3,7 @@ package dev.racci.minix.api.extension
 import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.events.PlatformListener
 import dev.racci.minix.api.extensions.reflection.castOrThrow
+import dev.racci.minix.api.extensions.reflection.typeArgumentOf
 import dev.racci.minix.api.lifecycles.Closeable
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.logger.MinixLoggerFactory
@@ -23,19 +24,10 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.QualifierValue
 import org.koin.core.scope.Scope
 import kotlin.coroutines.CoroutineContext
-import kotlin.reflect.KClass
-import kotlin.reflect.full.isSuperclassOf
 
 /** Global platform independent extension. */
 public abstract class PlatformIndependentExtension<P : MinixPlugin> internal constructor() : ExtensionSkeleton<P>, WithPlugin<P> {
-    final override val plugin: P = koin.get(
-        this::class.supertypes
-            .first { Extension::class.isSuperclassOf(it.classifier.castOrThrow()) }
-            .arguments[0]
-            .type
-            ?.classifier
-            .castOrThrow<KClass<P>>()
-    )
+    final override val plugin: P = koin.get(typeArgumentOf<PlatformIndependentExtension<*>, P>())
 
     // TODO: Is leaking here safe?
     final override val scope: Scope by ExtensionSkeleton.scopeFor(this)

@@ -1,6 +1,7 @@
 package dev.racci.minix.core.scheduler
 
-import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.annotations.Binds
+import dev.racci.minix.api.annotations.Threads
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.collections.clear
 import dev.racci.minix.api.plugin.MinixPlugin
@@ -21,7 +22,8 @@ import org.koin.core.component.get
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration
 
-@MappedExtension(bindToKClass = CoroutineScheduler::class, name = "Coroutine Scheduler", threadCount = 4)
+@Threads(4)
+@Binds([CoroutineScheduler::class])
 public class CoroutineSchedulerImpl internal constructor() : Extension<Minix>(), CoroutineScheduler {
 
     override val parentJob: CompletableJob by lazy { SupervisorJob() }

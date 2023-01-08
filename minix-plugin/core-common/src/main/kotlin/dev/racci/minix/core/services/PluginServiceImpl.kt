@@ -3,20 +3,22 @@ package dev.racci.minix.core.services
 import arrow.core.Option
 import arrow.core.firstOrNone
 import dev.racci.minix.api.PlatformProxy
-import dev.racci.minix.api.annotations.DoNotUnload
-import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.annotations.Binds
+import dev.racci.minix.api.annotations.Depends
+import dev.racci.minix.api.annotations.Required
+import dev.racci.minix.api.autoscanner.Scanner
 import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.logger.LoggingLevel
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.scheduler.CoroutineScheduler
+import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.KoinUtils
 import dev.racci.minix.api.utils.reflection.OverrideUtils
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.core.services.mapped.ExtensionMapper
 import dev.racci.minix.core.services.mapped.IntegrationMapper
-import io.github.classgraph.ClassGraph
 import io.github.toolfactory.jvm.Driver
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.get
@@ -25,8 +27,9 @@ import org.koin.core.parameter.parametersOf
 import kotlin.reflect.KClass
 import kotlin.reflect.KSuspendFunction0
 
-@DoNotUnload
-@MappedExtension([ExtensionMapper::class, DataServiceImpl::class, IntegrationMapper::class], PluginService::class)
+@Required
+@Binds([PluginService::class])
+@Depends([ExtensionMapper::class, DataService::class, IntegrationMapper::class]) // TODO: Do we need these?
 public class PluginServiceImpl internal constructor() : PluginService, Extension<Minix>() {
     private lateinit var driver: Driver
 
@@ -79,7 +82,7 @@ public class PluginServiceImpl internal constructor() : PluginService, Extension
         }
     }
 
-    override fun reloadPlugin(plugin: MinixPlugin) {
+    override fun reloadPlugin(plugin: MinixPlugin): Unit = runBlocking {
         get<DataServiceImpl>().reloadConfigurations(plugin)
     }
 
@@ -114,74 +117,6 @@ public class PluginServiceImpl internal constructor() : PluginService, Extension
         }
     }
 
-//    private suspend fun forgetPlugin(plugin: MinixPlugin) {
-//        val cache = pluginCache[plugin]
-//
-//        get<ExtensionMapper>().forgetMapped(plugin)
-//        get<IntegrationMapper>().forgetMapped(plugin)
-//        get<ConfigurationMapper>().forgetMapped(plugin)
-//
-//        coroutineSession.getIfPresent(plugin)?.dispose()
-//        unloadKoinModules(KoinUtils.getModule(plugin))
-//        KoinUtils.clearBinds(plugin)
-//
-//        loadedPlugins -= plugin::class
-//        PluginDependentMinixLogger.EXISTING -= plugin
-//
-//        cleanClasses(plugin, pluginCache[this@PluginServiceImpl.plugin].getClassLoader())
-//    }
-//
-//    private suspend fun cleanClasses(
-//        of: MinixPlugin,
-//        from: PluginClassLoader
-//    ) {
-//        PluginClassLoader::class.declaredMemberProperties.findKProperty<Map<String, Class<Any>>>("classes")
-//            .map { it.accessGet(from) }
-//            .orNull()!!.filter { it.key.contains(of.name) }
-//            .forEach { logger.debug { "Classes contains ${it.key}" } }
-//
-//        val loader = PluginClassLoader::class.declaredMemberProperties.findKProperty<JavaPluginLoader>("loader")
-//            .map { it.accessGet(from) }
-//            .orNull()!!
-//
-//        JavaPluginLoader::class.declaredMemberProperties.findKProperty<Map<String, *>>("classLoadLock")
-//            .map { it.accessGet(loader) }
-//            .orNull()!!.filter { it.key.contains(of.name) }
-//            .forEach { logger.debug { "ClassLoadLock contains ${it.key}" } }
-//
-//        JavaPluginLoader::class.declaredMemberProperties.findKProperty<Map<String, *>>("classLoadLockCount")
-//            .map { it.accessGet(loader) }
-//            .orNull()!!.filter { it.key.contains(of.name) }
-//            .forEach { logger.debug { "classLoadLockCount contains ${it.key}" } }
-//
-//        JavaPluginLoader::class.declaredMemberProperties.findKProperty<List<PluginClassLoader>>("loaders")
-//            .map { it.accessGet(loader) }
-//            .orNull()!!.filter { it.name == of.name }
-//            .forEach { logger.debug { "Loaders contains $it" } }
-//
-//        val classMap = PluginClassLoader::class.declaredMemberProperties.findKProperty<Set<String>>("seenIllegalAccess")
-//            .map { it.accessGet(from) }
-//            .map { it to it::class.declaredMemberProperties.findKProperty<ConcurrentHashMap<String, Boolean>>("m").orNull()!! }
-//            .tap { driver.setAccessible(it.second.javaField, true) }
-//            .map { it.second.get(it.first) }
-//            .tap { it.remove(of.name) }
-//            .orNull() ?: throw logger.fatal { "Could not find classes property in plugin class loader." }
-//
-//        ClassGraph().addClassLoader(from)
-//            .disableDirScanning()
-//            .disableModuleScanning()
-//            .disableNestedJarScanning()
-//            .removeTemporaryFilesAfterScan()
-//            .disableRuntimeInvisibleAnnotations()
-//            .acceptJars(of::class.java.protectionDomain.codeSource.location.path.substringAfterLast('/'))
-//            .scan(4)
-//            .allClasses
-//            .onEach { logger.trace { "Found class ${it.name} in plugin ${of.name}." } }
-// //            .filter { info ->
-// //                classMap.contains(info)
-// //            }
-//    }
-
     override fun firstNonMinixPlugin(): MinixPlugin? = PlatformProxy.firstNonMinixPlugin()
 
     override fun fromClassloader(classLoader: ClassLoader): Option<MinixPlugin> = loadedPlugins.values.firstOrNone { plugin ->
@@ -201,23 +136,12 @@ public class PluginServiceImpl internal constructor() : PluginService, Extension
     }
 
     private suspend fun loadReflection(plugin: MinixPlugin) {
-        val scanResult = ClassGraph()
-            .acceptJars(plugin::class.java.protectionDomain.codeSource.location.path.substringAfterLast('/'))
-            .addClassLoader(plugin::class.java.classLoader)
-            .addClassLoader(plugin.platformClassLoader)
-            .enableClassInfo()
-            .enableAnnotationInfo()
-            .disableNestedJarScanning()
-            .disableRuntimeInvisibleAnnotations()
-            .rejectClasses(PluginServiceImpl::class.qualifiedName, ExtensionMapper::class.qualifiedName)
-            .scan(4)
-
+        // rejectClasses(PluginServiceImpl::class.qualifiedName, ExtensionMapper::class.qualifiedName)
         if (plugin !is Minix) plugin.logger.info { "Ignore the following warning, this is expected behavior." }
+        val scanner = Scanner.ofJar(plugin::class.java.protectionDomain.codeSource.location.path.substringAfterLast('/'))
 
-        get<ExtensionMapper>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
-        get<DataServiceImpl>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
-        get<IntegrationMapper>().processMapped(plugin, scanResult, KoinUtils.getBinds(plugin))
-
-        scanResult.close()
+        get<ExtensionMapper>().processMapped(plugin, scanner)
+        get<DataServiceImpl>().processMapped(plugin, scanner)
+        get<IntegrationMapper>().processMapped(plugin, scanner)
     }
 }

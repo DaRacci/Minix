@@ -2,7 +2,7 @@ package dev.racci.minix.integrations
 
 import arrow.core.Option
 import dev.racci.minix.api.exceptions.MissingAnnotationException
-import dev.racci.minix.integrations.annotations.MappedIntegration
+import dev.racci.minix.integrations.annotations.IntegrationPlugin
 import org.apiguardian.api.API
 import kotlin.reflect.full.findAnnotation
 
@@ -14,7 +14,7 @@ public open class IntegrationManager<I : Integration> {
     /** Registers an Integration */
     @Throws(MissingAnnotationException::class)
     public fun register(integration: I) {
-        val annotation = integration::class.findAnnotation<MappedIntegration>() ?: throw MissingAnnotationException(integration::class, MappedIntegration::class)
+        val annotation = integration::class.findAnnotation<IntegrationPlugin>() ?: throw MissingAnnotationException(integration::class, IntegrationPlugin::class)
         val ref = IntegrationRef(integration, annotation.pluginName)
 
         MANAGERS.add(this) // Only registers managers if they have registered an integration.

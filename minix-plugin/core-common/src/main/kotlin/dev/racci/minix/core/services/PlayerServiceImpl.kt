@@ -1,6 +1,6 @@
 package dev.racci.minix.core.services
 
-import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.annotations.Binds
 import dev.racci.minix.api.callbacks.PlayerMoveCallback
 import dev.racci.minix.api.callbacks.PlayerQuitCallback
 import dev.racci.minix.api.collections.player.OnlinePlayerMap
@@ -12,7 +12,7 @@ import dev.racci.minix.api.utils.minecraft.PlayerUtils
 import dev.racci.minix.core.plugin.Minix
 import java.util.UUID
 
-@MappedExtension(bindToKClass = PlayerService::class)
+@Binds([PlayerService::class])
 public expect class PlayerServiceImpl internal constructor() : Extension<Minix>, PlayerService {
     override val inputCallbacks: OnlinePlayerMap<PlayerUtils.ChatInput>
     override val quitCallbacks: OnlinePlayerMap<PlayerQuitCallback>

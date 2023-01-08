@@ -1,26 +1,34 @@
 package dev.racci.minix.api.services
 
 import dev.racci.minix.api.data.MinixConfig
-import dev.racci.minix.api.extension.Extension
-import dev.racci.minix.api.extension.ExtensionCompanion
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.utils.koin
 import dev.racci.minix.core.plugin.Minix
-import org.apiguardian.api.API
+import org.jetbrains.annotations.ApiStatus
+import org.jetbrains.exposed.sql.Table
 import kotlin.reflect.KClass
 
-@API(status = API.Status.MAINTAINED, since = "2.3.1")
-public abstract class DataService : Extension<Minix>(), StorageService<Minix> {
-    public abstract fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T?
+@ApiStatus.Experimental
+@ApiStatus.AvailableSince("2.3.1")
+public interface DataService<T : Table> : StorageService<Minix, T> {
 
-    public abstract fun getMinixConfig(plugin: MinixPlugin): MinixConfig.Minix
+    public fun <T : MinixConfig<out MinixPlugin>> getConfig(kClass: KClass<out T>): T?
 
-    public inline fun <reified T : MinixConfig<out MinixPlugin>> get(): T = this.getConfig(T::class)!!
+    /**
+     * Gets the [MinixConfig.Minix] configuration section for the given [MinixPlugin].
+     *
+     * @param plugin The plugin to get the configuration section for.
+     * @return The configuration section for the given plugin.
+     */
+    public suspend fun getMinixConfig(plugin: MinixPlugin): MinixConfig.Minix
 
-    public inline fun <reified T : MinixConfig<out MinixPlugin>> getOrNull(): T? = this.getConfig(T::class)
-
-    public inline fun <reified T : MinixConfig<out MinixPlugin>> inject(): Lazy<T> = lazy(::get)
-
-    public companion object : ExtensionCompanion<DataService>() {
-        public inline fun <reified T : MinixConfig<out MinixPlugin>> Lazy<DataService>.inject(): Lazy<T> = lazy(value::get)
+    public companion object : DataService<Table> by koin.get() {
+        public inline fun <reified T : MinixConfig<out MinixPlugin>> Lazy<DataService<*>>.inject(): Lazy<T> = lazy(value::get)
     }
 }
+
+public inline fun <reified T : MinixConfig<out MinixPlugin>> DataService<*>.inject(): Lazy<T> = lazy(::get)
+
+public inline fun <reified T : MinixConfig<out MinixPlugin>> DataService<*>.getOrNull(): T? = this.getConfig(T::class)
+
+public inline fun <reified T : MinixConfig<out MinixPlugin>> DataService<*>.get(): T = this.getConfig(T::class)!!

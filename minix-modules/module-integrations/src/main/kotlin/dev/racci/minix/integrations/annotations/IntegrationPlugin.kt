@@ -1,12 +1,10 @@
-package dev.racci.minix.api.annotations
+package dev.racci.minix.integrations.annotations
 
 import org.jetbrains.annotations.ApiStatus.AvailableSince
 import org.jetbrains.annotations.ApiStatus.Experimental
 
 @Experimental
 @AvailableSince("5.0.0")
-@MinixReflectiveAPI
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-// TODO
-public annotation class BStatsId(val id: Short)
+public annotation class IntegrationPlugin(val pluginName: String)

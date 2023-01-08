@@ -4,10 +4,13 @@ import arrow.core.Validated
 import dev.racci.minix.api.extensions.reflection.accessGet
 import dev.racci.minix.api.extensions.reflection.accessSet
 import dev.racci.minix.api.extensions.reflection.castOrThrow
+import org.jetbrains.annotations.ApiStatus.AvailableSince
+import org.jetbrains.annotations.ApiStatus.Experimental
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty1
+import kotlin.reflect.full.isSuperclassOf
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.primaryConstructor
 
@@ -50,4 +53,26 @@ public object ReflectionUtils {
             }
         }
     }
+
+    /**
+     * Searches for the type argument of the given class that was supplied to the given super class.
+     *
+     * @param obj The inheriting class.
+     * @param fromSupertype The super class to find the type argument of.
+     * @param index The index of the type argument to find.
+     * @param T The return type of the type argument.
+     * @param F The supertype of the inheriting class.
+     */
+    @Experimental
+    @AvailableSince("5.0.0")
+    public fun <F : Any, T : Any> typeArgumentOf(
+        obj: F,
+        fromSupertype: KClass<F>,
+        index: Int
+    ): KClass<T> = obj::class.supertypes
+        .first { fromSupertype.isSuperclassOf(it.classifier as? KClass<*> ?: return@first false) }
+        .arguments[index]
+        .type
+        ?.classifier
+        .castOrThrow()
 }

@@ -3,9 +3,11 @@ package dev.racci.minix.integrations.placeholderapi
 import dev.racci.minix.api.integrations.placeholders.PlaceholderIntegration
 import dev.racci.minix.api.integrations.placeholders.PlaceholderManager
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.integrations.annotations.MappedIntegration
+import dev.racci.minix.integrations.annotations.IntegrationManager
+import dev.racci.minix.integrations.annotations.IntegrationPlugin
 
-@MappedIntegration("PlaceholderAPI", PlaceholderManager::class)
+@IntegrationPlugin("PlaceholderAPI")
+@IntegrationManager(PlaceholderManager::class)
 public class MinixPlaceholderIntegration(plugin: MinixPlugin) : PlaceholderIntegration() {
 
     init {

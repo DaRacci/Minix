@@ -1,7 +1,7 @@
 package dev.racci.minix.core.services
 
 import dev.racci.minix.api.PlatformProxy
-import dev.racci.minix.api.annotations.MappedExtension
+import dev.racci.minix.api.annotations.Binds
 import dev.racci.minix.api.callbacks.PlayerMoveCallback
 import dev.racci.minix.api.callbacks.PlayerQuitCallback
 import dev.racci.minix.api.collections.player.OnlinePlayerMap
@@ -26,7 +26,7 @@ import org.koin.core.component.get
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-@MappedExtension(bindToKClass = PlayerService::class)
+@Binds([PlayerService::class])
 public actual class PlayerServiceImpl internal actual constructor() : Extension<Minix>(), PlayerService {
     private val playerCache = ConcurrentHashMap<UUID, MinixPlayer>()
 

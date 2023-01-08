@@ -1,6 +1,6 @@
 package dev.racci.minix.core.plugin
 
-import dev.racci.minix.api.annotations.MappedPlugin
+import dev.racci.minix.api.annotations.BStatsId
 import dev.racci.minix.api.logger.LoggingLevel
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.services.PluginService
@@ -31,7 +31,7 @@ import java.lang.ref.WeakReference
 
 @Module
 @ComponentScan
-@MappedPlugin(13706)
+@BStatsId(13706)
 public actual class Minix actual constructor(private val initPlugin: WeakReference<Plugin>) : MinixPlugin() {
     private var sentryState = atomic(false)
 

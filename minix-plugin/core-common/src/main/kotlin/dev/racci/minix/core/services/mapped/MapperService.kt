@@ -1,63 +1,40 @@
 package dev.racci.minix.core.services.mapped
 
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.Some
-import dev.racci.minix.api.extension.ExtensionSkeleton
-import dev.racci.minix.api.extensions.reflection.castOrThrow
+import dev.racci.minix.api.autoscanner.Scanner
+import dev.racci.minix.api.extension.Extension
+import dev.racci.minix.api.extensions.reflection.typeArgumentOf
 import dev.racci.minix.api.plugin.MinixPlugin
-import io.github.classgraph.AnnotationClassRef
+import dev.racci.minix.api.services.DataService.Companion.plugin
+import dev.racci.minix.jumper.MinixApplicationBuilder.logger
 import io.github.classgraph.ClassInfo
-import io.github.classgraph.ScanResult
+import org.jetbrains.annotations.ApiStatus.Experimental
 import kotlin.reflect.KClass
-import kotlin.reflect.full.isSuperclassOf
 
-public interface MapperService<T : MinixPlugin> : ExtensionSkeleton<T> {
-    public val superclass: KClass<out Any>
-    public val targetAnnotation: KClass<out Annotation>
+/**
+ * Simplifies the process of scanning for classes of a certain type.
+ *
+ * @param P The owning [MinixPlugin]
+ * @param T The target type to scan for.
+ */
+@Experimental
+public abstract class MapperService<P : MinixPlugin, T : Any> : Extension<P>() {
+    private val targetType: KClass<T> by lazy { typeArgumentOf(1) }
 
-    public suspend fun registerMapped(
+    public abstract suspend fun registerMapped(
         classInfo: ClassInfo,
         plugin: MinixPlugin
     )
 
     /** Ensure all references to this plugin are removed. */
-    public suspend fun forgetMapped(plugin: MinixPlugin)
+    public abstract suspend fun forgetMapped(plugin: MinixPlugin)
 
     public suspend fun processMapped(
         plugin: MinixPlugin,
-        scanResult: ScanResult,
-        binds: Array<KClass<out Any>>
+        scanner: Scanner
     ) {
-        scanResult.getClassesWithAnnotation(this.targetAnnotation.java).asSequence()
-            .associateWith { result(it, binds) }
-            .forEach { (classInfo, result) ->
-                when (result) {
-                    is Some -> logger.error(msg = result.castOrThrow<Some<() -> String>>().value)
-                    is None -> {
-                        logger.trace { "Registering ${targetAnnotation.simpleName} [${plugin.value}:${classInfo.simpleName}]" }
-                        this.registerMapped(classInfo, plugin)
-                    }
-                }
-            }
-    }
-
-    private fun result(
-        classInfo: ClassInfo,
-        binds: Array<KClass<out Any>>
-    ): Option<() -> String> {
-        val annotation = classInfo.getAnnotationInfo(targetAnnotation.java)
-
-        // TODO -> This probably should go now.
-        when (val parent = annotation.parameterValues["parent"].value.castOrThrow<AnnotationClassRef>().loadClass().kotlin) {
-            in binds -> None
-            else -> Some { "Parent class [${parent.simpleName}] is not a valid bind for ${classInfo.simpleName}. - Binds(${binds.joinToString(", ") { it.simpleName!! }})" }
-        }.tap { message -> return Some(message) }
-
-        if (!superclass.isSuperclassOf(classInfo.loadClass().kotlin)) {
-            return Some { "Class ${classInfo.name} does not extend ${superclass.simpleName}." }
+        scanner.withSuperclass(targetType).forEach { classInfo ->
+            logger.trace { "Registering ${targetType.simpleName} [${plugin.value}:${classInfo.simpleName}]" }
+            this.registerMapped(classInfo, plugin)
         }
-
-        return None
     }
 }

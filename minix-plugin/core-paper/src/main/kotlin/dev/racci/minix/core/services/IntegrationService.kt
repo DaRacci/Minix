@@ -14,7 +14,6 @@ import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.flowbus.subscribe
 import dev.racci.minix.integrations.Integration
 import dev.racci.minix.integrations.IntegrationManager
-import dev.racci.minix.integrations.annotations.MappedIntegration
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentHashMapOf
 import kotlinx.collections.immutable.toPersistentHashMap
@@ -24,6 +23,7 @@ import org.bukkit.plugin.Plugin
 import org.koin.core.component.get
 import kotlin.reflect.full.companionObjectInstance
 import kotlin.reflect.full.findAnnotation
+import dev.racci.minix.integrations.annotations.IntegrationManager as IntegrationManagerAnnotation
 
 public actual class IntegrationService internal constructor() : Extension<Minix>() {
     private lateinit var enabledPlugins: PersistentMap<String, Plugin>
@@ -67,7 +67,7 @@ public actual class IntegrationService internal constructor() : Extension<Minix>
             val integration = integrationLoader.callback.invoke(PlatformPlugin.wrapped(enabledPlugins[descriptor]!!))
             integration.handleLoad()
 
-            val managerKClass = integration::class.findAnnotation<MappedIntegration>()!!.integrationManager
+            val managerKClass = integration::class.findAnnotation<IntegrationManagerAnnotation>()!!.kClass
             val manager = (managerKClass.objectInstance ?: managerKClass.companionObjectInstance) as IntegrationManager<Integration>
             manager.register(integration)
 

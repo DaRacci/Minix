@@ -1,13 +1,13 @@
 package dev.racci.minix.integrations
 
-import dev.racci.minix.integrations.annotations.MappedIntegration
 import org.apiguardian.api.API
 
 /**
  * A common class for integrating with other plugins.
- * Integrations should be annotated with [MappedIntegration] to be registered.
+ * Integrations should be annotated with [dev.racci.minix.integrations.annotations.IntegrationPlugin] to declare the target plugin.
+ * If the integration is not self-acting, it should be annotated with [dev.racci.minix.integrations.annotations.IntegrationManager] to declare the manager.
  *
- * @see RegionIntegration
+ * @see dev.racci.minix.integrations.regions.RegionIntegration
  */
 @API(status = API.Status.EXPERIMENTAL, since = "4.0.0")
 public interface Integration {

@@ -1,12 +1,13 @@
 package dev.racci.minix.core.data
 
-import dev.racci.minix.api.annotations.MappedConfig
+import arrow.core.Option
+import arrow.core.getOrElse
+import dev.racci.minix.api.annotations.ConfigSerializers
+import dev.racci.minix.api.annotations.Named
 import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.exceptions.MinixConfigException
 import dev.racci.minix.api.exceptions.MissingAnnotationException
-import dev.racci.minix.api.exceptions.MissingPluginException
 import dev.racci.minix.api.extensions.reflection.castOrThrow
-import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.utils.loadModule
@@ -40,7 +41,7 @@ import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 
 /**
- * Wrapper around [MinixActualConfig]
+ * Wrapper around [MinixConfig]
  *
  * @param P The owning plugin type.
  * @param C The config type.
@@ -48,16 +49,9 @@ import kotlin.reflect.full.hasAnnotation
  * @property owner The owning plugin.
  * @param loader The replacement loader.
  */
-public class ConfigData<P, C>
-@Throws(
-    MissingAnnotationException::class,
-    MissingPluginException::class,
-    MinixConfigException::class,
-    ConfigurateException::class
-)
-internal constructor(
+public class ConfigData<P, C> internal constructor(
     internal val managedClass: KClass<in C>,
-    internal val owner: P,
+    private val owner: P,
     loader: HoconConfigurationLoader? = null
 ) : KoinComponent where P : MinixPlugin, C : MinixConfig<P> {
     public val reference: ConfigurationReference<CommentedConfigurationNode>
@@ -118,10 +112,15 @@ internal constructor(
 
     init {
         if (!this.managedClass.hasAnnotation<ConfigSerializable>()) throw MissingAnnotationException(this.managedClass, ConfigSerializable::class)
-        val annotation = this.managedClass.findAnnotation<MappedConfig>() ?: throw MissingAnnotationException(this.managedClass, MappedConfig::class)
 
-        val file = this.owner.dataFolder.resolve(annotation.file)
-        val serializers = annotation.serializers.filterIsInstance<KClass<out TypeSerializer<*>>>()
+        val file = buildString {
+            append(Named.of(managedClass))
+            if (!endsWith(".conf")) append(".conf")
+        }.let(owner.dataFolder::resolve)
+
+        val serializers = this.managedClass
+            .findAnnotation<ConfigSerializers>()?.serializers
+            ?.filterIsInstance<KClass<out TypeSerializer<*>>>().orEmpty()
 
         this.owner.logger.debug { "Loading config: ${this.managedClass.simpleName} from file: ${file.absolutePathString()}" }
         if (serializers.isNotEmpty()) this.owner.logger.debug { "Additional serializers: ${serializers.joinToString { it.simpleName ?: "Unknown" }}" }
@@ -179,20 +178,15 @@ internal constructor(
     }
 }
 
-private fun getSerializerCollection(
-    annotation: MappedConfig
-): TypeSerializerCollection? {
-    val extraSerializers = annotation.serializers.asList().listIterator()
+private fun getSerializerCollection(kClass: KClass<*>): TypeSerializerCollection? {
     val collection = TypeSerializerCollection.builder()
-    while (extraSerializers.hasNext()) {
-        val nextClazz = extraSerializers.next()
-        val serializer = extraSerializers.runCatching {
-            next().castOrThrow<KClass<TypeSerializer<*>>>().let {
-                it.objectInstance ?: it.createInstance()
-            }
-        }.getOrNull() ?: continue
-        collection.register(nextClazz.java, serializer.safeCast())
-    }
+
+    Option.fromNullable(kClass.findAnnotation<ConfigSerializers>()?.serializers)
+        .map { array -> array.toList().chunked(2) }
+        .getOrElse { return null }
+        .associate { (k, v) -> k to v.castOrThrow<KClass<TypeSerializer<*>>>() { error("`$v` wasn't a TypeSerializer") } }
+        .mapValues { (_, serializer) -> serializer.objectInstance ?: serializer.createInstance() }
+        .forEach { (clazz, serializer) -> collection.register(clazz.java, serializer.castOrThrow()) }
 
     return collection.build()
 }
@@ -211,6 +205,6 @@ public fun buildConfigLoader(
                 .registerAll(TypeSerializerCollection.defaults())
                 .registerAll(ConfigurateComponentSerializer.builder().build().serializers())
                 .registerAll(Serializer.serializers)
-                .also { getSerializerCollection(clazz.findAnnotation()!!)?.let(it::registerAll) } // User defined serializers
+                .also { it.registerAll(getSerializerCollection(clazz)) } // User defined serializers
         }
     }.build()

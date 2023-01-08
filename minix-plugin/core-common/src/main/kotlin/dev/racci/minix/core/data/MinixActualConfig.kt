@@ -1,6 +1,6 @@
 package dev.racci.minix.core.data
 
-import dev.racci.minix.api.annotations.MappedConfig
+import dev.racci.minix.api.annotations.Named
 import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.core.plugin.Minix
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
@@ -9,7 +9,7 @@ import org.spongepowered.configurate.objectmapping.meta.Setting
 import java.util.UUID
 
 @ConfigSerializable
-@MappedConfig("config.conf")
+@Named("config")
 public class MinixActualConfig : MinixConfig<Minix>(true) {
 
     @Setting("server-uuid")

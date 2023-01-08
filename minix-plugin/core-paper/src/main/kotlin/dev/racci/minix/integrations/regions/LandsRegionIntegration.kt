@@ -13,14 +13,16 @@ import dev.racci.minix.api.utils.kotlin.ifFalse
 import dev.racci.minix.api.utils.kotlin.ifTrue
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.data.structs.minecraft.BlockPos
-import dev.racci.minix.integrations.annotations.MappedIntegration
+import dev.racci.minix.integrations.annotations.IntegrationManager
+import dev.racci.minix.integrations.annotations.IntegrationPlugin
 import me.angeschossen.lands.api.LandsIntegration
 import me.angeschossen.lands.api.land.LandArea
 import org.bukkit.World
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 
-@MappedIntegration("Lands", RegionManager::class)
+@IntegrationPlugin("Lands")
+@IntegrationManager(RegionManager::class)
 public class LandsRegionIntegration(plugin: Minix) : RegionIntegration {
     private val integration = LandsIntegration.of(plugin)
     private val areaReference = HashBiMap.create<LandArea, AreaRegion>()

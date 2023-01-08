@@ -8,14 +8,14 @@ import dev.racci.minix.api.utils.koin
 import dev.racci.minix.flowbus.receiver.EventReceiver
 import dev.racci.minix.flowbus.subscribeFlow
 import dev.racci.minix.integrations.Integration
-import dev.racci.minix.integrations.annotations.MappedIntegration
+import dev.racci.minix.integrations.annotations.IntegrationPlugin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.mapNotNull
 import net.frankheijden.serverutils.bukkit.events.BukkitPluginUnloadEvent
 import net.frankheijden.serverutils.common.events.PluginEvent
 
-@MappedIntegration("ServerUtils")
+@IntegrationPlugin("ServerUtils")
 public abstract class ServerUtilsIntegration : Integration, EventReceiver by getKoin().get() {
     public override suspend fun handleEnable() {
         coroutineScope {

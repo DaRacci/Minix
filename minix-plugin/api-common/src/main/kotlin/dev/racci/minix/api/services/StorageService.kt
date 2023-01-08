@@ -1,10 +1,13 @@
 package dev.racci.minix.api.services
 
+import arrow.core.Option
+import arrow.core.identity
 import com.zaxxer.hikari.HikariDataSource
 import dev.racci.minix.api.data.MinixConfig
 import dev.racci.minix.api.extension.ExtensionSkeleton
 import dev.racci.minix.api.extensions.deleteProperty
 import dev.racci.minix.api.extensions.getProperty
+import dev.racci.minix.api.extensions.reflection.typeArgumentOf
 import dev.racci.minix.api.extensions.setProperty
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.plugin.MinixPlugin
@@ -24,14 +27,19 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.transactions.experimental.suspendedTransactionAsync
 import java.nio.file.Path
 import javax.sql.DataSource
+import kotlin.reflect.KClass
 
 /**
  * Base class for managing your plugin's data.
  * Automatically creates a database connection and provides a [Database] instance.
  */
+// TODO: Support multiple databases
 @API(status = API.Status.EXPERIMENTAL, since = "4.2.0")
-public interface StorageService<P : MinixPlugin> : ExtensionSkeleton<P> {
-    public val managedTable: Table
+public interface StorageService<P : MinixPlugin, T : Table> : ExtensionSkeleton<P> {
+    public val managedTable: T get() = Option.catch { typeArgumentOf<StorageService<P, T>, T>(1) }
+        .tapNone { error("Couldn't find managed table for `${this::class.simpleName}`.") }
+        .mapNotNull(KClass<T>::objectInstance)
+        .fold({ error("Managed table wasn't an object for `${this::class.simpleName}`.") }, ::identity)
 
     @ApiStatus.NonExtendable
     public override suspend fun handleLoad() {
@@ -39,9 +47,10 @@ public interface StorageService<P : MinixPlugin> : ExtensionSkeleton<P> {
         this.setProperty(PROPERTY_DATABASE, Database.connect(this.getProperty<DataSource>(PROPERTY_DATA_SOURCE)!!, databaseConfig = databaseConfig))
 
         withDatabase {
-            SchemaUtils.create(managedTable)
-            SchemaUtils.addMissingColumnsStatements(managedTable)
-            SchemaUtils.createMissingTablesAndColumns(managedTable)
+            val table = managedTable
+            SchemaUtils.create(table)
+            SchemaUtils.addMissingColumnsStatements(table)
+            SchemaUtils.createMissingTablesAndColumns(table)
         }
     }
 
@@ -72,8 +81,8 @@ public interface StorageService<P : MinixPlugin> : ExtensionSkeleton<P> {
 
     // TODO -> HyperSQL support
     // TODO -> Support changing through MinixConfig file
-    private fun createDatabaseConfig(): DataSource {
-        val storageConfig = DataService.getService().getMinixConfig(plugin).storage
+    private suspend fun createDatabaseConfig(): DataSource {
+        val storageConfig = DataService.getMinixConfig(plugin).storage
 
         return with(HikariDataSource()) {
             when (storageConfig.type) {

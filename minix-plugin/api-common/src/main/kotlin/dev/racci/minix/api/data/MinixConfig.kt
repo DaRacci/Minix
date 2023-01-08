@@ -1,16 +1,14 @@
 package dev.racci.minix.api.data
 
+import dev.racci.minix.api.annotations.Named
 import dev.racci.minix.api.extensions.reflection.castOrThrow
+import dev.racci.minix.api.lifecycles.Lifecycle
 import dev.racci.minix.api.logger.LoggingLevel
 import dev.racci.minix.api.plugin.MinixPlugin
 import dev.racci.minix.api.plugin.WithPlugin
-import dev.racci.minix.api.services.PluginService
-import dev.racci.minix.api.utils.kotlin.doesOverride
 import dev.racci.minix.data.utils.NestedUtils
 import kotlinx.coroutines.runBlocking
-import org.apiguardian.api.API
 import org.koin.core.Koin
-import org.koin.core.component.get
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.QualifierValue
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
@@ -19,41 +17,26 @@ import org.spongepowered.configurate.transformation.ConfigurationTransformation
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 
+/**
+ * A wrapper for creating a configuration.
+ * This configuration will be automatically registered via reflection.
+ *
+ * To specify the output file, used the [Named] annotation.
+ *
+ * @param P The owning [MinixPlugin] type.
+ */
 public abstract class MinixConfig<P : MinixPlugin>(
-    @field:Transient
-    @API(status = API.Status.INTERNAL)
-    public val primaryConfig: Boolean
-) : WithPlugin<P>, Qualifier {
+    @field:Transient internal val primaryConfig: Boolean
+) : WithPlugin<P>, Qualifier, Lifecycle {
 
-    @field:Transient
-    final override lateinit var plugin: P; private set
+    @delegate:Transient final override val plugin: P by pluginDelegate()
 
-    @field:Transient
-    final override val value: QualifierValue = buildString {
-        append(plugin::class.simpleName)
-        append(':')
-        append(this@MinixConfig::class.simpleName)
-    }
+    @delegate:Transient final override val value: QualifierValue by Named.delegate()
 
-    @field:Transient
-    public open val versionTransformations: Map<Int, ConfigurationTransformation> = emptyMap()
-
-    /** Called when the config is initially loaded. */
-    public open fun handleLoad(): Unit = Unit
-
-    /** Called when the config is being saved and disposed of. */
-    public open fun handleUnload(): Unit = Unit
+    @field:Transient public open val versionTransformations: Map<Int, ConfigurationTransformation> = emptyMap()
 
     /** If overridden make sure to call super. */
     public open suspend fun load() {
-        if (!this::class.doesOverride(MinixConfig<P>::plugin)) {
-//            val annotation = this::class.findAnnotation<MappedConfig>() ?: throw IllegalStateException("${this::class.qualifiedName} is not annotated with @MappedConfig")
-            get<PluginService>().fromClassloader(this::class.java.classLoader)
-                .tapNone { error("Could not find plugin from classloader ${this::class.java.classLoader}") }
-                .tap { parent -> logger.debug { "Loading config for ${this::class.qualifiedName} with parent ${parent::class.qualifiedName}" } }
-                .tap { parent -> plugin = parent.castOrThrow() }
-        }
-
         this.onNestedInstance<InnerConfig> {
             this.plugin = this@MinixConfig.plugin
         }

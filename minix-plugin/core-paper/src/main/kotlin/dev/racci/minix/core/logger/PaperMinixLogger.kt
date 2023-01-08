@@ -5,7 +5,6 @@ import arrow.core.getOrElse
 import arrow.core.redeem
 import arrow.core.toOption
 import com.github.ajalt.mordant.rendering.TextColors
-import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.collections.findKProperty
 import dev.racci.minix.api.extensions.reflection.accessGet
@@ -104,8 +103,7 @@ public class PaperMinixLogger<P> internal constructor(
         return StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE).walk { walker ->
             walker.skip(4)
                 .filter { frame -> frame.declaringClass.superclass == Extension::class.java }
-                .filter { frame -> frame.declaringClass.isAnnotationPresent(MappedExtension::class.java) }
-                .map { frame -> frame.declaringClass.getAnnotation(MappedExtension::class.java).name }
+                .map { frame -> frame.declaringClass.simpleName } // TODO: Formatting or something
                 .findFirst()
         }.getOrNull()
     }

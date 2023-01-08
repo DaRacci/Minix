@@ -2,7 +2,6 @@ package dev.racci.minix.core.services
 
 import arrow.fx.coroutines.Atomic
 import com.github.benmanes.caffeine.cache.Caffeine
-import dev.racci.minix.api.annotations.MappedExtension
 import dev.racci.minix.api.events.world.WorldDayEvent
 import dev.racci.minix.api.events.world.WorldNightEvent
 import dev.racci.minix.api.extension.Extension
@@ -16,7 +15,6 @@ import org.bukkit.event.world.WorldLoadEvent
 import kotlin.reflect.full.primaryConstructor
 import kotlin.time.Duration.Companion.milliseconds
 
-@MappedExtension
 public class TimeService internal constructor() : Extension<Minix>() {
     private val timeStates = Caffeine.newBuilder().weakKeys()
         .build<World, Atomic<Boolean>> { Atomic.unsafe(it.isDayTime) }

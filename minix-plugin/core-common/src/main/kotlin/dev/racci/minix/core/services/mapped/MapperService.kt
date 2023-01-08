@@ -42,13 +42,16 @@ public interface MapperService<T : MinixPlugin> : ExtensionSkeleton<T> {
             }
     }
 
-    private fun result(classInfo: ClassInfo, binds: Array<KClass<out Any>>): Option<() -> String> {
+    private fun result(
+        classInfo: ClassInfo,
+        binds: Array<KClass<out Any>>
+    ): Option<() -> String> {
         val annotation = classInfo.getAnnotationInfo(targetAnnotation.java)
 
         // TODO -> This probably should go now.
         when (val parent = annotation.parameterValues["parent"].value.castOrThrow<AnnotationClassRef>().loadClass().kotlin) {
             in binds -> None
-            else -> Some { "Parent class [${parent.simpleName}] is not a valid bind for ${classInfo.simpleName}. - Binds(${binds.joinToString(", ") {it.simpleName!!}})" }
+            else -> Some { "Parent class [${parent.simpleName}] is not a valid bind for ${classInfo.simpleName}. - Binds(${binds.joinToString(", ") { it.simpleName!! }})" }
         }.tap { message -> return Some(message) }
 
         if (!superclass.isSuperclassOf(classInfo.loadClass().kotlin)) {

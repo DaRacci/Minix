@@ -5,6 +5,7 @@ import dev.racci.minix.api.lifecycles.ComplexManagedLifecycle
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.logger.MinixLoggerFactory
 import dev.racci.minix.api.services.PluginService
+import dev.racci.minix.api.utils.koin
 import dev.racci.minix.data.Version
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableSet
@@ -14,8 +15,8 @@ import org.jetbrains.annotations.ApiStatus
 import org.koin.core.component.KoinScopeComponent
 import org.koin.core.component.get
 import org.koin.core.component.getScopeId
+import org.koin.core.component.getScopeName
 import org.koin.core.qualifier.Qualifier
-import org.koin.core.qualifier.named
 import org.koin.core.scope.Scope
 import java.nio.file.Path
 
@@ -32,7 +33,7 @@ public actual abstract class MinixPlugin :
 
     actual final override val platformClassLoader: ClassLoader get() = this.classLoader
     actual final override val value: String get() = this.name
-    actual final override val scope: Scope by lazy { getKoin().createScope(this.getScopeId(), named(this.value), this) }
+    actual final override val scope: Scope by lazy { koin.getOrCreateScope(getScopeId(), getScopeName()) }
     actual final override val plugin: MinixPlugin get() = this
     actual final override val logger: MinixLogger by MinixLoggerFactory.lazy
     actual final override val dataFolder: Path get() = this.getDataFolder().toPath()

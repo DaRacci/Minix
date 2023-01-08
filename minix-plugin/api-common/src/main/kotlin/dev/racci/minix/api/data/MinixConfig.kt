@@ -10,6 +10,7 @@ import dev.racci.minix.data.utils.NestedUtils
 import kotlinx.coroutines.runBlocking
 import org.apiguardian.api.API
 import org.koin.core.Koin
+import org.koin.core.component.get
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.QualifierValue
 import org.spongepowered.configurate.objectmapping.ConfigSerializable
@@ -47,9 +48,10 @@ public abstract class MinixConfig<P : MinixPlugin>(
     public open suspend fun load() {
         if (!this::class.doesOverride(MinixConfig<P>::plugin)) {
 //            val annotation = this::class.findAnnotation<MappedConfig>() ?: throw IllegalStateException("${this::class.qualifiedName} is not annotated with @MappedConfig")
-            val parent = PluginService.fromClassloader(this::class.java.classLoader) ?: error("Could not find plugin from classloader ${this::class.java.classLoader}")
-            logger.debug { "Loading config for ${this::class.qualifiedName} with parent ${parent::class.qualifiedName}" }
-            this.plugin = plugin
+            get<PluginService>().fromClassloader(this::class.java.classLoader)
+                .tapNone { error("Could not find plugin from classloader ${this::class.java.classLoader}") }
+                .tap { parent -> logger.debug { "Loading config for ${this::class.qualifiedName} with parent ${parent::class.qualifiedName}" } }
+                .tap { parent -> plugin = parent.castOrThrow() }
         }
 
         this.onNestedInstance<InnerConfig> {
@@ -71,7 +73,9 @@ public abstract class MinixConfig<P : MinixPlugin>(
             .collect { instance ->
                 try {
                     instance.invoke()
-                } catch (_: ClassCastException) { return@collect }
+                } catch (_: ClassCastException) {
+                    return@collect
+                }
             }
     }
 

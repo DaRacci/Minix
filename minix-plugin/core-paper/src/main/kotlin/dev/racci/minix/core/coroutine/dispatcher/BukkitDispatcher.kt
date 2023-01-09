@@ -102,7 +102,7 @@ public object BukkitDispatcherFactory : MainDispatcherFactory, DispatcherFactory
 private object ImmediateBukkitDispatcher : BukkitDispatcher() {
     override val immediate: MainCoroutineDispatcher get() = this
 
-    override fun isDispatchNeeded(context: CoroutineContext): Boolean = server.isPrimaryThread
+    override fun isDispatchNeeded(context: CoroutineContext): Boolean = !server.isPrimaryThread
 
     @OptIn(InternalCoroutinesApi::class)
     override fun toString() = toStringInternalImpl() ?: "Bukkit.immediate"

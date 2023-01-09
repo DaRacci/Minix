@@ -4,7 +4,6 @@ import arrow.core.Option
 import arrow.core.getOrElse
 import dev.racci.minix.api.annotations.Binds
 import dev.racci.minix.api.coroutine.CoroutineSession
-import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.logger.MinixLoggerFactory
 import dev.racci.minix.api.plugin.MinixPlugin
@@ -12,6 +11,7 @@ import org.apiguardian.api.API
 import org.koin.core.component.get
 import org.koin.core.module.Module
 import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.TypeQualifier
 import org.koin.dsl.bind
 import org.koin.dsl.binds
 import org.koin.dsl.module
@@ -25,16 +25,18 @@ public object KoinUtils {
     @PublishedApi
     internal val reference: ConcurrentHashMap<KClass<*>, Pair<Module?, Array<KClass<*>>>> = ConcurrentHashMap<KClass<*>, Pair<Module?, Array<KClass<*>>>>()
 
-    internal inline fun <reified T : MinixPlugin> initModule(plugin: T) = module {
-        single { plugin } bind T::class
-        scope<T> {
-            scoped { MinixLoggerFactory[plugin] } binds arrayOf(MinixLogger::class)
-            scoped { plugin } binds arrayOf(T::class, MinixPlugin::class)
+    internal fun pluginModule(plugin: MinixPlugin) = module {
+        val clazz = plugin::class
+
+        single { plugin } binds Binds.binds(clazz)
+        scope(TypeQualifier(clazz)) {
+            scoped { plugin } bind MinixPlugin::class
+            scoped { MinixLoggerFactory[plugin] } bind MinixLogger::class
             plugin.scope.declare(plugin.get<CoroutineSession>(parameters = { parametersOf(plugin) }))
         }
     }
 
-    public inline fun <reified T : Any> getModule(instance: T): Module = reference.compute(instance::class) { clazz, pair ->
+    public inline fun <reified T : Any> getModule(instance: T): Module = reference.compute(instance.clazz()) { clazz, pair ->
         val module = { binds: Array<KClass<*>> ->
             module {
                 single { instance } binds binds
@@ -52,7 +54,7 @@ public object KoinUtils {
         }
     }!!.first!!
 
-    public fun getBinds(instance: Any): Array<KClass<*>> = reference.computeIfAbsent(instance.safeCast() ?: instance::class) { clazz ->
+    public fun getBinds(instance: Any): Array<KClass<*>> = reference.computeIfAbsent(instance.clazz()) { clazz ->
         null to createBindArray(clazz)
     }.second
 
@@ -60,11 +62,14 @@ public object KoinUtils {
     internal fun createBindArray(clazz: KClass<*>): Array<KClass<*>> = Option.fromNullable(clazz.findAnnotation<Binds>())
         .map(Binds::classes)
         .getOrElse(::emptyArray)
-        .let { binds -> setOf(*binds, clazz::class) }
+        .let { binds -> setOf(*binds, clazz) }
         .toTypedArray()
 
     @API(status = API.Status.INTERNAL)
     public fun clearBinds(instance: Any) {
-        reference.remove(instance.safeCast() ?: instance::class)
+        reference.remove(instance.clazz())
     }
+
+    @PublishedApi
+    internal fun Any.clazz(): KClass<*> = this as? KClass<*> ?: this::class
 }

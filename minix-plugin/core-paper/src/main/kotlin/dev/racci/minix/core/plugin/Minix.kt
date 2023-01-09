@@ -60,9 +60,10 @@ public actual class Minix actual constructor(private val initPlugin: WeakReferen
     protected actual suspend fun startKoin() {
         // TODO: Logger
         startKoin {
-            printLogger(Level.DEBUG)
+            allowOverride(false)
+            printLogger(Level.INFO)
             defaultModule()
-            modules(KoinUtils.initModule(this@Minix))
+            modules(KoinUtils.pluginModule(this@Minix))
             module(true) {
                 single { new(::PluginServiceImpl) } binds arrayOf(PluginServiceImpl::class, PluginService::class)
                 single { new(::ExtensionMapper) }
@@ -73,11 +74,11 @@ public actual class Minix actual constructor(private val initPlugin: WeakReferen
         with(get<ExtensionMapper>()) {
             val psi = get<PluginServiceImpl>()
 
-            registerMapped(psi, this@Minix)
-            registerMapped(this, this@Minix)
+            registerMapped(psi::class, this@Minix)
+            registerMapped(this::class, this@Minix)
 
-            loadExtension(psi, mutableListOf())
-            loadExtension(this, mutableListOf())
+            loadExtension(psi::class, setOf())
+            loadExtension(this::class, setOf())
         }
     }
 

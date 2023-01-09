@@ -4,10 +4,11 @@ import dev.racci.minix.api.autoscanner.Scanner
 import dev.racci.minix.api.extension.Extension
 import dev.racci.minix.api.extensions.reflection.typeArgumentOf
 import dev.racci.minix.api.plugin.MinixPlugin
-import dev.racci.minix.api.services.DataService.Companion.plugin
-import dev.racci.minix.jumper.MinixApplicationBuilder.logger
 import io.github.classgraph.ClassInfo
 import org.jetbrains.annotations.ApiStatus.Experimental
+import org.koin.core.context.loadKoinModules
+import org.koin.core.module.Module
+import org.koin.dsl.module
 import kotlin.reflect.KClass
 
 /**
@@ -20,9 +21,10 @@ import kotlin.reflect.KClass
 public abstract class MapperService<P : MinixPlugin, T : Any> : Extension<P>() {
     private val targetType: KClass<T> by lazy { typeArgumentOf(1) }
 
-    public abstract suspend fun registerMapped(
+    protected abstract suspend fun registerMapped(
         classInfo: ClassInfo,
-        plugin: MinixPlugin
+        plugin: MinixPlugin,
+        module: Module
     )
 
     /** Ensure all references to this plugin are removed. */

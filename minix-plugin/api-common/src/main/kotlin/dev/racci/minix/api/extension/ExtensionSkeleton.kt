@@ -1,5 +1,6 @@
 package dev.racci.minix.api.extension
 
+import dev.racci.minix.api.annotations.Depends
 import dev.racci.minix.api.coroutine.CoroutineSession
 import dev.racci.minix.api.events.PlatformListener
 import dev.racci.minix.api.lifecycles.Closeable
@@ -12,11 +13,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.Job
 import org.apiguardian.api.API
+import org.jetbrains.annotations.ApiStatus
 import org.koin.core.component.createScope
 import org.koin.core.qualifier.Qualifier
 import org.koin.core.qualifier.QualifierValue
 import org.koin.core.scope.Scope
 import kotlin.coroutines.CoroutineContext
+import kotlin.reflect.KClass
 
 public interface ExtensionSkeleton<P : MinixPlugin> :
     Qualifier,
@@ -56,7 +59,8 @@ public interface ExtensionSkeleton<P : MinixPlugin> :
      * The current state of the extension. You can listen to state changes on
      * [FlowBus] with the event type of [ExtensionStateEvent].
      */
-    public val state: ExtensionState
+    @set:ApiStatus.Internal
+    public var state: ExtensionState
 
     /**
      * Launch a coroutine on the extensions threads.
@@ -92,6 +96,25 @@ public interface ExtensionSkeleton<P : MinixPlugin> :
 
         internal fun scopeFor(thisRef: ExtensionSkeleton<*>): Lazy<Scope> = lazy {
             thisRef.createScope(this).also { innerScope -> innerScope.linkTo(thisRef.plugin.scope) }
+        }
+    }
+
+    public object Comparator : kotlin.Comparator<KClass<out ExtensionSkeleton<*>>> {
+        override fun compare(
+            o1: KClass<out ExtensionSkeleton<*>>,
+            o2: KClass<out ExtensionSkeleton<*>>
+        ): Int {
+            // If classes are the same, return equal.
+            if (o1 == o2) return 0
+
+            // If the other extension depends on this one, then this one should be loaded first.
+            if (Depends.dependsOn(o2, o1)) return -1
+
+            // If this extension depends on the other one, then this one should be loaded last.
+            if (Depends.dependsOn(o1, o2)) return 1
+
+            // Otherwise, they can be loaded in any order, return 1 to push to end.
+            return 1
         }
     }
 }

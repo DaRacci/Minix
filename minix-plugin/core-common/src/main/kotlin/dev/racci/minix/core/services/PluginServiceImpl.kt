@@ -15,12 +15,14 @@ import dev.racci.minix.api.scheduler.CoroutineScheduler
 import dev.racci.minix.api.services.DataService
 import dev.racci.minix.api.services.PluginService
 import dev.racci.minix.api.utils.KoinUtils
+import dev.racci.minix.api.utils.koin
 import dev.racci.minix.api.utils.reflection.OverrideUtils
 import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.core.services.mapped.ExtensionMapper
 import dev.racci.minix.core.services.mapped.IntegrationMapper
 import io.github.toolfactory.jvm.Driver
 import kotlinx.coroutines.runBlocking
+import org.koin.core.annotation.KoinInternalApi
 import org.koin.core.component.get
 import org.koin.core.context.loadKoinModules
 import org.koin.core.parameter.parametersOf
@@ -43,6 +45,7 @@ public class PluginServiceImpl internal constructor() : PluginService, Extension
         driver.close()
     }
 
+    @OptIn(KoinInternalApi::class)
     override fun loadPlugin(plugin: MinixPlugin) {
         runBlocking {
             plugin.scope.declare(
@@ -58,14 +61,25 @@ public class PluginServiceImpl internal constructor() : PluginService, Extension
 
             if (plugin !is Minix) {
                 PlatformProxy.loadDependencies(plugin)
-                loadKoinModules(KoinUtils.getModule(plugin))
+                loadKoinModules(KoinUtils.pluginModule(plugin))
             }
 
             logRunning(plugin, plugin::handleLoad)
 
-            loadReflection(plugin)
+            if (plugin !is Minix) plugin.logger.info { "Ignore the following warning, this is expected behavior." }
+            val scanner = Scanner.ofJar(plugin::class.java.protectionDomain.codeSource.location.path.substringAfterLast('/'))
 
-            get<ExtensionMapper>().loadExtensions(plugin)
+            with(get<ExtensionMapper>()) {
+                processMapped(plugin, scanner)
+                loadExtensions(plugin)
+            }
+
+            koin.instanceRegistry.instances.forEach {
+                println(it.key + " -> " + it.value.beanDefinition)
+            }
+
+            scope.get<DataServiceImpl>().processMapped(plugin, scanner)
+            scope.get<IntegrationMapper>().processMapped(plugin, scanner)
 
             logRunning(plugin, plugin::handlePostLoad)
         }
@@ -133,15 +147,5 @@ public class PluginServiceImpl internal constructor() : PluginService, Extension
 
         logger.trace { "Running [${plugin.value}:${func.name}]." }
         func.invoke()
-    }
-
-    private suspend fun loadReflection(plugin: MinixPlugin) {
-        // rejectClasses(PluginServiceImpl::class.qualifiedName, ExtensionMapper::class.qualifiedName)
-        if (plugin !is Minix) plugin.logger.info { "Ignore the following warning, this is expected behavior." }
-        val scanner = Scanner.ofJar(plugin::class.java.protectionDomain.codeSource.location.path.substringAfterLast('/'))
-
-        get<ExtensionMapper>().processMapped(plugin, scanner)
-        get<DataServiceImpl>().processMapped(plugin, scanner)
-        get<IntegrationMapper>().processMapped(plugin, scanner)
     }
 }

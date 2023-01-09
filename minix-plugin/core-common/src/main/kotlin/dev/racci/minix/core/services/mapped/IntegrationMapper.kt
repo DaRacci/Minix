@@ -7,13 +7,15 @@ import dev.racci.minix.core.plugin.Minix
 import dev.racci.minix.core.services.IntegrationService
 import dev.racci.minix.integrations.Integration
 import io.github.classgraph.ClassInfo
+import org.koin.core.module.Module
 
 @Required
 @Depends([IntegrationService::class])
 public expect class IntegrationMapper : MapperService<Minix, Integration> {
     override suspend fun registerMapped(
         classInfo: ClassInfo,
-        plugin: MinixPlugin
+        plugin: MinixPlugin,
+        module: Module
     )
 
     override suspend fun forgetMapped(plugin: MinixPlugin)

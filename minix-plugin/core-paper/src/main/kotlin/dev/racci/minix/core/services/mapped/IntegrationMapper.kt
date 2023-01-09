@@ -13,6 +13,7 @@ import dev.racci.minix.integrations.IntegrationManager
 import dev.racci.minix.integrations.annotations.IntegrationPlugin
 import io.github.classgraph.ClassInfo
 import org.koin.core.component.get
+import org.koin.core.module.Module
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.primaryConstructor
@@ -21,7 +22,8 @@ import dev.racci.minix.integrations.annotations.IntegrationManager as Integratio
 public actual class IntegrationMapper : MapperService<Minix, Integration>() {
     actual override suspend fun registerMapped(
         classInfo: ClassInfo,
-        plugin: MinixPlugin
+        plugin: MinixPlugin,
+        module: Module
     ) {
         val kClass = classInfo.loadClass().kotlin.castOrThrow<KClass<out Integration>>()
         val managerKClass = kClass.findAnnotation<IntegrationManagerAnnotation>()?.kClass

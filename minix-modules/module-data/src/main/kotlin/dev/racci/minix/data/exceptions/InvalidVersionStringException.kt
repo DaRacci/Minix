@@ -1,10 +1,8 @@
 package dev.racci.minix.data.exceptions
 
-import dev.racci.minix.data.Version
-
 /**
  * This exception is thrown when the string representing a version is invalid.
  */
-public class InvalidVersionStringException(
-    string: String? = "The version string must be in the format: ${Version.versionStringRegex.pattern}"
-) : IllegalArgumentException(string)
+public class InvalidVersionStringException internal constructor(
+    rawVersion: String
+) : IllegalArgumentException("The provided version `$rawVersion` is invalid and could not be parsed into a [Version].")

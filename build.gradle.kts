@@ -1,6 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import dev.racci.minix.gradle.data.MCTarget
 import dev.racci.minix.gradle.ex.shadowJar
+import dev.racci.minix.gradle.ex.whenEvaluated
 import dev.racci.minix.gradle.ex.withMCTarget
 import dev.racci.paperweight.mpp.paperweightDevBundle
 import dev.racci.paperweight.mpp.reobfJar
@@ -211,8 +212,6 @@ kotlin {
                 slimApi(libs.arrow.fx.coroutines)
                 slimApi(libs.arrow.optics.reflect)
                 slimApi(libs.arrow.laws)
-
-                slimApi(libs.classgraph)
             }
         }
 
@@ -221,12 +220,18 @@ kotlin {
             dependsOn(commonAPI)
 
             dependencies {
-                slimApi(project(":module-autoscanner"))
-                slimApi(project(":module-common"))
-                slimApi(project(":module-data"))
-                slimApi(project(":module-flowbus"))
-                slimApi(project(":module-integrations"))
-                slimApi(project(":module-ticker"))
+                // Workaround for transitive dependencies not being taken from project deps for some reason.
+                fun withDependencies(module: String) = project(":module-$module").dependencyProject.whenEvaluated {
+                    slimApi(this)
+                    configurations["compileOnlyApi"].dependencies.forEach(::slimApi)
+                }
+
+                withDependencies("autoscanner")
+                withDependencies("common")
+                withDependencies("data")
+                withDependencies("flowbus")
+                withDependencies("integrations")
+                withDependencies("ticker")
 
                 slimApi(libs.koin.core)
                 slimApi(libs.mordant)

@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import org.koin.core.context.unloadKoinModules
 import org.koin.core.error.NoBeanDefFoundException
+import org.koin.core.module.Module
 import org.spongepowered.configurate.kotlin.extensions.get
 import org.spongepowered.configurate.reference.WatchServiceListener
 import kotlin.reflect.KClass
@@ -46,7 +47,7 @@ public class DataServiceImpl internal constructor() : MapperService<Minix, Minix
 
     override suspend fun handleLoad() {
         watcher = WatchServiceListener.builder()
-            .taskExecutor(DataService.dispatcher.get().executor)
+            // .taskExecutor(DataService.dispatcher.get().executor)
             .build()
 
         subscribeFlow<MinixPluginStateEvent>()
@@ -67,7 +68,8 @@ public class DataServiceImpl internal constructor() : MapperService<Minix, Minix
 
     override suspend fun registerMapped(
         classInfo: ClassInfo,
-        plugin: MinixPlugin
+        plugin: MinixPlugin,
+        module: Module
     ) {
         try {
             val kClass = classInfo.loadClass().kotlin.castOrThrow<KClass<out MinixConfig<*>>>()

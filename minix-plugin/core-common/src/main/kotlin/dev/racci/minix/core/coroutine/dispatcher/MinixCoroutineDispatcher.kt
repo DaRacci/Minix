@@ -1,10 +1,10 @@
 package dev.racci.minix.core.coroutine.dispatcher
 
 import dev.racci.minix.api.plugin.MinixPlugin
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlin.coroutines.CoroutineContext
 
-internal expect class MinixCoroutineDispatcher : CoroutineDispatcher {
+internal expect class MinixCoroutineDispatcher : ExecutorCoroutineDispatcher {
     @Suppress("ProtectedInFinal")
     protected val plugin: MinixPlugin
 

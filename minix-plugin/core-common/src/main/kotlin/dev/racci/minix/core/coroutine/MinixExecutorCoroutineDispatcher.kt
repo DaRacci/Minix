@@ -17,12 +17,11 @@ internal class MinixExecutorCoroutineDispatcher(
 ) : Closeable<ExecutorCoroutineDispatcher>() {
     private var usingDefaultDispatcher = false
 
-    @OptIn(ExperimentalStdlibApi::class)
     override fun create(): ExecutorCoroutineDispatcher {
         val threadCount = extension::class.findAnnotation<Threads>()?.threads ?: 0
         if (threadCount == 0.toShort()) {
             usingDefaultDispatcher = true
-            return extension.plugin.coroutineSession.context[ExecutorCoroutineDispatcher.Key]!! // TODO: Add dispatcher to context
+            return extension.plugin.coroutineSession.context as ExecutorCoroutineDispatcher
         }
 
         return newFixedThreadPoolContext(threadCount.toInt(), "${extension.value.substringAfter(':')}-thread")

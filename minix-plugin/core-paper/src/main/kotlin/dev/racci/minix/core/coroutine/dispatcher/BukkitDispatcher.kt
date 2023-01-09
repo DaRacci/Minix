@@ -35,7 +35,7 @@ public val Dispatchers.bukkit: BukkitDispatcher
 @OptIn(InternalCoroutinesApi::class)
 public sealed class BukkitDispatcher : MainCoroutineDispatcher(), Delay {
     @Suppress("UnstableApiUsage")
-    private val executor: AbstractListeningExecutorService = Option.catch { server as CraftServer }
+    internal val executor: AbstractListeningExecutorService = Option.catch { server as CraftServer }
         .map { it.server.executor.castOrThrow<AbstractListeningExecutorService>() }.orNull() ?: throw IllegalStateException("Could not find server.")
 
     override fun dispatch(

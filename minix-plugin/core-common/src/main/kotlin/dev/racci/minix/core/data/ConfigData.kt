@@ -10,6 +10,7 @@ import dev.racci.minix.api.exceptions.MissingAnnotationException
 import dev.racci.minix.api.extensions.reflection.castOrThrow
 import dev.racci.minix.api.logger.MinixLogger
 import dev.racci.minix.api.plugin.MinixPlugin
+import dev.racci.minix.api.utils.koin
 import dev.racci.minix.api.utils.loadModule
 import dev.racci.minix.core.services.DataServiceImpl
 import dev.racci.minix.data.extensions.nonVirtualNode
@@ -17,6 +18,7 @@ import dev.racci.minix.data.serializers.kotlin.Serializer
 import net.kyori.adventure.serializer.configurate4.ConfigurateComponentSerializer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.koin.dsl.bind
 import org.spongepowered.configurate.CommentedConfigurationNode
 import org.spongepowered.configurate.ConfigurateException
 import org.spongepowered.configurate.NodePath.path
@@ -60,7 +62,7 @@ public class ConfigData<P, C> internal constructor(
 
     public fun save() {
         this.ensureDirectory()
-        this.reference.node().set(this.managedClass, getKoin().get(this.managedClass))
+        this.reference.node().set(this.managedClass, koin.get(this.managedClass))
         this.reference.loader().save(updateNode())
     }
 
@@ -140,7 +142,7 @@ public class ConfigData<P, C> internal constructor(
             this.owner.logger.debug { "Received updated: ${this.managedClass.simpleName}" }
 
             loadModule {
-                single { node.get(managedClass) }
+                single { node.get(managedClass)!! } bind managedClass.castOrThrow()
             }
         }
 

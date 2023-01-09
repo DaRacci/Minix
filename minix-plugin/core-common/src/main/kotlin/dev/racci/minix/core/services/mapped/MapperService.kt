@@ -34,9 +34,12 @@ public abstract class MapperService<P : MinixPlugin, T : Any> : Extension<P>() {
         plugin: MinixPlugin,
         scanner: Scanner
     ) {
-        scanner.withSuperclass(targetType).forEach { classInfo ->
-            logger.trace { "Registering ${targetType.simpleName} [${plugin.value}:${classInfo.simpleName}]" }
-            this.registerMapped(classInfo, plugin)
+        scanner.withSuperclass(targetType, ClassInfo::isFinal).forEach { classInfo ->
+            logger.debug { "Registering ${targetType.simpleName} [${plugin.value}:${classInfo.simpleName}]" }
+
+            val module = module {}
+            this.registerMapped(classInfo, plugin, module)
+            loadKoinModules(module)
         }
     }
 }

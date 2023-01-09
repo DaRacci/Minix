@@ -160,6 +160,14 @@ public class Scanner private constructor(
             val fineTune: FineTune?
         )
 
+        public fun of(
+            path: String? = null,
+            jarLeaf: String? = null,
+            loaders: Collection<ClassLoader> = emptyList(),
+            excludes: Collection<String> = emptyList(),
+            fineTune: FineTune? = null
+        ): Scanner = Scanner(loaders, path, jarLeaf, excludes, fineTune)
+
         public fun ofJar(
             jarLeaf: String,
             excludes: Collection<String> = emptyList(),

@@ -205,6 +205,6 @@ public fun buildConfigLoader(
                 .registerAll(TypeSerializerCollection.defaults())
                 .registerAll(ConfigurateComponentSerializer.builder().build().serializers())
                 .registerAll(Serializer.serializers)
-                .also { it.registerAll(getSerializerCollection(clazz)) } // User defined serializers
+                .also { getSerializerCollection(clazz)?.let(it::registerAll) } // User defined serializers
         }
     }.build()

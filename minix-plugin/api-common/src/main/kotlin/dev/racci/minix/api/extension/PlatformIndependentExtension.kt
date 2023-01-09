@@ -72,16 +72,14 @@ public abstract class PlatformIndependentExtension<P : MinixPlugin> internal con
 
     final override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Extension<*>) return false
+        if (other !is Extension<*> || other::class != this::class) return false
 
-        return plugin === other.plugin && value == other.value && state == other.state
+        return plugin === other.plugin && value == other.value
     }
 
-//    final override fun hashCode(): Int {
-//        var result = plugin.hashCode()
-//        result = 31 * result + state.hashCode()
-//        result = 31 * result + supervisor.hashCode()
-//        result = 31 * result + dispatcher.hashCode()
-//        return result
-//    }
+    final override fun hashCode(): Int {
+        var result = plugin.hashCode()
+        result = 31 * result + value.hashCode()
+        return result
+    }
 }

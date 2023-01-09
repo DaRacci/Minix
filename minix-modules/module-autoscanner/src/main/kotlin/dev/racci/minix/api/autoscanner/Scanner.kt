@@ -42,6 +42,7 @@ public class Scanner private constructor(
                 if (excludes.isNotEmpty()) rejectClasses(*excludes.toTypedArray())
 
                 enableClassInfo()
+                enableAnnotationInfo()
                 enableExternalClasses()
                 disableNestedJarScanning()
                 disableRuntimeInvisibleAnnotations()

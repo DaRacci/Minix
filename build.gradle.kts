@@ -366,4 +366,13 @@ subprojects {
         sourceDirs = sourceDirs + generatedDir
         generatedSourceDirs = generatedSourceDirs + generatedDir
     }
+
+    dependencies {
+        @Suppress("UnstableApiUsage")
+        "testImplementation"(rootProject.libs.testing.kotest.junit5)
+    }
+
+    tasks.withType<Test>().configureEach {
+        useJUnitPlatform()
+    }
 }

@@ -335,7 +335,7 @@ modrinth {
         }
     )
 
-    uploadFile.set(kotlin.targets["paper"].reobfJar.get())
+    uploadFile.set(kotlin.targets["paper"].artifactsTaskName.let(project.tasks::named).get().outputs.files.singleFile)
 
     gameVersions.add(libs.versions.minecraft.get().substringBefore('-'))
     loaders.addAll("paper", "purpur")
@@ -357,6 +357,10 @@ tasks {
         mergeServiceFiles()
         relocate("io.github.slimjar", "$relocatePrefix.slimjar")
         relocate("org.koin.ksp.generated", "$relocatePrefix.generated.koin")
+
+        exclude {
+            it.path.endsWith("Minix-paper-5.0.0-alpha-dev-all.jar")
+        }
     }
 
     modrinth.get().dependsOn(modrinthSyncBody)

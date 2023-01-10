@@ -5,7 +5,8 @@
 # Minix
 
 [![GitHub branch checks state](https://img.shields.io/github/checks-status/DaRacci/minix/master?color=purple&style=for-the-badge)](https://github.com/DaRacci/minix/actions)
-[![Maven metadata URL](https://img.shields.io/maven-metadata/v?color=purple&metadataUrl=https%3A%2F%2Frepo.racci.dev%2Freleases%2Fdev%2Fracci%2FMinix%2Fmaven-metadata.xml&style=for-the-badge)]()
+[![Maven metadata URL](https://img.shields.io/maven-metadata/v?color=purple&metadataUrl=https%3A%2F%2Frepo.racci.dev%2Freleases%2Fdev%2Fracci%2FMinix%2Fmaven-metadata.xml&style=for-the-badge)][![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FDaRacci%2FMinix.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FDaRacci%2FMinix?ref=badge_shield)
+()
 
 [![Codacy grade](https://img.shields.io/codacy/grade/fdad9d4b693c4c6f8fd0d6b5ee6e533a?color=purple&style=for-the-badge)](https://app.codacy.com/gh/DaRacci/Minix/dashboard)
 [![Codacy coverage](https://img.shields.io/codacy/coverage/fdad9d4b693c4c6f8fd0d6b5ee6e533a?color=purple&style=for-the-badge)](https://app.codacy.com/gh/DaRacci/Minix/dashboard)
@@ -250,6 +251,9 @@ Feel free to check [issues page](https://github.com/DaRacci/Minix/issues).
 
 Copyright © 2021-2023 [Racci](https://github.com/DaRacci)<br/>
 This project is [licensed](https://github.com/DaRacci/Minix/blob/master/LICENSE.md).
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FDaRacci%2FMinix.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FDaRacci%2FMinix?ref=badge_large)
 
 ## Special Thanks To
 [<img src="https://user-images.githubusercontent.com/21148213/121807008-8ffc6700-cc52-11eb-96a7-2f6f260f8fda.png" alt="" width="150">](https://www.jetbrains.com)

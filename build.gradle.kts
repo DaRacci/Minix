@@ -26,12 +26,14 @@ val relocatePrefix = "dev.racci.minix.libs"
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kotlin.mpp)
-    id(libs.plugins.minix.get().pluginId) version "0.3.4"
-    id("dev.racci.paperweight.mpp")
     alias(libs.plugins.shadow)
-    id("dev.racci.slimjar") version "2.0.0-SNAPSHOT"
+
+    id(libs.plugins.minix.get().pluginId) version "0.3.4"
+    id(libs.plugins.slimjar.get().pluginId) version "2.0.0-SNAPSHOT"
+    id("dev.racci.paperweight.mpp")
+
     id("org.jetbrains.kotlinx.kover") version "0.6.1" // TODO: Catalog and convention
-    id("io.gitlab.arturbosch.detekt") version "1.22.0"
+    id("io.gitlab.arturbosch.detekt") version "1.22.0" // TODO: Catalog and convention
 
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.plugin.dokka)
@@ -129,22 +131,26 @@ fun SourceDirectorySet.maybeExtend(vararg objects: Any) {
     }.filter { it.exists() }.also { srcDirs(it) }
 }
 
-inline fun <reified T : Task> TaskContainer.apiTask(
-    prefix: String?,
-    suffix: String,
-    configure: T.() -> Unit = {}
-): T = buildString {
-    if (prefix != null) append(prefix)
-    if (prefix != null) append("Api") else append("api")
-    append(suffix)
-}.let<String, T>(::getByName).also(configure)
-
 fun Project.maybeConfigureBinaryValidator(prefix: String? = null) {
-    this.tasks {
+    fun <T : Task> TaskContainer.apiTask(
+        prefix: String?,
+        suffix: String,
+        configure: T.() -> Unit = {}
+    ): T = buildString {
+        if (prefix != null) {
+            append(prefix)
+            append("Api")
+        } else {
+            append("api")
+        }
+        append(suffix)
+    }.let { (getByName(it) as T).also(configure) }
+
+    tasks {
         // For some reason this task likes to delete the entire folder contents,
         // So we need all projects to have their own sub folder.
         val name = if (prefix != null) "plugin-$prefix" else project.name
-        val apiDir = file("$rootDir/config/api/${name.toLowerCase()}")
+        val apiDir = rootProject.layout.projectDirectory.file("config/api/${name.toLowerCase()}").asFile
         apiTask<Sync>(prefix, "Dump") { destinationDir = apiDir }
         apiTask<KotlinApiCompareTask>(prefix, "Check") { projectApiDir = apiDir }
     }

@@ -13,39 +13,56 @@ public final class dev/racci/minix/api/PlatformProxy$Companion : dev/racci/minix
 	public fun loadDependencies (Ldev/racci/minix/api/plugin/MinixPlugin;)V
 }
 
-public abstract interface annotation class dev/racci/minix/api/annotations/DoNotUnload : java/lang/annotation/Annotation {
+public abstract interface annotation class dev/racci/minix/api/annotations/BStatsId : java/lang/annotation/Annotation {
+	public abstract fun id ()S
+}
+
+public abstract interface annotation class dev/racci/minix/api/annotations/Binds : java/lang/annotation/Annotation {
+	public static final field Companion Ldev/racci/minix/api/annotations/Binds$Companion;
+	public abstract fun classes ()[Ljava/lang/Class;
+}
+
+public final class dev/racci/minix/api/annotations/Binds$Companion {
+	public final fun binds (Lkotlin/reflect/KClass;)[Lkotlin/reflect/KClass;
+}
+
+public abstract interface annotation class dev/racci/minix/api/annotations/ConfigSerializers : java/lang/annotation/Annotation {
+	public abstract fun serializers ()[Ljava/lang/Class;
+}
+
+public abstract interface annotation class dev/racci/minix/api/annotations/Depends : java/lang/annotation/Annotation {
+	public static final field Companion Ldev/racci/minix/api/annotations/Depends$Companion;
+	public abstract fun dependencies ()[Ljava/lang/Class;
+}
+
+public final class dev/racci/minix/api/annotations/Depends$Companion {
+	public final fun dependenciesOf (Lkotlin/reflect/KClass;)Lkotlin/sequences/Sequence;
+	public final fun dependsOn (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)Z
 }
 
 public abstract interface annotation class dev/racci/minix/api/annotations/LevelConverter : java/lang/annotation/Annotation {
 	public abstract fun type ()Ljava/lang/Class;
 }
 
-public abstract interface annotation class dev/racci/minix/api/annotations/MappedConfig : java/lang/annotation/Annotation {
-	public abstract fun file ()Ljava/lang/String;
-	public abstract fun serializers ()[Ljava/lang/Class;
-}
-
-public abstract interface annotation class dev/racci/minix/api/annotations/MappedExtension : java/lang/annotation/Annotation {
-	public static final field Companion Ldev/racci/minix/api/annotations/MappedExtension$Companion;
-	public static final field DEFAULT_THREAD_COUNT I
-	public static final field REPLACE_ME Ljava/lang/String;
-	public abstract fun bindToKClass ()Ljava/lang/Class;
-	public abstract fun dependencies ()[Ljava/lang/Class;
+public abstract interface annotation class dev/racci/minix/api/annotations/Named : java/lang/annotation/Annotation {
+	public static final field Companion Ldev/racci/minix/api/annotations/Named$Companion;
 	public abstract fun name ()Ljava/lang/String;
-	public abstract fun threadCount ()I
 }
 
-public final class dev/racci/minix/api/annotations/MappedExtension$Companion {
-	public static final field DEFAULT_THREAD_COUNT I
-	public static final field REPLACE_ME Ljava/lang/String;
+public final class dev/racci/minix/api/annotations/Named$Companion {
+	public final fun delegate ()Lkotlin/Lazy;
+	public final fun of (Lkotlin/reflect/KClass;)Ljava/lang/String;
+	public final fun withFormat (Ljava/lang/String;)Ljava/lang/String;
 }
 
-public abstract interface annotation class dev/racci/minix/api/annotations/MappedPlugin : java/lang/annotation/Annotation {
-	public abstract fun bStatsId ()I
-	public abstract fun bindToKClass ()Ljava/lang/Class;
+public abstract interface annotation class dev/racci/minix/api/annotations/Required : java/lang/annotation/Annotation {
 }
 
 public abstract interface annotation class dev/racci/minix/api/annotations/RunAsync : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class dev/racci/minix/api/annotations/Threads : java/lang/annotation/Annotation {
+	public abstract fun threads ()S
 }
 
 public abstract interface class dev/racci/minix/api/callbacks/ChatInputCallback {
@@ -270,32 +287,19 @@ public final class dev/racci/minix/api/configuration/constraint/MinixConstraints
 	public fun validate (Ljava/lang/String;)V
 }
 
-public abstract interface class dev/racci/minix/api/coroutine/CoroutineSession : dev/racci/minix/api/plugin/WithPlugin {
+public abstract interface class dev/racci/minix/api/coroutine/CoroutineSession {
 	public abstract fun dispose ()V
 	public abstract fun fireSuspendingEvent (Lorg/bukkit/event/Event;Ldev/racci/minix/api/data/enums/EventExecutionType;)Ljava/util/Collection;
 	public abstract fun getContext ()Lkotlin/coroutines/CoroutineContext;
-	public abstract fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
-	public abstract fun getMinecraftContext ()Lkotlin/coroutines/CoroutineContext;
+	public abstract fun getScope ()Lkotlinx/coroutines/CoroutineScope;
+	public abstract fun getSynchronousContext ()Lkotlin/coroutines/CoroutineContext;
 	public abstract fun launch (Lkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineStart;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public abstract fun registerSuspendedListener (Lorg/bukkit/event/Listener;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun withManipulatedServerHeartBeat (Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class dev/racci/minix/api/coroutine/CoroutineSession$DefaultImpls {
-	public static fun async (Ldev/racci/minix/api/coroutine/CoroutineSession;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
-	public static fun closeScope (Ldev/racci/minix/api/coroutine/CoroutineSession;)V
-	public static fun completableAsync (Ldev/racci/minix/api/coroutine/CoroutineSession;Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
-	public static fun completableSync (Ldev/racci/minix/api/coroutine/CoroutineSession;Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
-	public static fun deferredAsync (Ldev/racci/minix/api/coroutine/CoroutineSession;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
-	public static fun deferredSync (Ldev/racci/minix/api/coroutine/CoroutineSession;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getDataFolder (Ldev/racci/minix/api/coroutine/CoroutineSession;)Ljava/nio/file/Path;
-	public static fun getKoin (Ldev/racci/minix/api/coroutine/CoroutineSession;)Lorg/koin/core/Koin;
-	public static fun getLogger (Ldev/racci/minix/api/coroutine/CoroutineSession;)Ldev/racci/minix/api/logger/MinixLogger;
-	public static fun getScope (Ldev/racci/minix/api/coroutine/CoroutineSession;)Lorg/koin/core/scope/Scope;
-	public static fun launch (Ldev/racci/minix/api/coroutine/CoroutineSession;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public static synthetic fun launch$default (Ldev/racci/minix/api/coroutine/CoroutineSession;Lkotlin/coroutines/CoroutineContext;Lkotlinx/coroutines/CoroutineScope;Lkotlinx/coroutines/CoroutineStart;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/Job;
-	public static fun registerEvents (Ldev/racci/minix/api/coroutine/CoroutineSession;[Lorg/bukkit/event/Listener;)V
-	public static fun sync (Ldev/racci/minix/api/coroutine/CoroutineSession;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 }
 
 public abstract class dev/racci/minix/api/coroutine/CoroutineTimings : kotlin/coroutines/AbstractCoroutineContextElement, java/lang/Runnable {
@@ -331,7 +335,7 @@ public class dev/racci/minix/api/data/LangConfig$InnerLang : dev/racci/minix/dat
 	public fun setPlugin (Ldev/racci/minix/api/plugin/MinixPlugin;)V
 }
 
-public abstract class dev/racci/minix/api/data/MinixConfig : dev/racci/minix/api/plugin/WithPlugin, org/koin/core/qualifier/Qualifier {
+public abstract class dev/racci/minix/api/data/MinixConfig : dev/racci/minix/api/lifecycles/Lifecycle, dev/racci/minix/api/plugin/WithPlugin, org/koin/core/qualifier/Qualifier {
 	public fun <init> (Z)V
 	public fun async (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public fun closeScope ()V
@@ -340,22 +344,20 @@ public abstract class dev/racci/minix/api/data/MinixConfig : dev/racci/minix/api
 	public fun deferredAsync (Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
 	public fun deferredSync (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun equals (Ljava/lang/Object;)Z
-	public fun getContext ()Lkotlin/coroutines/CoroutineContext;
-	public fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public fun getCoroutineSession ()Ldev/racci/minix/api/coroutine/CoroutineSession;
 	public fun getDataFolder ()Ljava/nio/file/Path;
 	public final fun getKoin ()Lorg/koin/core/Koin;
 	public fun getLogger ()Ldev/racci/minix/api/logger/MinixLogger;
-	public fun getMinecraftContext ()Lkotlin/coroutines/CoroutineContext;
 	public final fun getPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
-	public final fun getPrimaryConfig ()Z
 	public fun getScope ()Lorg/koin/core/scope/Scope;
 	public final fun getValue ()Ljava/lang/String;
 	public fun getVersionTransformations ()Ljava/util/Map;
-	public fun handleLoad ()V
-	public fun handleUnload ()V
+	public fun handleLoad (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun handleUnload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun hashCode ()I
 	public fun launch (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public fun load (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun pluginDelegate ()Lkotlin/Lazy;
 	public fun registerEvents ([Lorg/bukkit/event/Listener;)V
 	public fun sync (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public final fun toString ()Ljava/lang/String;
@@ -559,16 +561,15 @@ public final class dev/racci/minix/api/events/PlatformListener : dev/racci/minix
 	public fun deferredAsync (Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
 	public fun deferredSync (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun getContext ()Lkotlin/coroutines/CoroutineContext;
-	public fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public fun getCoroutineSession ()Ldev/racci/minix/api/coroutine/CoroutineSession;
 	public fun getDataFolder ()Ljava/nio/file/Path;
 	public fun getKoin ()Lorg/koin/core/Koin;
 	public fun getLogger ()Ldev/racci/minix/api/logger/MinixLogger;
-	public fun getMinecraftContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
 	public fun getScope ()Lorg/koin/core/scope/Scope;
 	public fun hashCode ()I
 	public fun launch (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public fun pluginDelegate ()Lkotlin/Lazy;
 	public fun registerEvents ([Lorg/bukkit/event/Listener;)V
 	public fun sync (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public fun toString ()Ljava/lang/String;
@@ -939,12 +940,24 @@ public abstract class dev/racci/minix/api/extension/ExtensionCompanion : org/koi
 }
 
 public abstract interface class dev/racci/minix/api/extension/ExtensionSkeleton : dev/racci/minix/api/lifecycles/ComplexManagedLifecycle, dev/racci/minix/api/plugin/WithPlugin, dev/racci/minix/flowbus/receiver/EventReceiver, org/koin/core/qualifier/Qualifier {
+	public static final field Companion Ldev/racci/minix/api/extension/ExtensionSkeleton$Companion;
 	public abstract fun getDispatcher ()Ldev/racci/minix/api/lifecycles/Closeable;
 	public abstract fun getEventListener ()Ldev/racci/minix/api/events/PlatformListener;
+	public abstract fun getScope ()Lorg/koin/core/scope/Scope;
 	public abstract fun getState ()Ldev/racci/minix/api/extension/ExtensionState;
 	public abstract fun getSupervisor ()Lkotlinx/coroutines/CoroutineScope;
 	public abstract fun getValue ()Ljava/lang/String;
 	public abstract fun launch (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public abstract fun setState (Ldev/racci/minix/api/extension/ExtensionState;)V
+}
+
+public final class dev/racci/minix/api/extension/ExtensionSkeleton$Companion {
+}
+
+public final class dev/racci/minix/api/extension/ExtensionSkeleton$Comparator : java/util/Comparator {
+	public static final field INSTANCE Ldev/racci/minix/api/extension/ExtensionSkeleton$Comparator;
+	public synthetic fun compare (Ljava/lang/Object;Ljava/lang/Object;)I
+	public fun compare (Lkotlin/reflect/KClass;Lkotlin/reflect/KClass;)I
 }
 
 public final class dev/racci/minix/api/extension/ExtensionSkeleton$DefaultImpls {
@@ -954,13 +967,10 @@ public final class dev/racci/minix/api/extension/ExtensionSkeleton$DefaultImpls 
 	public static fun completableSync (Ldev/racci/minix/api/extension/ExtensionSkeleton;Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
 	public static fun deferredAsync (Ldev/racci/minix/api/extension/ExtensionSkeleton;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
 	public static fun deferredSync (Ldev/racci/minix/api/extension/ExtensionSkeleton;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getContext (Ldev/racci/minix/api/extension/ExtensionSkeleton;)Lkotlin/coroutines/CoroutineContext;
-	public static fun getCoroutineScope (Ldev/racci/minix/api/extension/ExtensionSkeleton;)Lkotlinx/coroutines/CoroutineScope;
+	public static fun getCoroutineSession (Ldev/racci/minix/api/extension/ExtensionSkeleton;)Ldev/racci/minix/api/coroutine/CoroutineSession;
 	public static fun getDataFolder (Ldev/racci/minix/api/extension/ExtensionSkeleton;)Ljava/nio/file/Path;
 	public static fun getKoin (Ldev/racci/minix/api/extension/ExtensionSkeleton;)Lorg/koin/core/Koin;
 	public static fun getLogger (Ldev/racci/minix/api/extension/ExtensionSkeleton;)Ldev/racci/minix/api/logger/MinixLogger;
-	public static fun getMinecraftContext (Ldev/racci/minix/api/extension/ExtensionSkeleton;)Lkotlin/coroutines/CoroutineContext;
-	public static fun getScope (Ldev/racci/minix/api/extension/ExtensionSkeleton;)Lorg/koin/core/scope/Scope;
 	public static fun handleDisable (Ldev/racci/minix/api/extension/ExtensionSkeleton;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun handleEnable (Ldev/racci/minix/api/extension/ExtensionSkeleton;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun handleLoad (Ldev/racci/minix/api/extension/ExtensionSkeleton;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -971,6 +981,7 @@ public final class dev/racci/minix/api/extension/ExtensionSkeleton$DefaultImpls 
 	public static fun handleReload (Ldev/racci/minix/api/extension/ExtensionSkeleton;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun handleUnload (Ldev/racci/minix/api/extension/ExtensionSkeleton;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun launch (Ldev/racci/minix/api/extension/ExtensionSkeleton;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public static fun pluginDelegate (Ldev/racci/minix/api/extension/ExtensionSkeleton;)Lkotlin/Lazy;
 	public static fun registerEvents (Ldev/racci/minix/api/extension/ExtensionSkeleton;[Lorg/bukkit/event/Listener;)V
 	public static fun sync (Ldev/racci/minix/api/extension/ExtensionSkeleton;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 }
@@ -1003,7 +1014,7 @@ public final class dev/racci/minix/api/extension/ExtensionStateEvent {
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class dev/racci/minix/api/extension/PlatformIndependentExtension : dev/racci/minix/api/extension/ExtensionSkeleton {
+public abstract class dev/racci/minix/api/extension/PlatformIndependentExtension : dev/racci/minix/api/extension/ExtensionSkeleton, dev/racci/minix/api/plugin/WithPlugin {
 	public final fun async (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public fun closeScope ()V
 	public fun completableAsync (Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
@@ -1011,14 +1022,13 @@ public abstract class dev/racci/minix/api/extension/PlatformIndependentExtension
 	public fun deferredAsync (Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
 	public fun deferredSync (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun equals (Ljava/lang/Object;)Z
-	public fun getContext ()Lkotlin/coroutines/CoroutineContext;
-	public fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public fun getCoroutineSession ()Ldev/racci/minix/api/coroutine/CoroutineSession;
 	public fun getDataFolder ()Ljava/nio/file/Path;
 	public final fun getDispatcher ()Ldev/racci/minix/api/lifecycles/Closeable;
 	public final fun getEventListener ()Ldev/racci/minix/api/events/PlatformListener;
 	public fun getKoin ()Lorg/koin/core/Koin;
 	public final fun getLogger ()Ldev/racci/minix/api/logger/MinixLogger;
-	public fun getMinecraftContext ()Lkotlin/coroutines/CoroutineContext;
+	public final fun getPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
 	public final fun getScope ()Lorg/koin/core/scope/Scope;
 	public final fun getState ()Ldev/racci/minix/api/extension/ExtensionState;
 	public final fun getSupervisor ()Lkotlinx/coroutines/CoroutineScope;
@@ -1035,6 +1045,7 @@ public abstract class dev/racci/minix/api/extension/PlatformIndependentExtension
 	public final fun hashCode ()I
 	public final fun launch (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public final fun launchIn (Lkotlinx/coroutines/flow/Flow;)V
+	public fun pluginDelegate ()Lkotlin/Lazy;
 	public fun registerEvents ([Lorg/bukkit/event/Listener;)V
 	public final fun setState (Ldev/racci/minix/api/extension/ExtensionState;)V
 	public fun sync (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
@@ -1319,14 +1330,13 @@ public final class dev/racci/minix/api/extensions/KListener$DefaultImpls {
 	public static fun completableSync (Ldev/racci/minix/api/extensions/KListener;Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
 	public static fun deferredAsync (Ldev/racci/minix/api/extensions/KListener;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
 	public static fun deferredSync (Ldev/racci/minix/api/extensions/KListener;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getContext (Ldev/racci/minix/api/extensions/KListener;)Lkotlin/coroutines/CoroutineContext;
-	public static fun getCoroutineScope (Ldev/racci/minix/api/extensions/KListener;)Lkotlinx/coroutines/CoroutineScope;
+	public static fun getCoroutineSession (Ldev/racci/minix/api/extensions/KListener;)Ldev/racci/minix/api/coroutine/CoroutineSession;
 	public static fun getDataFolder (Ldev/racci/minix/api/extensions/KListener;)Ljava/nio/file/Path;
 	public static fun getKoin (Ldev/racci/minix/api/extensions/KListener;)Lorg/koin/core/Koin;
 	public static fun getLogger (Ldev/racci/minix/api/extensions/KListener;)Ldev/racci/minix/api/logger/MinixLogger;
-	public static fun getMinecraftContext (Ldev/racci/minix/api/extensions/KListener;)Lkotlin/coroutines/CoroutineContext;
 	public static fun getScope (Ldev/racci/minix/api/extensions/KListener;)Lorg/koin/core/scope/Scope;
 	public static fun launch (Ldev/racci/minix/api/extensions/KListener;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public static fun pluginDelegate (Ldev/racci/minix/api/extensions/KListener;)Lkotlin/Lazy;
 	public static fun registerEvents (Ldev/racci/minix/api/extensions/KListener;[Lorg/bukkit/event/Listener;)V
 	public static fun sync (Ldev/racci/minix/api/extensions/KListener;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 }
@@ -1346,16 +1356,15 @@ public final class dev/racci/minix/api/extensions/SimpleKListener : dev/racci/mi
 	public fun deferredAsync (Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
 	public fun deferredSync (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun equals (Ljava/lang/Object;)Z
-	public fun getContext ()Lkotlin/coroutines/CoroutineContext;
-	public fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public fun getCoroutineSession ()Ldev/racci/minix/api/coroutine/CoroutineSession;
 	public fun getDataFolder ()Ljava/nio/file/Path;
 	public fun getKoin ()Lorg/koin/core/Koin;
 	public fun getLogger ()Ldev/racci/minix/api/logger/MinixLogger;
-	public fun getMinecraftContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
 	public fun getScope ()Lorg/koin/core/scope/Scope;
 	public fun hashCode ()I
 	public fun launch (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public fun pluginDelegate ()Lkotlin/Lazy;
 	public fun registerEvents ([Lorg/bukkit/event/Listener;)V
 	public fun sync (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public fun toString ()Ljava/lang/String;
@@ -1406,6 +1415,7 @@ public abstract interface class dev/racci/minix/api/integrations/regions/Region 
 	public abstract fun getName ()Ljava/lang/String;
 	public abstract fun getOwner ()Ljava/util/UUID;
 	public abstract fun getWorld ()Lorg/bukkit/World;
+	public abstract fun isMember (Lorg/bukkit/entity/Player;)Z
 }
 
 public abstract interface class dev/racci/minix/api/integrations/regions/RegionIntegration : dev/racci/minix/integrations/Integration {
@@ -1503,7 +1513,9 @@ public final class dev/racci/minix/api/logger/MinixLogger$FormattedMessage {
 
 public final class dev/racci/minix/api/logger/MinixLoggerFactory : org/koin/core/component/KoinComponent {
 	public static final field INSTANCE Ldev/racci/minix/api/logger/MinixLoggerFactory;
+	public final fun get (Ldev/racci/minix/api/plugin/MinixPlugin;)Ldev/racci/minix/api/logger/MinixLogger;
 	public fun getKoin ()Lorg/koin/core/Koin;
+	public final fun getLazy ()Lkotlin/Lazy;
 	public final fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ldev/racci/minix/api/logger/MinixLogger;
 }
 
@@ -1647,15 +1659,13 @@ public abstract class dev/racci/minix/api/plugin/MinixPlugin : org/bukkit/plugin
 	public fun completableSync (Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
 	public fun deferredAsync (Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
 	public fun deferredSync (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun getContext ()Lkotlin/coroutines/CoroutineContext;
-	public fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public final fun getCoroutineSession ()Ldev/racci/minix/api/coroutine/CoroutineSession;
 	public final fun getDataFolder ()Ljava/nio/file/Path;
 	public final fun getDependencies ()Lkotlinx/collections/immutable/ImmutableSet;
 	public final fun getEnabled ()Z
 	public fun getKoin ()Lorg/koin/core/Koin;
 	public final fun getLogger ()Ldev/racci/minix/api/logger/MinixLogger;
 	public final fun getMetrics ()Ldev/racci/minix/api/plugin/Metrics;
-	public fun getMinecraftContext ()Lkotlin/coroutines/CoroutineContext;
 	public final fun getPlatformClassLoader ()Ljava/lang/ClassLoader;
 	public final fun getPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
 	public final fun getScope ()Lorg/koin/core/scope/Scope;
@@ -1674,6 +1684,7 @@ public abstract class dev/racci/minix/api/plugin/MinixPlugin : org/bukkit/plugin
 	public fun onDisable ()V
 	public fun onEnable ()V
 	public fun onLoad ()V
+	public fun pluginDelegate ()Lkotlin/Lazy;
 	public fun registerEvents ([Lorg/bukkit/event/Listener;)V
 	public fun sync (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 }
@@ -1697,20 +1708,19 @@ public final class dev/racci/minix/api/plugin/PlatformPlugin$DefaultImpls {
 	public static fun compareTo (Ldev/racci/minix/api/plugin/PlatformPlugin;Ldev/racci/minix/api/plugin/PlatformPlugin;)I
 }
 
-public abstract interface class dev/racci/minix/api/plugin/WithPlugin : org/koin/core/component/KoinComponent, org/koin/core/component/KoinScopeComponent {
+public abstract interface class dev/racci/minix/api/plugin/WithPlugin : org/koin/core/component/KoinScopeComponent {
 	public abstract fun async (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public abstract fun completableAsync (Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
 	public abstract fun completableSync (Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
 	public abstract fun deferredAsync (Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
 	public abstract fun deferredSync (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getContext ()Lkotlin/coroutines/CoroutineContext;
-	public abstract fun getCoroutineScope ()Lkotlinx/coroutines/CoroutineScope;
+	public abstract fun getCoroutineSession ()Ldev/racci/minix/api/coroutine/CoroutineSession;
 	public abstract fun getDataFolder ()Ljava/nio/file/Path;
 	public abstract fun getLogger ()Ldev/racci/minix/api/logger/MinixLogger;
-	public abstract fun getMinecraftContext ()Lkotlin/coroutines/CoroutineContext;
 	public abstract fun getPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
 	public abstract fun getScope ()Lorg/koin/core/scope/Scope;
 	public abstract fun launch (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public abstract fun pluginDelegate ()Lkotlin/Lazy;
 	public abstract fun registerEvents ([Lorg/bukkit/event/Listener;)V
 	public abstract fun sync (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 }
@@ -1722,15 +1732,14 @@ public final class dev/racci/minix/api/plugin/WithPlugin$DefaultImpls {
 	public static fun completableSync (Ldev/racci/minix/api/plugin/WithPlugin;Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
 	public static fun deferredAsync (Ldev/racci/minix/api/plugin/WithPlugin;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
 	public static fun deferredSync (Ldev/racci/minix/api/plugin/WithPlugin;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getContext (Ldev/racci/minix/api/plugin/WithPlugin;)Lkotlin/coroutines/CoroutineContext;
-	public static fun getCoroutineScope (Ldev/racci/minix/api/plugin/WithPlugin;)Lkotlinx/coroutines/CoroutineScope;
+	public static fun getCoroutineSession (Ldev/racci/minix/api/plugin/WithPlugin;)Ldev/racci/minix/api/coroutine/CoroutineSession;
 	public static fun getDataFolder (Ldev/racci/minix/api/plugin/WithPlugin;)Ljava/nio/file/Path;
 	public static fun getKoin (Ldev/racci/minix/api/plugin/WithPlugin;)Lorg/koin/core/Koin;
 	public static fun getLogger (Ldev/racci/minix/api/plugin/WithPlugin;)Ldev/racci/minix/api/logger/MinixLogger;
-	public static fun getMinecraftContext (Ldev/racci/minix/api/plugin/WithPlugin;)Lkotlin/coroutines/CoroutineContext;
 	public static fun getScope (Ldev/racci/minix/api/plugin/WithPlugin;)Lorg/koin/core/scope/Scope;
 	public static fun launch (Ldev/racci/minix/api/plugin/WithPlugin;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public static synthetic fun launch$default (Ldev/racci/minix/api/plugin/WithPlugin;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lkotlinx/coroutines/Job;
+	public static fun pluginDelegate (Ldev/racci/minix/api/plugin/WithPlugin;)Lkotlin/Lazy;
 	public static fun registerEvents (Ldev/racci/minix/api/plugin/WithPlugin;[Lorg/bukkit/event/Listener;)V
 	public static fun sync (Ldev/racci/minix/api/plugin/WithPlugin;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 }
@@ -1832,22 +1841,95 @@ public abstract interface class dev/racci/minix/api/scheduler/CoroutineTask {
 	public abstract fun sync ()Ldev/racci/minix/api/scheduler/CoroutineTask;
 }
 
-public abstract class dev/racci/minix/api/services/DataService : dev/racci/minix/api/extension/Extension, dev/racci/minix/api/services/StorageService {
+public abstract interface class dev/racci/minix/api/services/DataService : dev/racci/minix/api/services/StorageService {
 	public static final field Companion Ldev/racci/minix/api/services/DataService$Companion;
-	public fun <init> ()V
 	public abstract fun getConfig (Lkotlin/reflect/KClass;)Ldev/racci/minix/api/data/MinixConfig;
+	public abstract fun getMinixConfig (Ldev/racci/minix/api/plugin/MinixPlugin;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/racci/minix/api/services/DataService$Companion : dev/racci/minix/api/services/DataService {
+	public fun async (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public fun closeScope ()V
+	public fun completableAsync (Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
+	public fun completableSync (Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
+	public fun createEventScope (Ldev/racci/minix/flowbus/receiver/EventReceiver;)Lkotlinx/coroutines/CoroutineScope;
+	public fun deferredAsync (Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
+	public fun deferredSync (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun flowOf-tHAJEeM (Ldev/racci/minix/flowbus/receiver/EventReceiver;Lkotlin/reflect/KClass;IZZ)Lkotlinx/coroutines/flow/Flow;
+	public fun getConfig (Lkotlin/reflect/KClass;)Ldev/racci/minix/api/data/MinixConfig;
+	public fun getCoroutineSession ()Ldev/racci/minix/api/coroutine/CoroutineSession;
+	public fun getDataFolder ()Ljava/nio/file/Path;
 	public fun getDataSourceProperties ()Ljava/util/Map;
 	public fun getDatabase (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun getMinixConfig (Ldev/racci/minix/api/plugin/MinixPlugin;)Ldev/racci/minix/api/data/MinixConfig$Minix;
+	public fun getDispatcher ()Ldev/racci/minix/api/lifecycles/Closeable;
+	public fun getEventListener ()Ldev/racci/minix/api/events/PlatformListener;
+	public fun getExceptionHandler (Ldev/racci/minix/flowbus/receiver/EventReceiver;)Lkotlinx/coroutines/CoroutineExceptionHandler;
+	public fun getKoin ()Lorg/koin/core/Koin;
+	public fun getLogger ()Ldev/racci/minix/api/logger/MinixLogger;
+	public fun getManagedTable ()Lorg/jetbrains/exposed/sql/Table;
+	public fun getMinixConfig (Ldev/racci/minix/api/plugin/MinixPlugin;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public synthetic fun getPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
+	public fun getPlugin ()Ldev/racci/minix/core/plugin/Minix;
+	public fun getScope ()Lorg/koin/core/scope/Scope;
+	public fun getState ()Ldev/racci/minix/api/extension/ExtensionState;
 	public fun getStorageDirectory ()Ljava/nio/file/Path;
+	public fun getSupervisor ()Lkotlinx/coroutines/CoroutineScope;
+	public fun getSupervisorScope (Ldev/racci/minix/flowbus/receiver/EventReceiver;)Lkotlinx/coroutines/CoroutineScope;
+	public fun getValue ()Ljava/lang/String;
+	public fun handleDisable (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun handleEnable (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun handleLoad (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun handlePostDisable (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun handlePostEnable (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun handlePostLoad (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun handlePostUnload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun handleReload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun handleUnload (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun isCancelled (Ljava/lang/Object;)Z
+	public fun launch (Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public fun pluginDelegate ()Lkotlin/Lazy;
+	public fun registerEvents ([Lorg/bukkit/event/Listener;)V
+	public fun returnOn (Lkotlinx/coroutines/CoroutineDispatcher;)Ldev/racci/minix/flowbus/receiver/EventReceiver;
+	public fun setState (Ldev/racci/minix/api/extension/ExtensionState;)V
+	public fun subscribeTo (Ldev/racci/minix/flowbus/receiver/EventReceiver;Lkotlin/reflect/KClass;Ldev/racci/minix/flowbus/EventCallback;)Ldev/racci/minix/flowbus/receiver/EventReceiver;
+	public fun subscribeTo-ZYpfZMU (Ldev/racci/minix/flowbus/receiver/EventReceiver;Lkotlin/reflect/KClass;IZZLkotlin/jvm/functions/Function2;)Ldev/racci/minix/flowbus/receiver/EventReceiver;
+	public fun sync (Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public fun unsubscribe (Ldev/racci/minix/flowbus/receiver/EventReceiver;)V
+	public fun unsubscribe (Ldev/racci/minix/flowbus/receiver/EventReceiver;Lkotlin/reflect/KClass;)V
 	public fun withDatabase (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun withDatabaseAsync (Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class dev/racci/minix/api/services/DataService$Companion : dev/racci/minix/api/extension/ExtensionCompanion {
+public final class dev/racci/minix/api/services/DataService$DefaultImpls {
+	public static fun async (Ldev/racci/minix/api/services/DataService;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public static fun closeScope (Ldev/racci/minix/api/services/DataService;)V
+	public static fun completableAsync (Ldev/racci/minix/api/services/DataService;Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
+	public static fun completableSync (Ldev/racci/minix/api/services/DataService;Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
+	public static fun deferredAsync (Ldev/racci/minix/api/services/DataService;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
+	public static fun deferredSync (Ldev/racci/minix/api/services/DataService;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun getCoroutineSession (Ldev/racci/minix/api/services/DataService;)Ldev/racci/minix/api/coroutine/CoroutineSession;
+	public static fun getDataFolder (Ldev/racci/minix/api/services/DataService;)Ljava/nio/file/Path;
+	public static fun getDataSourceProperties (Ldev/racci/minix/api/services/DataService;)Ljava/util/Map;
+	public static fun getDatabase (Ldev/racci/minix/api/services/DataService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun getKoin (Ldev/racci/minix/api/services/DataService;)Lorg/koin/core/Koin;
+	public static fun getLogger (Ldev/racci/minix/api/services/DataService;)Ldev/racci/minix/api/logger/MinixLogger;
+	public static fun getManagedTable (Ldev/racci/minix/api/services/DataService;)Lorg/jetbrains/exposed/sql/Table;
+	public static fun getStorageDirectory (Ldev/racci/minix/api/services/DataService;)Ljava/nio/file/Path;
+	public static fun handleDisable (Ldev/racci/minix/api/services/DataService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleEnable (Ldev/racci/minix/api/services/DataService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleLoad (Ldev/racci/minix/api/services/DataService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handlePostDisable (Ldev/racci/minix/api/services/DataService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handlePostEnable (Ldev/racci/minix/api/services/DataService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handlePostLoad (Ldev/racci/minix/api/services/DataService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handlePostUnload (Ldev/racci/minix/api/services/DataService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleReload (Ldev/racci/minix/api/services/DataService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun handleUnload (Ldev/racci/minix/api/services/DataService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun launch (Ldev/racci/minix/api/services/DataService;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public static fun pluginDelegate (Ldev/racci/minix/api/services/DataService;)Lkotlin/Lazy;
+	public static fun registerEvents (Ldev/racci/minix/api/services/DataService;[Lorg/bukkit/event/Listener;)V
+	public static fun sync (Ldev/racci/minix/api/services/DataService;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public static fun withDatabase (Ldev/racci/minix/api/services/DataService;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun withDatabaseAsync (Ldev/racci/minix/api/services/DataService;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class dev/racci/minix/api/services/PlayerService {
@@ -1882,17 +1964,9 @@ public abstract interface class dev/racci/minix/api/services/PluginService {
 	public abstract fun unloadPlugin (Ldev/racci/minix/api/plugin/MinixPlugin;)V
 }
 
-public final class dev/racci/minix/api/services/PluginService$Companion : dev/racci/minix/api/services/PluginService {
-	public fun disablePlugin (Ldev/racci/minix/api/plugin/MinixPlugin;)V
-	public fun enablePlugin (Ldev/racci/minix/api/plugin/MinixPlugin;)V
-	public fun firstNonMinixPlugin ()Ldev/racci/minix/api/plugin/MinixPlugin;
-	public fun fromClass (Lkotlin/reflect/KClass;)Larrow/core/Option;
-	public fun fromClassloader (Ljava/lang/ClassLoader;)Larrow/core/Option;
-	public fun getLoadedPlugins ()Ljava/util/Map;
+public final class dev/racci/minix/api/services/PluginService$Companion : org/koin/core/component/KoinComponent {
+	public fun getKoin ()Lorg/koin/core/Koin;
 	public final fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ldev/racci/minix/api/plugin/MinixPlugin;
-	public fun loadPlugin (Ldev/racci/minix/api/plugin/MinixPlugin;)V
-	public fun reloadPlugin (Ldev/racci/minix/api/plugin/MinixPlugin;)V
-	public fun unloadPlugin (Ldev/racci/minix/api/plugin/MinixPlugin;)V
 }
 
 public final class dev/racci/minix/api/services/PluginService$DefaultImpls {
@@ -1920,15 +1994,13 @@ public final class dev/racci/minix/api/services/StorageService$DefaultImpls {
 	public static fun completableSync (Ldev/racci/minix/api/services/StorageService;Lkotlin/jvm/functions/Function1;)Ljava/util/concurrent/CompletableFuture;
 	public static fun deferredAsync (Ldev/racci/minix/api/services/StorageService;Lkotlin/jvm/functions/Function1;)Lkotlinx/coroutines/Deferred;
 	public static fun deferredSync (Ldev/racci/minix/api/services/StorageService;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun getContext (Ldev/racci/minix/api/services/StorageService;)Lkotlin/coroutines/CoroutineContext;
-	public static fun getCoroutineScope (Ldev/racci/minix/api/services/StorageService;)Lkotlinx/coroutines/CoroutineScope;
+	public static fun getCoroutineSession (Ldev/racci/minix/api/services/StorageService;)Ldev/racci/minix/api/coroutine/CoroutineSession;
 	public static fun getDataFolder (Ldev/racci/minix/api/services/StorageService;)Ljava/nio/file/Path;
 	public static fun getDataSourceProperties (Ldev/racci/minix/api/services/StorageService;)Ljava/util/Map;
 	public static fun getDatabase (Ldev/racci/minix/api/services/StorageService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun getKoin (Ldev/racci/minix/api/services/StorageService;)Lorg/koin/core/Koin;
 	public static fun getLogger (Ldev/racci/minix/api/services/StorageService;)Ldev/racci/minix/api/logger/MinixLogger;
-	public static fun getMinecraftContext (Ldev/racci/minix/api/services/StorageService;)Lkotlin/coroutines/CoroutineContext;
-	public static fun getScope (Ldev/racci/minix/api/services/StorageService;)Lorg/koin/core/scope/Scope;
+	public static fun getManagedTable (Ldev/racci/minix/api/services/StorageService;)Lorg/jetbrains/exposed/sql/Table;
 	public static fun getStorageDirectory (Ldev/racci/minix/api/services/StorageService;)Ljava/nio/file/Path;
 	public static fun handleDisable (Ldev/racci/minix/api/services/StorageService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun handleEnable (Ldev/racci/minix/api/services/StorageService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -1940,6 +2012,7 @@ public final class dev/racci/minix/api/services/StorageService$DefaultImpls {
 	public static fun handleReload (Ldev/racci/minix/api/services/StorageService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun handleUnload (Ldev/racci/minix/api/services/StorageService;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun launch (Ldev/racci/minix/api/services/StorageService;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
+	public static fun pluginDelegate (Ldev/racci/minix/api/services/StorageService;)Lkotlin/Lazy;
 	public static fun registerEvents (Ldev/racci/minix/api/services/StorageService;[Lorg/bukkit/event/Listener;)V
 	public static fun sync (Ldev/racci/minix/api/services/StorageService;Lkotlin/jvm/functions/Function2;)Lkotlinx/coroutines/Job;
 	public static fun withDatabase (Ldev/racci/minix/api/services/StorageService;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -1948,8 +2021,9 @@ public final class dev/racci/minix/api/services/StorageService$DefaultImpls {
 
 public final class dev/racci/minix/api/utils/KoinUtils {
 	public static final field INSTANCE Ldev/racci/minix/api/utils/KoinUtils;
+	public final fun clazz (Ljava/lang/Object;)Lkotlin/reflect/KClass;
 	public final fun clearBinds (Ljava/lang/Object;)V
-	public final fun createBindArray (Ljava/lang/Object;)[Lkotlin/reflect/KClass;
+	public final fun createBindArray (Lkotlin/reflect/KClass;)[Lkotlin/reflect/KClass;
 	public final fun getBinds (Ljava/lang/Object;)[Lkotlin/reflect/KClass;
 	public final fun getReference ()Ljava/util/concurrent/ConcurrentHashMap;
 }
@@ -1961,7 +2035,6 @@ public final class dev/racci/minix/api/utils/KoinUtils$sam$i$java_util_function_
 
 public final class dev/racci/minix/api/utils/minecraft/BlockUtils {
 	public static final field INSTANCE Ldev/racci/minix/api/utils/minecraft/BlockUtils;
-	public final fun getOpposite (Lorg/bukkit/block/BlockFace;)Lorg/bukkit/block/BlockFace;
 	public final fun getPlacedAgainstFace (Lorg/bukkit/block/Block;Lorg/bukkit/block/Block;)Lorg/bukkit/block/BlockFace;
 	public final fun getSupportingBlock (Lorg/bukkit/block/Block;)Lorg/bukkit/block/Block;
 	public final fun getVein (Lorg/bukkit/block/Block;Ljava/util/List;I)Ljava/util/ArrayList;
@@ -2187,6 +2260,8 @@ public final class dev/racci/minix/integrations/regions/AreaRegion : dev/racci/m
 	public static fun getWorld-impl (Lme/angeschossen/lands/api/land/LandArea;)Lorg/bukkit/World;
 	public fun hashCode ()I
 	public static fun hashCode-impl (Lme/angeschossen/lands/api/land/LandArea;)I
+	public fun isMember (Lorg/bukkit/entity/Player;)Z
+	public static fun isMember-impl (Lme/angeschossen/lands/api/land/LandArea;Lorg/bukkit/entity/Player;)Z
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Lme/angeschossen/lands/api/land/LandArea;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Lme/angeschossen/lands/api/land/LandArea;

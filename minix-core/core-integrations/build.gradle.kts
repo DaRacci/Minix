@@ -3,7 +3,7 @@ import java.net.URI
 dependencies {
     compileOnly(libs.minecraft.api.landsAPI)
     compileOnly(libs.minecraft.api.placeholderAPI)
-    compileOnly("net.frankheijden.serverutils:ServerUtils:3.5.3")
+    compileOnly("net.frankheijden.serverutils:ServerUtils:3.5.4")
 }
 
 repositories {

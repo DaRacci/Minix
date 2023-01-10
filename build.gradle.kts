@@ -19,6 +19,7 @@ import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+import java.io.ByteArrayOutputStream
 
 val relocatePrefix = "dev.racci.minix.libs"
 
@@ -26,7 +27,7 @@ val relocatePrefix = "dev.racci.minix.libs"
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kotlin.mpp)
-    alias(libs.plugins.minix)
+    id(libs.plugins.minix.get().pluginId) version "0.3.4"
     id("dev.racci.paperweight.mpp")
     alias(libs.plugins.shadow)
     id("dev.racci.slimjar") version "2.0.0-SNAPSHOT"
@@ -313,11 +314,23 @@ modrinth {
     projectId.set("OtoWQs96")
     versionNumber.set("${versionSpec.major}.${versionSpec.minor}.${versionSpec.patch}")
     syncBodyFrom.set(file("README.md").readText())
-    changelog.set(file("CHANGELOG.md").readText())
+    changelog.set(
+        project.provider {
+            val output = ByteArrayOutputStream()
+            exec {
+                executable("/home/racci/.local/share/cargo/bin/cog")
+                args("changelog", "--template", "config/modrinth", "--at", "HEAD")
+                standardOutput = output
+            }
+
+            output.toString()
+        }
+    )
     versionType.set(
         when (versionSpec.snapshotType) {
             null -> "release"
-            "SNAPSHOT" -> "beta"
+            "alpha" -> "alpha"
+            "beta", "rc", "snapshot" -> "beta"
             else -> error("Unknown snapshot type: ${versionSpec.snapshotType}")
         }
     )

@@ -1,10 +1,4 @@
 pre_bump_hooks = [
-    "bash -c \"scripts/pre-bump.sh {{latest}} {{version}}\"",
-]
-post_bump_hooks = [
-    "bash -c \"scripts/post-bump.sh {{latest}} {{version}} {{version+patch-SNAPSHOT}}\"",
-]
-pre_bump_hooks = [
     "nu -c \"cog-scripts/src/pre-bump.nu {{latest}} {{version}}\"",
 ]
 post_bump_hooks = [

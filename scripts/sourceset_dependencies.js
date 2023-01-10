@@ -1,1 +1,1 @@
-sourceset_dependencies = '{":Minix-API:dokkaHtmlPartial/main":[],":minix-core:core-updater:dokkaHtmlPartial/main":[],":Minix-Core:dokkaHtmlPartial/main":[],":minix-core:core-integrations:dokkaHtmlPartial/main":[]}'
+sourceset_dependencies = '{":module-flowbus:dokkaHtmlPartial/main":[],":module-jumper:dokkaHtmlPartial/main":[],":module-ticker:dokkaHtmlPartial/main":[],":module-common:dokkaHtmlPartial/main":[],":module-autoscanner:dokkaHtmlPartial/main":[],":module-data:dokkaHtmlPartial/main":[],":module-integrations:dokkaHtmlPartial/main":[]}'

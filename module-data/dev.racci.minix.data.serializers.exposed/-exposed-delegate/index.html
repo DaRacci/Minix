@@ -1,0 +1,460 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>ExposedDelegate</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>Minix</span>            </a>    </div>
+    <div>5.0.0-alpha
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="module-data::dev.racci.minix.data.serializers.exposed/ExposedDelegate///PointingToDeclaration//-1066197233">
+  <div class="breadcrumbs"><a href="../../index.html">module-data</a><span class="delimiter">/</span><a href="../index.html">dev.racci.minix.data.serializers.exposed</a><span class="delimiter">/</span><span class="current">ExposedDelegate</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Exposed</span><wbr><span><span>Delegate</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":module-data:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">interface </span><a href="index.html">ExposedDelegate</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="index.html">T</a><span class="token operator">&gt;</span></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button><button class="section-tab" data-togglable="Extensions">Extensions</button><button class="section-tab" data-togglable="Inheritors">Inheritors</button></div>
+    <div class="tabs-section-body">
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="1139042463%2FFunctions%2F-1066197233" anchor-label="getValue" id="1139042463%2FFunctions%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="get-value.html"><span>get</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1139042463%2FFunctions%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":module-data:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">operator </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="get-value.html">ID</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-comparable/index.html">Comparable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="get-value.html">ID</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span><a href="get-value.html"><span class="token function">getValue</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">entity<span class="token operator">: </span><span data-unresolved-link="org.jetbrains.exposed.dao/Entity///PointingToDeclaration/">Entity</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="get-value.html">ID</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">desc<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-property/index.html">KProperty</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">T</a></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1170578250%2FFunctions%2F-1066197233" anchor-label="setValue" id="1170578250%2FFunctions%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-value.html"><span>set</span><wbr><span><span>Value</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1170578250%2FFunctions%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":module-data:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">operator </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="set-value.html">ID</a><span class="token operator"> : </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-comparable/index.html">Comparable</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="set-value.html">ID</a><span class="token operator">&gt;</span><span class="token operator">&gt; </span><a href="set-value.html"><span class="token function">setValue</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">entity<span class="token operator">: </span><span data-unresolved-link="org.jetbrains.exposed.dao/Entity///PointingToDeclaration/">Entity</span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="set-value.html">ID</a><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">desc<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.reflect/-k-property/index.html">KProperty</a><span class="token operator">&lt;</span><span class="token operator">*</span><span class="token operator">&gt;</span><span class="token punctuation">, </span></span><span class="parameter ">value<span class="token operator">: </span><a href="index.html">T</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Inheritors</h2>
+      <div class="table" data-togglable="Inheritors"><a data-name="-1779730029%2FInheritors%2F-1066197233" anchor-label="BlockExposedDelegate" id="-1779730029%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-block-exposed-delegate/index.html">BlockExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1779730029%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1822714062%2FInheritors%2F-1066197233" anchor-label="BlockExposedDelegateNullable" id="-1822714062%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-block-exposed-delegate-nullable/index.html">BlockExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1822714062%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="9541940%2FInheritors%2F-1066197233" anchor-label="BlockMultiColumnExposedDelegate" id="9541940%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-block-multi-column-exposed-delegate/index.html">BlockMultiColumnExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="9541940%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-2139322925%2FInheritors%2F-1066197233" anchor-label="BlockMultiColumnExposedDelegateNullable" id="-2139322925%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-block-multi-column-exposed-delegate-nullable/index.html">BlockMultiColumnExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2139322925%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-17078887%2FInheritors%2F-1066197233" anchor-label="BlockPosExposedDelegate" id="-17078887%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-block-pos-exposed-delegate/index.html">BlockPosExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-17078887%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="224009528%2FInheritors%2F-1066197233" anchor-label="BlockPosExposedDelegateNullable" id="224009528%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-block-pos-exposed-delegate-nullable/index.html">BlockPosExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="224009528%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1698689682%2FInheritors%2F-1066197233" anchor-label="BlockPosMultiColumnExposedDelegate" id="-1698689682%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-block-pos-multi-column-exposed-delegate/index.html">BlockPosMultiColumnExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1698689682%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1502076915%2FInheritors%2F-1066197233" anchor-label="BlockPosMultiColumnExposedDelegateNullable" id="-1502076915%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-block-pos-multi-column-exposed-delegate-nullable/index.html">BlockPosMultiColumnExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1502076915%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-929291596%2FInheritors%2F-1066197233" anchor-label="CachedExposedDelegate" id="-929291596%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-cached-exposed-delegate/index.html">CachedExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-929291596%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-709068941%2FInheritors%2F-1066197233" anchor-label="ChunkExposedDelegate" id="-709068941%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-chunk-exposed-delegate/index.html">ChunkExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-709068941%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1623242002%2FInheritors%2F-1066197233" anchor-label="ChunkExposedDelegateNullable" id="1623242002%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-chunk-exposed-delegate-nullable/index.html">ChunkExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1623242002%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="178335572%2FInheritors%2F-1066197233" anchor-label="ChunkMultiColumnExposedDelegate" id="178335572%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-chunk-multi-column-exposed-delegate/index.html">ChunkMultiColumnExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="178335572%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1390150669%2FInheritors%2F-1066197233" anchor-label="ChunkMultiColumnExposedDelegateNullable" id="-1390150669%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-chunk-multi-column-exposed-delegate-nullable/index.html">ChunkMultiColumnExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1390150669%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1620253625%2FInheritors%2F-1066197233" anchor-label="ChunkPosExposedDelegate" id="1620253625%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-chunk-pos-exposed-delegate/index.html">ChunkPosExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1620253625%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="392803160%2FInheritors%2F-1066197233" anchor-label="ChunkPosExposedDelegateNullable" id="392803160%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-chunk-pos-exposed-delegate-nullable/index.html">ChunkPosExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="392803160%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1720664910%2FInheritors%2F-1066197233" anchor-label="ChunkPosMultiColumnExposedDelegate" id="1720664910%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-chunk-pos-multi-column-exposed-delegate/index.html">ChunkPosMultiColumnExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1720664910%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="438531565%2FInheritors%2F-1066197233" anchor-label="ChunkPosMultiColumnExposedDelegateNullable" id="438531565%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-chunk-pos-multi-column-exposed-delegate-nullable/index.html">ChunkPosMultiColumnExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="438531565%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="2009873211%2FInheritors%2F-1066197233" anchor-label="ItemStackExposedDelegate" id="2009873211%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-item-stack-exposed-delegate/index.html">ItemStackExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2009873211%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="2043949274%2FInheritors%2F-1066197233" anchor-label="ItemStackExposedDelegateNullable" id="2043949274%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-item-stack-exposed-delegate-nullable/index.html">ItemStackExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2043949274%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="957001927%2FInheritors%2F-1066197233" anchor-label="LocationExposedDelegate" id="957001927%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-location-exposed-delegate/index.html">LocationExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="957001927%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="2033867366%2FInheritors%2F-1066197233" anchor-label="LocationExposedDelegateNullable" id="2033867366%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-location-exposed-delegate-nullable/index.html">LocationExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2033867366%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1051695488%2FInheritors%2F-1066197233" anchor-label="LocationMultiColumnExposedDelegate" id="1051695488%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-location-multi-column-exposed-delegate/index.html">LocationMultiColumnExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1051695488%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-991200737%2FInheritors%2F-1066197233" anchor-label="LocationMultiColumnExposedDelegateNullable" id="-991200737%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-location-multi-column-exposed-delegate-nullable/index.html">LocationMultiColumnExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-991200737%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1399557659%2FInheritors%2F-1066197233" anchor-label="LocationPosExposedDelegate" id="-1399557659%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-location-pos-exposed-delegate/index.html">LocationPosExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1399557659%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1266163076%2FInheritors%2F-1066197233" anchor-label="LocationPosExposedDelegateNullable" id="1266163076%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-location-pos-exposed-delegate-nullable/index.html">LocationPosExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1266163076%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1074043298%2FInheritors%2F-1066197233" anchor-label="LocationPosMultiColumnExposedDelegate" id="1074043298%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-location-pos-multi-column-exposed-delegate/index.html">LocationPosMultiColumnExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1074043298%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1381447745%2FInheritors%2F-1066197233" anchor-label="LocationPosMultiColumnExposedDelegateNullable" id="1381447745%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-location-pos-multi-column-exposed-delegate-nullable/index.html">LocationPosMultiColumnExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1381447745%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1939895978%2FInheritors%2F-1066197233" anchor-label="OfflinePlayerExposedDelegate" id="1939895978%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-offline-player-exposed-delegate/index.html">OfflinePlayerExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1939895978%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="1894354249%2FInheritors%2F-1066197233" anchor-label="OfflinePlayerExposedDelegateNullable" id="1894354249%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-offline-player-exposed-delegate-nullable/index.html">OfflinePlayerExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1894354249%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-1479366760%2FInheritors%2F-1066197233" anchor-label="WorldExposedDelegate" id="-1479366760%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-world-exposed-delegate/index.html">WorldExposedDelegate</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1479366760%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+<a data-name="-7671753%2FInheritors%2F-1066197233" anchor-label="WorldExposedDelegateNullable" id="-7671753%2FInheritors%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../-world-exposed-delegate-nullable/index.html">WorldExposedDelegateNullable</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-7671753%2FInheritors%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div></div>
+          </div>
+        </div>
+      </div>
+      <h2 class="tabbedcontent">Extensions</h2>
+      <div class="table" data-togglable="Extensions"><a data-name="1826366526%2FExtensions%2F-1066197233" anchor-label="cached" id="1826366526%2FExtensions%2F-1066197233" data-filterable-set=":module-data:dokkaHtmlPartial/main"></a>
+        <div class="table-row" data-filterable-current=":module-data:dokkaHtmlPartial/main" data-filterable-set=":module-data:dokkaHtmlPartial/main">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="../cached.html"><span><span>cached</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1826366526%2FExtensions%2F-1066197233"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":module-data:dokkaHtmlPartial/main"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../cached.html">T</a><span class="token operator">&gt; </span><a href="index.html">ExposedDelegate</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../cached.html">T</a><span class="token operator">&gt;</span><span class="token punctuation">.</span><a href="../cached.html"><span class="token function">cached</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../-cached-exposed-delegate/index.html">CachedExposedDelegate</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../cached.html">T</a><span class="token operator">&gt;</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

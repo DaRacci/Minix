@@ -5,7 +5,6 @@ import dev.racci.minix.gradle.ex.whenEvaluated
 import dev.racci.minix.gradle.ex.withMCTarget
 import dev.racci.minix.gradle.extensions.MinixPublishingExtension.PublicationSpec.Version
 import dev.racci.paperweight.mpp.paperweightDevBundle
-import dev.racci.paperweight.mpp.reobfJar
 import dev.racci.slimjar.extensions.slimApi
 import dev.racci.slimjar.extensions.slimJar
 import io.gitlab.arturbosch.detekt.Detekt
@@ -342,7 +341,7 @@ modrinth {
 }
 
 val reportMerge by tasks.registering<ReportMergeTask> {
-    output.set(buildDir.resolve("reports/detekt/detekt.sarif"))
+    output.set(rootProject.layout.buildDirectory.file("reports/detekt/detekt.sarif"))
 }
 
 tasks {
@@ -402,20 +401,34 @@ allprojects {
         basePath = rootProject.projectDir.path
     }
 
-    tasks.withType<Detekt> {
-        reports {
-            sarif.required.set(true)
-        }
-
-        finalizedBy(reportMerge)
-        reportMerge {
-            input.from(sarifReportFile)
-        }
-    }
-
     idea.module {
         val generatedDir = buildDir.resolve("generated/ksp/main/kotlin")
         sourceDirs = sourceDirs + generatedDir
         generatedSourceDirs = generatedSourceDirs + generatedDir
+    }
+}
+
+subprojects {
+    plugins.withType<DetektPlugin> {
+        tasks.withType<Detekt> detekt@{
+            finalizedBy(reportMerge)
+
+            reportMerge.configure {
+                input.from(this@detekt.sarifReportFile)
+            }
+        }
+    }
+
+    tasks.withType<Detekt> {
+        reports {
+            md.required.set(false)
+            html.required.set(false)
+            txt.required.set(false)
+            xml.required.set(false)
+            sarif {
+                required.set(true)
+                outputLocation.set(rootProject.buildDir.resolve("reports/detekt/detekt-${project.name}.sarif"))
+            }
+        }
     }
 }

@@ -30,7 +30,8 @@ jobs:
 
       - uses: gradle/gradle-build-action@v2
         with:
-          arguments: clean build
+          # Excluding slim tasks since they are not needed for CI
+          arguments: clean assemble -x paperSlimJar
 
       - uses: actions/upload-artifact@v3
         with:

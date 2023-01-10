@@ -10,7 +10,7 @@ console-reports:
 
 style:
   UnusedImports: &excludes
-    excludes: [ '**/generated/**' ]
+    excludes: [ '**/generated/**' ] # Generated code is unpredictable.
 
 performance:
   SpreadOperator:

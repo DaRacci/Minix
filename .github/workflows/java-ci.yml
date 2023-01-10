@@ -80,11 +80,9 @@ jobs:
 
   sentry:
     runs-on: ubuntu-latest
-    needs: [ build, test ]
+    needs: build
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - uses: haya14busa/action-cond@v1
         id: env

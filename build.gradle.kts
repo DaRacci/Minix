@@ -346,11 +346,11 @@ val reportMerge by tasks.registering<ReportMergeTask> {
 }
 
 tasks {
-    val dependTask = kotlin.targets["paper"].reobfJar // Cannot be called inside configure block.
+    val dependTask = named<Jar>(kotlin.targets["paper"].artifactsTaskName) // Cannot be called inside configure block.
     runServer {
         dependsOn(dependTask)
         minecraftVersion(libs.versions.minecraft.get().substringBefore('-'))
-        pluginJars(dependTask.get().outputJar)
+        pluginJars(dependTask.get().archiveFile)
     }
 
     withType<ShadowJar> {

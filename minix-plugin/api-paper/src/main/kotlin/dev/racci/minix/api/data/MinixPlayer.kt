@@ -6,7 +6,7 @@ import dev.racci.minix.api.extensions.offlinePlayer
 import dev.racci.minix.api.extensions.reflection.safeCast
 import dev.racci.minix.api.services.PlayerService
 import dev.racci.minix.api.wrappers.WrapperCompanion
-import dev.racci.minix.data.extensions.doubleAccessWatcher
+import dev.racci.minix.data.delegates.doubleAccessWatcher
 import net.kyori.adventure.text.Component
 import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player

@@ -35,7 +35,7 @@ public actual interface PlatformPlugin : Qualifier, Comparable<PlatformPlugin> {
 
             return object : PlatformPlugin {
                 override val value: String = obj.name
-                override val version: Version by lazy { Version(obj.description.version) }
+                override val version: Version by lazy { Version.parseString(obj.description.version) }
                 override val dataFolder: Path = obj.dataFolder.toPath()
                 override val dependencies: ImmutableSet<String> by lazy { (obj.description.depend + obj.description.softDepend).toImmutableSet() }
                 override val platformClassLoader: ClassLoader by suspendBlockingLazy {

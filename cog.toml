@@ -4,6 +4,12 @@ pre_bump_hooks = [
 post_bump_hooks = [
     "bash -c \"scripts/post-bump.sh {{latest}} {{version}} {{version+patch-SNAPSHOT}}\"",
 ]
+pre_bump_hooks = [
+    "nu -c \"cog-scripts/src/pre-bump.nu {{latest}} {{version}}\"",
+]
+post_bump_hooks = [
+    "nu -c \"cog-scripts/src/post-bump.nu Minix {{latest}} {{version}} {{version+patch-SNAPSHOT}} -r -p [.,module-autoscanner,module-common,module-data,module-flowbus,module-integrations,module-jumper,module-ticker]\"",
+]
 
 tag_prefix = "v"
 

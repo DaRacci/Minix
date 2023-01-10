@@ -74,8 +74,12 @@ public class AccessWatcher private constructor(
 
 /**
  * A Variant of [AccessWatcher] that will return true if the property is accessed twice within 500 Milliseconds.
+ *
+ * @param delay The duration of time that if [count] calls are received within will result in a true result.
  */
 @Experimental
 @AvailableSince("5.0.0")
 @Suppress("UnusedReceiverParameter")
-public fun Delegates.doubleAccessWatcher(): ReadOnlyProperty<Any?, Boolean> = AccessWatcher.of(500.milliseconds, 2)
+public fun Delegates.doubleAccessWatcher(
+    delay: Duration = 500.milliseconds
+): ReadOnlyProperty<Any?, Boolean> = AccessWatcher.of(delay, 2)

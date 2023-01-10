@@ -1,6 +1,6 @@
-@file:Suppress("UnstableApiUsage")
-
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+rootProject.name = "Minix"
 
 pluginManagement {
     repositories {
@@ -8,10 +8,12 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven("https://repo.racci.dev/releases")
+        maven("https://repo.racci.dev/snapshots")
         maven("https://papermc.io/repo/repository/maven-public/")
     }
 }
 
+@Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
@@ -25,15 +27,12 @@ dependencyResolutionManagement {
     }
 
     versionCatalogs.create("libs") {
-        val minixVersion: String by settings
+        val minixBuild: String by settings
         val kotlinVersion: String by settings
-        val conventions = kotlinVersion.plus("-").plus(minixVersion.substringAfterLast('.'))
-
+        val conventions = kotlinVersion.plus("-").plus(minixBuild)
         from("dev.racci:catalog:$conventions")
     }
 }
-
-rootProject.name = "Minix"
 
 includeBuild("paperweight-mpp")
 

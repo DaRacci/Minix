@@ -3,6 +3,7 @@ import dev.racci.minix.gradle.data.MCTarget
 import dev.racci.minix.gradle.ex.shadowJar
 import dev.racci.minix.gradle.ex.whenEvaluated
 import dev.racci.minix.gradle.ex.withMCTarget
+import dev.racci.minix.gradle.extensions.MinixPublishingExtension.PublicationSpec.Version
 import dev.racci.paperweight.mpp.paperweightDevBundle
 import dev.racci.paperweight.mpp.reobfJar
 import dev.racci.slimjar.extensions.slimApi
@@ -25,7 +26,7 @@ val relocatePrefix = "dev.racci.minix.libs"
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     alias(libs.plugins.kotlin.mpp)
-    id("dev.racci.minix") version "0.3.1"
+    alias(libs.plugins.minix)
     id("dev.racci.paperweight.mpp")
     alias(libs.plugins.shadow)
     id("dev.racci.slimjar") version "2.0.0-SNAPSHOT"
@@ -40,6 +41,7 @@ plugins {
 
     alias(libs.plugins.minecraft.pluginYML) // TODO: MPP
     alias(libs.plugins.minecraft.runPaper)
+    alias(libs.plugins.minecraft.minotaur)
 }
 
 koverMerged {
@@ -304,6 +306,28 @@ kotlin {
     }
 }
 
+modrinth {
+    val versionSpec = Version.parse(version.toString())
+
+    token.set(properties["modrinth.token"].toString())
+    projectId.set("OtoWQs96")
+    versionNumber.set("${versionSpec.major}.${versionSpec.minor}.${versionSpec.patch}")
+    syncBodyFrom.set(file("README.md").readText())
+    changelog.set(file("CHANGELOG.md").readText())
+    versionType.set(
+        when (versionSpec.snapshotType) {
+            null -> "release"
+            "SNAPSHOT" -> "beta"
+            else -> error("Unknown snapshot type: ${versionSpec.snapshotType}")
+        }
+    )
+
+    uploadFile.set(kotlin.targets["paper"].reobfJar.get())
+
+    gameVersions.add(libs.versions.minecraft.get().substringBefore('-'))
+    loaders.addAll("paper", "purpur")
+}
+
 val reportMerge by tasks.registering<ReportMergeTask> {
     output.set(buildDir.resolve("reports/detekt/detekt.sarif"))
 }
@@ -322,13 +346,7 @@ tasks {
         relocate("org.koin.ksp.generated", "$relocatePrefix.generated.koin")
     }
 
-    named<Detekt>("detekt") {
-        // Depend on all other detekt tasks.
-//        dependsOn(
-//            withType<Detekt>().filter { it.name != this.name },
-//            subprojects.flatMap { it.tasks.withType<Detekt>() }
-//        )
-    }
+    modrinth.get().dependsOn(modrinthSyncBody)
 }
 
 subprojects {

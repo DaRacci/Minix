@@ -37,7 +37,7 @@ public actual abstract class MinixPlugin :
     actual final override val plugin: MinixPlugin get() = this
     actual final override val logger: MinixLogger by MinixLoggerFactory.lazy
     actual final override val dataFolder: Path get() = this.getDataFolder().toPath()
-    actual final override val version: Version by lazy { Version(this.description.version) }
+    actual final override val version: Version by lazy { Version.parseString(this.description.version) }
     actual final override val dependencies: ImmutableSet<String> by lazy<ImmutableSet<String>>((this.description.depend + this.description.softDepend)::toImmutableSet)
     actual final override val coroutineSession: CoroutineSession by lazy { scope.get() }
 

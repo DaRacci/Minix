@@ -1,0 +1,3 @@
+[submodule "cog-scripts"]
+	path = cog-scripts
+	url = https://github.com/DaRacci/cog-scripts.git

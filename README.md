@@ -16,12 +16,14 @@
 [![Servers](https://img.shields.io/bstats/servers/13706?color=purple&style=for-the-badge)](https://bstats.org/plugin/bukkit/Minix/13706)
 [![Players](https://img.shields.io/bstats/players/13706?color=purple&style=for-the-badge)](https://bstats.org/plugin/bukkit/Minix/13706)
 
-Minix is library written for purpur based plugins, providing full integration with [KotlinX Coroutines](https://github.com/Kotlin/kotlinx.coroutines) for easy Async integration with the Bukkit API.
+Minix is the most advanced and performant framework to build plugins on!</br>
+With full in depth support for kotlin coroutines and many useful utilities and quality of life features for developers.</br>
+Minix makes developing performant, non-blocking code easy and concise.</br>
+
+# Minix is currently in a state of heavy development for the upcoming 5.0.0 release, all features are subject to change and may not be fully documented.
+# Coming from version 4.x.x to 5.0.0 will require a lot of code changes, please be aware of this before starting development before the release of version 5.0.0.
 
 </div>
-
-## Plugin Information
-  *Supports Paper 1.19.3 (Planned support for more than one NMS Version)
 
 ## Docs
   *The docs can be found [here](https://minix.racci.dev)

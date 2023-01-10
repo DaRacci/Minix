@@ -25,11 +25,9 @@ dependencyResolutionManagement {
 
     versionCatalogs.create("libs") {
         val properties = Properties().apply { load(rootDir.toPath().resolveSibling(Project.GRADLE_PROPERTIES).toFile().inputStream()) }
-
-        val minixVersion: String by properties
+        val minixBuild: String by properties
         val kotlinVersion: String by properties
-        val conventions = kotlinVersion.plus("-").plus(minixVersion.substringAfterLast('.'))
-
+        val conventions = kotlinVersion.plus("-").plus(minixBuild)
         from("dev.racci:catalog:$conventions")
     }
 }

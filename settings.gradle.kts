@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage")
 
-enableFeaturePreview("VERSION_CATALOGS")
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -15,8 +14,14 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
-        maven("https://repo.racci.dev/releases")
-        maven("https://repo.racci.dev/snapshots")
+        mavenCentral()
+        maven("https://repo.racci.dev/releases/") {
+            name = "Catalog Repository"
+            mavenContent {
+                releasesOnly()
+                includeModule("dev.racci", "catalog")
+            }
+        }
     }
 
     versionCatalogs.create("libs") {

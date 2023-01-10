@@ -7,15 +7,17 @@ import dev.racci.paperweight.mpp.paperweightDevBundle
 import dev.racci.paperweight.mpp.reobfJar
 import dev.racci.slimjar.extensions.slimApi
 import dev.racci.slimjar.extensions.slimJar
+import io.gitlab.arturbosch.detekt.Detekt
+import io.gitlab.arturbosch.detekt.DetektPlugin
+import io.gitlab.arturbosch.detekt.report.ReportMergeTask
+import io.papermc.paperweight.util.registering
 import kotlinx.kover.KoverPlugin
 import kotlinx.validation.KotlinApiCompareTask
 import net.minecrell.pluginyml.bukkit.BukkitPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
 import org.jetbrains.dokka.gradle.DokkaPlugin
-import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
-import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformJvmPlugin
+import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
-import org.jlleitschuh.gradle.ktlint.KtlintPlugin
 
 val relocatePrefix = "dev.racci.minix.libs"
 
@@ -26,9 +28,9 @@ plugins {
     id("dev.racci.minix") version "0.3.1"
     id("dev.racci.paperweight.mpp")
     alias(libs.plugins.shadow)
-    alias(libs.plugins.kotlin.plugin.ktlint)
     id("dev.racci.slimjar") version "2.0.0-SNAPSHOT"
     id("org.jetbrains.kotlinx.kover") version "0.6.1" // TODO: Catalog and convention
+    id("io.gitlab.arturbosch.detekt") version "1.22.0"
 
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.plugin.dokka)
@@ -72,7 +74,46 @@ minix {
     }
 }
 
-runPaper.disablePluginJarDetection()
+runPaper {
+    disablePluginJarDetection()
+}
+
+repositories {
+    mavenCentral()
+    maven("https://jitpack.io")
+    maven("https://repo.racci.dev/releases/")
+    maven("https://repo.racci.dev/snapshots/")
+
+    maven("https://repo.papermc.io/maven-public/") {
+        mavenContent {
+            includeGroupByRegex("io.papermc([.a-z]+)?")
+        }
+    }
+
+    maven("https://repo.purpurmc.org/snapshots") {
+        mavenContent {
+            includeGroup("org.purpurmc.purpur")
+        }
+    }
+
+    maven("https://repo.fvdh.dev/releases") {
+        mavenContent {
+            releasesOnly()
+            includeGroup("net.frankheijden.serverutils")
+        }
+    }
+
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") {
+        mavenContent {
+            releasesOnly()
+            includeModule("me.clip", "placeholderapi")
+        }
+    }
+}
+
+dependencies {
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
+}
 
 fun Project.emptySources() = project.sourceSets.none { set -> set.allSource.any { file -> file.extension == "kt" } }
 
@@ -107,73 +148,6 @@ fun Project.maybeConfigureBinaryValidator(prefix: String? = null) {
     }
 }
 
-allprojects {
-    configurations.whenObjectAdded {
-        if (this.name == "testImplementation") {
-            exclude("org.jetbrains.kotlin", "kotlin-test-junit")
-        }
-
-        // These refuse to resolve sometimes
-        exclude("me.carleslc.Simple-YAML", "Simple-Configuration")
-        exclude("me.carleslc.Simple-YAML", "Simple-Yaml")
-        exclude("com.github.technove", "Flare")
-    }
-
-    afterEvaluate {
-
-        // TODO: Disable unwanted modules
-        kotlinExtension.apply {
-            explicitApiWarning() // Koin generated sources aren't complicit.
-            kotlinDaemonJvmArgs = listOf("-Xemit-jvm-type-annotations")
-        }
-
-        if (project.emptySources()) {
-            tasks.apiDump.get().enabled = false
-            tasks.apiCheck.get().enabled = false
-        } else {
-            apply<KtlintPlugin>()
-            project.maybeConfigureBinaryValidator()
-        }
-    }
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven("https://repo.racci.dev/releases/") {
-            mavenContent {
-                releasesOnly()
-                includeGroupByRegex("dev.racci(\\.[a-z]+)?")
-            }
-        }
-
-        maven("https://repo.racci.dev/snapshots/")
-
-        maven("https://repo.fvdh.dev/releases") {
-            mavenContent {
-                releasesOnly()
-                includeGroup("net.frankheijden.serverutils")
-            }
-        }
-
-        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") {
-            mavenContent {
-                releasesOnly()
-                includeModule("me.clip", "placeholderapi")
-            }
-        }
-        maven("https://jitpack.io")
-        maven("https://papermc.io/repo/repository/maven-public/")
-        maven("https://repo.purpurmc.org/snapshots")
-    }
-
-    tasks {
-        withType<Test>().configureEach {
-            enabled = false
-            useJUnitPlatform()
-        }
-    }
-}
-
 kotlin {
     fun KotlinSourceSet.setDirs(module: String, api: Boolean) {
         kotlin.srcDirs.clear()
@@ -194,6 +168,9 @@ kotlin {
 
         resources.maybeExtend(prefix.resolve("resources"))
     }
+
+    // Koin generated sources aren't complicit.
+    explicitApiWarning()
 
     sourceSets {
         val commonAPI by creating {
@@ -327,20 +304,8 @@ kotlin {
     }
 }
 
-subprojects {
-    apply<DokkaPlugin>()
-    apply<JavaLibraryPlugin>()
-    apply<MavenPublishPlugin>()
-    apply<KotlinPlatformJvmPlugin>()
-    apply<KoverPlugin>()
-
-    dependencies {
-        val common = project(":module-common")
-        if (this@subprojects.project !== common.dependencyProject) {
-            "compileOnly"(common)
-            "testImplementation"(common)
-        }
-    }
+val reportMerge by tasks.registering<ReportMergeTask> {
+    output.set(buildDir.resolve("reports/detekt/detekt.sarif"))
 }
 
 tasks {
@@ -356,23 +321,66 @@ tasks {
         relocate("io.github.slimjar", "$relocatePrefix.slimjar")
         relocate("org.koin.ksp.generated", "$relocatePrefix.generated.koin")
     }
+
+    named<Detekt>("detekt") {
+        // Depend on all other detekt tasks.
+//        dependsOn(
+//            withType<Detekt>().filter { it.name != this.name },
+//            subprojects.flatMap { it.tasks.withType<Detekt>() }
+//        )
+    }
 }
 
 subprojects {
     apply<IdeaPlugin>()
+    apply<KoverPlugin>()
+    apply<DokkaPlugin>()
+    apply<DetektPlugin>()
+    apply<JavaLibraryPlugin>()
+    apply<MavenPublishPlugin>()
+    apply<KotlinPluginWrapper>()
+
+    maybeConfigureBinaryValidator()
+
+    dependencies {
+        val common = project(":module-common")
+        if (this@subprojects.project !== common.dependencyProject) {
+            "compileOnly"(common)
+            "testImplementation"(common)
+        }
+
+        @Suppress("UnstableApiUsage")
+        "testImplementation"(rootProject.libs.testing.kotest.junit5)
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
+    }
+}
+
+allprojects {
+    detekt {
+        toolVersion = "1.22.0"
+        config = rootProject.files("config/detekt/detekt.yml")
+        buildUponDefaultConfig = true
+        parallel = true
+        basePath = rootProject.projectDir.path
+    }
+
+    tasks.withType<Detekt> {
+        reports {
+            sarif.required.set(true)
+        }
+
+        finalizedBy(reportMerge)
+        reportMerge {
+            input.from(sarifReportFile)
+        }
+    }
 
     idea.module {
         val generatedDir = buildDir.resolve("generated/ksp/main/kotlin")
         sourceDirs = sourceDirs + generatedDir
         generatedSourceDirs = generatedSourceDirs + generatedDir
-    }
-
-    dependencies {
-        @Suppress("UnstableApiUsage")
-        "testImplementation"(rootProject.libs.testing.kotest.junit5)
-    }
-
-    tasks.withType<Test>().configureEach {
-        useJUnitPlatform()
     }
 }

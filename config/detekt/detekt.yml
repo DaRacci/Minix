@@ -1,0 +1,27 @@
+config:
+  validation: true
+  warningsAsErrors: false
+
+build:
+  maxIssues: 999 # Allow build with issues for now.
+
+console-reports:
+  active: true
+
+style:
+  UnusedImports: &excludes
+    excludes: [ '**/generated/**' ]
+
+performance:
+  SpreadOperator:
+    # Optimized in new versions of the Kotlin compiler
+    active: false
+
+#formatting:
+#  autoCorrect: true
+#  MaximumLineLength: *excludes
+#  Indentation: *excludes
+#  SpacingAroundOperators: *excludes
+
+output-reports:
+  active: true

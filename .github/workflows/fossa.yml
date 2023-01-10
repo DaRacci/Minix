@@ -1,0 +1,28 @@
+name: Fossa Scan
+
+on:
+  workflow_call:
+    inputs:
+      branch:
+        description: 'The branch to scan'
+        required: true
+        type: string
+
+jobs:
+  fossa-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run FOSSA Scan
+        uses: fossas/fossa-action@main
+        with:
+          api-key: ${{ secrets.FOSSA_KEY }}
+          branch: ${{ inputs.branch }}
+
+      - name: Run FOSSA Test
+        uses: fossas/fossa-action@main
+        with:
+          api-key: ${{ secrets.FOSSA_KEY }}
+          branch: ${{ inputs.branch }}
+          run-tests: true

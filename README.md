@@ -248,7 +248,7 @@ Feel free to check [issues page](https://github.com/DaRacci/Minix/issues).
 Copyright © 2021-2023 [Racci](https://github.com/DaRacci)<br/>
 This project is [licensed](https://github.com/DaRacci/Minix/blob/master/LICENSE.md).
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FDaRacci%2FMinix.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FDaRacci%2FMinix?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B34449%2Fgithub.com%2FDaRacci%2FMinix.svg?type=large)](https://app.fossa.com/projects/custom%2B34449%2Fgithub.com%2FDaRacci%2FMinix?ref=badge_large)
 
 ## Special Thanks To
 [<img src="https://user-images.githubusercontent.com/21148213/121807008-8ffc6700-cc52-11eb-96a7-2f6f260f8fda.png" alt="" width="150">](https://www.jetbrains.com)

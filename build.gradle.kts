@@ -12,6 +12,7 @@ import io.gitlab.arturbosch.detekt.DetektPlugin
 import io.gitlab.arturbosch.detekt.report.ReportMergeTask
 import io.papermc.paperweight.util.registering
 import kotlinx.kover.KoverPlugin
+import kotlinx.validation.KotlinApiBuildTask
 import kotlinx.validation.KotlinApiCompareTask
 import net.minecrell.pluginyml.bukkit.BukkitPlugin
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription.PluginLoadOrder
@@ -150,7 +151,9 @@ fun Project.maybeConfigureBinaryValidator(prefix: String? = null) {
         // For some reason this task likes to delete the entire folder contents,
         // So we need all projects to have their own sub folder.
         val name = if (prefix != null) "plugin-$prefix" else project.name
-        val apiDir = rootProject.layout.projectDirectory.file("config/api/${name.toLowerCase()}").asFile
+        val subDir = "api/${name.toLowerCase()}"
+        val apiDir = rootProject.layout.projectDirectory.file("config/$subDir").asFile
+        apiTask<KotlinApiBuildTask>(prefix, "Build") { outputApiDir = rootProject.buildDir.resolve("api/$subDir") }
         apiTask<Sync>(prefix, "Dump") { destinationDir = apiDir }
         apiTask<KotlinApiCompareTask>(prefix, "Check") { projectApiDir = apiDir }
     }
@@ -270,7 +273,7 @@ kotlin {
                 slimApi(libs.configurate.hocon)
                 slimApi(libs.configurate.extra.kotlin)
 
-                withMCTarget(MCTarget.Platform.PAPER, "1.19.3", applyMinix = false)
+                withMCTarget(MCTarget.Platform.PAPER, libs.versions.minecraft.get(), applyMinix = false)
                 paperweightDevBundle("org.purpurmc.purpur", libs.versions.minecraft.get())
             }
         }

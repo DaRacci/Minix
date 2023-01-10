@@ -16,7 +16,7 @@ pluginManagement {
         kotlin("plugin.atomicfu") version kotlinVersion
         id("org.jetbrains.dokka") version kotlinVersion
 
-        id("dev.racci.slimjar") version "1.3.3"
+        id("dev.racci.slimjar") version "1.4.1"
         id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
         id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.1"
     }

@@ -18,7 +18,7 @@ pluginManagement {
 
         id("dev.racci.slimjar") version "1.3.3"
         id("net.minecrell.plugin-yml.bukkit") version "0.5.2"
-        id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.11.1"
+        id("org.jetbrains.kotlinx.binary-compatibility-validator") version "0.12.1"
     }
 
     plugins {

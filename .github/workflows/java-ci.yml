@@ -33,7 +33,7 @@ jobs:
         run: ./gradlew quickBuild -Pversion=${{ steps.version.outputs.version }}
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v3.0.0
+        uses: actions/upload-artifact@v3.1.2
         with:
           name: Minix-${{ steps.version.outputs.version }}
           path: |

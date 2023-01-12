@@ -1,5 +1,3 @@
-![IMG](https://cdn.discordapp.com/attachments/431545763928211457/853353180271214662/mfthread.png)
-
 <div align="center">
 
 # Minix

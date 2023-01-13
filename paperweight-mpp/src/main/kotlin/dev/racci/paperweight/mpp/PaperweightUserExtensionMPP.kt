@@ -31,5 +31,5 @@ public abstract class PaperweightUserExtensionMPP(
     /**
      * Provides the Minecraft version of the current dev bundle.
      */
-    public val minecraftVersion: String? by lazy { PaperweightMppPlugin.USERDEV[sourceSet.groupName]?.minecraftVersion }
+    public val minecraftVersion: String? by lazy { PaperweightMppPlugin.USERDEV[sourceSet]?.minecraftVersion }
 }

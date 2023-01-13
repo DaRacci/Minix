@@ -13,6 +13,7 @@ import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.ExternalModuleDependency
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.configurationcache.extensions.capitalized
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.named
 import org.gradle.kotlin.dsl.registerIfAbsent
@@ -32,7 +33,7 @@ internal fun lowerCamelCaseName(vararg names: String): String {
     return nonEmptyParts.drop(1).joinToString(
         separator = "",
         prefix = nonEmptyParts.firstOrNull().orEmpty(),
-        transform = String::capitalize
+        transform = String::capitalized
     )
 }
 
@@ -78,7 +79,8 @@ public fun KotlinDependencyHandler.paperweightDevBundle(
     logger.info("Adding dev bundle for ${sourceSet.name} with configuration name ${configuration.name}")
     addDependencyByStringNotation(configuration.name, "$group:$artifactId:$version", configurationAction)
 
-    val devBundleZip = project.configurations.named(sourceSet.disambiguateName(DEV_BUNDLE_CONFIG)).map { it.singleFile }.convertToPath()
+    val devBundleZip = project.configurations.named(sourceSet.disambiguateName(DEV_BUNDLE_CONFIG))
+        .map { it.singleFile }.convertToPath()
     val serviceName = "paperweight-USERDEV:setupService:${devBundleZip.sha256asHex()}"
 
     PaperweightMppPlugin.USERDEV[sourceSet] = project.gradle.sharedServices.registerIfAbsent(
@@ -116,8 +118,3 @@ public fun <T : Dependency> KotlinDependencyHandler.addDependency(
         configure(it)
         project.dependencies.add(configurationName, it)
     }
-
-@PublishedApi
-internal fun KotlinSourceSet.project(): Project {
-    return this::class.java.getDeclaredField("project").apply { isAccessible = true }.get(this) as Project
-}

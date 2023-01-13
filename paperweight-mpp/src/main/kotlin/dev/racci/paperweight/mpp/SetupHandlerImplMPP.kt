@@ -1,14 +1,34 @@
 package dev.racci.paperweight.mpp
 
-import io.papermc.paperweight.tasks.* // ktlint-disable no-wildcard-imports
+import io.papermc.paperweight.tasks.GenerateDevBundle
+import io.papermc.paperweight.tasks.ServerBundler
 import io.papermc.paperweight.userdev.internal.setup.ExtractedBundle
 import io.papermc.paperweight.userdev.internal.setup.RunPaperclip
 import io.papermc.paperweight.userdev.internal.setup.SetupHandler
 import io.papermc.paperweight.userdev.internal.setup.UserdevSetup
-import io.papermc.paperweight.userdev.internal.setup.step.* // ktlint-disable no-wildcard-imports
+import io.papermc.paperweight.userdev.internal.setup.step.AccessTransformMinecraft
+import io.papermc.paperweight.userdev.internal.setup.step.ApplyDevBundlePatches
+import io.papermc.paperweight.userdev.internal.setup.step.DecompileMinecraft
+import io.papermc.paperweight.userdev.internal.setup.step.FilterVanillaJar
+import io.papermc.paperweight.userdev.internal.setup.step.FixMinecraftJar
+import io.papermc.paperweight.userdev.internal.setup.step.GenerateMappingsStep
+import io.papermc.paperweight.userdev.internal.setup.step.RemapMinecraft
+import io.papermc.paperweight.userdev.internal.setup.step.SetupStep
+import io.papermc.paperweight.userdev.internal.setup.step.StepExecutor
+import io.papermc.paperweight.userdev.internal.setup.step.VanillaSteps
+import io.papermc.paperweight.userdev.internal.setup.step.installPaperServer
 import io.papermc.paperweight.userdev.internal.setup.util.HashFunctionBuilder
-import io.papermc.paperweight.util.* // ktlint-disable no-wildcard-imports
-import io.papermc.paperweight.util.constants.* // ktlint-disable no-wildcard-imports
+import io.papermc.paperweight.util.MavenDep
+import io.papermc.paperweight.util.constants.DECOMPILER_CONFIG
+import io.papermc.paperweight.util.constants.MINECRAFT_JARS_PATH
+import io.papermc.paperweight.util.constants.MOJANG_YARN_MAPPINGS
+import io.papermc.paperweight.util.constants.PARAM_MAPPINGS_CONFIG
+import io.papermc.paperweight.util.constants.REMAPPER_CONFIG
+import io.papermc.paperweight.util.constants.paperSetupOutput
+import io.papermc.paperweight.util.convertToPath
+import io.papermc.paperweight.util.filesMatchingRecursive
+import io.papermc.paperweight.util.includeFromDependencyNotation
+import io.papermc.paperweight.util.path
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.artifacts.DependencySet
 import org.gradle.api.artifacts.ExternalModuleDependency
@@ -49,11 +69,16 @@ public class SetupHandlerImplMPP(
 
         val extractStep = createExtractFromBundlerStep()
 
-        val filterVanillaJarStep = FilterVanillaJar(vanillaServerJar, bundle.config.buildData.vanillaJarIncludes, filteredVanillaServerJar)
+        val filterVanillaJarStep = FilterVanillaJar(
+            vanillaServerJar,
+            bundle.config.buildData.vanillaJarIncludes,
+            filteredVanillaServerJar
+        )
 
         // Start - GenerateMappingsStep.create
         vanillaSteps.downloadServerMappings()
-        val paramMappings = context.project.configurations.named(context.source.disambiguateName(PARAM_MAPPINGS_CONFIG)).map { it.singleFile }.convertToPath()
+        val paramMappings = context.project.configurations.named(context.source.disambiguateName(PARAM_MAPPINGS_CONFIG))
+            .map { it.singleFile }.convertToPath()
         val genMappingsStep = GenerateMappingsStep(
             vanillaSteps,
             filteredVanillaServerJar,
@@ -64,7 +89,8 @@ public class SetupHandlerImplMPP(
         // End - GenerateMappingsStep.create
 
         // Start - RemapMinecraft.create
-        val remapper = context.project.configurations.getByName(context.source.disambiguateName(REMAPPER_CONFIG)).also(Configuration::resolve) // resolve remapper
+        val remapper = context.project.configurations.getByName(context.source.disambiguateName(REMAPPER_CONFIG))
+            .also(Configuration::resolve) // resolve remapper
         val remapMinecraftStep = RemapMinecraft(
             bundle.config.buildData.minecraftRemapArgs,
             filteredVanillaServerJar,
@@ -89,7 +115,8 @@ public class SetupHandlerImplMPP(
         )
 
         // Start - DecompileMinecraft.create
-        val decompiler = context.project.configurations.getByName(context.source.disambiguateName(DECOMPILER_CONFIG)).also(Configuration::resolve) // resolve decompiler
+        val decompiler = context.project.configurations.getByName(context.source.disambiguateName(DECOMPILER_CONFIG))
+            .also(Configuration::resolve) // resolve decompiler
         val decomp = DecompileMinecraft(
             accessTransformedServerJar,
             decompiledMinecraftServerJar,
@@ -146,7 +173,9 @@ public class SetupHandlerImplMPP(
         if (setupCompleted) {
             logger.info("Skipping PaperweightMPP setup for ${context.source.name}, already completed.")
             return
-        } else logger.info("Running PaperweightMPP setup for ${context.source.name}.")
+        } else {
+            logger.info("Running PaperweightMPP setup for ${context.source.name}.")
+        }
 
         val source = if (parameters.genSources.get()) {
             generateSources(context)

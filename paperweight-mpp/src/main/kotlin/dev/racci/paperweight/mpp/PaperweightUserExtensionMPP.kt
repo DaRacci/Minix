@@ -25,8 +25,8 @@ public abstract class PaperweightUserExtensionMPP(
      * The [ReobfArtifactConfiguration] is responsible for setting the input and output jars for `reobfJar`,
      * as well as changing the classifiers of other jars (i.e. `jar` or `shadowJar`).
      */
-    public val reobfArtifactConfiguration: Property<ReobfArtifactConfigurationMPP> = objects.property<ReobfArtifactConfigurationMPP>()
-        .convention(ReobfArtifactConfigurationMPP.REOBF_PRODUCTION)
+    public val reobfArtifactConfiguration: Property<ReobfArtifactConfigurationMPP> = objects
+        .property<ReobfArtifactConfigurationMPP>().convention(ReobfArtifactConfigurationMPP.REOBF_PRODUCTION)
 
     /**
      * Provides the Minecraft version of the current dev bundle.

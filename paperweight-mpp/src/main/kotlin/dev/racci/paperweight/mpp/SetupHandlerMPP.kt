@@ -58,7 +58,9 @@ public interface SetupHandlerMPP {
         val defaultJavaLauncher: JavaLauncher
             get() = javaToolchainService.defaultJavaLauncher(project).get()
 
-        val stdContext: SetupHandler.Context by lazy { SetupHandler.Context(project, workerExecutor, javaToolchainService) }
+        val stdContext: SetupHandler.Context by lazy {
+            SetupHandler.Context(project, workerExecutor, javaToolchainService)
+        }
     }
 
     public companion object {
@@ -71,7 +73,9 @@ public interface SetupHandlerMPP {
                 parameters,
                 extractedBundle as ExtractedBundle<GenerateDevBundle.DevBundleConfig>
             )
-            else -> throw PaperweightException("Unknown dev bundle config type: ${extractedBundle.config::class.java.typeName}")
+            else -> throw PaperweightException(
+                "Unknown dev bundle config type: ${extractedBundle.config::class.java.typeName}"
+            )
         }
     }
 }

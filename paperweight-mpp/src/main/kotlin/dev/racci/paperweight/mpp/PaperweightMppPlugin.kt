@@ -40,8 +40,10 @@ import org.gradle.kotlin.dsl.registerIfAbsent
 import org.gradle.kotlin.dsl.repositories
 import org.gradle.util.internal.NameMatcher
 import org.gradle.workers.WorkerExecutor
+import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinJvmCompilation
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.targets
 import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
 import org.slf4j.LoggerFactory
 import javax.inject.Inject
@@ -65,15 +67,17 @@ public abstract class PaperweightMppPlugin : Plugin<Project> {
 
         createRootTasks(project)
 
-        project.kotlinMPP().targets.all {
-            if (this !is KotlinJvmTarget) {
-                logger.info("Skipping non-JVM target $name")
-                return@all
-            } else {
-                logger.info("Configuring target $name for PaperweightMPP")
-            }
+        project.afterEvaluate {
+            kotlinExtension.targets.forEach { target ->
+                if (target !is KotlinJvmTarget) {
+                    logger.info("Skipping non-JVM target $name")
+                    return@forEach
+                } else {
+                    logger.info("Configuring target ${target.name} for PaperweightMPP")
+                }
 
-            configureTasks()
+                target.configureTasks()
+            }
         }
     }
 

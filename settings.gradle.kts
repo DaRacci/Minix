@@ -15,13 +15,41 @@ pluginManagement {
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+
     repositories {
+        fun racciRepo(subPath: String, f: MavenRepositoryContentDescriptor.() -> Unit) =
+            maven("https://repo.racci.dev/$subPath") {
+                name = "RacciRepo $subPath"
+                mavenContent {
+                    f()
+                    includeGroupByRegex("dev.racci([.a-z]+)?")
+                }
+            }
+
         mavenCentral()
-        maven("https://repo.racci.dev/releases/") {
-            name = "Catalog Repository"
+        maven("https://jitpack.io")
+        racciRepo("releases") { releasesOnly() }
+        racciRepo("snapshots") { snapshotsOnly() }
+        maven("https://repo.papermc.io/repository/maven-public/")
+
+        maven("https://repo.purpurmc.org/snapshots") {
+            mavenContent {
+                includeGroup("org.purpurmc.purpur")
+            }
+        }
+
+        maven("https://repo.fvdh.dev/releases") {
             mavenContent {
                 releasesOnly()
-                includeModule("dev.racci", "catalog")
+                includeGroup("net.frankheijden.serverutils")
+            }
+        }
+
+        maven("https://repo.extendedclip.com/content/repositories/placeholderapi/") {
+            mavenContent {
+                releasesOnly()
+                includeModule("me.clip", "placeholderapi")
             }
         }
     }
@@ -35,19 +63,11 @@ dependencyResolutionManagement {
 }
 
 includeBuild("paperweight-mpp")
+include("minix-plugin")
+include("minix-modules")
 
-sequenceOf(
-    "common",
-    "autoscanner",
-    "data",
-    "jumper",
-//    "wrappers",
-    "flowbus",
-    "integrations",
-    "ticker"
-//    "updater",
-).forEach { proj ->
-    val path = "module-$proj"
-    include(":$path")
-    project(":$path").projectDir = file("minix-modules/$path")
+val excludes = arrayOf("updater", "wrappers")
+for (dir in file("minix-modules").listFiles()!!) {
+    if (dir.name.substringAfter('-') in excludes || !dir.isDirectory) continue
+    include(":minix-modules:${dir.name}")
 }

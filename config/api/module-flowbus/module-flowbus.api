@@ -94,8 +94,3 @@ public class dev/racci/minix/flowbus/receiver/EventReceiverImpl : dev/racci/mini
 	public fun unsubscribe (Ldev/racci/minix/flowbus/receiver/EventReceiver;Lkotlin/reflect/KClass;)V
 }
 
-public final class org/koin/ksp/generated/DefaultKt {
-	public static final fun defaultModule (Lorg/koin/core/KoinApplication;)Lorg/koin/core/KoinApplication;
-	public static final fun getDefaultModule ()Lorg/koin/core/module/Module;
-}
-

@@ -1,4 +1,4 @@
 dependencies {
-    compileOnlyApi(libs.caffeine)
-    compileOnlyApi(libs.classgraph)
+    compileAndTest(libs.caffeine)
+    compileAndTestApi(libs.classgraph)
 }

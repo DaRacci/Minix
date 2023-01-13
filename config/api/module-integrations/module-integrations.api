@@ -14,17 +14,18 @@ public class dev/racci/minix/integrations/IntegrationManager {
 	public static final field Companion Ldev/racci/minix/integrations/IntegrationManager$Companion;
 	public fun <init> ()V
 	public final fun get ()Larrow/core/Option;
-	public final fun getFirstRegistered (Lkotlin/jvm/functions/Function1;)Ljava/util/Optional;
 	public final fun getIntegrations ()Ljava/util/Set;
-	public final fun onFirstRegistered (Lkotlin/jvm/functions/Function1;)V
 	public final fun register (Ldev/racci/minix/integrations/Integration;)V
 }
 
 public final class dev/racci/minix/integrations/IntegrationManager$Companion : dev/racci/minix/integrations/IntegrationManager {
 }
 
-public abstract interface annotation class dev/racci/minix/integrations/annotations/MappedIntegration : java/lang/annotation/Annotation {
-	public abstract fun integrationManager ()Ljava/lang/Class;
+public abstract interface annotation class dev/racci/minix/integrations/annotations/IntegrationManager : java/lang/annotation/Annotation {
+	public abstract fun kClass ()Ljava/lang/Class;
+}
+
+public abstract interface annotation class dev/racci/minix/integrations/annotations/IntegrationPlugin : java/lang/annotation/Annotation {
 	public abstract fun pluginName ()Ljava/lang/String;
 }
 

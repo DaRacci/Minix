@@ -35,66 +35,87 @@ public final class dev/racci/minix/data/DataSizeKt {
 
 public final class dev/racci/minix/data/Version : java/lang/Comparable {
 	public static final field Companion Ldev/racci/minix/data/Version$Companion;
-	public fun <init> (I)V
-	public fun <init> (II)V
-	public fun <init> (III)V
-	public fun <init> (Ljava/lang/String;Z)V
-	public synthetic fun <init> (Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun compareTo (Ldev/racci/minix/data/Version;)I
 	public synthetic fun compareTo (Ljava/lang/Object;)I
-	public final fun compareTo (Ljava/lang/String;)I
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()Lkotlinx/collections/immutable/ImmutableSet;
+	public final fun component5 ()Larrow/core/Option;
+	public final fun component6 ()Larrow/core/Option;
+	public final fun copy (IIILkotlinx/collections/immutable/ImmutableSet;Larrow/core/Option;Larrow/core/Option;)Ldev/racci/minix/data/Version;
+	public static synthetic fun copy$default (Ldev/racci/minix/data/Version;IIILkotlinx/collections/immutable/ImmutableSet;Larrow/core/Option;Larrow/core/Option;ILjava/lang/Object;)Ldev/racci/minix/data/Version;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getBuildNumber ()J
+	public final fun getBuildNumber ()Larrow/core/Option;
 	public final fun getMajor ()I
 	public final fun getMinor ()I
 	public final fun getPatch ()I
-	public final fun getRawVersion ()Ljava/lang/String;
-	public final fun getTimestamp ()J
+	public final fun getTags ()Lkotlinx/collections/immutable/ImmutableSet;
+	public final fun getTimestamp ()Larrow/core/Option;
 	public fun hashCode ()I
 	public final fun isPreRelease ()Z
-	public final fun setPreRelease (Z)V
 	public final fun toInt ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class dev/racci/minix/data/Version$Companion {
-	public final fun getBuildParameter (Ljava/util/List;Ljava/lang/String;)J
-	public final fun getERROR ()Ldev/racci/minix/data/Version;
-	public final fun getGroupTagRegex ()Lkotlin/text/Regex;
-	public final fun getPreReleaseTagRegex ()Lkotlin/text/Regex;
-	public final fun getPreReleaseTagResolution ()Ljava/util/Map;
-	public final fun getPreReleaseTags ()[Ljava/lang/String;
-	public final fun getTagRegex ()Lkotlin/text/Regex;
-	public final fun getVersionStringRegex ()Lkotlin/text/Regex;
+	public final fun getEMPTY ()Ldev/racci/minix/data/Version;
+	public final fun of (III)Ldev/racci/minix/data/Version;
+	public final fun of (IIILjava/util/Collection;)Ldev/racci/minix/data/Version;
+	public final fun of (IIILjava/util/Collection;Ljava/lang/Long;)Ldev/racci/minix/data/Version;
+	public final fun of (IIILjava/util/Collection;Ljava/lang/Long;Lkotlinx/datetime/Instant;)Ldev/racci/minix/data/Version;
+	public static synthetic fun of$default (Ldev/racci/minix/data/Version$Companion;IIILjava/util/Collection;Ljava/lang/Long;Lkotlinx/datetime/Instant;ILjava/lang/Object;)Ldev/racci/minix/data/Version;
+	public final fun parseString (Ljava/lang/String;)Ldev/racci/minix/data/Version;
 }
 
-public final class dev/racci/minix/data/delegates/DoubleAccessWatcher : kotlin/properties/ReadOnlyProperty {
-	public fun <init> ()V
+public final class dev/racci/minix/data/Version$PreReleaseTag {
+	public final fun getLevel ()I
+}
+
+public final class dev/racci/minix/data/Version$PreReleaseTag$Type : java/lang/Enum {
+	public static final field ALPHA Ldev/racci/minix/data/Version$PreReleaseTag$Type;
+	public static final field BETA Ldev/racci/minix/data/Version$PreReleaseTag$Type;
+	public static final field RELEASE_CANDIDATE Ldev/racci/minix/data/Version$PreReleaseTag$Type;
+	public static final field SNAPSHOT Ldev/racci/minix/data/Version$PreReleaseTag$Type;
+	public final fun getRegex ()Lkotlin/text/Regex;
+	public static fun valueOf (Ljava/lang/String;)Ldev/racci/minix/data/Version$PreReleaseTag$Type;
+	public static fun values ()[Ldev/racci/minix/data/Version$PreReleaseTag$Type;
+}
+
+public final class dev/racci/minix/data/delegates/AccessWatcher : kotlin/properties/ReadOnlyProperty {
+	public static final field Companion Ldev/racci/minix/data/delegates/AccessWatcher$Companion;
+	public synthetic fun <init> (JILkotlin/time/TimeSource;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Boolean;
 	public synthetic fun getValue (Ljava/lang/Object;Lkotlin/reflect/KProperty;)Ljava/lang/Object;
 }
 
+public final class dev/racci/minix/data/delegates/AccessWatcher$Companion {
+	public final fun of-VtjQ1oo (JI)Ldev/racci/minix/data/delegates/AccessWatcher;
+}
+
+public final class dev/racci/minix/data/delegates/AccessWatcherKt {
+	public static final fun doubleAccessWatcher-HG0u8IE (Lkotlin/properties/Delegates;J)Lkotlin/properties/ReadOnlyProperty;
+	public static synthetic fun doubleAccessWatcher-HG0u8IE$default (Lkotlin/properties/Delegates;JILjava/lang/Object;)Lkotlin/properties/ReadOnlyProperty;
+}
+
 public final class dev/racci/minix/data/exceptions/InvalidVersionStringException : java/lang/IllegalArgumentException {
-	public fun <init> ()V
-	public fun <init> (Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public final class dev/racci/minix/data/exceptions/SerializationException : java/lang/IllegalArgumentException {
-	public fun <init> (Ljava/lang/String;)V
-	public fun <init> (Lkotlinx/serialization/descriptors/SerialDescriptor;I)V
 }
 
 public final class dev/racci/minix/data/extensions/ExConfigurateKt {
 	public static final fun nonVirtualNode (Lorg/spongepowered/configurate/ConfigurationNode;[Ljava/lang/Object;)Ljava/lang/Object;
 }
 
-public final class dev/racci/minix/data/extensions/ExDelegateKt {
-	public static final fun doubleAccessWatcher (Lkotlin/properties/Delegates;)Lkotlin/properties/ReadOnlyProperty;
-}
-
 public final class dev/racci/minix/data/extensions/ExKeyKt {
 	public static final fun getBukkit (Lnet/kyori/adventure/key/Key;)Lorg/bukkit/NamespacedKey;
+}
+
+public final class dev/racci/minix/data/extensions/ExMCVersionKt {
+	public static final fun getSupportsPaper (Ldev/racci/minix/api/utils/minecraft/MCVersion$Companion;)Z
+	public static final fun getSupportsPurpur (Ldev/racci/minix/api/utils/minecraft/MCVersion$Companion;)Z
+	public static final fun getSupportsTentacles (Ldev/racci/minix/api/utils/minecraft/MCVersion$Companion;)Z
 }
 
 public final class dev/racci/minix/data/extensions/ExPairKt {
@@ -811,7 +832,6 @@ public final class dev/racci/minix/data/serializers/kotlin/recipes/BlastingRecip
 
 public final class dev/racci/minix/data/serializers/kotlin/recipes/BlastingRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/BlastingRecipeIngredients$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/BlastingRecipeIngredients;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -838,7 +858,6 @@ public final class dev/racci/minix/data/serializers/kotlin/recipes/CampfireRecip
 
 public final class dev/racci/minix/data/serializers/kotlin/recipes/CampfireRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/CampfireRecipeIngredients$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/CampfireRecipeIngredients;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -865,7 +884,6 @@ public final class dev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipe
 
 public final class dev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipeIngredients$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/FurnaceRecipeIngredients;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -894,7 +912,6 @@ public final class dev/racci/minix/data/serializers/kotlin/recipes/SerializableR
 
 public final class dev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipe$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipe$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/SerializableRecipe;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -933,7 +950,6 @@ public final class dev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeI
 
 public final class dev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeIngredients$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/ShapedRecipeIngredients;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -958,7 +974,6 @@ public final class dev/racci/minix/data/serializers/kotlin/recipes/ShapelessReci
 
 public final class dev/racci/minix/data/serializers/kotlin/recipes/ShapelessRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/ShapelessRecipeIngredients$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/ShapelessRecipeIngredients;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -984,7 +999,6 @@ public final class dev/racci/minix/data/serializers/kotlin/recipes/SmithingRecip
 
 public final class dev/racci/minix/data/serializers/kotlin/recipes/SmithingRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/SmithingRecipeIngredients$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/SmithingRecipeIngredients;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1011,7 +1025,6 @@ public final class dev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipe
 
 public final class dev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipeIngredients$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/SmokingRecipeIngredients;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1036,7 +1049,6 @@ public final class dev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingR
 
 public final class dev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingRecipeIngredients$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
 	public static final field INSTANCE Ldev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingRecipeIngredients$$serializer;
-	public static final synthetic field descriptor Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ldev/racci/minix/data/serializers/kotlin/recipes/StoneCuttingRecipeIngredients;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
@@ -1208,7 +1220,6 @@ public abstract class dev/racci/minix/data/utils/PropertyFinder {
 	public fun <init> ()V
 	public fun <init> (Ldev/racci/minix/data/utils/PropertyFinder$KeyMode;)V
 	public synthetic fun <init> (Ldev/racci/minix/data/utils/PropertyFinder$KeyMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun get (Ljava/lang/String;)Ljava/lang/Object;
 	public fun get (Ljava/lang/String;Z)Ljava/lang/Object;
 	public static synthetic fun get$default (Ldev/racci/minix/data/utils/PropertyFinder;Ljava/lang/String;ZILjava/lang/Object;)Ljava/lang/Object;
 	public final fun getKeys ()Lkotlinx/collections/immutable/ImmutableSet;

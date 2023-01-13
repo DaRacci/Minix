@@ -48,8 +48,6 @@ internal fun KotlinSourceSet.disambiguateGroupName(simpleName: String): String {
 
 internal fun KotlinTarget.disambiguateName(simpleName: String): String = lowerCamelCaseName(name, simpleName)
 
-internal fun KotlinTarget.projectAndTargetName(simpleName: String): String = lowerCamelCaseName(project.name, "-", name, simpleName)
-
 internal fun KotlinSourceSet.devBundleConfiguration(project: Project): Configuration = with(project) {
     configurations.create(disambiguateName(DEV_BUNDLE_CONFIG)) {
         isTransitive = true
@@ -62,7 +60,9 @@ internal fun Project.kotlinMPP() = project.extensions.getByName("kotlin") as Kot
 public val KotlinTarget.reobfJar: TaskProvider<RemapJar>
     get() = project.tasks.named<RemapJar>(disambiguateName("reobfJar")) {}
 
-public fun KotlinTarget.reobfJar(configure: RemapJar.() -> Unit): TaskProvider<RemapJar> = project.tasks.named<RemapJar>(disambiguateName(name)) {
+public fun KotlinTarget.reobfJar(
+    configure: RemapJar.() -> Unit
+): TaskProvider<RemapJar> = project.tasks.named<RemapJar>(disambiguateName(name)) {
     configure()
 }
 
@@ -81,7 +81,10 @@ public fun KotlinDependencyHandler.paperweightDevBundle(
     val devBundleZip = project.configurations.named(sourceSet.disambiguateName(DEV_BUNDLE_CONFIG)).map { it.singleFile }.convertToPath()
     val serviceName = "paperweight-USERDEV:setupService:${devBundleZip.sha256asHex()}"
 
-    PaperweightMppPlugin.USERDEV[sourceSet] = project.gradle.sharedServices.registerIfAbsent(serviceName, UserdevSetupMPP::class) {
+    PaperweightMppPlugin.USERDEV[sourceSet] = project.gradle.sharedServices.registerIfAbsent(
+        serviceName,
+        UserdevSetupMPP::class
+    ) {
         parameters {
             cache.set(project.layout.cache.resolve(sourceSet.name).toFile())
             bundleZip.set(devBundleZip)
@@ -98,7 +101,11 @@ public fun KotlinDependencyHandler.addDependencyByStringNotation(
     configurationName: String,
     dependencyNotation: Any,
     configure: ExternalModuleDependency.() -> Unit = { }
-): ExternalModuleDependency = addDependency(configurationName, project.dependencies.create(dependencyNotation) as ExternalModuleDependency, configure)
+): ExternalModuleDependency = addDependency(
+    configurationName,
+    project.dependencies.create(dependencyNotation) as ExternalModuleDependency,
+    configure
+)
 
 public fun <T : Dependency> KotlinDependencyHandler.addDependency(
     configurationName: String,

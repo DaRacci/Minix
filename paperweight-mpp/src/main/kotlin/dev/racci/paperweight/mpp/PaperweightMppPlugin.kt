@@ -69,7 +69,9 @@ public abstract class PaperweightMppPlugin : Plugin<Project> {
             if (this !is KotlinJvmTarget) {
                 logger.info("Skipping non-JVM target $name")
                 return@all
-            } else logger.info("Configuring target $name for PaperweightMPP")
+            } else {
+                logger.info("Configuring target $name for PaperweightMPP")
+            }
 
             configureTasks()
         }
@@ -104,12 +106,20 @@ public abstract class PaperweightMppPlugin : Plugin<Project> {
                 logger.info("Configuring source set $name ($groupName) for PaperweightMPP (AfterEvaluate)")
 
                 if (isCleaningCache()) {
-                    logger.info("Skipping source set $name ($groupName) for PaperweightMPP because cleanCache is running")
+                    logger.info(
+                        "Skipping source set $name ($groupName) for PaperweightMPP because cleanCache is running"
+                    )
                     return@afterEvaluate
-                } else logger.info("Configuring source set $name ($groupName) for PaperweightMPP (Not cleaning cache)")
+                } else {
+                    logger.info("Configuring source set $name ($groupName) for PaperweightMPP (Not cleaning cache)")
+                }
 
                 val target = runCatching { project.kotlinMPP().targets.getByName(groupName) as KotlinJvmTarget }
-                    .getOrElse { throw GradleException("Unable to get the target for source $sourceSet with group $groupName (Implicit via name)") }
+                    .getOrElse {
+                        throw GradleException(
+                            "Unable to get the target for source $sourceSet with group $groupName (Implicit via name)"
+                        )
+                    }
 
                 userdevExtension.reobfArtifactConfiguration.get().configure(
                     target,
@@ -118,7 +128,13 @@ public abstract class PaperweightMppPlugin : Plugin<Project> {
 
                 if (userdevExtension.injectPaperRepository.get()) {
                     logger.info("Injecting Paper repository for source set $name ($groupName)")
-                    project.repositories.maven(PAPER_MAVEN_REPO_URL) { content { onlyForConfigurations(disambiguateName(DEV_BUNDLE_CONFIG)) } }
+                    project.repositories.maven(PAPER_MAVEN_REPO_URL) {
+                        content {
+                            onlyForConfigurations(
+                                disambiguateName(DEV_BUNDLE_CONFIG)
+                            )
+                        }
+                    }
                 }
 
                 configureRepositories(sourceSet, userdev)
@@ -208,7 +224,12 @@ public abstract class PaperweightMppPlugin : Plugin<Project> {
         private fun createContext(
             project: Project,
             source: KotlinSourceSet
-        ): SetupHandlerMPP.Context = SetupHandlerMPP.Context(project, source, instance.workerExecutor, instance.javaToolchainService)
+        ): SetupHandlerMPP.Context = SetupHandlerMPP.Context(
+            project,
+            source,
+            instance.workerExecutor,
+            instance.javaToolchainService
+        )
 
         private fun KotlinJvmTarget.configureTasks() {
             val (relatedSourceSet, userdev) = compilations.flatMap(KotlinJvmCompilation::kotlinSourceSets)

@@ -30,7 +30,6 @@ public abstract class UserdevSetupMPP : BuildService<UserdevSetup.Parameters>, S
 
     private val setup: SetupHandlerMPP = createSetup()
 
-    // FIXME: I think the issue has to do with the extractDevBundle having incorrect configurations
     private fun createSetup(): SetupHandlerMPP = SetupHandlerMPP.create(parameters, extractDevBundle)
 
     public fun addIvyRepository() {

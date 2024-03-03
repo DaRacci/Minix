@@ -7,7 +7,7 @@ import kotlinx.validation.KotlinApiBuildTask
 import kotlinx.validation.KotlinApiCompareTask
 
 plugins {
-    id(libs.plugins.minix.get().pluginId) version "0.5.1-SNAPSHOT"
+    id(libs.plugins.minix.get().pluginId) version "0.5.3"
 
     id("org.jetbrains.kotlinx.kover") version "0.6.1" // TODO: Catalog and convention
     id("io.gitlab.arturbosch.detekt") version "1.22.0" // TODO: Catalog and convention
